@@ -2,13 +2,15 @@
   "name": "mooltipage",
   "version": "0.0.1",
   "description": "Compile-time framework for creating Multiple-Page Applications",
-  "main": "src/index.js",
-  "type": "module",
-  "scripts": {
-    "test": "node test/test.js"
-  },
   "author": "Christopher Koehler",
   "license": "ISC",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "tsc"
+  },
   "dependencies": {
     "jsdom": "^16.2.2"
   },
