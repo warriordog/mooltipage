@@ -6,7 +6,7 @@ import { JSDOMPipeline } from '../../main/impl/jsdomPipeline';
 import Fragment from '../../main/compiler/fragment';
 import { JSDOM } from 'jsdom';
 
-export default class FragmentOnlyTests implements TestSet {
+export default class FragmentSlotTests implements TestSet {
 
     // test methods
 
@@ -34,22 +34,22 @@ export default class FragmentOnlyTests implements TestSet {
     // shared test code
 
     private validateContent(dom: Document | DocumentFragment): void {
-        // check counts
-        Assert.AreEqual(dom.querySelectorAll('div.test1div').length, 1);
-        Assert.AreEqual(dom.querySelectorAll('div.test2div').length, 2);
-        Assert.AreEqual(dom.querySelectorAll('div.test3div1').length, 4);
-        Assert.AreEqual(dom.querySelectorAll('div.test3div2').length, 4);
-        Assert.AreEqual(dom.querySelectorAll('div.test4div').length, 6);
-        Assert.AreEqual(dom.querySelectorAll('div.test5div').length, 4);
-        Assert.AreEqual(dom.querySelectorAll('span').length, 10);
+        // verify counts
+        Assert.AreEqual(dom.querySelectorAll('.test1div').length, 1);
+        Assert.AreEqual(dom.querySelectorAll('.test2div').length, 1);
+        Assert.AreEqual(dom.querySelectorAll('.test3div').length, 1);
+        Assert.AreEqual(dom.querySelectorAll('.test1slot1').length, 1);
+        Assert.AreEqual(dom.querySelectorAll('.test1slot2').length, 1);
+        Assert.AreEqual(dom.querySelectorAll('.test1slotD').length, 1);
+        Assert.AreEqual(dom.querySelectorAll('div').length, 7);
 
         // verify structure
-        Assert.AreEqual(dom.querySelectorAll('div.test1div > div.test2div > div.test4div > span').length, 2);
-        Assert.AreEqual(dom.querySelectorAll('div.test1div > div.test2div > div.test3div1 > div.test4div > span').length, 4);
-        Assert.AreEqual(dom.querySelectorAll('div.test1div > div.test2div > div.test3div2 > div.test5div > span').length, 4);
-        
-        // make sure fragments were left
-        Assert.AreEqual(dom.querySelectorAll('m-fragment').length, 0);
+        Assert.IsNotNullish(dom.querySelector('.test1div > .test2div > .test3div > .test1slot1'));
+        Assert.IsNotNullish(dom.querySelector('.test1div > .test2div > .test3div > div > .test1slot2'));
+        Assert.IsNotNullish(dom.querySelector('.test1div > .test2div > .test3div > .test1slotD'));
+
+        // make sure no slots or fragments were left
+        Assert.AreEqual(dom.querySelectorAll('m-slot, [m-slot], m-content, [m-content], m-fragment').length, 0);
     }
 
     // test data
@@ -64,7 +64,7 @@ export default class FragmentOnlyTests implements TestSet {
 
     // test set boilerplate
 
-    readonly setName: string = 'FragmentOnlyTests';
+    readonly setName: string = 'FragmentSlotTests';
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
@@ -96,37 +96,31 @@ export default class FragmentOnlyTests implements TestSet {
 
         this.pipelineInterface.htmlSource.set('test1.html', `
             <div class="test1div">
-                <m-fragment src="test2.html"></m-fragment>
-                <m-fragment src="test2.html"></m-fragment>
+                <m-fragment src="test2.html">
+                    <m-content slot="slot1">
+                        <div class="test1slot1"></div>
+                    </m-content>
+                    <m-content slot="slot2">
+                        <div class="test1slot2"></div>
+                    </m-content>
+                    <div class="test1slotD"></div>
+                </m-fragment>
             </div>
         `);
 
         this.pipelineInterface.htmlSource.set('test2.html', `
             <div class="test2div">
-                <m-fragment src="test3.html"></m-fragment>
-                <m-fragment src="test4.html"></m-fragment>
-                <m-fragment src="test3.html"></m-fragment>
+                <m-fragment src="test3.html">
+                    <m-slot name="slot1"></m-slot>
+                    <div m-slot="slot2"></div>
+                    <m-slot></m-slot>
+                </m-fragment>
             </div>
         `);
         
         this.pipelineInterface.htmlSource.set('test3.html', `
-            <div class="test3div1">
-                <m-fragment src="test4.html"></m-fragment>
-            </div>
-            <div class="test3div2">
-                <m-fragment src="test5.html"></m-fragment>
-            </div>
-        `);
-        
-        this.pipelineInterface.htmlSource.set('test4.html', `
-            <div class="test4div">
-                <span>Test 4</span>
-            </div>
-        `);
-        
-        this.pipelineInterface.htmlSource.set('test5.html', `
-            <div class="test5div">
-                <span>Test 5</span>
+            <div class="test3div">
+                <m-slot></m-slot>
             </div>
         `);
     }
