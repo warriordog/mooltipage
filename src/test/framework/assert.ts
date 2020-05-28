@@ -1,12 +1,12 @@
 export default new class Assert {
     AreEqual<T>(actual: T, expected: T): void {
-        if (expected != actual) {
+        if (expected !== actual) {
             this.RaiseError('AreEqual', actual, expected);
         }
     }
 
     AreEqualish<T>(actual: T, expected: T): void {
-        if (expected !== actual) {
+        if (expected != actual) {
             this.RaiseError('AreEqualish', actual, expected);
         }
     }

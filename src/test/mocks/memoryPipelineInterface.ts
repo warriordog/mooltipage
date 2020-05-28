@@ -9,7 +9,24 @@ export default class MemoryPipelineInterface implements HtmlSource, HtmlDestinat
         this.htmlDestination = new Map<string, string>();
     }
 
-    readHtml(resId: string, pipeline: Pipeline): string {
+    hasDestination(resId: string): boolean {
+        return this.htmlDestination.has(resId);
+    }
+
+    getDestination(resId: string): string {
+        if (!this.htmlDestination.has(resId)) {
+            throw new Error(`Destination resource not found: '${resId}'`);
+        }
+
+        const html = this.htmlDestination.get(resId);
+        if (html == undefined) {
+            throw new Error(`Destination resource is undefined: '${resId}'`);
+        }
+
+        return html
+    }
+
+    getHtml(resId: string): string {
         if (this.htmlSource.has(resId)) {
             const html = this.htmlSource.get(resId);
 
@@ -23,7 +40,7 @@ export default class MemoryPipelineInterface implements HtmlSource, HtmlDestinat
         }
     }
 
-    writeHtml(resId: string, content: string, pipeline: Pipeline): void {
+    writeHtml(resId: string, content: string): void {
        this.htmlDestination.set(resId, content);
     }
 

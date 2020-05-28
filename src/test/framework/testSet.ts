@@ -6,7 +6,8 @@ export interface TestSet {
     afterTest?(testName: string): void;
 
     getTests(): Map<string, TestCallback>;
-    getName(): string;
+    
+    readonly setName: string;
 }
 
 export type TestCallback = () => void;

@@ -4,18 +4,19 @@
   "description": "Compile-time framework for creating Multiple-Page Applications",
   "author": "Christopher Koehler",
   "license": "ISC",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/main/index.js",
+  "types": "dist/main/index.d.ts",
   "scripts": {
     "build": "tsc -b",
     "test": "tsc -b && node dist/test/runTests.js",
-    "prepublish": "tsc -b src"
+    "prepublish": "tsc -b src/main"
   },
   "dependencies": {
     "jsdom": "^16.2.2"
   },
   "devDependencies": {
     "@types/jsdom": "^16.2.3",
+    "@types/node": "^14.0.5",
     "typescript": "^3.9.3"
   }
 }

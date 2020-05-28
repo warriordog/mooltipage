@@ -1,95 +1,103 @@
 import { TestSet, TestCallback } from '../framework/testSet';
 import Assert from '../framework/assert';
 import MemoryPipelineInterface from '../mocks/memoryPipelineInterface';
-import { Pipeline, HtmlParser, FragmentCompiler, FragmentSerializer } from '../../main/compiler/pipeline';
+import { UsageContext } from '../../main/compiler/pipeline';
+import { JSDOMPipeline } from '../../main/impl/jsdomPipeline';
 import Fragment from '../../main/compiler/fragment';
+import { JSDOM } from 'jsdom';
 
 export default class BasicHtmlTest implements TestSet {
     // test methods
     
-    testRawFragmentProcessed(): void {
-        const fragment: Fragment = this.pipeline.processFragment('test1.html');
+    testFragment(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
+        const dom = fragment.dom;
 
+        // get contents
+        const div1 = dom.querySelector('#div1');
+        const div2 = dom.querySelector('#div2');
+        const h1 = dom.querySelector('h1');
+        const p = dom.querySelector('p');
+
+        // verify output
         Assert.IsNotNullish(fragment);
+        Assert.IsFalse(this.getPipelineInterface().hasDestination('test1.html'));
+
+        // verify content
+        Assert.IsNotNullish(div1);
+        Assert.IsNotNullish(div2);
+        Assert.IsNotNullish(h1);
+        Assert.IsNotNullish(p);
+        Assert.AreEqual(div1?.children?.length, 3);
+        Assert.AreEqual(div2?.innerHTML, 'This is div2');
+        Assert.AreEqual(h1?.innerHTML, 'This is h1');
+        Assert.AreEqual(p?.innerHTML, 'This is p');
+
+    }
+
+    testPage(): void {
+        // compile page
+        this.getPipeline().compilePage('test2.html');
+
+        // read back and extract contents
+        const html: string = this.getPipelineInterface().getDestination('test2.html');
+        const dom: Document = (new JSDOM(html)).window.document;
+        const title = dom.querySelector('title');
+        const div = dom.querySelector('div');
+
+        // verify output
+        Assert.IsNotNullish(html);
+
+        // verify content
+        Assert.IsNotNullish(dom);
+        Assert.IsNotNullish(title);
+        Assert.IsNotNullish(div);
+        Assert.AreEqual(title?.innerHTML, 'Test2 File');
+        Assert.AreEqual(div?.innerHTML, 'This is the body.');
+
     }
     
-    testRawFragmentNotExported(): void {
-        this.pipeline.processFragment('test1.html');
+    // test data
 
-        Assert.IsFalse(this.pipelineInterface.htmlDestination.has('test1.html'));
+    private getPipeline(): JSDOMPipeline {
+        if (this.pipeline == undefined) throw new Error('Pipeline is undefined');
+        return this.pipeline;
     }
-
-    testPageFragmentProcessed(): void {
-        const fragment: Fragment = this.pipeline.processFragment('test2.html');
-
-        Assert.IsNotNullish(fragment);
-    }
-
-    testPageFragmentExported(): void {
-        this.pipeline.processFragment('test2.html');
-
-        Assert.IsTrue(this.pipelineInterface.htmlDestination.has('test2.html'));
-        Assert.IsNotNullish(this.pipelineInterface.htmlDestination.get('test2.html'))
+    private getPipelineInterface(): MemoryPipelineInterface {
+        if (this.pipelineInterface == undefined) throw new Error('Pipeline Interface is undefined');
+        return this.pipelineInterface;
     }
 
     // test set boilerplate
 
-    getName(): string {
-        return 'BasicHtmlTests';
-    }
+    readonly setName: string = 'BasicHtmlTests';
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testRawFragmentProcessed', () => this.testRawFragmentProcessed()],
-            ['testRawFragmentNotExported', () => this.testRawFragmentNotExported()],
-            ['testPageFragmentProcessed', () => this.testPageFragmentProcessed()],
-            ['testPageFragmentExported', () => this.testPageFragmentExported()]
+            ['testFragment', () => this.testFragment()],
+            ['testPage', () => this.testPage()]
         ]);
     }
 
     // Test setup
     
-    private _pipelineInterface?: MemoryPipelineInterface;
-    private _pipeline?: Pipeline;
-
-    private get pipeline(): Pipeline {
-        if (this._pipeline == undefined) {
-            throw new Error('pipeline is undefined');
-        }
-        
-        return this._pipeline;
-    }
-
-    private get pipelineInterface(): MemoryPipelineInterface {
-        if (this._pipelineInterface == undefined) {
-            throw new Error('pipeline interface is undefined');
-        }
-        
-        return this._pipelineInterface;
-    }
+    private pipelineInterface?: MemoryPipelineInterface;
+    private pipeline?: JSDOMPipeline;
 
     beforeTest() {
-        this._pipelineInterface = new MemoryPipelineInterface();
-        this._pipeline = new Pipeline(this._pipelineInterface, new HtmlParser(), new FragmentCompiler(), new FragmentSerializer, this._pipelineInterface);
+        this.pipelineInterface = new MemoryPipelineInterface();
+        this.pipeline = new JSDOMPipeline(this.pipelineInterface, this.pipelineInterface);
         
         this.pipelineInterface.htmlSource.set('test1.html', `
-            <!DOCTYPE HTML>
-            <html>
-                <head>
-                    <title>Hello, world!</title>
-                </head>
-                <body>
-                    <div id="content">
-                        <h1>This is h1</h1>
-                        <p>This is p</p>
-                        <div>This is div</div>
-                    </div>
-                </body>
-            </html>
+            <div id="div1">
+                <h1>This is h1</h1>
+                <p>This is p</p>
+                <div id="div2">This is div2</div>
+            </div>
         `);
 
         this.pipelineInterface.htmlSource.set('test2.html', `
-            <m-page dest="test2.html"></m-page>
             <!DOCTYPE HTML>
             <html>
                 <head>

@@ -2,12 +2,13 @@
     "compilerOptions": {
         "strict": true,
         "module": "commonjs",
-        "target": "ES2019",
+        "target": "ES6",
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
         "declaration": true,
         "esModuleInterop": true,
-        "composite": true
+        "composite": true,
+        "types": [ "node" ]
     }
 }
