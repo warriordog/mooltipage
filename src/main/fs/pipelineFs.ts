@@ -2,7 +2,7 @@ import { HtmlSource, Pipeline, HtmlDestination } from "../compiler/pipeline";
 import fs from 'fs';
 import path from 'path';
 
-export class FsHtmlInterface implements HtmlSource, HtmlDestination {
+export default class FsHtmlInterface implements HtmlSource, HtmlDestination {
     private readonly sourcePath: string | null;
     private readonly destinationPath: string | null;
 

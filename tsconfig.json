@@ -1,15 +1,13 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "module": "ES6",
-        "target": "ES2019",
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "declaration": true,
-        "outDir": "dist",
-        "esModuleInterop": true
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "**/*.spec.ts"]
+    "extends": "./configs/base",
+    "files": [],
+    "include": [],
+    "references": [
+        {
+            "path": "./src/main"
+        },
+        {
+            "path": "./src/test"
+        }
+    ]
 }

@@ -1,5 +1,7 @@
 import Fragment from './fragment';
 import jsdom from 'jsdom';
+import TsCompat from '../utils/tsCompat';
+import tsCompat from '../utils/tsCompat';
 
 export class Pipeline {
     private readonly cache: PipelineCache;
@@ -193,9 +195,13 @@ export class FragmentCompiler {
 
         // loop through each child of the root
         for (let node of root.childNodes) {
+            // special cast must be used to work around TS/NodeJS/JSDOM conflict
+            const element = tsCompat.GetNodeAsElement(node);
+
             // check if child matches element
-            if (node instanceof Element && node.tagName.toLowerCase() === tagName) {
-                elementList.push(node);
+            if (element != null && element.tagName.toLowerCase() === tagName) {
+                // Add the matching element, and do not process its children
+                elementList.push(element);
             } else if (node.firstChild != null) {
                 // recursively process nodes that do not match
                 this.getTopLevelElements(node, tagName, elementList);
@@ -211,11 +217,14 @@ export class FragmentCompiler {
 
         // loop through all direct children of fragment reference
         for (let node of mFragment.childNodes) {
+            // special cast must be used to work around TS/NodeJS/JSDOM conflict
+            const element = tsCompat.GetNodeAsElement(node);
+
             // check if this element is an m-content
-            if (node instanceof Element && node.tagName.toLowerCase() === 'm-content') {
+            if (element != null && element.tagName.toLowerCase() === 'm-content') {
                 // check if it specified a slot
-                if (node.hasAttribute('slot') && node.getAttribute('slot') != null) {
-                    const slotName: string = (node.getAttribute('slot') as string).toLowerCase();
+                if (element.hasAttribute('slot') && element.getAttribute('slot') != null) {
+                    const slotName: string = (element.getAttribute('slot') as string).toLowerCase();
 
                     // check for duplicates
                     if (namedSlots.has(slotName)) {
@@ -223,10 +232,10 @@ export class FragmentCompiler {
                     }
                     
                     // save slot contents
-                    namedSlots.set(slotName, Array.from(node.childNodes));
+                    namedSlots.set(slotName, Array.from(element.childNodes));
                 } else {
                     // copy contents of <m-content>
-                    defaultSlot.push(...node.childNodes);
+                    defaultSlot.push(...element.childNodes);
                 }
             } else {
                 // Add to default slot
@@ -294,7 +303,7 @@ export class UsageContext {
 
     constructor(isExplicit: boolean, slotContents?:  Map<string, Array<Node>>) {
         this.isExplicit = isExplicit;
-        this.slotContents = slotContents ?? new  Map<string, Array<Node>>();
+        this.slotContents = slotContents ?? new Map<string, Array<Node>>();
     }
 }
 

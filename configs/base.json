@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "module": "commonjs",
+        "target": "ES2019",
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "declaration": true,
+        "esModuleInterop": true,
+        "composite": true
+    }
+}
