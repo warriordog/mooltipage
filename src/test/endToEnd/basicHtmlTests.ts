@@ -6,10 +6,10 @@ import { JSDOMPipeline } from '../../main/impl/jsdomPipeline';
 import Fragment from '../../main/compiler/fragment';
 import { JSDOM } from 'jsdom';
 
-export default class BasicHtmlTest implements TestSet {
+export default class BasicHtmlTests implements TestSet {
     // test methods
     
-    testFragment(): void {
+    private testFragment(): void {
         // compile fragment
         const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
         const dom = fragment.dom;
@@ -36,7 +36,7 @@ export default class BasicHtmlTest implements TestSet {
 
     }
 
-    testPage(): void {
+    private testPage(): void {
         // compile page
         this.getPipeline().compilePage('test2.html');
 
