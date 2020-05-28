@@ -1,5 +1,4 @@
 import { JSDOM } from 'jsdom';
-import TsCompat from '../utils/tsCompat';
 import { HtmlParser, HtmlCompiler, HtmlSerializer, Pipeline, HtmlSource, HtmlDestination, UsageContext } from '../compiler/pipeline';
 import Fragment from '../compiler/fragment';
 import Page from '../compiler/page';
@@ -135,7 +134,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
         // loop through each child of the root
         for (let node of root.childNodes) {
             // special cast must be used to work around TS/NodeJS/JSDOM conflict
-            const element = TsCompat.GetNodeAsElement(node);
+            const element = this.GetNodeAsElement(node);
 
             // check if child matches element
             if (element != null && element.tagName.toLowerCase() === tagName) {
@@ -157,7 +156,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
         // loop through all direct children of fragment reference
         for (let node of mFragment.childNodes) {
             // special cast must be used to work around TS/NodeJS/JSDOM conflict
-            const element = TsCompat.GetNodeAsElement(node);
+            const element = this.GetNodeAsElement(node);
 
             // check if this element is an m-content
             if (element != null && element.tagName.toLowerCase() === 'm-content') {
@@ -187,6 +186,23 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
         }
 
         return namedSlots;
+    }
+
+        /**
+     * Attempts to convert a DOM Node into an Element without using instanceof,
+     * to avoid a runtime error caused by the fact the TS and JSDOM reference DOM
+     * types that don't exist at NodeJS runtime.
+     * 
+     * @param node The node to convert
+     * @returns @param node cast as an element, or null if @param node is not an element.
+     */
+    private GetNodeAsElement(node: Node): Element | null {
+        // node type 1 is Element
+        if (node.nodeType === 1) {
+            return node as Element;
+        } else {
+            return null;
+        }
     }
 }
 
