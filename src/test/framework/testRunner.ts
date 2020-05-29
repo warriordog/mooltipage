@@ -1,25 +1,32 @@
 import { TestSet, TestCallback } from "./testSet";
+import TestSetGroup from './testSetGroup';
 
 export default class TestRunner {
-    private readonly testSets: Set<TestSet> = new Set<TestSet>();
+    private readonly testGroups: Array<TestSetGroup> = [];
 
-    addTestSets(...sets: Array<TestSet>) {
-        if (sets != null && sets.length > 0) {
-            for (let testSet of sets) {
-                this.testSets.add(testSet);
+    addTestSetGroups(...testGroups: Array<TestSetGroup>) {
+        if (testGroups != null && testGroups.length > 0) {
+            for (let testGroup of testGroups) {
+                this.testGroups.push(testGroup);
             }
         }
     }
 
     runAllTests(): void {
         try {
+            // get non-empty tests
+            const nonEmptyGroups = this.testGroups.filter(tg => !tg.isEmpty());
+
             // make sure we have tests
-            if (this.testSets.size > 0) {
-                console.log(`Running ${this.testSets.size} test set(s).`);
-    
-                // run each test set
-                for (let testSet of this.testSets) {
-                    this.runTestSet(testSet);
+            if (nonEmptyGroups.length > 0) {
+                // run each non-empty group
+                for (let testSetGroup of nonEmptyGroups) {
+
+                    // run each test set in the group
+                    for (let testSet of testSetGroup.getTestSets()) {
+                        // run test set
+                        this.runTestSet(testSetGroup, testSet);
+                    }
                 }
             } else {
                 console.log('No test sets selected for run.');
@@ -29,7 +36,7 @@ export default class TestRunner {
         }
     }
 
-    private runTestSet(testSet: TestSet): void {
+    private runTestSet(testSetGroup: TestSetGroup, testSet: TestSet): void {
         try {
             // run set init
             if (testSet.beforeAll != undefined) {
@@ -38,7 +45,7 @@ export default class TestRunner {
 
             // run each test
             testSet.getTests().forEach((testCallback: TestCallback, testName: string) => {
-                this.runTestMethod(testSet, testName, testCallback);
+                this.runTestMethod(testSetGroup, testSet, testName, testCallback);
             });
 
             // run set teardown
@@ -46,11 +53,11 @@ export default class TestRunner {
                 testSet.afterAll();
             }
         } catch (e) {
-            console.error(`${testSet.setName}: ERROR`, e);
+            console.error(`${testSetGroup.groupName} / ${testSet.setName}: ERROR`, e);
         }
     }
 
-    private runTestMethod(testSet: TestSet, testName: string, testCallback: TestCallback) {
+    private runTestMethod(testSetGroup: TestSetGroup, testSet: TestSet, testName: string, testCallback: TestCallback) {
         try {
             if (testSet.beforeTest != undefined) {
                 testSet.beforeTest(testName);
@@ -62,9 +69,9 @@ export default class TestRunner {
                 testSet.afterTest(testName);
             }
 
-            console.log(`${testSet.setName}/${testName}: PASS`);
+            console.log(`${testSetGroup.groupName} / ${testSet.setName} / ${testName}: PASS`);
         } catch (e) {
-            console.log(`${testSet.setName}/${testName}: FAIL`, e);
+            console.log(`${testSetGroup.groupName} / ${testSet.setName} / ${testName}: FAIL`, e);
         }
     }
 }
