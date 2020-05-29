@@ -1,81 +1,91 @@
-export default new class Assert {
-    AreEqual<T>(actual: T, expected: T): void {
-        if (expected !== actual) {
-            this.RaiseError('AreEqual', actual, expected);
-        }
+export function AreEqual<T>(actual: T, expected: T): void {
+    if (expected !== actual) {
+        RaiseError('AreEqual', actual, expected);
     }
+}
 
-    AreEqualish<T>(actual: T, expected: T): void {
-        if (expected != actual) {
-            this.RaiseError('AreEqualish', actual, expected);
-        }
+export function AreEqualish<T>(actual: T, expected: T): void {
+    if (expected != actual) {
+        RaiseError('AreEqualish', actual, expected);
     }
+}
 
-    IsNull(value: any): void {
-        if (value !== null) {
-            this.RaiseError('IsNull', value);
-        }
+export function IsNull(value: any): void {
+    if (value !== null) {
+        RaiseError('IsNull', value);
     }
+}
 
-    IsNotNull(value: any): void {
-        if (value === null) {
-            this.RaiseError('IsNotNull', value);
-        }
+export function IsNotNull(value: any): void {
+    if (value === null) {
+        RaiseError('IsNotNull', value);
     }
+}
 
-    IsNullish(value: any): void {
-        if (value != null) {
-            this.RaiseError('IsNullish', value);
-        }
+export function IsNullish(value: any): void {
+    if (value != null) {
+        RaiseError('IsNullish', value);
     }
+}
 
-    IsNotNullish(value: any): void {
-        if (value == null) {
-            this.RaiseError('IsNotNullish', value);
-        }
+export function IsNotNullish(value: any): void {
+    if (value == null) {
+        RaiseError('IsNotNullish', value);
     }
+}
 
-    IsUndefined(value: any): void {
-        if (value !== undefined) {
-            this.RaiseError('IsUndefined', value);
-        }
+export function IsUndefined(value: any): void {
+    if (value !== undefined) {
+        RaiseError('IsUndefined', value);
     }
+}
 
-    IsNotUndefined(value: any): void {
-        if (value === undefined) {
-            this.RaiseError('IsNotUndefined', value);
-        }
+export function IsNotUndefined(value: any): void {
+    if (value === undefined) {
+        RaiseError('IsNotUndefined', value);
     }
+}
 
-    IsTrue(value: boolean): void {
-        if (value !== true) {
-            this.RaiseError('IsTrue', value);
-        }
+export function IsTrue(value: boolean): void {
+    if (value !== true) {
+        RaiseError('IsTrue', value);
     }
+}
 
-    IsFalse(value: boolean): void {
-        if (value !== false) {
-            this.RaiseError('IsFalse', value);
-        }
+export function IsFalse(value: boolean): void {
+    if (value !== false) {
+        RaiseError('IsFalse', value);
     }
+}
 
-    IsTruthy(value: boolean): void {
-        if (!value) {
-            this.RaiseError('IsTruthy', value);
-        }
+export function IsTruthy(value: boolean): void {
+    if (!value) {
+        RaiseError('IsTruthy', value);
     }
+}
 
-    IsFalsy(value: boolean): void {
-        if (value) {
-            this.RaiseError('IsFalsy', value);
-        }
+export function IsFalsy(value: boolean): void {
+    if (value) {
+        RaiseError('IsFalsy', value);
     }
+}
 
-    private RaiseError(assertionName: string, actual: any, expected?: any): void {
-        if (expected != undefined) {
-            throw new Error(`AssertionError: ${assertionName} failed.  Expected: ${new String(expected)}.  Actual: ${new String(actual)}.`);
-        } else {
-            throw new Error(`AssertionError: ${assertionName} failed.  Value: ${new String(actual)}.`);
-        }
+export function IsEmpty(value: ArrayLike<any> | null | undefined) {
+    if (!(value == null || value.length === 0)) {
+        RaiseError('IsEmpty', value);
+    }
+}
+
+export function IsNotEmpty(value: ArrayLike<any> | null | undefined) {
+    if (value == null || value.length === 0) {
+        RaiseError('IsNotEmpty', value);
+    }
+}
+
+function RaiseError(assertionName: string, actual: any, expected?: any): void {
+    if (expected != undefined) {
+        throw new Error(`AssertionError: ${assertionName} failed.  Expected: ${expected}.  Actual: ${actual}.`);
+    } else {
+        throw new Error(`AssertionError: ${assertionName} failed.  Value: ${actual}.`);
     }
 }

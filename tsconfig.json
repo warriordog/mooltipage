@@ -4,7 +4,10 @@
     "include": [],
     "references": [
         {
-            "path": "./src/main"
+            "path": "./src/lib"
+        },
+        {
+            "path": "./src/bin"
         },
         {
             "path": "./src/test"

@@ -1,7 +1,7 @@
 {
     "extends": "../../configs/base",
     "compilerOptions": {
-        "outDir": "../../dist/main",
+        "outDir": "../../dist/lib",
     },
     "include": ["**/*"],
     "exclude": ["**/*.spec.ts"]

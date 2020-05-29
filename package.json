@@ -2,14 +2,30 @@
   "name": "mooltipage",
   "version": "0.0.1",
   "description": "Compile-time framework for creating Multiple-Page Applications",
+  "keywords": [
+    "mpa",
+    "web",
+    "framework"
+  ],
   "author": "Christopher Koehler",
   "license": "ISC",
-  "main": "dist/main/index.js",
-  "types": "dist/main/index.d.ts",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
+  "files": [
+    "dist/lib/**/*",
+    "dist/bin/**/*"
+  ],
+  "directories": {
+    "bin": "./dist/bin",
+    "lib": "./dist/lib"
+  },
   "scripts": {
     "build": "tsc -b",
     "test": "tsc -b && node dist/test/runTests.js",
-    "prepublish": "tsc -b src/main"
+    "prepare": "tsc -b"
+  },
+  "bin": {
+    "mooltipage": "./dist/bin/main.js"
   },
   "dependencies": {
     "jsdom": "^16.2.2"

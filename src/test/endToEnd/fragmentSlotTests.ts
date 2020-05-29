@@ -1,9 +1,9 @@
 import { TestSet, TestCallback } from '../framework/testSet';
-import Assert from '../framework/assert';
+import * as Assert from '../framework/assert';
 import MemoryPipelineInterface from '../mocks/memoryPipelineInterface';
-import { UsageContext } from '../../main/compiler/pipeline';
-import { JSDOMPipeline } from '../../main/impl/jsdomPipeline';
-import Fragment from '../../main/compiler/fragment';
+import { UsageContext } from '../../lib/compiler/pipeline';
+import { JSDOMPipeline } from '../../lib/impl/jsdomPipeline';
+import Fragment from '../../lib/compiler/fragment';
 import { JSDOM } from 'jsdom';
 
 export default class FragmentSlotTests implements TestSet {
