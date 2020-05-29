@@ -1,15 +1,15 @@
 import Fragment from "./fragment";
 import Page from "./page";
 
-export class Pipeline<TFragment extends Fragment, TPage extends Page> {
+export class Pipeline<TFragment extends Fragment, TPage extends Page, TSlot> {
     private readonly cache: PipelineCache<TFragment>;
     private readonly htmlSource: HtmlSource;
-    private readonly htmlParser: HtmlParser<TFragment, TPage>;
-    private readonly htmlCompiler: HtmlCompiler<TFragment, TPage>;
-    private readonly htmlSerializer: HtmlSerializer<TFragment, TPage>;
+    private readonly htmlParser: HtmlParser<TFragment, TPage, TSlot>;
+    private readonly htmlCompiler: HtmlCompiler<TFragment, TPage, TSlot>;
+    private readonly htmlSerializer: HtmlSerializer<TFragment, TPage, TSlot>;
     private readonly htmlDestination: HtmlDestination;
 
-    constructor(htmlSource: HtmlSource, htmlParser: HtmlParser<TFragment, TPage>, htmlCompiler: HtmlCompiler<TFragment, TPage>, htmlSerializer: HtmlSerializer<TFragment, TPage>, htmlDestination: HtmlDestination) {
+    constructor(htmlSource: HtmlSource, htmlParser: HtmlParser<TFragment, TPage, TSlot>, htmlCompiler: HtmlCompiler<TFragment, TPage, TSlot>, htmlSerializer: HtmlSerializer<TFragment, TPage, TSlot>, htmlDestination: HtmlDestination) {
         this.cache = new PipelineCache<TFragment>();
         this.htmlSource = htmlSource;
         this.htmlParser = htmlParser;
@@ -18,7 +18,7 @@ export class Pipeline<TFragment extends Fragment, TPage extends Page> {
         this.htmlDestination = htmlDestination;
     }
 
-    compileFragment(resId: string, usageContext: UsageContext): TFragment {
+    compileFragment(resId: string, usageContext: UsageContext<TSlot>): TFragment {
         // will get from cache if already parsed
         const parsedFragment: TFragment = this.getParsedFragment(resId);
 
@@ -64,29 +64,29 @@ export interface HtmlSource {
     getHtml(resId: string): string;
 }
 
-export interface HtmlParser<TFragment extends Fragment, TPage extends Page> {
-    parseFragment(resId: string, html: string, pipeline: Pipeline<TFragment, TPage>): TFragment;
-    parsePage(resId: string, html: string, pipeline: Pipeline<TFragment, TPage>): TPage;
+export interface HtmlParser<TFragment extends Fragment, TPage extends Page, TSlot> {
+    parseFragment(resId: string, html: string, pipeline: Pipeline<TFragment, TPage, TSlot>): TFragment;
+    parsePage(resId: string, html: string, pipeline: Pipeline<TFragment, TPage, TSlot>): TPage;
 }
 
-export interface HtmlCompiler<TFragment extends Fragment, TPage extends Page> {
-    compileFragment(fragment: TFragment, usageContext: UsageContext, pipeline: Pipeline<TFragment, TPage>): TFragment;
-    compilePage(page: TPage, pipeline: Pipeline<TFragment, TPage>): TPage;
+export interface HtmlCompiler<TFragment extends Fragment, TPage extends Page, TSlot> {
+    compileFragment(fragment: TFragment, usageContext: UsageContext<TSlot>, pipeline: Pipeline<TFragment, TPage, TSlot>): TFragment;
+    compilePage(page: TPage, pipeline: Pipeline<TFragment, TPage, TSlot>): TPage;
 }
 
-export interface HtmlSerializer<TFragment extends Fragment, TPage extends Page> {
-    serializePage(page: TPage, pipeline: Pipeline<TFragment, TPage>): string;
+export interface HtmlSerializer<TFragment extends Fragment, TPage extends Page, TSlot> {
+    serializePage(page: TPage, pipeline: Pipeline<TFragment, TPage, TSlot>): string;
 }
 
 export interface HtmlDestination {
     writeHtml(resId: string, html: string): void;
 }
 
-export class UsageContext {
-    readonly slotContents: Map<string, Array<Node>>;
+export class UsageContext<TSlot> {
+    readonly slotContents: Map<string, Array<TSlot>>;
 
-    constructor(slotContents?:  Map<string, Array<Node>>) {
-        this.slotContents = slotContents ?? new Map<string, Array<Node>>();
+    constructor(slotContents?: Map<string, Array<TSlot>>) {
+        this.slotContents = slotContents ?? new Map<string, Array<TSlot>>();
     }
 }
 
@@ -105,7 +105,7 @@ export class PipelineCache<TFragment> {
         const frag: TFragment | undefined = this.parsedFragmentCache.get(resId);
 
         if (frag === undefined) {
-            throw new Error(`Attempted to retrieve fragment before loading: ${resId}`);
+            throw new Error(`Fragment not found in cache: ${resId}.  Make sure to call hasFragment() before getFragment().`);
         }
 
         return frag;

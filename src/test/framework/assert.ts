@@ -70,22 +70,51 @@ export function IsFalsy(value: boolean): void {
     }
 }
 
-export function IsEmpty(value: ArrayLike<any> | null | undefined) {
-    if (!(value == null || value.length === 0)) {
-        RaiseError('IsEmpty', value);
+export function IsEmpty(value: ArrayLike<any>): void;
+export function IsEmpty(value: Map<any, any>): void;
+export function IsEmpty(value: string): void;
+export function IsEmpty(value: any): void {
+    if (value != null) {
+        if (value.length !== undefined && value.length > 0) {
+            RaiseError('IsEmpty', value);
+        }
+        if (value.size !== undefined && value.size > 0) {
+            RaiseError('IsEmpty', value);
+        }
     }
 }
-
-export function IsNotEmpty(value: ArrayLike<any> | null | undefined) {
-    if (value == null || value.length === 0) {
+export function IsNotEmpty(value: ArrayLike<any>): void;
+export function IsNotEmpty(value: Map<any, any>): void;
+export function IsNotEmpty(value: string): void;
+export function IsNotEmpty(value: any): void {
+    if (value == null) {
+        RaiseError('IsNotEmpty', value);
+    }
+    if (value.length !== undefined && value.length === 0) {
+        RaiseError('IsNotEmpty', value);
+    }
+    if (value.size !== undefined && value.size === 0) {
         RaiseError('IsNotEmpty', value);
     }
 }
 
-function RaiseError(assertionName: string, actual: any, expected?: any): void {
-    if (expected != undefined) {
-        throw new Error(`AssertionError: ${assertionName} failed.  Expected: ${expected}.  Actual: ${actual}.`);
+export function Throws(callback: () => void): void {
+    try {
+        callback();
+        RaiseError('Throws');
+    } catch (e) {
+        // success
+    }
+}
+
+function RaiseError(assertionName: string, actual?: any, expected?: any): void {
+    if (actual != undefined) {
+        if (expected != undefined) {
+            throw new Error(`AssertionError: ${assertionName} failed.  Expected: ${expected}.  Actual: ${actual}.`);
+        } else {
+            throw new Error(`AssertionError: ${assertionName} failed.  Value: ${actual}.`);
+        }
     } else {
-        throw new Error(`AssertionError: ${assertionName} failed.  Value: ${actual}.`);
+        throw new Error(`AssertionError: ${assertionName} failed.`);
     }
 }

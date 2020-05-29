@@ -12,7 +12,7 @@ export default class FragmentSlotTests implements TestSet {
 
     private testAsFragment(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
+        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext<any>());
         const dom = fragment.dom;
 
         // test

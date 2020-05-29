@@ -5,6 +5,8 @@ import FragmentOnlyTests from './endToEnd/fragmentOnlyTests';
 import FragmentSlotTests from './endToEnd/fragmentSlotTests';
 import CliArgsTests from './unit/cliArgsTests';
 import TestSetGroup from './framework/testSetGroup';
+import PipelineCacheTests from './unit/pipelineCacheTests';
+import UsageContextTests from './unit/usageContextTests';
 
 // create test runner instance
 const testRunner: TestRunner = new TestRunner();
@@ -13,6 +15,8 @@ const testRunner: TestRunner = new TestRunner();
 testRunner.addTestSetGroups(
     // Unit tests first
     new TestSetGroup('unit', [
+        new PipelineCacheTests(),
+        new UsageContextTests(),
         new CliArgsTests()
     ]),
 

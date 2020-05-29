@@ -53,7 +53,7 @@ export default class TestRunner {
                 testSet.afterAll();
             }
         } catch (e) {
-            console.error(`${testSetGroup.groupName} / ${testSet.setName}: ERROR`, e);
+            console.error(`${testSetGroup.groupName} / ${testSet.setName} : ERROR`, e);
         }
     }
 
@@ -69,9 +69,9 @@ export default class TestRunner {
                 testSet.afterTest(testName);
             }
 
-            console.log(`${testSetGroup.groupName} / ${testSet.setName} / ${testName}: PASS`);
+            console.log(`${testSetGroup.groupName} / ${testSet.setName} / ${testName} : PASS`);
         } catch (e) {
-            console.log(`${testSetGroup.groupName} / ${testSet.setName} / ${testName}: FAIL`, e);
+            console.log(`${testSetGroup.groupName} / ${testSet.setName} / ${testName} : FAIL`, e);
         }
     }
 }

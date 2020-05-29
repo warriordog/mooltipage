@@ -3,7 +3,7 @@ import { HtmlParser, HtmlCompiler, HtmlSerializer, Pipeline, HtmlSource, HtmlDes
 import Fragment from '../compiler/fragment';
 import Page from '../compiler/page';
 
-export class JSDOMPipeline extends Pipeline<Fragment, JSDOMPage> {
+export class JSDOMPipeline extends Pipeline<Fragment, JSDOMPage, Node> {
     constructor(htmlSource: HtmlSource, htmlDestination: HtmlDestination) {
         super(htmlSource, new JSDOMHtmlParser(), new JSDOMHtmlCompiler(), new JSDOMHtmlSerializer(), htmlDestination);
     }
@@ -18,8 +18,8 @@ export class JSDOMPage extends Page {
     }
 }
 
-export class JSDOMHtmlParser implements HtmlParser<Fragment, JSDOMPage> {
-    parseFragment(resId: string, html: string, pipeline: Pipeline<Fragment, JSDOMPage>): Fragment {
+export class JSDOMHtmlParser implements HtmlParser<Fragment, JSDOMPage, Node> {
+    parseFragment(resId: string, html: string, pipeline: Pipeline<Fragment, JSDOMPage, Node>): Fragment {
         // parse HTML
         const dom: DocumentFragment = JSDOM.fragment(html);
 
@@ -27,7 +27,7 @@ export class JSDOMHtmlParser implements HtmlParser<Fragment, JSDOMPage> {
         return new Fragment(resId, dom);
     }
 
-    parsePage(resId: string, html: string, pipeline: Pipeline<Fragment, JSDOMPage>): JSDOMPage {
+    parsePage(resId: string, html: string, pipeline: Pipeline<Fragment, JSDOMPage, Node>): JSDOMPage {
         // parse HTML
         const jsdom = new JSDOM(html);
 
@@ -36,8 +36,8 @@ export class JSDOMHtmlParser implements HtmlParser<Fragment, JSDOMPage> {
     }
 }
 
-export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
-    compileFragment(fragment: Fragment, usageContext: UsageContext, pipeline: Pipeline<Fragment, JSDOMPage>): Fragment {
+export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage, Node> {
+    compileFragment(fragment: Fragment, usageContext: UsageContext<Node>, pipeline: Pipeline<Fragment, JSDOMPage, Node>): Fragment {
         // copy dom, so that we do not mutate shared cached copy
         const compiledDom: DocumentFragment = fragment.cloneDom();
 
@@ -51,7 +51,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
         return new Fragment(fragment.resId, compiledDom);
     }
 
-    compilePage(page: JSDOMPage, pipeline: Pipeline<Fragment, JSDOMPage>): JSDOMPage {
+    compilePage(page: JSDOMPage, pipeline: Pipeline<Fragment, JSDOMPage, Node>): JSDOMPage {
         // fill in fragments
         this.fillFragments(page.dom, pipeline);
 
@@ -59,12 +59,12 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
         return page;
     }
 
-    private fillSlots(dom: DocumentFragment, usageContext: UsageContext): void {
+    private fillSlots(dom: DocumentFragment, usageContext: UsageContext<Node>): void {
         this.fillElementSlots(dom, usageContext);
         this.fillAttributeSlots(dom, usageContext);
     }
 
-    private fillElementSlots(dom: DocumentFragment, usageContext: UsageContext): void {
+    private fillElementSlots(dom: DocumentFragment, usageContext: UsageContext<Node>): void {
         // get slots
         const elementSlots: Array<Element> = Array.from(dom.querySelectorAll('m-slot'));
         
@@ -82,7 +82,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
         }
     }
 
-    private fillAttributeSlots(compiledDom: DocumentFragment, usageContext: UsageContext): void {
+    private fillAttributeSlots(compiledDom: DocumentFragment, usageContext: UsageContext<Node>): void {
         // get slots
         const attributeSlots: Array<Element> = Array.from(compiledDom.querySelectorAll('[m-slot]'));
 
@@ -102,7 +102,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
         }
     }
 
-    private fillFragments(dom: DocumentFragment | Document, pipeline: Pipeline<Fragment, JSDOMPage>): void {
+    private fillFragments(dom: DocumentFragment | Document, pipeline: Pipeline<Fragment, JSDOMPage, Node>): void {
         // get all non-nested m-fragment elements
         const fragments: Array<Element> = this.getTopLevelElements(dom, 'm-fragment');
 
@@ -113,7 +113,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
                 // get fragment usage info
                 const path: string = mFragment.getAttribute('src') as string;
                 const slotContents: Map<string, Array<Node>> = this.getSlotContents(mFragment);
-                const usageContext: UsageContext = new UsageContext(slotContents);
+                const usageContext: UsageContext<Node> = new UsageContext<Node>(slotContents);
 
                 // call pipeline to load fragment
                 const compiledContents = pipeline.compileFragment(path, usageContext);
@@ -206,8 +206,8 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage> {
     }
 }
 
-export class JSDOMHtmlSerializer implements HtmlSerializer<Fragment, JSDOMPage> {
-    serializePage(page: JSDOMPage, pipeline: Pipeline<Fragment, JSDOMPage>): string {
+export class JSDOMHtmlSerializer implements HtmlSerializer<Fragment, JSDOMPage, Node> {
+    serializePage(page: JSDOMPage, pipeline: Pipeline<Fragment, JSDOMPage, Node>): string {
         return page.jsdom.serialize();
     }
 }

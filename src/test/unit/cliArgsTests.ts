@@ -42,9 +42,7 @@ export default class CliArgsTests implements TestSet {
     }
 
     private testArgMissingValue(): void {
-        const argsList: Array<string> = [ './src', './dest', '--page=' ];
-
-        const parseResult: ParseResult = parseArgs(argsList);
+        const parseResult: ParseResult = parseArgs([ './src', './dest', '--page=' ]);
 
         Assert.IsFalse(parseResult.isValid);
     }
@@ -78,7 +76,7 @@ export default class CliArgsTests implements TestSet {
 
         Assert.IsNotNullish(args.pagePaths);
         const validPagePaths: Array<string> = args.pagePaths as Array<string>;
-        
+
         Assert.AreEqual(validPagePaths.length, 3);
         Assert.AreEqual(validPagePaths[0], './src/pages');
         Assert.AreEqual(validPagePaths[1], './src/pages2');
