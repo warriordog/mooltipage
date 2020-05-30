@@ -6,8 +6,4 @@ export default class Page {
         this.resId = resId;
         this.dom = dom;
     }
-
-    cloneDom(): Document {
-        return this.dom.cloneNode(true) as Document;
-    }
 }

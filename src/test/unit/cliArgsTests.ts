@@ -82,6 +82,26 @@ export default class CliArgsTests implements TestSet {
         Assert.AreEqual(validPagePaths[1], './src/pages2');
         Assert.AreEqual(validPagePaths[2], './src/foo/page1.html');
     }
+    
+    private testFormatter(): void {
+        const argsList: Array<string> = [ './src', './dest', '--formatter=name' ];
+
+        const parseResult: ParseResult = parseArgs(argsList);
+        const args: Args = parseResult.getArgs();
+
+        Assert.IsNotNullish(args.formatter);
+        Assert.AreEqual(args.formatter, 'name');
+    }
+    
+    private testDefaultFormatter(): void {
+        const argsList: Array<string> = [ './src', './dest' ];
+
+        const parseResult: ParseResult = parseArgs(argsList);
+        const args: Args = parseResult.getArgs();
+
+        Assert.IsTrue(parseResult.isValid);
+        Assert.AreEqual(args.formatter, 'pretty');
+    }
 
     // test set boilerplate
     readonly setName: string = 'CliArgsTests';
@@ -93,7 +113,9 @@ export default class CliArgsTests implements TestSet {
             ['testUnknownArg', () => this.testUnknownArg()],
             ['testArgMissingValue', () => this.testArgMissingValue()],
             ['testValidSinglePage', () => this.testValidSinglePage()],
-            ['testValidMultiplePages', () => this.testValidMultiplePages()]
+            ['testValidMultiplePages', () => this.testValidMultiplePages()],
+            ['testFormatter', () => this.testFormatter()],
+            ['testDefaultFormatter', () => this.testDefaultFormatter()]
         ]);
     }
 }

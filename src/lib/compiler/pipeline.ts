@@ -8,14 +8,16 @@ export class Pipeline<TFragment extends Fragment, TPage extends Page, TSlot> {
     private readonly htmlCompiler: HtmlCompiler<TFragment, TPage, TSlot>;
     private readonly htmlSerializer: HtmlSerializer<TFragment, TPage, TSlot>;
     private readonly htmlDestination: HtmlDestination;
+    private readonly htmlFormatter?: HtmlFormatter<TFragment, TPage>
 
-    constructor(htmlSource: HtmlSource, htmlParser: HtmlParser<TFragment, TPage, TSlot>, htmlCompiler: HtmlCompiler<TFragment, TPage, TSlot>, htmlSerializer: HtmlSerializer<TFragment, TPage, TSlot>, htmlDestination: HtmlDestination) {
+    constructor(htmlSource: HtmlSource, htmlParser: HtmlParser<TFragment, TPage, TSlot>, htmlCompiler: HtmlCompiler<TFragment, TPage, TSlot>, htmlSerializer: HtmlSerializer<TFragment, TPage, TSlot>, htmlDestination: HtmlDestination, htmlFormatter?: HtmlFormatter<TFragment, TPage>) {
         this.cache = new PipelineCache<TFragment>();
         this.htmlSource = htmlSource;
         this.htmlParser = htmlParser;
         this.htmlCompiler = htmlCompiler;
         this.htmlSerializer = htmlSerializer;
         this.htmlDestination = htmlDestination;
+        this.htmlFormatter = htmlFormatter;
     }
 
     compileFragment(resId: string, usageContext: UsageContext<TSlot>): TFragment {
@@ -23,7 +25,12 @@ export class Pipeline<TFragment extends Fragment, TPage extends Page, TSlot> {
         const parsedFragment: TFragment = this.getParsedFragment(resId);
 
         // will always recompile with current context
-        const compiledFragment: TFragment = this.htmlCompiler.compileFragment(parsedFragment, usageContext, this);
+        let compiledFragment: TFragment = this.htmlCompiler.compileFragment(parsedFragment, usageContext, this);
+
+        // format fragment
+        if (this.htmlFormatter != undefined) {
+            compiledFragment = this.htmlFormatter.formatFragment(compiledFragment);
+        }
 
         return compiledFragment;
     }
@@ -36,10 +43,20 @@ export class Pipeline<TFragment extends Fragment, TPage extends Page, TSlot> {
         const parsedPage: TPage = this.htmlParser.parsePage(resId, inHtml, this);
 
         // compile page
-        const compiledPage: TPage = this.htmlCompiler.compilePage(parsedPage, this);
+        let compiledPage: TPage = this.htmlCompiler.compilePage(parsedPage, this);
+
+        // format page
+        if (this.htmlFormatter != undefined) {
+            compiledPage = this.htmlFormatter.formatPage(compiledPage);
+        }
 
         // serialize to HTML
-        const outHtml: string = this.htmlSerializer.serializePage(compiledPage, this);
+        let outHtml: string = this.htmlSerializer.serializePage(compiledPage, this);
+
+        // format HTML
+        if (this.htmlFormatter != undefined) {
+            outHtml = this.htmlFormatter.formatHtml(resId, outHtml);
+        }
 
         // write HTML
         this.htmlDestination.writeHtml(resId, outHtml);
@@ -72,7 +89,7 @@ export interface HtmlParser<TFragment extends Fragment, TPage extends Page, TSlo
 export interface HtmlCompiler<TFragment extends Fragment, TPage extends Page, TSlot> {
     compileFragment(fragment: TFragment, usageContext: UsageContext<TSlot>, pipeline: Pipeline<TFragment, TPage, TSlot>): TFragment;
     compilePage(page: TPage, pipeline: Pipeline<TFragment, TPage, TSlot>): TPage;
-}
+} 
 
 export interface HtmlSerializer<TFragment extends Fragment, TPage extends Page, TSlot> {
     serializePage(page: TPage, pipeline: Pipeline<TFragment, TPage, TSlot>): string;
@@ -80,6 +97,12 @@ export interface HtmlSerializer<TFragment extends Fragment, TPage extends Page, 
 
 export interface HtmlDestination {
     writeHtml(resId: string, html: string): void;
+}
+
+export interface HtmlFormatter<TFragment extends Fragment, TPage extends Page> {
+    formatFragment(fragment: TFragment): TFragment;
+    formatPage(page: TPage): TPage;
+    formatHtml(resId: string, html: string): string;
 }
 
 export class UsageContext<TSlot> {

@@ -4,11 +4,13 @@ export class Args {
     readonly outPath: string;
     readonly inPath: string;
     readonly pagePaths?: Array<string>;
+    readonly formatter?: string;
 
-    constructor(outPath: string, inPath: string, pagePaths?: Array<string>) {
+    constructor(outPath: string, inPath: string, pagePaths?: Array<string>, formatter?: string) {
         this.outPath = outPath;
         this.inPath = inPath;
         this.pagePaths = pagePaths;
+        this.formatter = formatter ?? 'pretty';
     }
 }
 
@@ -21,7 +23,7 @@ export class ParseResult {
         if (isValid && args == null) {
             throw new Error('A valid ParseResult must have a parsed Args object');
         }
-        
+
         this.args = args;
         this.output = output;
         this.isValid = isValid;
@@ -44,6 +46,7 @@ export function parseArgs(args: Array<string>): ParseResult {
     let outPath: string;
     let inPath: string;
     let pagePaths: Array<string> = [];
+    let formatter: string | undefined;
 
     if (args.length == 0) {
         // print help if no args specified
@@ -56,13 +59,23 @@ export function parseArgs(args: Array<string>): ParseResult {
         // parse any extra
         for (let i = 2; i < args.length; i++) {
             const arg = args[i];
+            const argLower = arg.toLowerCase();
             
-            if (arg.toLowerCase().startsWith('--page=')) {
+            if (argLower.startsWith('--page=')) {
                 const pagePath = getArgValue(arg);
 
                 // make sure its valid
                 if (pagePath != null) {
                     pagePaths.push(pagePath);
+                } else {
+                    return createInvalidResult(printInvalidArgs());
+                }
+            } else if (argLower.startsWith('--formatter=')) {
+                const formatterArg = getArgValue(arg);
+
+                // make sure its valid
+                if (formatterArg != null) {
+                    formatter = formatterArg.toLowerCase();
                 } else {
                     return createInvalidResult(printInvalidArgs());
                 }
@@ -72,7 +85,7 @@ export function parseArgs(args: Array<string>): ParseResult {
         }
 
         // args are OK
-        const argsObj: Args = new Args(outPath, inPath, pagePaths.length > 0 ? pagePaths : undefined);
+        const argsObj: Args = new Args(outPath, inPath, pagePaths.length > 0 ? pagePaths : undefined, formatter);
 
         return new ParseResult(argsObj, null, true);
     } else {
@@ -116,6 +129,7 @@ function printHelp(): string {
         'CLI paths are resolved relative to the current working directory.' + os.EOL +
         os.EOL +
         'Options:' + os.EOL +
-        '  --page=<page_path>'
+        '  --page=<page_path>' + os.EOL +
+        '  --formatter=<html_formatter_name>'
     );
 }

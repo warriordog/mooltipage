@@ -1,8 +1,12 @@
 import { Args } from "./args";
 import CliPipelineInterface from './cliPipelineInterface';
-import { JSDOMPipeline } from '../lib/impl/jsdomPipeline';
+import { JSDOMPipeline, JSDOMPage } from '../lib/impl/jsdomPipeline';
+import { BasicHtmlPrettier, BasicHtmlUglier } from '../lib/impl/basicHtmlFormatters';
 import PathUtils from './pathUtils';
 import CliFileSystem from './io/cliFileSystem';
+import { HtmlFormatter } from "../lib/compiler/pipeline";
+import Fragment from "../lib/compiler/fragment";
+import os from 'os';
 
 export default class MooltiPageCli {
     private readonly args: Args;
@@ -50,13 +54,30 @@ export default class MooltiPageCli {
         // create FS interface mapped to provided directories
         const fsInterface: CliPipelineInterface = new CliPipelineInterface(this.cliFs, inDir, outDir);
     
+        // create formatter
+        const formatter = this.createFormatter();
+
         // create pipeline
-        const pipeline: JSDOMPipeline = new JSDOMPipeline(fsInterface, fsInterface);
+        const pipeline: JSDOMPipeline = new JSDOMPipeline(fsInterface, fsInterface, formatter);
     
         // loop through each page input and process it
         for (let pagePath of pagePaths) {
             // compile the page - pipline will save automatically
             pipeline.compilePage(pagePath);
+        }
+    }
+
+    private createFormatter(): HtmlFormatter<Fragment, JSDOMPage> | undefined {
+        switch (this.args.formatter) {
+            case 'pretty':
+                return new BasicHtmlPrettier(os.EOL);
+            case 'ugly':
+                return new BasicHtmlUglier();
+            case undefined:
+                return undefined;
+            default: {
+                throw new Error(`Unknown HTML formatter: ${this.args.formatter}`);
+            }
         }
     }
 }

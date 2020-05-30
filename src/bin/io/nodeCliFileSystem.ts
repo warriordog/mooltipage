@@ -1,4 +1,4 @@
-import fs, { BaseEncodingOptions } from 'fs';
+import fs from 'fs';
 import Path from 'path';
 
 import CliFileSystem from './cliFileSystem';

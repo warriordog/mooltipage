@@ -1,11 +1,11 @@
 import { JSDOM } from 'jsdom';
-import { HtmlParser, HtmlCompiler, HtmlSerializer, Pipeline, HtmlSource, HtmlDestination, UsageContext } from '../compiler/pipeline';
+import { HtmlParser, HtmlCompiler, HtmlSerializer, Pipeline, HtmlSource, HtmlDestination, UsageContext, HtmlFormatter } from '../compiler/pipeline';
 import Fragment from '../compiler/fragment';
 import Page from '../compiler/page';
 
 export class JSDOMPipeline extends Pipeline<Fragment, JSDOMPage, Node> {
-    constructor(htmlSource: HtmlSource, htmlDestination: HtmlDestination) {
-        super(htmlSource, new JSDOMHtmlParser(), new JSDOMHtmlCompiler(), new JSDOMHtmlSerializer(), htmlDestination);
+    constructor(htmlSource: HtmlSource, htmlDestination: HtmlDestination, htmlFormatter?: HtmlFormatter<Fragment, JSDOMPage>) {
+        super(htmlSource, new JSDOMHtmlParser(), new JSDOMHtmlCompiler(), new JSDOMHtmlSerializer(), htmlDestination, htmlFormatter);
     }
 }
 
