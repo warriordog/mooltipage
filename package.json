@@ -21,11 +21,11 @@
   },
   "scripts": {
     "build": "tsc -b",
-    "test": "tsc -b && node dist/test/runTests.js",
+    "test": "npm run build && node dist/test/runTests.js",
     "lint": "eslint . --ext .js,.ts",
-    "lint-fix": "eslint . --ext .js,.ts --fix",
-    "prepare": "tsc -b",
-    "prepublishOnly": "eslint . --ext .js,.ts --fix && node dist/test/runTests.js"
+    "lint-fix": "npm run lint --fix",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint-fix && node dist/test/runTests.js"
   },
   "bin": {
     "mooltipage": "./dist/bin/main.js"
