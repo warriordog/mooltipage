@@ -24,7 +24,8 @@
     "test": "tsc -b && node dist/test/runTests.js",
     "lint": "eslint . --ext .js,.ts",
     "lint-fix": "eslint . --ext .js,.ts --fix",
-    "prepare": "tsc -b"
+    "prepare": "tsc -b",
+    "prepublishOnly": "eslint . --ext .js,.ts --fix && node dist/test/runTests.js"
   },
   "bin": {
     "mooltipage": "./dist/bin/main.js"
