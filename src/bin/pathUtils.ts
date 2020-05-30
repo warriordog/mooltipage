@@ -11,7 +11,7 @@ export default class PathUtils {
         const htmlPaths: Array<string> = new Array<string>();
     
         // process each input
-        for (let pagePath of pagePaths) {
+        for (const pagePath of pagePaths) {
             this.extractHtmlFromPath(pagePath, basePath, htmlPaths);
         }
     
@@ -24,7 +24,7 @@ export default class PathUtils {
         // add directory contents
         if (this.cliFs.pathIsDirectory(realPath)) {
             // loop through directory and process each file
-            for (let file of this.cliFs.getDirectoryContents(realPath)) {
+            for (const file of this.cliFs.getDirectoryContents(realPath)) {
                 this.extractHtmlFromPath(this.cliFs.resolvePaths(realPath, file), basePath, htmlPaths);
             }
     

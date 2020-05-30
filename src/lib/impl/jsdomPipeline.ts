@@ -19,7 +19,7 @@ export class JSDOMPage extends Page {
 }
 
 export class JSDOMHtmlParser implements HtmlParser<Fragment, JSDOMPage, Node> {
-    parseFragment(resId: string, html: string, pipeline: Pipeline<Fragment, JSDOMPage, Node>): Fragment {
+    parseFragment(resId: string, html: string): Fragment {
         // parse HTML
         const dom: DocumentFragment = JSDOM.fragment(html);
 
@@ -27,7 +27,7 @@ export class JSDOMHtmlParser implements HtmlParser<Fragment, JSDOMPage, Node> {
         return new Fragment(resId, dom);
     }
 
-    parsePage(resId: string, html: string, pipeline: Pipeline<Fragment, JSDOMPage, Node>): JSDOMPage {
+    parsePage(resId: string, html: string): JSDOMPage {
         // parse HTML
         const jsdom = new JSDOM(html);
 
@@ -69,7 +69,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage, Node
         const elementSlots: Array<Element> = Array.from(dom.querySelectorAll('m-slot'));
         
         // process each slot
-        for (let slot of elementSlots) {
+        for (const slot of elementSlots) {
             // get slot name if specified, otherwise [default]
             const slotName: string = slot.hasAttribute('name') ? (slot.getAttribute('name') ?? '[default]').toLowerCase() : '[default]';
 
@@ -87,7 +87,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage, Node
         const attributeSlots: Array<Element> = Array.from(compiledDom.querySelectorAll('[m-slot]'));
 
         // process each slot
-        for (let slot of attributeSlots) {
+        for (const slot of attributeSlots) {
             // get slot name, or [default] if unspecified
             const slotName: string = slot.getAttribute('m-slot') || '[default]';
 
@@ -107,7 +107,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage, Node
         const fragments: Array<Element> = this.getTopLevelElements(dom, 'm-fragment');
 
         // process each fragment
-        for (let mFragment of fragments) {
+        for (const mFragment of fragments) {
             // make sure fragment has src attribute, which is required
             if (mFragment.hasAttribute('src') && mFragment.getAttribute('src') != null) {
                 // get fragment usage info
@@ -132,7 +132,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage, Node
         }
 
         // loop through each child of the root
-        for (let node of root.childNodes) {
+        for (const node of root.childNodes) {
             // special cast must be used to work around TS/NodeJS/JSDOM conflict
             const element = this.GetNodeAsElement(node);
 
@@ -154,7 +154,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage, Node
         const namedSlots: Map<string, Array<Node>> = new Map();
 
         // loop through all direct children of fragment reference
-        for (let node of mFragment.childNodes) {
+        for (const node of mFragment.childNodes) {
             // special cast must be used to work around TS/NodeJS/JSDOM conflict
             const element = this.GetNodeAsElement(node);
 
@@ -207,7 +207,7 @@ export class JSDOMHtmlCompiler implements HtmlCompiler<Fragment, JSDOMPage, Node
 }
 
 export class JSDOMHtmlSerializer implements HtmlSerializer<Fragment, JSDOMPage, Node> {
-    serializePage(page: JSDOMPage, pipeline: Pipeline<Fragment, JSDOMPage, Node>): string {
+    serializePage(page: JSDOMPage): string {
         return page.jsdom.serialize();
     }
 }

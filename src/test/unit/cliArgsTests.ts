@@ -107,15 +107,15 @@ export default class CliArgsTests implements TestSet {
     readonly setName: string = 'CliArgsTests';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testNoArgs', () => this.testNoArgs()],
-            ['testSingleArg', () => this.testSingleArg()],
-            ['testValidBasicArgs', () => this.testValidBasicArgs()],
-            ['testUnknownArg', () => this.testUnknownArg()],
-            ['testArgMissingValue', () => this.testArgMissingValue()],
-            ['testValidSinglePage', () => this.testValidSinglePage()],
-            ['testValidMultiplePages', () => this.testValidMultiplePages()],
-            ['testFormatter', () => this.testFormatter()],
-            ['testDefaultFormatter', () => this.testDefaultFormatter()]
+            ['testNoArgs', (): void => this.testNoArgs()],
+            ['testSingleArg', (): void => this.testSingleArg()],
+            ['testValidBasicArgs', (): void => this.testValidBasicArgs()],
+            ['testUnknownArg', (): void => this.testUnknownArg()],
+            ['testArgMissingValue', (): void => this.testArgMissingValue()],
+            ['testValidSinglePage', (): void => this.testValidSinglePage()],
+            ['testValidMultiplePages', (): void => this.testValidMultiplePages()],
+            ['testFormatter', (): void => this.testFormatter()],
+            ['testDefaultFormatter', (): void => this.testDefaultFormatter()]
         ]);
     }
 }

@@ -75,8 +75,8 @@ export default class BasicHtmlTests implements TestSet {
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testFragment', () => this.testFragment()],
-            ['testPage', () => this.testPage()]
+            ['testFragment', (): void => this.testFragment()],
+            ['testPage', (): void => this.testPage()]
         ]);
     }
 
@@ -85,7 +85,7 @@ export default class BasicHtmlTests implements TestSet {
     private pipelineInterface?: MemoryPipelineInterface;
     private pipeline?: JSDOMPipeline;
 
-    beforeTest() {
+    beforeTest(): void {
         this.pipelineInterface = new MemoryPipelineInterface();
         this.pipeline = new JSDOMPipeline(this.pipelineInterface, this.pipelineInterface);
         

@@ -22,7 +22,7 @@ export abstract class BasicHtmlFormatter<TFragment extends Fragment, TPage exten
         return page;
     }
 
-    protected formatWhitespace(dom: Document, startNode: Node, isPretty: boolean, depth: number = 0): void {
+    protected formatWhitespace(dom: Document, startNode: Node, isPretty: boolean, depth = 0): void {
         let currentNode: Node | null = startNode;
 
         while (currentNode != null) {
@@ -207,7 +207,7 @@ export abstract class BasicHtmlFormatter<TFragment extends Fragment, TPage exten
 }
 
 export class BasicHtmlPrettier<TFragment extends Fragment, TPage extends Page> extends BasicHtmlFormatter<TFragment, TPage> {
-    constructor(eol: string = '\n', indentString: string = '    ') {
+    constructor(eol = '\n', indentString = '    ') {
         super(indentString, eol);
     }
 }

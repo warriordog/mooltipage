@@ -68,8 +68,8 @@ export default class FragmentOnlyTests implements TestSet {
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testAsFragment', () => this.testAsFragment()],
-            ['testAsPage', () => this.testAsPage()]
+            ['testAsFragment', (): void => this.testAsFragment()],
+            ['testAsPage', (): void => this.testAsPage()]
         ]);
     }
 
@@ -78,7 +78,7 @@ export default class FragmentOnlyTests implements TestSet {
     private pipelineInterface?: MemoryPipelineInterface;
     private pipeline?: JSDOMPipeline;
 
-    beforeTest() {
+    beforeTest(): void {
         this.pipelineInterface = new MemoryPipelineInterface();
         this.pipeline = new JSDOMPipeline(this.pipelineInterface, this.pipelineInterface);
 

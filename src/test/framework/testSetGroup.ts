@@ -9,9 +9,9 @@ export default class TestSetGroup {
         this.testSets = testSets != undefined ? Array.from(testSets) : [];
     }
 
-    addTestSets(...sets: Array<TestSet>) {
+    addTestSets(...sets: Array<TestSet>): void {
         if (sets != null && sets.length > 0) {
-            for (let testSet of sets) {
+            for (const testSet of sets) {
                 this.testSets.push(testSet);
             }
         }

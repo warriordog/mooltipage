@@ -38,9 +38,9 @@ export default class UsageContextTests implements TestSet {
     readonly setName: string = 'UsageContextTests';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testConstructorNoArgs', () => this.testConstructorNoArgs()],
-            ['testConstructorUndefArgs', () => this.testConstructorUndefArgs()],
-            ['testConstructorValidArgs', () => this.testConstructorValidArgs()]
+            ['testConstructorNoArgs', (): void => this.testConstructorNoArgs()],
+            ['testConstructorUndefArgs', (): void => this.testConstructorUndefArgs()],
+            ['testConstructorValidArgs', (): void => this.testConstructorValidArgs()]
         ]);
     }
 }

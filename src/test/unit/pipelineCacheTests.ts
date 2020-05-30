@@ -51,11 +51,11 @@ export default class PipelineCacheTests implements TestSet {
     readonly setName: string = 'PipelineCacheTests';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testHasPresent', () => this.testHasPresent()],
-            ['testHasMissing', () => this.testHasMissing()],
-            ['testGetPresent', () => this.testGetPresent()],
-            ['testGetMissing', () => this.testGetMissing()],
-            ['testOverwrite', () => this.testOverwrite()]
+            ['testHasPresent', (): void => this.testHasPresent()],
+            ['testHasMissing', (): void => this.testHasMissing()],
+            ['testGetPresent', (): void => this.testGetPresent()],
+            ['testGetMissing', (): void => this.testGetMissing()],
+            ['testOverwrite', (): void => this.testOverwrite()]
         ]);
     }
 }

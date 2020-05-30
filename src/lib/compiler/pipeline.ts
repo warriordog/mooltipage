@@ -134,7 +134,7 @@ export class PipelineCache<TFragment> {
         return frag;
     }
 
-    storeFragment(resId: string, fragment: TFragment) {
+    storeFragment(resId: string, fragment: TFragment): void {
         this.parsedFragmentCache.set(resId, fragment);
     }
 }

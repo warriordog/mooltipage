@@ -10,37 +10,37 @@ export function AreEqualish<T>(actual: T, expected: T): void {
     }
 }
 
-export function IsNull(value: any): void {
+export function IsNull(value: unknown): void {
     if (value !== null) {
         RaiseError('IsNull', value);
     }
 }
 
-export function IsNotNull(value: any): void {
+export function IsNotNull(value: unknown): void {
     if (value === null) {
         RaiseError('IsNotNull', value);
     }
 }
 
-export function IsNullish(value: any): void {
+export function IsNullish(value: unknown): void {
     if (value != null) {
         RaiseError('IsNullish', value);
     }
 }
 
-export function IsNotNullish(value: any): void {
+export function IsNotNullish(value: unknown): void {
     if (value == null) {
         RaiseError('IsNotNullish', value);
     }
 }
 
-export function IsUndefined(value: any): void {
+export function IsUndefined(value: unknown): void {
     if (value !== undefined) {
         RaiseError('IsUndefined', value);
     }
 }
 
-export function IsNotUndefined(value: any): void {
+export function IsNotUndefined(value: unknown): void {
     if (value === undefined) {
         RaiseError('IsNotUndefined', value);
     }
@@ -70,10 +70,7 @@ export function IsFalsy(value: boolean): void {
     }
 }
 
-export function IsEmpty(value: ArrayLike<any>): void;
-export function IsEmpty(value: Map<any, any>): void;
-export function IsEmpty(value: string): void;
-export function IsEmpty(value: any): void {
+export function IsEmpty(value: Sizable): void {
     if (value != null) {
         if (value.length !== undefined && value.length > 0) {
             RaiseError('IsEmpty', value);
@@ -83,10 +80,8 @@ export function IsEmpty(value: any): void {
         }
     }
 }
-export function IsNotEmpty(value: ArrayLike<any>): void;
-export function IsNotEmpty(value: Map<any, any>): void;
-export function IsNotEmpty(value: string): void;
-export function IsNotEmpty(value: any): void {
+
+export function IsNotEmpty(value: Sizable): void {
     if (value == null) {
         RaiseError('IsNotEmpty', value);
     }
@@ -107,7 +102,7 @@ export function Throws(callback: () => void): void {
     }
 }
 
-function RaiseError(assertionName: string, actual?: any, expected?: any): void {
+function RaiseError(assertionName: string, actual?: unknown, expected?: unknown): void {
     if (actual != undefined) {
         if (expected != undefined) {
             throw new Error(`AssertionError: ${assertionName} failed.  Expected: ${expected}.  Actual: ${actual}.`);
@@ -117,4 +112,9 @@ function RaiseError(assertionName: string, actual?: any, expected?: any): void {
     } else {
         throw new Error(`AssertionError: ${assertionName} failed.`);
     }
+}
+
+export interface Sizable {
+    length?: number;
+    size?: number;
 }

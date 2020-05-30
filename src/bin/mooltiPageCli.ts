@@ -61,7 +61,7 @@ export default class MooltiPageCli {
         const pipeline: JSDOMPipeline = new JSDOMPipeline(fsInterface, fsInterface, formatter);
     
         // loop through each page input and process it
-        for (let pagePath of pagePaths) {
+        for (const pagePath of pagePaths) {
             // compile the page - pipline will save automatically
             pipeline.compilePage(pagePath);
         }

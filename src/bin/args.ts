@@ -43,9 +43,9 @@ export class ParseResult {
 }
 
 export function parseArgs(args: Array<string>): ParseResult {
+    const pagePaths: Array<string> = [];
     let outPath: string;
     let inPath: string;
-    let pagePaths: Array<string> = [];
     let formatter: string | undefined;
 
     if (args.length == 0) {

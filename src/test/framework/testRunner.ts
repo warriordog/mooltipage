@@ -4,9 +4,9 @@ import TestSetGroup from './testSetGroup';
 export default class TestRunner {
     private readonly testGroups: Array<TestSetGroup> = [];
 
-    addTestSetGroups(...testGroups: Array<TestSetGroup>) {
+    addTestSetGroups(...testGroups: Array<TestSetGroup>): void {
         if (testGroups != null && testGroups.length > 0) {
-            for (let testGroup of testGroups) {
+            for (const testGroup of testGroups) {
                 this.testGroups.push(testGroup);
             }
         }
@@ -20,10 +20,10 @@ export default class TestRunner {
             // make sure we have tests
             if (nonEmptyGroups.length > 0) {
                 // run each non-empty group
-                for (let testSetGroup of nonEmptyGroups) {
+                for (const testSetGroup of nonEmptyGroups) {
 
                     // run each test set in the group
-                    for (let testSet of testSetGroup.getTestSets()) {
+                    for (const testSet of testSetGroup.getTestSets()) {
                         // run test set
                         this.runTestSet(testSetGroup, testSet);
                     }
