@@ -1,9 +1,14 @@
 import { TestSet, TestCallback } from '../framework/testSet';
 import * as Assert from '../framework/assert';
 import MemoryPipelineInterface from '../mocks/memoryPipelineInterface';
-import { UsageContext } from '../../lib/compiler/pipeline';
-import { JSDOMPipeline, JSDOMFragment } from '../../lib/impl/jsdomPipeline';
-import { JSDOM } from 'jsdom';
+import { Fragment } from '../../lib/pipeline/fragment';
+import { UsageContext } from '../../lib/pipeline/usageContext';
+import * as DomUtils from 'domutils';
+import { Element } from 'domhandler';
+import { Dom } from '../../lib/pipeline/dom';
+import { Page } from '../../lib/pipeline/page';
+import { Pipeline } from '../../lib/pipeline/pipeline';
+import { PipelineImpl } from '../../lib/impl/pipelineImpl';
 
 export default class FragmentOnlyTests implements TestSet {
 
@@ -11,7 +16,7 @@ export default class FragmentOnlyTests implements TestSet {
 
     private testAsFragment(): void {
         // compile fragment
-        const fragment: JSDOMFragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
+        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
         const dom = fragment.dom;
 
         // test
@@ -20,11 +25,8 @@ export default class FragmentOnlyTests implements TestSet {
 
     private testAsPage(): void {
         // compile page
-        this.getPipeline().compilePage('page.html');
-
-        // read back and extract contents
-        const html: string = this.getPipelineInterface().getDestination('page.html');
-        const dom: Document = (new JSDOM(html)).window.document;
+        const page: Page = this.getPipeline().compilePage('page.html');
+        const dom: Dom = page.dom;
 
         // test
         this.validateContent(dom);
@@ -32,27 +34,38 @@ export default class FragmentOnlyTests implements TestSet {
 
     // shared test code
 
-    private validateContent(dom: Document | DocumentFragment): void {
-        // check counts
-        Assert.AreEqual(dom.querySelectorAll('div.test1div').length, 1);
-        Assert.AreEqual(dom.querySelectorAll('div.test2div').length, 2);
-        Assert.AreEqual(dom.querySelectorAll('div.test3div1').length, 4);
-        Assert.AreEqual(dom.querySelectorAll('div.test3div2').length, 4);
-        Assert.AreEqual(dom.querySelectorAll('div.test4div').length, 6);
-        Assert.AreEqual(dom.querySelectorAll('div.test5div').length, 4);
-        Assert.AreEqual(dom.querySelectorAll('span').length, 10);
+    private validateContent(dom: Dom): void {
+        // get counts
+        const test1divs = DomUtils.findAll((elem: Element) => elem.attribs['class'] === 'test1div', dom);
+        const test2divs = DomUtils.findAll((elem: Element) => elem.attribs['class'] === 'test2div', dom);
+        const test3div1s = DomUtils.findAll((elem: Element) => elem.attribs['class'] === 'test3div1', dom);
+        const test3div2s = DomUtils.findAll((elem: Element) => elem.attribs['class'] === 'test3div2', dom);
+        const test4divs = DomUtils.findAll((elem: Element) => elem.attribs['class'] === 'test4div', dom);
+        const test5divs = DomUtils.findAll((elem: Element) => elem.attribs['class'] === 'test5div', dom);
+        const spans = DomUtils.findAll((elem: Element) => elem.tagName.toLowerCase() === 'span', dom);
+        const mFragments = DomUtils.findAll((elem: Element) => elem.tagName.toLowerCase() === 'm-fragment', dom);
+        const mContents1 = DomUtils.findAll((elem: Element) => elem.tagName.toLowerCase() === 'm-content', dom);
+        const mContents2 = DomUtils.findAll((elem: Element) => elem.attribs['m-content'] != null, dom);
+        const mSlots1 = DomUtils.findAll((elem: Element) => elem.tagName.toLowerCase() === 'm-slot', dom);
+        const mSlots2 = DomUtils.findAll((elem: Element) => elem.attribs['m-slot'] != null, dom);
 
-        // verify structure
-        Assert.AreEqual(dom.querySelectorAll('div.test1div > div.test2div > div.test4div > span').length, 2);
-        Assert.AreEqual(dom.querySelectorAll('div.test1div > div.test2div > div.test3div1 > div.test4div > span').length, 4);
-        Assert.AreEqual(dom.querySelectorAll('div.test1div > div.test2div > div.test3div2 > div.test5div > span').length, 4);
-        
-        // make sure fragments were left
-        Assert.AreEqual(dom.querySelectorAll('m-fragment').length, 0);
+        // check counts
+        Assert.AreEqual(test1divs.length, 1);
+        Assert.AreEqual(test2divs.length, 2);
+        Assert.AreEqual(test3div1s.length, 4);
+        Assert.AreEqual(test3div2s.length, 4);
+        Assert.AreEqual(test4divs.length, 6);
+        Assert.AreEqual(test5divs.length, 4);
+        Assert.AreEqual(spans.length, 10);
+        Assert.IsEmpty(mFragments);
+        Assert.IsEmpty(mContents1);
+        Assert.IsEmpty(mContents2);
+        Assert.IsEmpty(mSlots1);
+        Assert.IsEmpty(mSlots2);
     }
 
     // test data
-    private getPipeline(): JSDOMPipeline {
+    private getPipeline(): Pipeline {
         if (this.pipeline == undefined) throw new Error('Pipeline is undefined');
         return this.pipeline;
     }
@@ -75,11 +88,11 @@ export default class FragmentOnlyTests implements TestSet {
     // Test setup
     
     private pipelineInterface?: MemoryPipelineInterface;
-    private pipeline?: JSDOMPipeline;
+    private pipeline?: Pipeline;
 
     beforeTest(): void {
         this.pipelineInterface = new MemoryPipelineInterface();
-        this.pipeline = new JSDOMPipeline(this.pipelineInterface, this.pipelineInterface);
+        this.pipeline = new PipelineImpl(this.pipelineInterface, this.pipelineInterface);
 
         this.pipelineInterface.htmlSource.set('page.html', `
             <!DOCTYPE HTML>

@@ -1,31 +1,32 @@
 import { TestSet, TestCallback } from "../framework/testSet";
-import { UsageContext } from "../../lib/compiler/pipeline";
+import { UsageContext } from "../../lib/pipeline/usageContext";
 import * as Assert from '../framework/assert';
+import { Dom } from '../../lib/pipeline/dom';
 
 export default class UsageContextTests implements TestSet {
     // test methods
 
     private testConstructorNoArgs(): void {
-        const usage: UsageContext<string> = new UsageContext<string>();
+        const usage: UsageContext = new UsageContext();
 
         Assert.IsNotNullish(usage.slotContents);
         Assert.IsEmpty(usage.slotContents);
     }
 
     private testConstructorUndefArgs(): void {
-        const usage: UsageContext<string> = new UsageContext<string>(undefined);
+        const usage: UsageContext = new UsageContext(undefined);
 
         Assert.IsNotNullish(usage.slotContents);
         Assert.IsEmpty(usage.slotContents);
     }
 
     private testConstructorValidArgs(): void {
-        const slotContents: Map<string, string> = new Map<string, string>([
-            ['a', 'b'],
-            ['foo', 'bar']
+        const slotContents: Map<string, Dom> = new Map<string, Dom>([
+            ['a', []],
+            ['foo', []]
         ]);
 
-        const usage: UsageContext<string> = new UsageContext<string>(slotContents);
+        const usage: UsageContext = new UsageContext(slotContents);
 
         Assert.IsNotNullish(usage.slotContents);
         Assert.IsNotEmpty(usage.slotContents);

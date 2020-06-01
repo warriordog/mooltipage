@@ -1,4 +1,5 @@
-import { HtmlSource, HtmlDestination } from '../lib/compiler/pipeline';
+import { HtmlSource } from '../lib/pipeline/htmlSource';
+import { HtmlDestination } from '../lib/pipeline/htmlDestination';
 import CliFileSystem from './io/cliFileSystem';
 
 export default class CliPipelineInterface implements HtmlSource, HtmlDestination {

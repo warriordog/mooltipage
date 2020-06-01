@@ -1,10 +1,10 @@
 import { Args } from "./args";
 import CliPipelineInterface from './cliPipelineInterface';
-import { JSDOMPipeline, JSDOMPage, JSDOMFragment } from '../lib/impl/jsdomPipeline';
-import { JSDOMHtmlPrettier, JSDOMHtmlUglier } from '../lib/impl/jsdomHtmlFormatters';
+import { PipelineImpl } from '../lib/impl/pipelineImpl';
 import PathUtils from './pathUtils';
 import CliFileSystem from './io/cliFileSystem';
-import { HtmlFormatter } from "../lib/compiler/pipeline";
+import { HtmlFormatter } from "../lib/pipeline/htmlFormatter";
+import { Pipeline } from '../lib/pipeline/pipeline';
 import os from 'os';
 
 export default class MooltiPageCli {
@@ -57,7 +57,7 @@ export default class MooltiPageCli {
         const formatter = this.createFormatter();
 
         // create pipeline
-        const pipeline: JSDOMPipeline = new JSDOMPipeline(fsInterface, fsInterface, formatter);
+        const pipeline: Pipeline = new PipelineImpl(fsInterface, fsInterface, formatter);
     
         // loop through each page input and process it
         for (const pagePath of pagePaths) {
@@ -66,12 +66,14 @@ export default class MooltiPageCli {
         }
     }
 
-    private createFormatter(): HtmlFormatter<JSDOMFragment, JSDOMPage> | undefined {
+    private createFormatter(): HtmlFormatter | undefined {
         switch (this.args.formatter) {
             case 'pretty':
-                return new JSDOMHtmlPrettier(os.EOL);
+                //return new JSDOMHtmlPrettier(os.EOL);
+                return undefined;
             case 'ugly':
-                return new JSDOMHtmlUglier();
+                //return new JSDOMHtmlUglier();
+                return undefined;
             case undefined:
                 return undefined;
             default: {

@@ -1,4 +1,5 @@
-import { HtmlSource, HtmlDestination } from '../../lib/compiler/pipeline';
+import { HtmlSource } from '../../lib/pipeline/htmlSource';
+import { HtmlDestination } from '../../lib/pipeline/htmlDestination';
 
 export default class MemoryPipelineInterface implements HtmlSource, HtmlDestination {
     htmlSource: Map<string, string> = new Map<string, string>();

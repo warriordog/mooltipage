@@ -1,61 +1,116 @@
 import { TestSet, TestCallback } from "../framework/testSet";
-import { PipelineCache } from "../../lib/compiler/pipeline";
+import { PipelineCache } from "../../lib/pipeline/pipelineCache";
 import * as Assert from '../framework/assert';
+import { Fragment } from "../../lib/pipeline/fragment";
+import { Page } from "../../lib/pipeline/page";
 
 export default class PipelineCacheTests implements TestSet {
     // test methods
 
-    private testHasPresent(): void {
-        const cache = new PipelineCache<string>();
+    private testFragHasPresent(): void {
+        const cache = new PipelineCache();
 
-        cache.storeFragment('foo', 'foovalue');
+        cache.storeFragment('foo', new Fragment('foo', []));
         const hasValue: boolean = cache.hasFragment('foo');
 
         Assert.IsTrue(hasValue);
     } 
 
-    private testHasMissing(): void {
-        const cache = new PipelineCache<string>();
+    private testFragHasMissing(): void {
+        const cache = new PipelineCache();
 
         const hasValue: boolean = cache.hasFragment('foo');
 
         Assert.IsFalse(hasValue);
     } 
 
-    private testGetPresent(): void {
-        const cache = new PipelineCache<string>();
+    private testFragGetPresent(): void {
+        const cache = new PipelineCache();
+        const frag = new Fragment('foo', []);
 
-        cache.storeFragment('foo', 'foovalue');
-        const value: string = cache.getFragment('foo');
+        cache.storeFragment('foo', frag);
+        const value: Fragment = cache.getFragment('foo');
 
-        Assert.AreEqual(value, 'foovalue');
+        Assert.AreEqual(value, frag);
     }
     
-    private testGetMissing(): void {
-        const cache = new PipelineCache<string>();
+    private testFragGetMissing(): void {
+        const cache = new PipelineCache();
 
         Assert.Throws(() => cache.getFragment('foo'));
     }
 
-    private testOverwrite(): void {
-        const cache = new PipelineCache<string>();
+    private testFragOverwrite(): void {
+        const cache = new PipelineCache();
+        const frag1 = new Fragment('value1', []);
+        const frag2 = new Fragment('value2', []);
 
-        cache.storeFragment('foo', 'value1');
-        cache.storeFragment('foo', 'value2');
-        const value: string = cache.getFragment('foo');
+        cache.storeFragment('foo', frag1);
+        cache.storeFragment('foo', frag2);
+        const value: Fragment = cache.getFragment('foo');
 
-        Assert.AreEqual(value, 'value2');
+        Assert.AreEqual(value, frag2);
+    }
+
+    private testPageHasPresent(): void {
+        const cache = new PipelineCache();
+
+        cache.storePage('foo', new Page('foo', []));
+        const hasValue: boolean = cache.hasPage('foo');
+
+        Assert.IsTrue(hasValue);
+    } 
+
+    private testPageHasMissing(): void {
+        const cache = new PipelineCache();
+
+        const hasValue: boolean = cache.hasPage('foo');
+
+        Assert.IsFalse(hasValue);
+    } 
+
+    private testPageGetPresent(): void {
+        const cache = new PipelineCache();
+        const page = new Page('foo', []);
+
+        cache.storePage('foo', page);
+        const value: Page = cache.getPage('foo');
+
+        Assert.AreEqual(value, page);
+    }
+    
+    private testPageGetMissing(): void {
+        const cache = new PipelineCache();
+
+        Assert.Throws(() => cache.getPage('foo'));
+    }
+
+    private testPageOverwrite(): void {
+        const cache = new PipelineCache();
+        const page1 = new Page('value1', []);
+        const page2 = new Page('value2', []);
+
+        cache.storePage('foo', page1);
+        cache.storePage('foo', page2);
+        const value: Page = cache.getPage('foo');
+
+        Assert.AreEqual(value, page2);
     }
 
     // test set boilerplate
     readonly setName: string = 'PipelineCacheTests';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testHasPresent', (): void => this.testHasPresent()],
-            ['testHasMissing', (): void => this.testHasMissing()],
-            ['testGetPresent', (): void => this.testGetPresent()],
-            ['testGetMissing', (): void => this.testGetMissing()],
-            ['testOverwrite', (): void => this.testOverwrite()]
+            ['testFragHasPresent', (): void => this.testFragHasPresent()],
+            ['testFragHasMissing', (): void => this.testFragHasMissing()],
+            ['testFragGetPresent', (): void => this.testFragGetPresent()],
+            ['testFragGetMissing', (): void => this.testFragGetMissing()],
+            ['testFragOverwrite', (): void => this.testFragOverwrite()],
+            ['testPageHasPresent', (): void => this.testPageHasPresent()],
+            ['testPageHasMissing', (): void => this.testPageHasMissing()],
+            ['testPageGetPresent', (): void => this.testPageGetPresent()],
+            ['testPageGetMissing', (): void => this.testPageGetMissing()],
+            ['testPageOverwrite', (): void => this.testPageOverwrite()]
         ]);
     }
 }
