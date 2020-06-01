@@ -59,12 +59,21 @@ export default class MooltiPageCli {
 
         // create pipeline
         const pipeline: Pipeline = new PipelineImpl(fsInterface, fsInterface, formatter);
+        
+        console.log(`Source path: [${inDir}]`);
+        console.log(`Destination path: [${outDir}]`);
+        console.log(`Page count: ${pagePaths.length}`);
+        console.log();
     
         // loop through each page input and process it
         for (const pagePath of pagePaths) {
+            console.log(`Compiling [${pagePath}]...`);
             // compile the page - pipline will save automatically
             pipeline.compilePage(pagePath);
         }
+
+        console.log();
+        console.log('Done.');
     }
 
     private createFormatter(): HtmlFormatter | undefined {
