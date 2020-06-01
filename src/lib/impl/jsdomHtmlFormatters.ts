@@ -1,8 +1,7 @@
 import { HtmlFormatter } from "../compiler/pipeline";
-import Fragment from "../compiler/fragment";
-import Page from "../compiler/page";
+import { JSDOMFragment, JSDOMPage } from "./jsdomPipeline";
 
-export abstract class BasicHtmlFormatter<TFragment extends Fragment, TPage extends Page> implements HtmlFormatter<TFragment, TPage> {
+export abstract class JSDOMHtmlFormatter implements HtmlFormatter<JSDOMFragment, JSDOMPage> {
     private readonly eol: string;
     private readonly indentString: string;
 
@@ -12,7 +11,7 @@ export abstract class BasicHtmlFormatter<TFragment extends Fragment, TPage exten
     }
 
 
-    formatPage(page: TPage): TPage {
+    formatPage(page: JSDOMPage): JSDOMPage {
         // pages are mutable, so we can edit in place
         const dom: Document = page.dom;
 
@@ -78,10 +77,6 @@ export abstract class BasicHtmlFormatter<TFragment extends Fragment, TPage exten
         } else {
             // check if there is a following node
             const hasNeighbor: boolean = textNode.nextSibling != null;
-    
-            // contentIndent = depth + 1
-            // neighborIndent = depth
-            // newline - [contentIndent - content - newline] - neighborIndent
     
             // start text with newline to close previous line
             let text: string = this.eol;
@@ -201,18 +196,18 @@ export abstract class BasicHtmlFormatter<TFragment extends Fragment, TPage exten
     }
 
     // fragment-level formatting is not supported by this class
-    formatFragment(fragment: TFragment): TFragment {
+    formatFragment(fragment: JSDOMFragment): JSDOMFragment {
         return fragment;
     }
 }
 
-export class BasicHtmlPrettier<TFragment extends Fragment, TPage extends Page> extends BasicHtmlFormatter<TFragment, TPage> {
+export class JSDOMHtmlPrettier extends JSDOMHtmlFormatter {
     constructor(eol = '\n', indentString = '    ') {
         super(indentString, eol);
     }
 }
 
-export class BasicHtmlUglier<TFragment extends Fragment, TPage extends Page> extends BasicHtmlFormatter<TFragment, TPage> {
+export class JSDOMHtmlUglier extends JSDOMHtmlFormatter {
     constructor() {
         // not necessary, but disable indent and EOL just in case
         super('', '');

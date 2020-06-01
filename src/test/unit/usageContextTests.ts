@@ -20,9 +20,9 @@ export default class UsageContextTests implements TestSet {
     }
 
     private testConstructorValidArgs(): void {
-        const slotContents: Map<string, Array<string>> = new Map<string, Array<string>>([
-            ['a', ['b']],
-            ['foo', ['bar', 'zaz']]
+        const slotContents: Map<string, string> = new Map<string, string>([
+            ['a', 'b'],
+            ['foo', 'bar']
         ]);
 
         const usage: UsageContext<string> = new UsageContext<string>(slotContents);

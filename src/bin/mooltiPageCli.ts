@@ -1,11 +1,10 @@
 import { Args } from "./args";
 import CliPipelineInterface from './cliPipelineInterface';
-import { JSDOMPipeline, JSDOMPage } from '../lib/impl/jsdomPipeline';
-import { BasicHtmlPrettier, BasicHtmlUglier } from '../lib/impl/basicHtmlFormatters';
+import { JSDOMPipeline, JSDOMPage, JSDOMFragment } from '../lib/impl/jsdomPipeline';
+import { JSDOMHtmlPrettier, JSDOMHtmlUglier } from '../lib/impl/jsdomHtmlFormatters';
 import PathUtils from './pathUtils';
 import CliFileSystem from './io/cliFileSystem';
 import { HtmlFormatter } from "../lib/compiler/pipeline";
-import Fragment from "../lib/compiler/fragment";
 import os from 'os';
 
 export default class MooltiPageCli {
@@ -67,12 +66,12 @@ export default class MooltiPageCli {
         }
     }
 
-    private createFormatter(): HtmlFormatter<Fragment, JSDOMPage> | undefined {
+    private createFormatter(): HtmlFormatter<JSDOMFragment, JSDOMPage> | undefined {
         switch (this.args.formatter) {
             case 'pretty':
-                return new BasicHtmlPrettier(os.EOL);
+                return new JSDOMHtmlPrettier(os.EOL);
             case 'ugly':
-                return new BasicHtmlUglier();
+                return new JSDOMHtmlUglier();
             case undefined:
                 return undefined;
             default: {

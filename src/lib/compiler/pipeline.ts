@@ -1,7 +1,7 @@
 import Fragment from "./fragment";
 import Page from "./page";
 
-export class Pipeline<TFragment extends Fragment, TPage extends Page, TSlot> {
+export class Pipeline<TFragment extends Fragment<unknown>, TPage extends Page<unknown>, TSlot> {
     private readonly cache: PipelineCache<TFragment>;
     private readonly htmlSource: HtmlSource;
     private readonly htmlParser: HtmlParser<TFragment, TPage, TSlot>;
@@ -35,7 +35,7 @@ export class Pipeline<TFragment extends Fragment, TPage extends Page, TSlot> {
         return compiledFragment;
     }
 
-    compilePage(resId: string) : void {
+    compilePage(resId: string) : TPage {
         // read html
         const inHtml: string = this.htmlSource.getHtml(resId);
 
@@ -60,20 +60,30 @@ export class Pipeline<TFragment extends Fragment, TPage extends Page, TSlot> {
 
         // write HTML
         this.htmlDestination.writeHtml(resId, outHtml);
+
+        return compiledPage;
     }
 
-    private getParsedFragment(resId: string): TFragment {
+    protected getParsedFragment(resId: string): TFragment {
         if (this.cache.hasFragment(resId)) {
             // use cached fragment
             return this.cache.getFragment(resId);
         } else {
-            const html: string = this.htmlSource.getHtml(resId);
-            const fragment: TFragment = this.htmlParser.parseFragment(resId, html, this);
+            // parse fragment
+            const fragment = this.parseFragment(resId);
 
+            // keep in cache
             this.cache.storeFragment(resId, fragment);
 
             return fragment;
         }
+    }
+
+    protected parseFragment(resId: string): TFragment {
+        const html: string = this.htmlSource.getHtml(resId);
+        const fragment: TFragment = this.htmlParser.parseFragment(resId, html, this);
+
+        return fragment;
     }
 }
 
@@ -81,17 +91,17 @@ export interface HtmlSource {
     getHtml(resId: string): string;
 }
 
-export interface HtmlParser<TFragment extends Fragment, TPage extends Page, TSlot> {
+export interface HtmlParser<TFragment extends Fragment<unknown>, TPage extends Page<unknown>, TSlot> {
     parseFragment(resId: string, html: string, pipeline: Pipeline<TFragment, TPage, TSlot>): TFragment;
     parsePage(resId: string, html: string, pipeline: Pipeline<TFragment, TPage, TSlot>): TPage;
 }
 
-export interface HtmlCompiler<TFragment extends Fragment, TPage extends Page, TSlot> {
+export interface HtmlCompiler<TFragment extends Fragment<unknown>, TPage extends Page<unknown>, TSlot> {
     compileFragment(fragment: TFragment, usageContext: UsageContext<TSlot>, pipeline: Pipeline<TFragment, TPage, TSlot>): TFragment;
     compilePage(page: TPage, pipeline: Pipeline<TFragment, TPage, TSlot>): TPage;
 } 
 
-export interface HtmlSerializer<TFragment extends Fragment, TPage extends Page, TSlot> {
+export interface HtmlSerializer<TFragment extends Fragment<unknown>, TPage extends Page<unknown>, TSlot> {
     serializePage(page: TPage, pipeline: Pipeline<TFragment, TPage, TSlot>): string;
 }
 
@@ -99,17 +109,17 @@ export interface HtmlDestination {
     writeHtml(resId: string, html: string): void;
 }
 
-export interface HtmlFormatter<TFragment extends Fragment, TPage extends Page> {
+export interface HtmlFormatter<TFragment extends Fragment<unknown>, TPage extends Page<unknown>> {
     formatFragment(fragment: TFragment): TFragment;
     formatPage(page: TPage): TPage;
     formatHtml(resId: string, html: string): string;
 }
 
 export class UsageContext<TSlot> {
-    readonly slotContents: Map<string, Array<TSlot>>;
+    readonly slotContents: Map<string, TSlot>;
 
-    constructor(slotContents?: Map<string, Array<TSlot>>) {
-        this.slotContents = slotContents ?? new Map<string, Array<TSlot>>();
+    constructor(slotContents?: Map<string, TSlot>) {
+        this.slotContents = slotContents ?? new Map<string, TSlot>();
     }
 }
 

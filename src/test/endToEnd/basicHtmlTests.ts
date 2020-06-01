@@ -2,8 +2,7 @@ import { TestSet, TestCallback } from '../framework/testSet';
 import * as Assert from '../framework/assert';
 import MemoryPipelineInterface from '../mocks/memoryPipelineInterface';
 import { UsageContext } from '../../lib/compiler/pipeline';
-import { JSDOMPipeline } from '../../lib/impl/jsdomPipeline';
-import Fragment from '../../lib/compiler/fragment';
+import { JSDOMPipeline, JSDOMFragment } from '../../lib/impl/jsdomPipeline';
 import { JSDOM } from 'jsdom';
 
 export default class BasicHtmlTests implements TestSet {
@@ -11,7 +10,7 @@ export default class BasicHtmlTests implements TestSet {
     
     private testFragment(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
+        const fragment: JSDOMFragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
         const dom = fragment.dom;
 
         // get contents
