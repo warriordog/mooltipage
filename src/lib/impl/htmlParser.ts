@@ -29,17 +29,19 @@ export class HtmlParser {
     }
 
     private parseDom(resId: string, html: string): Dom {
-        let dom: Dom | null = null;
+        let dom: Node[] | null = null;
 
         // set up handler
         const handler: DomHandler = new DomHandler((error: Error | null, result: Node[]) => {
             if (error != null) {
                 throw error;
-            } else if (dom != null) {
-                throw new Error(`DomHandler parsed multiple doms for resource ${resId}`);
-            } else {
-                dom = result;
             }
+            
+            if (dom != null) {
+                throw new Error(`DomHandler parsed multiple doms for resource ${resId}`);
+            }
+
+            dom = result;
         });
 
         // create parser
@@ -51,7 +53,7 @@ export class HtmlParser {
 
         // verify dom
         if (dom == null) {
-            throw new Error(`No dom was generated for resource ${resId}`)
+            throw new Error(`No dom was generated for resource ${resId}`);
         }
 
         return dom;

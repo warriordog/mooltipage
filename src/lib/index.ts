@@ -1,3 +1,4 @@
+export * from './impl/basicHtmlFormatter';
 export * from './impl/htmlCompiler';
 export * from './impl/htmlParser';
 export * from './impl/htmlSerializer';

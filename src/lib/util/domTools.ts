@@ -71,7 +71,20 @@ export function getTopLevelElements(node: Node, tagName: string, elementList: El
 }
 
 export function cloneNodes(nodes: Node[], deep?: boolean): Node[] {
-    return nodes.map((node: Node) => cloneNode(node, deep));
+    const newNodes: Node[] = nodes.map((node: Node) => cloneNode(node, deep));
+
+    // re-link nodes
+    let previous: Node | null = null;
+    for (const next of newNodes) {
+        if (previous != null) {
+            previous.next = next;
+            next.prev = previous;
+        }
+
+        previous = next;
+    }
+
+    return newNodes;
 }
 
 export function cloneNode(node: Node, deep?: boolean): Node {

@@ -5,6 +5,7 @@ import PathUtils from './pathUtils';
 import CliFileSystem from './io/cliFileSystem';
 import { HtmlFormatter } from "../lib/pipeline/htmlFormatter";
 import { Pipeline } from '../lib/pipeline/pipeline';
+import { BasicHtmlFormatter } from '../lib/impl/basicHtmlFormatter';
 import os from 'os';
 
 export default class MooltiPageCli {
@@ -69,10 +70,10 @@ export default class MooltiPageCli {
     private createFormatter(): HtmlFormatter | undefined {
         switch (this.args.formatter) {
             case 'pretty':
-                //return new JSDOMHtmlPrettier(os.EOL);
+                return new BasicHtmlFormatter(true, os.EOL);
                 return undefined;
             case 'ugly':
-                //return new JSDOMHtmlUglier();
+                return new BasicHtmlFormatter(false);
                 return undefined;
             case undefined:
                 return undefined;
