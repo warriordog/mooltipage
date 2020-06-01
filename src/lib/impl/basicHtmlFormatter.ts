@@ -33,29 +33,24 @@ export class BasicHtmlFormatter implements HtmlFormatter {
 
         if (dom.length > 0) {
             // format whitespace (pretty mode)
-            this.formatWhitespace(dom[0], true);
+            this.formatWhitespace(dom[0]);
         }
 
         return page;
     }
 
-    protected formatWhitespace(startNode: Node, isPretty: boolean, depth = 0): void {
+    protected formatWhitespace(startNode: Node, depth = 0): void {
         let currentNode: Node | null = startNode;
 
         while (currentNode != null) {
-
             // get preceding text node, or insert it if possible
-            const textNode = this.getOrInsertTextNode(currentNode);
+            const textNode: DataNode = this.getOrInsertTextNode(currentNode);
+            
+            // absorb adjacent text nodes
+            this.absorbAdjacentTextNode(textNode);
     
-            // format text node if present
-            if (textNode != null) {
-
-                // absorb adjacent text nodes
-                this.absorbAdjacentTextNode(textNode);
-        
-                // process text node
-                this.formatTextNode(textNode, depth);
-            }
+            // process text node
+            this.formatTextNode(textNode, depth);
 
             // get content node (if there is one)
             const contentNode: Node | null = this.getContentNode(currentNode);
@@ -63,7 +58,7 @@ export class BasicHtmlFormatter implements HtmlFormatter {
             // process children of content node
             if (contentNode != null && DomUtils.hasChildren(contentNode) && contentNode.firstChild != null) {
                 // no need to loop through children, child will process its own neighbors
-                this.formatWhitespace(contentNode.firstChild, isPretty, depth + 1);
+                this.formatWhitespace(contentNode.firstChild, depth + 1);
             }
 
             // continue to next sibling, if found
@@ -79,8 +74,8 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         // extract actual text from node
         const textContent: string | null = this.extractTextContent(textNode);
 
-        // if this is inline text, then dont format
-        if (this.isInlineText(textNode)) {
+        // if this is inline text (or we are in ugly mode), then dont format
+        if (this.isInlineText(textNode) || !this.isPretty) {
             if (textContent != null) {
                 textNode.data = textContent;
             } else {
@@ -123,10 +118,10 @@ export class BasicHtmlFormatter implements HtmlFormatter {
     }
 
     private extractTextContent(node: DataNode): string | null {
-        let text = node.data;
+        let text: string = node.data;
 
         // check if node has text and text is non-empty
-        if (text != null && text.match(/\S/) != null) {
+        if (text.match(/\S/) != null) {
             // remove leading and trailing whitespace
             text = text.trim();
     
@@ -147,8 +142,7 @@ export class BasicHtmlFormatter implements HtmlFormatter {
             const removeNode: Node = currentNode;
 
             // steal its text
-            const newText: string = (textNode.data ?? '') + currentNode.data;
-            textNode.data = newText;
+            textNode.data += currentNode.data;
 
             // increment to next node
             currentNode = currentNode.nextSibling;
@@ -158,7 +152,7 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         }
     }
 
-    private getOrInsertTextNode(startNode: Node): DataNode | null {
+    private getOrInsertTextNode(startNode: Node): DataNode {
         if (DomUtils.isText(startNode)) {
             // start node is text node
             return startNode;
