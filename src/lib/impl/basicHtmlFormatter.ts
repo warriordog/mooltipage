@@ -1,6 +1,6 @@
 import { Fragment } from "../pipeline/fragment";
 import { Page } from "../pipeline/page";
-import { DocumentNode, Node, TextNode, NodeWithChildren } from '../dom/node';
+import { DocumentNode, Node, TextNode, NodeWithChildren, TagNode } from '../dom/node';
 import { HtmlFormatter } from "../pipeline/htmlFormatter";
 
 export class BasicHtmlFormatter implements HtmlFormatter {
@@ -38,17 +38,23 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         let currentNode: Node | null = startNode;
 
         while (currentNode != null) {
+            // skip to first child of document
+            if (DocumentNode.isDocumentNode(currentNode)) {
+                currentNode = currentNode.firstChild;
+                continue;
+            }
+
+            // get content node (if there is one)
+            const contentNode: Node | null = this.getContentNode(currentNode);
+
             // get preceding text node, or insert it if possible
             const textNode: TextNode = this.getOrInsertTextNode(currentNode);
             
             // absorb adjacent text nodes
-            this.absorbAdjacentTextNode(textNode);
+            this.absorbAdjacentTextNodes(textNode);
     
             // process text node
             this.formatTextNode(textNode, depth);
-
-            // get content node (if there is one)
-            const contentNode: Node | null = this.getContentNode(currentNode);
 
             // process children of content node
             if (contentNode != null && NodeWithChildren.isNodeWithChildren(contentNode) && contentNode.firstChild != null) {
@@ -74,7 +80,6 @@ export class BasicHtmlFormatter implements HtmlFormatter {
             if (textContent != null) {
                 textNode.text = textContent;
             } else {
-                //DomTools.removeNode(textNode);
                 textNode.removeSelf();
             }
         } else {
@@ -117,7 +122,7 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         let text: string = node.text;
 
         // check if node has text and text is non-empty
-        if (text.match(/\S/) != null) {
+        if (/\S/.test(text)) {
             // remove leading and trailing whitespace
             text = text.trim();
     
@@ -130,7 +135,7 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         }
     }
 
-    private absorbAdjacentTextNode(textNode: TextNode): void {
+    private absorbAdjacentTextNodes(textNode: TextNode): void {
         let currentNode: Node | null = textNode.nextSibling;
         
         while (currentNode != null && TextNode.isTextNode(currentNode)) {

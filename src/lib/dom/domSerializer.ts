@@ -28,21 +28,10 @@ export class DomSerializer {
 
         this.serializeNode(node, html);
 
-        return html.join();
+        return html.join('');
     }
 
     private serializeNode(node: Node, html: string[]): void {
-        /*this.writeOpenText(node, html);
-
-        if (NodeWithChildren.isNodeWithChildren(node)) {
-            for (const childNode of node.childNodes) {
-                this.serializeNode(childNode, html);
-            }
-        }
-
-        if (this.hasCloseText(node)) {
-            this.writeCloseText(node, html);
-        }*/
         if (TagNode.isTagNode(node)) {
             this.serializeTag(node, html);
         } else if (TextNode.isTextNode(node)) {
@@ -68,14 +57,11 @@ export class DomSerializer {
         const tagName = tag.tagName.toLowerCase();
         this.validateTagText(tagName);
 
-        const attributes = this.buildAttributeList(tag.attributes);
-
         html.push('<');
         html.push(tagName);
-
-        if (attributes != null) {
-            html.push(' ');
-            html.push(...attributes);
+        
+        if (tag.attributes.size > 0) {
+            this.appendAttributeList(tag.attributes, html);
         }
 
         if (this.isSelfClosingTag(tagName)) {
@@ -110,23 +96,23 @@ export class DomSerializer {
     }
 
     private serializeCDATA(cdata: CDATANode, html: string[]): void {
-        throw new Error('Not implemented');
+        throw new Error('CDATA serialization is not implemented');
     }
 
     // this implementation is probably not accurate, but its good enough for <!DOCTYPE html>
     private serializeProcessingInstruction(pi: ProcessingInstructionNode, html: string[]): void {
-        this.validateTagText(pi.name);
+        if (pi.name === '!doctype') {
+            this.serializeDoctypePI(pi, html);
+        } else {
+            throw new Error(`Unimplemented processing instruction: ${pi.name}`);
+        }
+    }
+
+    private serializeDoctypePI(pi: ProcessingInstructionNode, html: string[]): void {
+        this.validateTagText(pi.data);
 
         html.push('<');
-        html.push(pi.name);
-
-        if (pi.data.length > 0) {
-            this.validateTagText(pi.data);
-
-            html.push(' ');
-            html.push(pi.data);
-        }
-
+        html.push(pi.data);
         html.push('>');
     }
 
@@ -146,36 +132,23 @@ export class DomSerializer {
         return textContent.replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('&', '&amp;');
     }
 
-    private buildAttributeList(attributeMap: Map<string, string | null>): string[] | null {
-        if (attributeMap.size == 0) {
-            return null;
-        }
-
-        const attrs: string[] = [];
-
-        let first = true;
+    private appendAttributeList(attributeMap: Map<string, string | null>, html: string[]): void {
         for (const entry of attributeMap.entries()) {
             const key = entry[0];
             const value = entry[1];
 
-            if (first) {
-                attrs.push(' ');   
-            }
+            html.push(' ');
 
-            attrs.push(key);
+            html.push(key);
             
             if (value != null) {
                 this.validateTagText(value);
 
-                attrs.push('="');
-                attrs.push(value);
-                attrs.push('"');
+                html.push('="');
+                html.push(value);
+                html.push('"');
             }
-
-            first = false;
         }
-
-        return attrs;
     }
 
     private isSelfClosingTag(tagName: string): boolean {

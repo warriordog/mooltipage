@@ -80,9 +80,9 @@ export default class MooltiPageCli {
         switch (this.args.formatter) {
             case 'pretty':
                 return new BasicHtmlFormatter(true, os.EOL);
-                return undefined;
             case 'ugly':
                 return new BasicHtmlFormatter(false);
+            case 'none':
                 return undefined;
             case undefined:
                 return undefined;

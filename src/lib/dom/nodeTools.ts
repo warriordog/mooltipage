@@ -2,7 +2,7 @@ import { Node, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionN
 
 export function detatchNode(node: Node): void {
     if (node.parentNode != null) {
-        deleteFromNodes(node.parentNode.childNodes, node);
+        node.parentNode.childNodes = node.parentNode.childNodes.filter((childNode: Node) => childNode !== node);
     }
 
     if (node.prevSibling != null) {
@@ -63,6 +63,10 @@ export function appendChildNodes(parent: NodeWithChildren, childNodes: Node[]): 
 }
 
 export function appendSibling(node: Node, after: Node): void {
+    if (DocumentNode.isDocumentNode(after)) {
+        throw new Error(`Attempting to append ${node.nodeType} after DocumentNode`);
+    }
+
     detatchNode(node);
 
     const parent = after.parentNode;
@@ -84,6 +88,10 @@ export function appendSibling(node: Node, after: Node): void {
 }
 
 export function prependSibling(node: Node, before: Node): void {
+    if (DocumentNode.isDocumentNode(before)) {
+        throw new Error(`Attempting to prepend ${node.nodeType} before DocumentNode`);
+    }
+
     detatchNode(node);
     
     const parent = before.parentNode;
@@ -154,7 +162,7 @@ export function cloneCDATANode(node: CDATANode, deep: boolean): CDATANode {
 }
 
 export function cloneProcessingInstructionNode(node: ProcessingInstructionNode): ProcessingInstructionNode {
-    return new ProcessingInstructionNode(node.data);
+    return new ProcessingInstructionNode(node.name, node.data);
 }
 
 export function cloneDocumentNode(node: DocumentNode, deep: boolean): DocumentNode {
@@ -241,14 +249,6 @@ export function getChildTags(node: NodeWithChildren): TagNode[] {
 }
 
 // not exported
-
-function deleteFromNodes(nodes: Node[], node: Node): void {
-    const nodeIndex = nodes.indexOf(node);
-    if (nodeIndex >= 0) {
-        nodes.splice(nodeIndex, 1);
-    }
-}
-
 function cloneChildNodes(parent: NodeWithChildren, childNodes: Node[]): void {
     if (childNodes.length > 0) {
         const newChildren = childNodes.map(node => node.clone(true));

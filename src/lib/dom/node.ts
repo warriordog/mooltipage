@@ -2,7 +2,7 @@ import * as NodeTools from './nodeTools';
 
 export enum NodeType {
     Tag = 'tag',
-    Text = 'node',
+    Text = 'text',
     Comment = 'comment',
     CDATA = 'cdata',
     ProcessingInstruction = 'processinginstruction',
