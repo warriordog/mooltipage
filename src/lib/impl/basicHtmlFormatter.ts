@@ -1,9 +1,6 @@
 import { Fragment } from "../pipeline/fragment";
 import { Page } from "../pipeline/page";
-import { Dom } from '../pipeline/dom';
-import { Node, DataNode } from 'domhandler';
-import { ElementType } from "domelementtype";
-import * as DomUtils from 'domutils';
+import { DocumentNode, Node, TextNode, NodeWithChildren } from '../dom/node';
 import { HtmlFormatter } from "../pipeline/htmlFormatter";
 
 export class BasicHtmlFormatter implements HtmlFormatter {
@@ -29,12 +26,10 @@ export class BasicHtmlFormatter implements HtmlFormatter {
 
     formatPage(page: Page): Page {
         // pages are mutable, so we can edit in place
-        const dom: Dom = page.dom;
+        const dom: DocumentNode = page.dom;
 
-        if (dom.length > 0) {
-            // format whitespace (pretty mode)
-            this.formatWhitespace(dom[0]);
-        }
+        // format whitespace
+        this.formatWhitespace(dom);
 
         return page;
     }
@@ -44,7 +39,7 @@ export class BasicHtmlFormatter implements HtmlFormatter {
 
         while (currentNode != null) {
             // get preceding text node, or insert it if possible
-            const textNode: DataNode = this.getOrInsertTextNode(currentNode);
+            const textNode: TextNode = this.getOrInsertTextNode(currentNode);
             
             // absorb adjacent text nodes
             this.absorbAdjacentTextNode(textNode);
@@ -56,7 +51,7 @@ export class BasicHtmlFormatter implements HtmlFormatter {
             const contentNode: Node | null = this.getContentNode(currentNode);
 
             // process children of content node
-            if (contentNode != null && DomUtils.hasChildren(contentNode) && contentNode.firstChild != null) {
+            if (contentNode != null && NodeWithChildren.isNodeWithChildren(contentNode) && contentNode.firstChild != null) {
                 // no need to loop through children, child will process its own neighbors
                 this.formatWhitespace(contentNode.firstChild, depth + 1);
             }
@@ -70,16 +65,17 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         }
     }
 
-    private formatTextNode(textNode: DataNode, depth: number): void {
+    private formatTextNode(textNode: TextNode, depth: number): void {
         // extract actual text from node
         const textContent: string | null = this.extractTextContent(textNode);
 
         // if this is inline text (or we are in ugly mode), then dont format
         if (this.isInlineText(textNode) || !this.isPretty) {
             if (textContent != null) {
-                textNode.data = textContent;
+                textNode.text = textContent;
             } else {
-                DomUtils.removeElement(textNode);
+                //DomTools.removeNode(textNode);
+                textNode.removeSelf();
             }
         } else {
             // check if there is a following node
@@ -109,16 +105,16 @@ export class BasicHtmlFormatter implements HtmlFormatter {
             }
     
             // set node content
-            textNode.data = text;
+            textNode.text = text;
         }
     }
 
-    private isInlineText(textNode: DataNode): boolean {
-        return textNode.previousSibling == null && textNode.nextSibling == null;
+    private isInlineText(textNode: TextNode): boolean {
+        return textNode.prevSibling == null && textNode.nextSibling == null;
     }
 
-    private extractTextContent(node: DataNode): string | null {
-        let text: string = node.data;
+    private extractTextContent(node: TextNode): string | null {
+        let text: string = node.text;
 
         // check if node has text and text is non-empty
         if (text.match(/\S/) != null) {
@@ -134,34 +130,34 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         }
     }
 
-    private absorbAdjacentTextNode(textNode: DataNode): void {
+    private absorbAdjacentTextNode(textNode: TextNode): void {
         let currentNode: Node | null = textNode.nextSibling;
         
-        while (currentNode != null && DomUtils.isText(currentNode)) {
+        while (currentNode != null && TextNode.isTextNode(currentNode)) {
             // back up node to remove it
             const removeNode: Node = currentNode;
 
             // steal its text
-            textNode.data += currentNode.data;
+            textNode.text += currentNode.text;
 
             // increment to next node
             currentNode = currentNode.nextSibling;
 
             // remove stolen node
-            DomUtils.removeElement(removeNode);
+            removeNode.removeSelf();
         }
     }
 
-    private getOrInsertTextNode(startNode: Node): DataNode {
-        if (DomUtils.isText(startNode)) {
+    private getOrInsertTextNode(startNode: Node): TextNode {
+        if (TextNode.isTextNode(startNode)) {
             // start node is text node
             return startNode;
         } else {
             // create new text node
-            const textNode: DataNode = new DataNode(ElementType.Text, '');
+            const textNode: TextNode = new TextNode('');
             
             // insert before startNode
-            DomUtils.prepend(startNode, textNode);
+            startNode.prependSibling(textNode);
 
             return textNode;
         }
@@ -170,7 +166,7 @@ export class BasicHtmlFormatter implements HtmlFormatter {
     private getContentNode(startNode: Node): Node | null {
         let currNode: Node | null = startNode;
 
-        while (currNode != null && DomUtils.isText(currNode)) {
+        while (currNode != null && TextNode.isTextNode(currNode)) {
             currNode = currNode.nextSibling;
         }
 

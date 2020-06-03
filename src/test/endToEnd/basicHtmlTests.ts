@@ -3,10 +3,7 @@ import * as Assert from '../framework/assert';
 import MemoryPipelineInterface from '../mocks/memoryPipelineInterface';
 import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
-import * as DomUtils from 'domutils';
-import { Element } from 'domhandler';
-import * as DomTools from '../../lib/util/domTools';
-import { Dom } from '../../lib/pipeline/dom';
+import { DocumentNode, Node, TagNode, TextNode } from '../../lib/dom/node';
 import { Page } from '../../lib/pipeline/page';
 import { Pipeline } from '../../lib/pipeline/pipeline';
 import { PipelineImpl } from '../../lib/impl/pipelineImpl';
@@ -17,23 +14,32 @@ export default class BasicHtmlTests implements TestSet {
     private testFragmentCompile(): void {
         // compile fragment
         const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
-        const dom = fragment.dom;
+        const dom: DocumentNode = fragment.dom;
 
         // get contents
-        const div1 = DomUtils.findOne((elem: Element) => elem.attribs['id'] === 'div1', dom, true);
-        const div2 = DomUtils.findOne((elem: Element) => elem.attribs['id'] === 'div2', dom, true);
-        const h1 = DomUtils.findOne((elem: Element) => elem.tagName.toLowerCase() === 'h1', dom, true);
-        const p = DomUtils.findOne((elem: Element) => elem.tagName.toLowerCase() === 'p', dom, true);
+        const div1 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div1', true);
+        const div2 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div2', true);
+        const div2text = div2?.firstChild;
+        const h1 = dom.findChildTag((node: TagNode) => node.tagName === 'h1', true);
+        const h1text = h1?.firstChild;
+        const p = dom.findChildTag((node: TagNode) => node.tagName === 'p', true);
+        const ptext = p?.firstChild;
 
         // verify content
         Assert.IsNotNullish(div1);
         Assert.IsNotNullish(div2);
         Assert.IsNotNullish(h1);
         Assert.IsNotNullish(p);
-        Assert.AreEqual(DomTools.getChildElements(div1)?.length, 3);
-        Assert.AreEqual(DomTools.getChildText(div2), 'This is div2');
-        Assert.AreEqual(DomTools.getChildText(h1), 'This is h1');
-        Assert.AreEqual(DomTools.getChildText(p), 'This is p');
+        Assert.IsNotNullish(div2text);
+        Assert.IsNotNullish(h1text);
+        Assert.IsNotNullish(ptext);
+        Assert.IsTrue(TextNode.isTextNode(div2text as Node));
+        Assert.IsTrue(TextNode.isTextNode(h1text as Node));
+        Assert.IsTrue(TextNode.isTextNode(ptext as Node));
+        Assert.AreEqual(div1?.getChildTags().length, 3);
+        Assert.AreEqual((div2text as TextNode).text, 'This is div2');
+        Assert.AreEqual((h1text as TextNode).text, 'This is h1');
+        Assert.AreEqual((ptext as TextNode).text, 'This is p');
 
     }
 
@@ -48,17 +54,23 @@ export default class BasicHtmlTests implements TestSet {
     private testPageCompile(): void {
         // compile page
         const page: Page = this.getPipeline().compilePage('test2.html');
-        const dom: Dom = page.dom;
+        const dom: DocumentNode = page.dom;
 
         // get contents
-        const title = DomUtils.findOne((elem: Element) => elem.tagName.toLowerCase() === 'title', dom, true);
-        const div = DomUtils.findOne((elem: Element) => elem.tagName.toLowerCase() === 'div', dom, true);
+        const title = dom.findChildTag((node: TagNode) => node.tagName === 'title', true);
+        const titletext = title?.firstChild;
+        const div = dom.findChildTag((node: TagNode) => node.tagName === 'div', true);
+        const divtext = div?.firstChild;
 
         // verify content
         Assert.IsNotNullish(title);
         Assert.IsNotNullish(div);
-        Assert.AreEqual(DomTools.getChildText(title), 'Test2 File');
-        Assert.AreEqual(DomTools.getChildText(div), 'This is the body.');
+        Assert.IsNotNullish(titletext);
+        Assert.IsNotNullish(divtext);
+        Assert.IsTrue(TextNode.isTextNode(titletext as Node));
+        Assert.IsTrue(TextNode.isTextNode(divtext as Node));
+        Assert.AreEqual((titletext as TextNode).text, 'Test2 File');
+        Assert.AreEqual((divtext as TextNode).text, 'This is the body.');
 
     }
 

@@ -32,8 +32,6 @@
     "mooltipage": "./dist/bin/main.js"
   },
   "dependencies": {
-    "domhandler": "^3.0.0",
-    "domutils": "^2.1.0",
     "htmlparser2": "^4.1.0"
   },
   "devDependencies": {

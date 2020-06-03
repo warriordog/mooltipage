@@ -1,9 +1,9 @@
 import { Pipeline } from "../pipeline/pipeline";
 import { Fragment } from "../pipeline/fragment";
 import { Page } from "../pipeline/page";
-import { Dom } from '../pipeline/dom';
+import { DocumentNode } from '../dom/node';
 import { Parser } from 'htmlparser2';
-import DomHandler, { Node } from 'domhandler';
+import { DomParser } from '../dom/domParser';
 
 export class HtmlParser {
     private readonly pipeline: Pipeline;
@@ -14,7 +14,7 @@ export class HtmlParser {
 
     parseFragment(resId: string, html: string): Fragment {
         // parse HTML
-        const dom: Dom = this.parseDom(resId, html);
+        const dom: DocumentNode = this.parseDom(resId, html);
 
         // create fragment
         return new Fragment(resId, dom);
@@ -22,27 +22,15 @@ export class HtmlParser {
 
     parsePage(resId: string, html: string): Page {
         // parse HTML
-        const dom: Dom = this.parseDom(resId, html);
+        const dom: DocumentNode = this.parseDom(resId, html);
 
         // create page
         return new Page(resId, dom);
     }
 
-    private parseDom(resId: string, html: string): Dom {
-        let dom: Node[] | null = null;
-
+    private parseDom(resId: string, html: string): DocumentNode {
         // set up handler
-        const handler: DomHandler = new DomHandler((error: Error | null, result: Node[]) => {
-            if (error != null) {
-                throw error;
-            }
-            
-            if (dom != null) {
-                throw new Error(`DomHandler parsed multiple doms for resource ${resId}`);
-            }
-
-            dom = result;
-        });
+        const handler: DomParser = new DomParser();
 
         // create parser
         const parser: Parser = new Parser(handler);
@@ -51,11 +39,11 @@ export class HtmlParser {
         parser.write(html);
         parser.end();
 
-        // verify dom
-        if (dom == null) {
+        // verify roots
+        if (handler.dom == null) {
             throw new Error(`No dom was generated for resource ${resId}`);
         }
 
-        return dom;
+        return handler.dom;
     }
 }

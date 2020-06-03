@@ -3,6 +3,7 @@ import { PipelineCache } from "../../lib/pipeline/pipelineCache";
 import * as Assert from '../framework/assert';
 import { Fragment } from "../../lib/pipeline/fragment";
 import { Page } from "../../lib/pipeline/page";
+import { DocumentNode as DOM } from '../../lib/dom/node';
 
 export default class PipelineCacheTests implements TestSet {
     // test methods
@@ -10,7 +11,7 @@ export default class PipelineCacheTests implements TestSet {
     private testFragHasPresent(): void {
         const cache = new PipelineCache();
 
-        cache.storeFragment('foo', new Fragment('foo', []));
+        cache.storeFragment('foo', new Fragment('foo', new DOM()));
         const hasValue: boolean = cache.hasFragment('foo');
 
         Assert.IsTrue(hasValue);
@@ -26,7 +27,7 @@ export default class PipelineCacheTests implements TestSet {
 
     private testFragGetPresent(): void {
         const cache = new PipelineCache();
-        const frag = new Fragment('foo', []);
+        const frag = new Fragment('foo', new DOM());
 
         cache.storeFragment('foo', frag);
         const value: Fragment = cache.getFragment('foo');
@@ -42,8 +43,8 @@ export default class PipelineCacheTests implements TestSet {
 
     private testFragOverwrite(): void {
         const cache = new PipelineCache();
-        const frag1 = new Fragment('value1', []);
-        const frag2 = new Fragment('value2', []);
+        const frag1 = new Fragment('value1', new DOM());
+        const frag2 = new Fragment('value2', new DOM());
 
         cache.storeFragment('foo', frag1);
         cache.storeFragment('foo', frag2);
@@ -55,7 +56,7 @@ export default class PipelineCacheTests implements TestSet {
     private testPageHasPresent(): void {
         const cache = new PipelineCache();
 
-        cache.storePage('foo', new Page('foo', []));
+        cache.storePage('foo', new Page('foo', new DOM()));
         const hasValue: boolean = cache.hasPage('foo');
 
         Assert.IsTrue(hasValue);
@@ -71,7 +72,7 @@ export default class PipelineCacheTests implements TestSet {
 
     private testPageGetPresent(): void {
         const cache = new PipelineCache();
-        const page = new Page('foo', []);
+        const page = new Page('foo', new DOM());
 
         cache.storePage('foo', page);
         const value: Page = cache.getPage('foo');
@@ -87,8 +88,8 @@ export default class PipelineCacheTests implements TestSet {
 
     private testPageOverwrite(): void {
         const cache = new PipelineCache();
-        const page1 = new Page('value1', []);
-        const page2 = new Page('value2', []);
+        const page1 = new Page('value1', new DOM());
+        const page2 = new Page('value2', new DOM());
 
         cache.storePage('foo', page1);
         cache.storePage('foo', page2);

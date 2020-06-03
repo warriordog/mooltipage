@@ -1,9 +1,12 @@
+export * from './dom/domParser';
+export * from './dom/domSerializer';
+export * from './dom/node';
+export * as NodeTools from './dom/nodeTools';
 export * from './impl/basicHtmlFormatter';
 export * from './impl/htmlCompiler';
 export * from './impl/htmlParser';
 export * from './impl/htmlSerializer';
 export * from './impl/pipelineImpl';
-export * from './pipeline/dom';
 export * from './pipeline/fragment';
 export * from './pipeline/htmlDestination';
 export * from './pipeline/htmlFormatter';
@@ -12,4 +15,3 @@ export * from './pipeline/page';
 export * from './pipeline/pipeline';
 export * from './pipeline/pipelineCache';
 export * from './pipeline/usageContext';
-export * from './util/domTools';

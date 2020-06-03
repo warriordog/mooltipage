@@ -1,15 +1,17 @@
 import { Page } from "../pipeline/page";
 import { Pipeline } from "../pipeline/pipeline";
-import * as DomUtils from 'domutils';
+import { DomSerializer } from '../dom/domSerializer';
 
 export class HtmlSerializer {
     private readonly pipeline: Pipeline;
+    private readonly serializer: DomSerializer;
 
     constructor(pipeline: Pipeline) {
         this.pipeline = pipeline;
+        this.serializer = new DomSerializer();
     }
     
     serializePage(page: Page): string {
-        return DomUtils.getOuterHTML(page.dom);
+        return this.serializer.serialize(page.dom);
     }
 }
