@@ -69,20 +69,20 @@ export abstract class NodeWithChildren extends Node {
         NodeTools.appendChildNodes(this, children);
     }
 
-    findChildNode(matcher: (node: Node) => boolean, deep = false): Node | null {
+    findChildNode(matcher: (node: Node) => boolean, deep = true): Node | null {
         return NodeTools.findChildNode(this, matcher, deep);
     }
-    findChildNodes(matcher: (node: Node) => boolean, deep = false): Node[] {
+    findChildNodes(matcher: (node: Node) => boolean, deep = true): Node[] {
         return NodeTools.findChildNodes(this, matcher, deep);
     }
     findTopLevelChildNodes(matcher: (node: Node) => boolean): Node[] {
         return NodeTools.findTopLevelChildNodes(this, matcher);
     }
 
-    findChildTag(matcher: (tag: TagNode) => boolean, deep = false): TagNode | null {
+    findChildTag(matcher: (tag: TagNode) => boolean, deep = true): TagNode | null {
         return NodeTools.findChildTag(this, matcher, deep);
     }
-    findChildTags(matcher: (tag: TagNode) => boolean, deep = false): TagNode[] {
+    findChildTags(matcher: (tag: TagNode) => boolean, deep = true): TagNode[] {
         return NodeTools.findChildTags(this, matcher, deep);
     }
     findTopLevelChildTags(matcher: (node: TagNode) => boolean): TagNode[] {
