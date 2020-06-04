@@ -96,7 +96,11 @@ export class DomSerializer {
     }
 
     private serializeCDATA(cdata: CDATANode, html: string[]): void {
-        throw new Error('CDATA serialization is not implemented');
+        html.push('<![CDATA[');
+
+        this.serializeChildNodes(cdata, html);
+
+        html.push(']]>');
     }
 
     // this implementation is probably not accurate, but its good enough for <!DOCTYPE html>

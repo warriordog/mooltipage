@@ -1,6 +1,6 @@
 import { Fragment } from "../pipeline/fragment";
 import { Page } from "../pipeline/page";
-import { DocumentNode, Node, TextNode, NodeWithChildren, TagNode } from '../dom/node';
+import { DocumentNode, Node, TextNode, NodeWithChildren } from '../dom/node';
 import { HtmlFormatter } from "../pipeline/htmlFormatter";
 
 export class BasicHtmlFormatter implements HtmlFormatter {
