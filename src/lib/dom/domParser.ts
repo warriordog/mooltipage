@@ -15,16 +15,10 @@ export class DomParser implements Partial<Handler> {
         this.currentParent = this.dom;
     }
 
-    onend(): void {
-        // nothing here
-    }
-
     onerror(error: Error): void {
         throw error;
     }
 
-    //onopentagname(name: string): void;
-    //onattribute(name: string, value: string): void;
     onopentag(name: string, attribs: { [s: string]: string }): void {
         // copy attribs
         const attributes = new Map<string, string | null>();
@@ -59,8 +53,6 @@ export class DomParser implements Partial<Handler> {
         // append to parent
         this.currentParent.appendChild(commentNode);
     }
-
-    //oncommentend(): void;
 
     oncdatastart(): void {
         // create cdata node
