@@ -128,7 +128,7 @@ export function getLastChild(childNodes: Node[]): Node | null {
     }
 }
 
-export function cloneTagNode(node: TagNode, deep: boolean): TagNode {
+export function cloneTagNode(node: TagNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): TagNode {
     const newAttrs = new Map<string, string | null>();
     for (const entry of node.attributes.entries()) {
         newAttrs.set(entry[0], entry[1]);
@@ -136,40 +136,70 @@ export function cloneTagNode(node: TagNode, deep: boolean): TagNode {
 
     const newNode: TagNode = new TagNode(node.tagName, newAttrs);
 
+    if (callback != undefined) {
+        callback(node, newNode);
+    }
+
     if (deep) {
-        cloneChildNodes(newNode, node.childNodes);
+        cloneChildNodes(newNode, node.childNodes, callback);
     }
 
     return newNode;
 }
 
-export function cloneTextNode(node: TextNode): TextNode {
-    return new TextNode(node.text);
+export function cloneTextNode(node: TextNode, callback?: (oldNode: Node, newNode: Node) => void): TextNode {
+    const newNode: TextNode = new TextNode(node.text);
+    
+    if (callback != undefined) {
+        callback(node, newNode);
+    }
+
+    return newNode;
 }
 
-export function cloneCommentNode(node: CommentNode): CommentNode {
-    return new CommentNode(node.text);
+export function cloneCommentNode(node: CommentNode, callback?: (oldNode: Node, newNode: Node) => void): CommentNode {
+    const newNode: CommentNode = new CommentNode(node.text);
+    
+    if (callback != undefined) {
+        callback(node, newNode);
+    }
+
+    return newNode;
 }
 
-export function cloneCDATANode(node: CDATANode, deep: boolean): CDATANode {
+export function cloneCDATANode(node: CDATANode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): CDATANode {
     const newNode: CDATANode = new CDATANode();
 
+    if (callback != undefined) {
+        callback(node, newNode);
+    }
+
     if (deep) {
-        cloneChildNodes(newNode, node.childNodes);
+        cloneChildNodes(newNode, node.childNodes, callback);
     }
 
     return newNode;
 }
 
-export function cloneProcessingInstructionNode(node: ProcessingInstructionNode): ProcessingInstructionNode {
-    return new ProcessingInstructionNode(node.name, node.data);
+export function cloneProcessingInstructionNode(node: ProcessingInstructionNode, callback?: (oldNode: Node, newNode: Node) => void): ProcessingInstructionNode {
+    const newNode: ProcessingInstructionNode = new ProcessingInstructionNode(node.name, node.data);
+    
+    if (callback != undefined) {
+        callback(node, newNode);
+    }
+
+    return newNode;
 }
 
-export function cloneDocumentNode(node: DocumentNode, deep: boolean): DocumentNode {
+export function cloneDocumentNode(node: DocumentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): DocumentNode {
     const newNode: DocumentNode = new DocumentNode();
 
+    if (callback != undefined) {
+        callback(node, newNode);
+    }
+
     if (deep) {
-        cloneChildNodes(newNode, node.childNodes);
+        cloneChildNodes(newNode, node.childNodes, callback);
     }
 
     return newNode;
@@ -248,10 +278,20 @@ export function getChildTags(node: NodeWithChildren): TagNode[] {
     return node.childNodes.filter((node: Node) => TagNode.isTagNode(node)) as TagNode[];
 }
 
+export function walkDom(node: Node, callback: (node: Node) => void): void {
+    callback(node);
+
+    if (NodeWithChildren.isNodeWithChildren(node)) {
+        for (const childNode of node.childNodes) {
+            walkDom(childNode, callback);
+        }
+    }
+}
+
 // not exported
-function cloneChildNodes(parent: NodeWithChildren, childNodes: Node[]): void {
+function cloneChildNodes(parent: NodeWithChildren, childNodes: Node[], callback?: (oldNode: Node, newNode: Node) => void): void {
     if (childNodes.length > 0) {
-        const newChildren = childNodes.map(node => node.clone(true));
+        const newChildren = childNodes.map(node => node.clone(true, callback));
         appendChildNodes(parent, newChildren);
     }
 }

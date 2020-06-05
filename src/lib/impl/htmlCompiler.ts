@@ -3,64 +3,61 @@ import { Fragment } from "../pipeline/fragment";
 import { Page } from "../pipeline/page";
 import { UsageContext } from '../pipeline/usageContext';
 import { Node, DocumentNode, TagNode, NodeWithChildren } from '../dom/node';
+import { SlotModule } from "./module/slotModule";
+import { FragmentModule } from "./module/fragmentModule";
 
 export class HtmlCompiler {
-
     private readonly pipeline: Pipeline;
+    private readonly modules: CompilerModule[];
 
     constructor(pipeline: Pipeline) {
         this.pipeline = pipeline;
+
+        // these are order-specific!
+        // SlotModule needs to run first, as FragmentModule splits up the DOM and would hide <m-slot> tags from SlotModule
+        this.modules = [
+            new SlotModule(),
+            new FragmentModule(pipeline)
+        ];
     }
 
     compileFragment(fragment: Fragment, usageContext: UsageContext): void {
-        // get dom
-        const dom: DocumentNode = fragment.dom;
+        // get compile data
+        // TODO enventually move this to parse phase and enable caching/cloning
+        const compileData: CompileData = this.getCompileData(fragment.dom);
 
-        // fill in slots
-        this.fillSlots(dom, usageContext);
-
-        // fill in fragments
-        this.fillFragments(dom);
+        // run modules
+        for (const module of this.modules) {
+            if (module.compileFragment != undefined) {
+                module.compileFragment(fragment, usageContext, compileData);
+            }
+        }
     }
 
     compilePage(page: Page): void {
-        // get dom
-        const dom: DocumentNode = page.dom;
+        // get compile data
+        // TODO enventually move this to parse phase and enable caching/cloning
+        const compileData: CompileData = this.getCompileData(page.dom);
 
-        // fill in fragments
-        this.fillFragments(dom);
-    }
-
-    private fillSlots(dom: DocumentNode, usageContext: UsageContext): void {
-        // find slots
-        const slots: Slot[] = this.findSlots(dom);
-
-        // fill or remove
-        for (const slot of slots) {
-            // get contents from context, and clone in case slot is repeated
-            const content: DocumentNode | undefined = usageContext.slotContents.get(slot.name)?.clone();
-
-            if (slot.isAttribute) {
-                if (content != undefined) {
-                    // fill attribute slot
-                    slot.node.appendChildren(content.childNodes);
-                } else {
-                    // clear attribute slot
-                    slot.node.clear();
-                }
-                
-                // delete slot attribute, since slot is processed
-                slot.node.attributes.delete('m-slot');
-            } else {
-                if (content != undefined) {
-                    // fill tag slot
-                    slot.node.replaceSelf(...content.childNodes);
-                } else {
-                    // remove tag slot
-                    slot.node.removeSelf();
-                }
+        // run modules
+        for (const module of this.modules) {
+            if (module.compilePage != undefined) {
+                module.compilePage(page, compileData);
             }
         }
+    }
+
+    private getCompileData(dom: DocumentNode): CompileData {
+        // get slots
+        const slots: Slot[] = this.findSlots(dom);
+
+        // get fragments
+        const fragmentReferences: FragmentReference[] = this.extractFragmentReferences(dom);
+
+        // create compile data
+        const compileData: CompileData = new CompileData(dom, fragmentReferences, slots);
+
+        return compileData;
     }
 
     private findSlots(dom: DocumentNode): Slot[] {
@@ -83,24 +80,7 @@ export class HtmlCompiler {
         return slotObjects;
     }
 
-    private fillFragments(dom: DocumentNode): void {
-        // get fragments
-        const fragmentReferences: FragmentReference[] = this.findFragmentReferences(dom);
-        
-        // process each fragment
-        for (const fragment of fragmentReferences) {
-            // create usage context
-            const usageContext = new UsageContext(fragment.slotContents);
-
-            // call pipeline to load fragment
-            const compiledContents: Fragment = this.pipeline.compileFragment(fragment.sourceResId, usageContext);
-
-            // replace with compiled fragment
-            fragment.node.replaceSelf(...compiledContents.dom.childNodes)
-        }
-    }
-
-    private findFragmentReferences(dom: DocumentNode): FragmentReference[] {
+    private extractFragmentReferences(dom: DocumentNode): FragmentReference[] {
         // get all non-nested m-fragment elements
         const fragments: TagNode[] = dom.findTopLevelChildTags((tag: TagNode) => tag.tagName === 'm-fragment');
 
@@ -115,7 +95,7 @@ export class HtmlCompiler {
             }
             
             // get slot contents
-            const slotContents: SlotContentsMap = this.buildSlotContentMap(node);
+            const slotContents: SlotContentsMap = this.extractContentsForFragment(node);
 
             // create reference
             return new FragmentReference(srcResId, node, slotContents); 
@@ -124,19 +104,19 @@ export class HtmlCompiler {
         return fragmentReferences;
     }
 
-    private buildSlotContentMap(mFragment: NodeWithChildren): SlotContentsMap {
+    private extractContentsForFragment(mFragment: NodeWithChildren): SlotContentsMap {
         const slotMap: SlotContentsMap = new Map();
 
         // loop through all direct children of fragment reference
         for (const node of Array.from(mFragment.childNodes)) {
             // get content for this slot
-            const slotContents: Node[] = this.getSlotContentsFromNode(node);
+            const slotContents: Node[] = this.convertNodeToContent(node);
 
             // check if it specified a slot
-            const slotName: string = this.getSlotNameForContentNode(node);
+            const slotName: string = this.getContentTargetName(node);
 
             // get dom for this slot
-            const slotDom: DocumentNode = this.getDomForSlot(slotMap, slotName);
+            const slotDom: DocumentNode = this.getContentDom(slotMap, slotName);
 
             // add slot contents to new DOM (will automatically detach them)
             slotDom.appendChildren(slotContents);
@@ -145,7 +125,7 @@ export class HtmlCompiler {
         return slotMap;
     }
 
-    private getDomForSlot(slotMap: SlotContentsMap, slotName: string): DocumentNode {
+    private getContentDom(slotMap: SlotContentsMap, slotName: string): DocumentNode {
         let slotDom: DocumentNode | undefined = slotMap.get(slotName);
 
         if (slotDom == undefined) {
@@ -156,7 +136,7 @@ export class HtmlCompiler {
         return slotDom;
     }
 
-    private getSlotContentsFromNode(node: Node): Node[] {
+    private convertNodeToContent(node: Node): Node[] {
         // check if this element is an m-content
         if (TagNode.isTagNode(node) && node.tagName === 'm-content') {
             return node.childNodes;
@@ -165,7 +145,7 @@ export class HtmlCompiler {
         }
     }
 
-    private getSlotNameForContentNode(node: Node): string {
+    private getContentTargetName(node: Node): string {
         if (TagNode.isTagNode(node)) {
             return node.attributes.get('slot')?.toLowerCase() ?? '[default]';
         } else {
@@ -174,9 +154,26 @@ export class HtmlCompiler {
     }
 }
 
-type SlotContentsMap = Map<string, DocumentNode>;
+export class CompileData {
+    readonly content: DocumentNode;
+    readonly fragmentRefs: FragmentReference[];
+    readonly slots: Slot[];
 
-class FragmentReference {
+    constructor(content: DocumentNode, fragmentRefs: FragmentReference[], slots: Slot[]) {
+        this.content = content;
+        this.fragmentRefs = fragmentRefs;
+        this.slots = slots;
+    }
+}
+
+export interface CompilerModule {
+    compileFragment?(fragment: Fragment, usageContext: UsageContext, compileData: CompileData): void;
+    compilePage?(page: Page, compileData: CompileData): void;
+}
+
+export type SlotContentsMap = Map<string, DocumentNode>;
+
+export class FragmentReference {
     readonly sourceResId: string;
     readonly slotContents: SlotContentsMap;
     readonly node: TagNode;
@@ -188,7 +185,7 @@ class FragmentReference {
     }
 }
 
-class Slot {
+export class Slot {
     readonly name: string;
     readonly isAttribute: boolean;
     readonly node: TagNode;

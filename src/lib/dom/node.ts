@@ -35,7 +35,7 @@ export abstract class Node {
         NodeTools.replaceNode(this, nodes);
     }
 
-    abstract clone(deep?: boolean): Node;
+    abstract clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): Node;
 }
 
 export abstract class NodeWithChildren extends Node {
@@ -89,6 +89,10 @@ export abstract class NodeWithChildren extends Node {
         return NodeTools.findTopLevelChildTags(this, matcher);
     }
 
+    walkDom(callback: (node: Node) => void): void {
+        NodeTools.walkDom(this, callback);
+    }
+
     static isNodeWithChildren(node: Node): node is NodeWithChildren {
         return node.nodeType === NodeType.CDATA || node.nodeType === NodeType.Tag || node.nodeType === NodeType.Document;
     }
@@ -134,8 +138,8 @@ export class TagNode extends NodeWithChildren {
         return this.attributes.has(name);
     }
 
-    clone(deep = true): TagNode {
-        return NodeTools.cloneTagNode(this, deep);
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): TagNode {
+        return NodeTools.cloneTagNode(this, deep, callback);
     }
 
     static isTagNode(node: Node): node is TagNode {
@@ -148,8 +152,8 @@ export class TextNode extends NodeWithText {
         super(NodeType.Text, text);
     }
 
-    clone(): TextNode {
-        return NodeTools.cloneTextNode(this);
+    clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): TextNode {
+        return NodeTools.cloneTextNode(this, callback);
     }
 
     static isTextNode(node: Node): node is TextNode {
@@ -162,8 +166,8 @@ export class CommentNode extends NodeWithText {
         super(NodeType.Comment, text);
     }
 
-    clone(): CommentNode {
-        return NodeTools.cloneCommentNode(this);
+    clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): CommentNode {
+        return NodeTools.cloneCommentNode(this, callback);
     }
 
     static isCommentNode(node: Node): node is CommentNode {
@@ -176,8 +180,8 @@ export class CDATANode extends NodeWithChildren {
         super(NodeType.CDATA);
     }
 
-    clone(deep = true): CDATANode {
-        return NodeTools.cloneCDATANode(this, deep);
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): CDATANode {
+        return NodeTools.cloneCDATANode(this, deep, callback);
     }
 
     static isCDATANode(node: Node): node is CDATANode {
@@ -193,8 +197,8 @@ export class ProcessingInstructionNode extends NodeWithData {
         this.name = name;
     }
 
-    clone(): ProcessingInstructionNode {
-        return NodeTools.cloneProcessingInstructionNode(this);
+    clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): ProcessingInstructionNode {
+        return NodeTools.cloneProcessingInstructionNode(this, callback);
     }
 
     static isProcessingInstruction(node: Node): node is ProcessingInstructionNode {
@@ -207,8 +211,8 @@ export class DocumentNode extends NodeWithChildren {
         super(NodeType.Document);
     }
 
-    clone(deep = true): DocumentNode {
-        return NodeTools.cloneDocumentNode(this, deep);
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): DocumentNode {
+        return NodeTools.cloneDocumentNode(this, deep, callback);
     }
 
     static isDocumentNode(node: Node): node is DocumentNode {
