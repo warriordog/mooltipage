@@ -1,7 +1,7 @@
 import { TestSet, TestCallback } from "./testSet";
-import TestSetGroup from './testSetGroup';
+import { TestSetGroup } from './testSetGroup';
 
-export default class TestRunner {
+export class TestRunner {
     private readonly testGroups: Array<TestSetGroup> = [];
 
     addTestSetGroups(...testGroups: Array<TestSetGroup>): void {

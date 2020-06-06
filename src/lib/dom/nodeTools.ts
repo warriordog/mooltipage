@@ -288,6 +288,27 @@ export function walkDom(node: Node, callback: (node: Node) => void): void {
     }
 }
 
+export function findChildTagsByPath(root: NodeWithChildren, matchers: ((tag: TagNode) => boolean)[], offset = 0, matches: TagNode[] = []): TagNode[] {
+    if (offset < matchers.length) {
+        const matcher = matchers[offset];
+
+        for (const childNode of root.childNodes) {
+            // check if this node matches
+            if (TagNode.isTagNode(childNode) && matcher(childNode)) {
+                if (offset === matchers.length - 1) {
+                    // if we are at the last matcher, then this is a result
+                    matches.push(childNode);
+                } else {
+                    // if not at the last matcher, then recurse for child nodes
+                    findChildTagsByPath(childNode, matchers, offset + 1, matches);
+                }
+            }
+        }
+    }
+
+    return matches;
+}
+
 // not exported
 function cloneChildNodes(parent: NodeWithChildren, childNodes: Node[], callback?: (oldNode: Node, newNode: Node) => void): void {
     if (childNodes.length > 0) {

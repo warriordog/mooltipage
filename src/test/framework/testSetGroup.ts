@@ -1,6 +1,6 @@
 import { TestSet } from "./testSet";
 
-export default class TestSetGroup {
+export class TestSetGroup {
     readonly groupName: string;
     private readonly testSets: Array<TestSet>;
     

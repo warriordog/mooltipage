@@ -71,6 +71,11 @@ export class PipelineImpl implements Pipeline {
         return page;
     }
 
+    reset(): void {
+        // clear cache to reset state
+        this.cache.clear();
+    }
+
     protected createFragment(resId: string): Fragment {
         // get from cache or source
         const fragment: Fragment = this.getOrParseFragment(resId);
@@ -93,7 +98,7 @@ export class PipelineImpl implements Pipeline {
             const fragment: Fragment = this.htmlParser.parseFragment(resId, html);
 
             // keep in cache
-            this.cache.storeFragment(resId, fragment);
+            this.cache.storeFragment(fragment);
 
             return fragment;
         }
@@ -121,7 +126,7 @@ export class PipelineImpl implements Pipeline {
             const page: Page = this.htmlParser.parsePage(resId, html);
 
             // keep in cache
-            this.cache.storePage(resId, page);
+            this.cache.storePage(page);
 
             return page;
         }

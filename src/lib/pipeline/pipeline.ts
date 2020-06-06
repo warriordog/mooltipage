@@ -5,5 +5,7 @@ import { UsageContext } from "./usageContext";
 export interface Pipeline {
     compileFragment(resId: string, usageContext: UsageContext): Fragment
 
-    compilePage(resId: string) : Page;
+    compilePage(resId: string): Page;
+
+    reset(): void;
 }

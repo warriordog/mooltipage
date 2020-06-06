@@ -1,7 +1,6 @@
 export * from './dom/domParser';
 export * from './dom/domSerializer';
 export * from './dom/node';
-export * as NodeTools from './dom/nodeTools';
 export * from './impl/basicHtmlFormatter';
 export * from './impl/htmlCompiler';
 export * from './impl/htmlParser';

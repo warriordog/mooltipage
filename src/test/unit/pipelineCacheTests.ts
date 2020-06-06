@@ -3,15 +3,15 @@ import { PipelineCache } from "../../lib/pipeline/pipelineCache";
 import * as Assert from '../framework/assert';
 import { Fragment } from "../../lib/pipeline/fragment";
 import { Page } from "../../lib/pipeline/page";
-import { DocumentNode as DOM } from '../../lib/dom/node';
+import { DocumentNode } from '../../lib/dom/node';
 
-export default class PipelineCacheTests implements TestSet {
+export class PipelineCacheTests implements TestSet {
     // test methods
 
     private testFragHasPresent(): void {
         const cache = new PipelineCache();
 
-        cache.storeFragment('foo', new Fragment('foo', new DOM()));
+        cache.storeFragment(new Fragment('foo', new DocumentNode()));
         const hasValue: boolean = cache.hasFragment('foo');
 
         Assert.IsTrue(hasValue);
@@ -27,9 +27,9 @@ export default class PipelineCacheTests implements TestSet {
 
     private testFragGetPresent(): void {
         const cache = new PipelineCache();
-        const frag = new Fragment('foo', new DOM());
+        const frag = new Fragment('foo', new DocumentNode());
 
-        cache.storeFragment('foo', frag);
+        cache.storeFragment(frag);
         const value: Fragment = cache.getFragment('foo');
 
         Assert.AreEqual(value, frag);
@@ -43,11 +43,11 @@ export default class PipelineCacheTests implements TestSet {
 
     private testFragOverwrite(): void {
         const cache = new PipelineCache();
-        const frag1 = new Fragment('value1', new DOM());
-        const frag2 = new Fragment('value2', new DOM());
+        const frag1 = new Fragment('foo', new DocumentNode());
+        const frag2 = new Fragment('foo', new DocumentNode());
 
-        cache.storeFragment('foo', frag1);
-        cache.storeFragment('foo', frag2);
+        cache.storeFragment(frag1);
+        cache.storeFragment(frag2);
         const value: Fragment = cache.getFragment('foo');
 
         Assert.AreEqual(value, frag2);
@@ -56,7 +56,7 @@ export default class PipelineCacheTests implements TestSet {
     private testPageHasPresent(): void {
         const cache = new PipelineCache();
 
-        cache.storePage('foo', new Page('foo', new DOM()));
+        cache.storePage(new Page('foo', new DocumentNode()));
         const hasValue: boolean = cache.hasPage('foo');
 
         Assert.IsTrue(hasValue);
@@ -72,9 +72,9 @@ export default class PipelineCacheTests implements TestSet {
 
     private testPageGetPresent(): void {
         const cache = new PipelineCache();
-        const page = new Page('foo', new DOM());
+        const page = new Page('foo', new DocumentNode());
 
-        cache.storePage('foo', page);
+        cache.storePage(page);
         const value: Page = cache.getPage('foo');
 
         Assert.AreEqual(value, page);
@@ -88,14 +88,25 @@ export default class PipelineCacheTests implements TestSet {
 
     private testPageOverwrite(): void {
         const cache = new PipelineCache();
-        const page1 = new Page('value1', new DOM());
-        const page2 = new Page('value2', new DOM());
+        const page1 = new Page('value1', new DocumentNode());
+        const page2 = new Page('value1', new DocumentNode());
 
-        cache.storePage('foo', page1);
-        cache.storePage('foo', page2);
-        const value: Page = cache.getPage('foo');
+        cache.storePage(page1);
+        cache.storePage(page2);
+        const value: Page = cache.getPage('value1');
 
         Assert.AreEqual(value, page2);
+    }
+
+    private testClear(): void {
+        const cache = new PipelineCache();
+        cache.storePage(new Page('res1', new DocumentNode()));
+        cache.storeFragment(new Fragment('res2', new DocumentNode()));
+
+        cache.clear();
+
+        Assert.IsFalse(cache.hasPage('res1'));
+        Assert.IsFalse(cache.hasFragment('res2'));
     }
 
     // test set boilerplate
@@ -111,7 +122,8 @@ export default class PipelineCacheTests implements TestSet {
             ['testPageHasMissing', (): void => this.testPageHasMissing()],
             ['testPageGetPresent', (): void => this.testPageGetPresent()],
             ['testPageGetMissing', (): void => this.testPageGetMissing()],
-            ['testPageOverwrite', (): void => this.testPageOverwrite()]
+            ['testPageOverwrite', (): void => this.testPageOverwrite()],
+            ['testClear', (): void => this.testClear()]
         ]);
     }
 }

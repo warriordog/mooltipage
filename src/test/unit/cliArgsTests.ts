@@ -2,7 +2,7 @@ import { TestCallback, TestSet } from '../framework/testSet';
 import { Args, parseArgs, ParseResult } from '../../bin/args';
 import * as Assert from '../framework/assert';
 
-export default class CliArgsTests implements TestSet {
+export class CliArgsTests implements TestSet {
     // test methods
 
     private testNoArgs(): void {

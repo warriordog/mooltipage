@@ -1,9 +1,9 @@
 import { TestSet, TestCallback } from "../framework/testSet";
 import { UsageContext } from "../../lib/pipeline/usageContext";
 import * as Assert from '../framework/assert';
-import { DocumentNode as DOM } from '../../lib/dom/node';
+import { DocumentNode } from '../../lib/dom/node';
 
-export default class UsageContextTests implements TestSet {
+export class UsageContextTests implements TestSet {
     // test methods
 
     private testConstructorNoArgs(): void {
@@ -21,9 +21,9 @@ export default class UsageContextTests implements TestSet {
     }
 
     private testConstructorValidArgs(): void {
-        const slotContents: Map<string, DOM> = new Map<string, DOM>([
-            ['a', new DOM()],
-            ['foo', new DOM()]
+        const slotContents: Map<string, DocumentNode> = new Map<string, DocumentNode>([
+            ['a', new DocumentNode()],
+            ['foo', new DocumentNode()]
         ]);
 
         const usage: UsageContext = new UsageContext(slotContents);

@@ -1,6 +1,6 @@
 import { TestSet, TestCallback } from '../framework/testSet';
 import * as Assert from '../framework/assert';
-import MemoryPipelineInterface from '../mocks/memoryPipelineInterface';
+import { MemoryPipelineInterface } from '../mocks/memoryPipelineInterface';
 import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode } from '../../lib/dom/node';
@@ -8,7 +8,7 @@ import { Page } from '../../lib/pipeline/page';
 import { Pipeline } from '../../lib/pipeline/pipeline';
 import { PipelineImpl } from '../../lib/impl/pipelineImpl';
 
-export default class FragmentSlotTests implements TestSet {
+export class FragmentSlotTests implements TestSet {
 
     // test methods
 
@@ -45,6 +45,38 @@ export default class FragmentSlotTests implements TestSet {
         Assert.IsEmpty(mFragments);
         Assert.IsEmpty(mContents);
         Assert.IsEmpty(mSlots);
+    }
+
+    private testFragmentInSlot(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('nested1.html', new UsageContext());
+        const dom = fragment.dom;
+
+        // test
+        const divs = dom.findChildTags((node: TagNode) => node.tagName === 'div');
+        const h1s = dom.findChildTags((node: TagNode) => node.tagName === 'h1');
+        const mFragments = dom.findChildTags((node: TagNode) => node.tagName === 'm-fragment');
+        const mContents = dom.findChildTags((node: TagNode) => node.tagName === 'm-content');
+        const mSlots = dom.findChildTags((node: TagNode) => node.tagName === 'm-slot');
+        const nested1s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'nested1');
+        const nested2s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'nested2');
+        const nested3s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'nested3');
+        const innerh1s = dom.findChildTagsByPath([
+            (node: TagNode) => node.tagName === 'div' && node.attributes.get('class') === 'nested1',
+            (node: TagNode) => node.tagName === 'div' && node.attributes.get('class') === 'nested2',
+            (node: TagNode) => node.tagName === 'div' && node.attributes.get('class') === 'nested3',
+            (node: TagNode) => node.tagName === 'h1'
+        ]);
+
+        Assert.IsEmpty(mFragments);
+        Assert.IsEmpty(mContents);
+        Assert.IsEmpty(mSlots);
+        Assert.AreEqual(divs.length, 3);
+        Assert.AreEqual(h1s.length, 1);
+        Assert.AreEqual(nested1s.length, 1);
+        Assert.AreEqual(nested2s.length, 1);
+        Assert.AreEqual(nested3s.length, 1);
+        Assert.AreEqual(innerh1s.length, 1);
     }
 
     // shared test code
@@ -93,7 +125,8 @@ export default class FragmentSlotTests implements TestSet {
         return new Map<string, TestCallback>([
             ['testAsFragment', (): void => this.testAsFragment()],
             ['testAsPage', (): void => this.testAsPage()],
-            ['testFragmentRoot', (): void => this.testFragmentRoot()]
+            ['testFragmentRoot', (): void => this.testFragmentRoot()],
+            ['testFragmentInSlot', (): void => this.testFragmentInSlot()]
         ]);
     }
 
@@ -161,6 +194,28 @@ export default class FragmentSlotTests implements TestSet {
 
         pipelineInterface.htmlSource.set('root3.html', `
             <m-slot></m-slot>
+        `);
+
+        pipelineInterface.htmlSource.set('nested1.html', `
+            <div class="nested1">
+                <m-fragment src="nested2.html">
+                    <m-content slot="slot1">
+                        <m-fragment src="nested3.html"></m-fragment>
+                    </m-content>
+                </m-fragment>
+            </div>
+        `);
+
+        pipelineInterface.htmlSource.set('nested2.html', `
+            <div class="nested2">
+                <m-slot name="slot1"></m-slot>
+            </div>
+        `);
+
+        pipelineInterface.htmlSource.set('nested3.html', `
+            <div class="nested3">
+                <h1>Nested 3 content</h1>
+            </div>
         `);
     }
 }

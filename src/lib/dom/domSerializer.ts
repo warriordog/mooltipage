@@ -42,7 +42,7 @@ export class DomSerializer {
             this.serializeDocument(node, html);
         } else if (CDATANode.isCDATANode(node)) {
             this.serializeCDATA(node, html);
-        } else if (ProcessingInstructionNode.isProcessingInstruction(node)) {
+        } else if (ProcessingInstructionNode.isProcessingInstructionNode(node)) {
             this.serializeProcessingInstruction(node, html);
         } else {
             throw new Error(`Unknown nodeType: ${node.nodeType}`);

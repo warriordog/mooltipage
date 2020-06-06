@@ -1,6 +1,6 @@
 import { TestSet, TestCallback } from '../framework/testSet';
 import * as Assert from '../framework/assert';
-import MemoryPipelineInterface from '../mocks/memoryPipelineInterface';
+import { MemoryPipelineInterface } from '../mocks/memoryPipelineInterface';
 import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, Node, TagNode, TextNode } from '../../lib/dom/node';
@@ -8,7 +8,7 @@ import { Page } from '../../lib/pipeline/page';
 import { Pipeline } from '../../lib/pipeline/pipeline';
 import { PipelineImpl } from '../../lib/impl/pipelineImpl';
 
-export default class BasicHtmlTests implements TestSet {
+export class BasicHtmlTests implements TestSet {
     // test methods
     
     private testFragmentCompile(): void {

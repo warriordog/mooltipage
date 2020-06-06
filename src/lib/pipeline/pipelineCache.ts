@@ -24,8 +24,8 @@ export class PipelineCache {
         return fragment;
     }
 
-    storeFragment(resId: string, fragment: Fragment): void {
-        this.fragmentCache.set(resId, fragment);
+    storeFragment(fragment: Fragment): void {
+        this.fragmentCache.set(fragment.resId, fragment);
     }
 
     hasPage(resId: string): boolean {
@@ -42,7 +42,12 @@ export class PipelineCache {
         return page;
     }
 
-    storePage(resId: string, page: Page): void {
-        this.pageCache.set(resId, page);
+    storePage(page: Page): void {
+        this.pageCache.set(page.resId, page);
+    }
+
+    clear(): void {
+        this.pageCache.clear();
+        this.fragmentCache.clear();
     }
 }

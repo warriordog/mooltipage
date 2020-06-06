@@ -1,12 +1,14 @@
-import TestRunner from './framework/testRunner';
+import { TestRunner } from './framework/testRunner';
 
-import BasicHtmlTest from './endToEnd/basicHtmlTests';
-import FragmentOnlyTests from './endToEnd/fragmentOnlyTests';
-import FragmentSlotTests from './endToEnd/fragmentSlotTests';
-import CliArgsTests from './unit/cliArgsTests';
-import TestSetGroup from './framework/testSetGroup';
-import PipelineCacheTests from './unit/pipelineCacheTests';
-import UsageContextTests from './unit/usageContextTests';
+import { BasicHtmlTests } from './endToEnd/basicHtmlTests';
+import { FragmentOnlyTests } from './endToEnd/fragmentOnlyTests';
+import { FragmentSlotTests } from './endToEnd/fragmentSlotTests';
+import { CliArgsTests } from './unit/cliArgsTests';
+import { TestSetGroup } from './framework/testSetGroup';
+import { PipelineCacheTests } from './unit/pipelineCacheTests';
+import { UsageContextTests } from './unit/usageContextTests';
+import { NodeConstructorTests } from './unit/nodeConstructorTests';
+import { NodeIsTypeTests } from './unit/nodeIsTypeTests';
 
 // create test runner instance
 const testRunner: TestRunner = new TestRunner();
@@ -17,7 +19,9 @@ testRunner.addTestSetGroups(
     new TestSetGroup('unit', [
         new PipelineCacheTests(),
         new UsageContextTests(),
-        new CliArgsTests()
+        new CliArgsTests(),
+        new NodeConstructorTests(),
+        new NodeIsTypeTests()
     ]),
 
     // integration tests second
@@ -25,7 +29,7 @@ testRunner.addTestSetGroups(
 
     // end-to-end tests last
     new TestSetGroup('endToEnd', [
-        new BasicHtmlTest(),
+        new BasicHtmlTests(),
         new FragmentOnlyTests(),
         new FragmentSlotTests()
     ])

@@ -1,7 +1,7 @@
 import { HtmlSource } from '../../lib/pipeline/htmlSource';
 import { HtmlDestination } from '../../lib/pipeline/htmlDestination';
 
-export default class MemoryPipelineInterface implements HtmlSource, HtmlDestination {
+export class MemoryPipelineInterface implements HtmlSource, HtmlDestination {
     htmlSource: Map<string, string> = new Map<string, string>();
     htmlDestination: Map<string, string> = new Map<string, string>();
 

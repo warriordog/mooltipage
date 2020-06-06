@@ -88,6 +88,10 @@ export abstract class NodeWithChildren extends Node {
     findTopLevelChildTags(matcher: (node: TagNode) => boolean): TagNode[] {
         return NodeTools.findTopLevelChildTags(this, matcher);
     }
+    
+    findChildTagsByPath(matchers: ((tag: TagNode) => boolean)[]): TagNode[] {
+        return NodeTools.findChildTagsByPath(this, matchers);
+    }
 
     walkDom(callback: (node: Node) => void): void {
         NodeTools.walkDom(this, callback);
@@ -201,7 +205,7 @@ export class ProcessingInstructionNode extends NodeWithData {
         return NodeTools.cloneProcessingInstructionNode(this, callback);
     }
 
-    static isProcessingInstruction(node: Node): node is ProcessingInstructionNode {
+    static isProcessingInstructionNode(node: Node): node is ProcessingInstructionNode {
         return node.nodeType === NodeType.ProcessingInstruction;
     }
 }
