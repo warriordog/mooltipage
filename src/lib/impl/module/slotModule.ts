@@ -4,7 +4,7 @@ import { UsageContext } from "../../pipeline/usageContext";
 import { DocumentNode, TagNode } from "../../dom/node";
 
 export class SlotModule implements CompilerModule {
-    compileFragment?(fragment: Fragment, usageContext: UsageContext): void {
+    compileFragment(fragment: Fragment, usageContext: UsageContext): void {
         const dom: DocumentNode = fragment.dom;
         
         // find slots

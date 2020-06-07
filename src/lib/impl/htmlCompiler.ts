@@ -17,7 +17,7 @@ export class HtmlCompiler {
         // FragmentModule splits up the DOM and would hide elements from the other steps
         this.modules = [
             new SlotModule(),
-            new TemplateTextModule(),
+            new TemplateTextModule(pipeline),
             new FragmentModule(pipeline)
         ];
     }

@@ -12,13 +12,13 @@ export class FragmentModule implements CompilerModule {
         this.pipeline = pipeline;
     }
 
-    compileFragment?(fragment: Fragment): void {
+    compileFragment(fragment: Fragment): void {
         const dom: DocumentNode = fragment.dom;
 
         this.processFragments(dom);
     }
 
-    compilePage?(page: Page): void {
+    compilePage(page: Page): void {
         const dom: DocumentNode = page.dom;
 
         this.processFragments(dom);

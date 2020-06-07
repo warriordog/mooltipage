@@ -9,6 +9,7 @@ import { PipelineCacheTests } from './unit/pipelineCacheTests';
 import { UsageContextTests } from './unit/usageContextTests';
 import { NodeConstructorTests } from './unit/nodeConstructorTests';
 import { NodeIsTypeTests } from './unit/nodeIsTypeTests';
+import { TemplateTextTests } from './endToEnd/templateTextTests';
 
 // create test runner instance
 const testRunner: TestRunner = new TestRunner();
@@ -31,7 +32,8 @@ testRunner.addTestSetGroups(
     new TestSetGroup('endToEnd', [
         new BasicHtmlTests(),
         new FragmentOnlyTests(),
-        new FragmentSlotTests()
+        new FragmentSlotTests(),
+        new TemplateTextTests()
     ])
 );
 

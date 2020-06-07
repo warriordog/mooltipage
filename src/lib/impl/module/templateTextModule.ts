@@ -3,29 +3,54 @@ import { Node, TagNode, TextNode, DocumentNode } from "../../dom/node";
 import { Fragment } from "../../pipeline/fragment";
 import { Page } from "../../pipeline/page";
 import { UsageContext } from "../../pipeline/usageContext";
+import { EvalEngine } from "../../eval/evalEngine";
+import { EvalFunction } from "../../eval/evalFunction";
+import { EvalContext } from "../../eval/evalContext";
+import { Pipeline } from "../../pipeline/pipeline";
 
-const templateTextRegex = /(?<!\\)\${(([^\\}]|\\}|\\)*)}/gm;
+const templateTextRegex = /\${(([^\\}]|\\}|\\)*)}/;
 
 export class TemplateTextModule implements CompilerModule {
-    compileFragment?(fragment: Fragment, usageContext: UsageContext): void {
+    private readonly evalEngine: EvalEngine;
+    private readonly pipeline: Pipeline;
+
+    constructor(pipeline: Pipeline) {
+        this.pipeline = pipeline;
+        this.evalEngine = new EvalEngine();
+    }
+
+    compileFragment(fragment: Fragment, usageContext: UsageContext): void {
         const dom: DocumentNode = fragment.dom;
         
         this.processTemplateText(fragment, null, usageContext, dom);
     }
 
-    compilePage?(page: Page): void {
+    compilePage(page: Page): void {
         const dom: DocumentNode = page.dom;
         
-        this.processTemplateText(null, page, null, dom);
+        this.processTemplateText(page, page, null, dom);
     }
 
-    processTemplateText(fragment: Fragment | null, page: Page | null, usageContext: UsageContext | null, dom: DocumentNode): void {
+    processTemplateText(fragment: Fragment, page: Page | null, usageContext: UsageContext | null, dom: DocumentNode): void {
         // find template text
         const templateTexts: TemplateText[] = this.findTemplateText(dom);
 
-        // TODO execute
-    }
+        // execute if there are any
+        if (templateTexts.length > 0) {
+            // create evalContext for templates
+            const evalContext: EvalContext = {
+                pipeline: this.pipeline,
+                currentFragment: fragment,
+                currentPage: page
+            }
 
+            // parse functions
+            const templateExecutors: TemplateTextExecutor[] = this.buildExecutors(templateTexts);
+    
+            // execute templates and fill in text
+            this.executeTemplateText(templateExecutors, evalContext);
+        }
+    }
 
     private findTemplateText(dom: DocumentNode): TemplateText[] {
         const templateTexts: TemplateText[] = [];
@@ -48,7 +73,7 @@ export class TemplateTextModule implements CompilerModule {
             const value: string | null = attribute[1];
 
             if (value != null && templateTextRegex.test(value)) {
-                templateTexts.push(new AttributeTemplateText(node, name));
+                templateTexts.push(new AttributeTemplateText(node, name, value));
             }
         }
     }
@@ -58,19 +83,55 @@ export class TemplateTextModule implements CompilerModule {
             templateTexts.push(new TextNodeTemplateText(node));
         }
     }
+
+    private buildExecutors(templateTexts: TemplateText[]): TemplateTextExecutor[] {
+        return templateTexts.map((templateText: TemplateText) => {
+            // create a callable function from the template string
+            const evalFunc: EvalFunction<string> = this.evalEngine.parseTemplateString(templateText.template);
+
+            return {
+                evalFunction: evalFunc,
+                templateText: templateText
+            };
+        });
+    }
+    
+    private executeTemplateText(executors: TemplateTextExecutor[], evalContext: EvalContext): void {
+        for (const executor of executors) {
+            // execute function and generate new text
+            const newText = this.evalEngine.executeFunction(executor.evalFunction, evalContext);
+
+            // Check type of template text
+            const template: TemplateText = executor.templateText;
+            if (AttributeTemplateText.isAttribute(template)) {
+
+                // write attribute of attribute node
+                template.node.attributes.set(template.attribute, newText);
+            } else if (TextNodeTemplateText.isText(template)) {
+
+                // write content of text node
+                template.node.text = newText;
+            } else {
+                throw new Error('Unkown template text type');
+            }
+        }
+    }
 }
 
 interface TemplateText {
     readonly node: Node;
+    readonly template: string;
 }
 
 class AttributeTemplateText implements TemplateText {
     readonly node: TagNode;
+    readonly template: string;
     readonly attribute: string;
 
-    constructor(node: TagNode, attribute: string) {
+    constructor(node: TagNode, attribute: string, value: string) {
         this.node = node;
         this.attribute = attribute;
+        this.template = value;
     }
 
     static isAttribute(text: TemplateText): text is AttributeTemplateText {
@@ -80,12 +141,19 @@ class AttributeTemplateText implements TemplateText {
 
 class TextNodeTemplateText implements TemplateText {
     readonly node: TextNode;
+    readonly template: string;
 
     constructor(node: TextNode) {
         this.node = node;
+        this.template = node.text;
     }
 
     static isText(text: TemplateText): text is TextNodeTemplateText {
         return TextNode.isTextNode(text.node);
     }
+}
+
+interface TemplateTextExecutor {
+    readonly templateText: TemplateText;
+    readonly evalFunction: EvalFunction<string>;
 }

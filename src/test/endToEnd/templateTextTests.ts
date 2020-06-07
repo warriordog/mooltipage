@@ -1,0 +1,253 @@
+import { TestSet, TestCallback } from '../framework/testSet';
+import * as Assert from '../framework/assert';
+import { MemoryPipelineInterface } from '../mocks/memoryPipelineInterface';
+import { Fragment } from '../../lib/pipeline/fragment';
+import { UsageContext } from '../../lib/pipeline/usageContext';
+import { DocumentNode, TagNode, TextNode, Node } from '../../lib/dom/node';
+import { Page } from '../../lib/pipeline/page';
+import { Pipeline } from '../../lib/pipeline/pipeline';
+import { PipelineImpl } from '../../lib/impl/pipelineImpl';
+
+export class TemplateTextTests implements TestSet {
+
+    // test methods
+
+    private testBasicFragment(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('fragment.html', new UsageContext());
+        const dom: DocumentNode = fragment.dom;
+
+        // test
+        this.validateBasic(dom);
+    }
+
+    private testBasicPage(): void {
+        // compile page
+        const page: Page = this.getPipeline().compilePage('page.html');
+        const dom: DocumentNode = page.dom;
+
+        // test
+        this.validateBasic(dom);
+    }
+
+    private testParamsFragment(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('paramsFragment.html', new UsageContext());
+        const dom: DocumentNode = fragment.dom;
+
+        // test
+        this.validateParams(dom);
+    }
+
+    private testParamsPage(): void {
+        // compile page
+        const page: Page = this.getPipeline().compilePage('paramsPage.html');
+        const dom: DocumentNode = page.dom;
+
+        // test
+        this.validateParams(dom);
+    }
+
+    private testSlot(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('slot.html', new UsageContext());
+        const dom: DocumentNode = fragment.dom;
+
+        // test
+        const template = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'template');
+        const templateText = template?.firstChild;
+        
+        Assert.IsNotNullish(template);
+        Assert.IsNotNullish(templateText);
+        Assert.IsTrue(TextNode.isTextNode(templateText as Node));
+        Assert.AreEqual((templateText as TextNode).text, 'slot.html');
+    }
+
+    private testAttributes(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('attributes.html', new UsageContext());
+        const dom: DocumentNode = fragment.dom;
+
+        // test
+        const div1 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div1');
+        const div2 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div2');
+        const div3 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div3');
+
+        Assert.AreEqual(div1?.attributes.get('value'), 'value1');
+        Assert.AreEqual(div2?.attributes.get('value'), 'value2');
+        Assert.AreEqual(div3?.attributes.get('value'), 'value3');
+    }
+
+    private testAttributesMulti(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('attributesMulti.html', new UsageContext());
+        const dom: DocumentNode = fragment.dom;
+
+        // test
+        const div = dom.findChildTag((node: TagNode) => node.tagName === 'div');
+
+        Assert.AreEqual(div?.attributes.get('a1'), 'value1');
+        Assert.AreEqual(div?.attributes.get('a2'), 'value2');
+        Assert.AreEqual(div?.attributes.get('a3'), 'value3');
+    }
+
+    private testEscape(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('escape.html', new UsageContext());
+        const dom: DocumentNode = fragment.dom;
+
+        // test
+        const div = dom.findChildTag((node: TagNode) => node.tagName === 'div');
+
+        Assert.AreEqual(div?.attributes.get('value'), '${ \'escaped\' }');
+    }
+
+    private testEscapeMixed(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('escapeMixed.html', new UsageContext());
+
+        // test
+        const div = fragment.dom.findChildTag((node: TagNode) => node.tagName === 'div');
+
+        Assert.AreEqual(div?.attributes.get('value'), '${ \'escaped\' }not escaped');
+    }
+
+    // shared test code
+
+    private validateBasic(dom: DocumentNode): void {
+        // get counts
+        const div = dom.findChildTag((node: TagNode) => node.tagName === 'div');
+        const text = div?.firstChild;
+
+        // check content
+        Assert.IsNotNullish(div);
+        Assert.IsNotNullish(text);
+        Assert.IsTrue(TextNode.isTextNode(text as Node));
+        Assert.AreEqual((text as TextNode).text, 'div content');
+    }
+
+    private validateParams(dom: DocumentNode): void {
+        // get counts
+        const pipelineDiv = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'pipeline');
+        const pipelineText = pipelineDiv?.firstChild;
+        const fragmentDiv = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'fragment');
+        const fragmentText = fragmentDiv?.firstChild;
+        const pageDiv = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'page');
+        const pageText = pageDiv?.firstChild;
+
+        // check content
+        Assert.IsNotNullish(pipelineDiv);
+        Assert.IsNotNullish(pipelineText);
+        Assert.IsNotNullish(fragmentDiv);
+        Assert.IsNotNullish(fragmentText);
+        Assert.IsNotNullish(pageDiv);
+        Assert.IsNotNullish(pageText);
+        Assert.IsTrue(TextNode.isTextNode(pipelineText as Node));
+        Assert.IsTrue(TextNode.isTextNode(fragmentText as Node));
+        Assert.IsTrue(TextNode.isTextNode(pageText as Node));
+        Assert.AreEqual((pipelineText as TextNode).text, 'true');
+        Assert.AreEqual((fragmentText as TextNode).text, 'true');
+        Assert.AreEqual((pageText as TextNode).text, 'true');
+    }
+
+    // test data
+    private getPipeline(): Pipeline {
+        if (this.pipeline == undefined) throw new Error('Pipeline is undefined');
+        return this.pipeline;
+    }
+
+    // test set boilerplate
+
+    readonly setName: string = 'TemplateTextTests';
+
+    getTests(): Map<string, TestCallback> {
+        return new Map<string, TestCallback>([
+            ['testBasicFragment', (): void => this.testBasicFragment()],
+            ['testBasicPage', (): void => this.testBasicPage()],
+            ['testParamsFragment', (): void => this.testParamsFragment()],
+            ['testParamsPage', (): void => this.testParamsPage()],
+            ['testSlot', (): void => this.testSlot()],
+            ['testAttributes', (): void => this.testAttributes()],
+            ['testAttributesMulti', (): void => this.testAttributesMulti()],
+            ['testEscape', (): void => this.testEscape()],
+            ['testEscapeMixed', (): void => this.testEscapeMixed()]
+        ]);
+    }
+
+    // Test setup
+
+    private pipeline?: Pipeline;
+
+    beforeTest(): void {
+        const pipelineInterface = new MemoryPipelineInterface();
+        this.pipeline = new PipelineImpl(pipelineInterface, pipelineInterface);
+
+        pipelineInterface.htmlSource.set('page.html', `
+            <!DOCTYPE HTML>
+            <html>
+                <head>
+                    <title>Template Text Tests</title>
+                </head>
+                <body>
+                    <div>\${ 'div content' }</div>
+                </body>
+            </html>
+        `);
+
+        pipelineInterface.htmlSource.set('fragment.html', `
+            <div>\${ 'div content' }</div>
+        `);
+
+        pipelineInterface.htmlSource.set('paramsPage.html', `
+            <!DOCTYPE HTML>
+            <html>
+                <head>
+                    <title>Template Text Tests</title>
+                </head>
+                <body>
+                    <div id="pipeline">\${ pipeline != null }</div>
+                    <div id="fragment">\${ currentFragment != null }</div>
+                    <div id="page">\${ currentPage != null }</div>
+                </body>
+            </html>
+        `);
+
+        pipelineInterface.htmlSource.set('paramsFragment.html', `
+            <div id="pipeline">\${ pipeline != null }</div>
+            <div id="fragment">\${ currentFragment != null }</div>
+            <div id="page">\${ currentPage == null }</div>
+        `);
+
+        pipelineInterface.htmlSource.set('slot.html', `
+            <div id="outer">
+                <m-fragment src="slot2.html">
+                    <div id="template">\${ currentFragment.resId }</div>
+                </m-fragment>
+            </div>
+        `);
+
+        pipelineInterface.htmlSource.set('slot2.html', `
+            <div id="inner">
+                <m-slot></m-slot>
+            </div>
+        `);
+
+        pipelineInterface.htmlSource.set('attributes.html', `
+            <div id="div1" value="\${ 'value1' }"></div>
+            <div id="div2" value="\${ 'value2' }"></div>
+            <div id="div3" value="\${ 'value3' }"></div>
+        `);
+
+        pipelineInterface.htmlSource.set('attributesMulti.html', `
+            <div id="div1" a1="\${ 'value1' }" a2="\${ 'value2' }" a3="\${ 'value3' }"></div>
+        `);
+
+        pipelineInterface.htmlSource.set('escape.html', `
+            <div value="\\\${ 'escaped' }"></div>
+        `);
+
+        pipelineInterface.htmlSource.set('escapeMixed.html', `
+            <div value="\\\${ 'escaped' }\${ 'not escaped' }"></div>
+        `);
+    }
+}
