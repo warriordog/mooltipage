@@ -162,15 +162,15 @@ export class TemplateTextTests implements TestSet {
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testBasicFragment', (): void => this.testBasicFragment()],
-            ['testBasicPage', (): void => this.testBasicPage()],
-            ['testParamsFragment', (): void => this.testParamsFragment()],
-            ['testParamsPage', (): void => this.testParamsPage()],
-            ['testSlot', (): void => this.testSlot()],
-            ['testAttributes', (): void => this.testAttributes()],
-            ['testAttributesMulti', (): void => this.testAttributesMulti()],
-            ['testEscape', (): void => this.testEscape()],
-            ['testEscapeMixed', (): void => this.testEscapeMixed()]
+            ['BasicFragment', (): void => this.testBasicFragment()],
+            ['BasicPage', (): void => this.testBasicPage()],
+            ['ParamsFragment', (): void => this.testParamsFragment()],
+            ['ParamsPage', (): void => this.testParamsPage()],
+            ['Slot', (): void => this.testSlot()],
+            ['Attributes', (): void => this.testAttributes()],
+            ['AttributesMulti', (): void => this.testAttributesMulti()],
+            ['Escape', (): void => this.testEscape()],
+            ['EscapeMixed', (): void => this.testEscapeMixed()]
         ]);
     }
 

@@ -113,17 +113,17 @@ export class PipelineCacheTests implements TestSet {
     readonly setName: string = 'PipelineCacheTests';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testFragHasPresent', (): void => this.testFragHasPresent()],
-            ['testFragHasMissing', (): void => this.testFragHasMissing()],
-            ['testFragGetPresent', (): void => this.testFragGetPresent()],
-            ['testFragGetMissing', (): void => this.testFragGetMissing()],
-            ['testFragOverwrite', (): void => this.testFragOverwrite()],
-            ['testPageHasPresent', (): void => this.testPageHasPresent()],
-            ['testPageHasMissing', (): void => this.testPageHasMissing()],
-            ['testPageGetPresent', (): void => this.testPageGetPresent()],
-            ['testPageGetMissing', (): void => this.testPageGetMissing()],
-            ['testPageOverwrite', (): void => this.testPageOverwrite()],
-            ['testClear', (): void => this.testClear()]
+            ['FragHasPresent', (): void => this.testFragHasPresent()],
+            ['FragHasMissing', (): void => this.testFragHasMissing()],
+            ['FragGetPresent', (): void => this.testFragGetPresent()],
+            ['FragGetMissing', (): void => this.testFragGetMissing()],
+            ['FragOverwrite', (): void => this.testFragOverwrite()],
+            ['PageHasPresent', (): void => this.testPageHasPresent()],
+            ['PageHasMissing', (): void => this.testPageHasMissing()],
+            ['PageGetPresent', (): void => this.testPageGetPresent()],
+            ['PageGetMissing', (): void => this.testPageGetMissing()],
+            ['PageOverwrite', (): void => this.testPageOverwrite()],
+            ['Clear', (): void => this.testClear()]
         ]);
     }
 }

@@ -18,7 +18,7 @@ const testRunner: TestRunner = new TestRunner();
 // add test sets
 testRunner.addTestSetGroups(
     // Unit tests first
-    new TestSetGroup('unit', [
+    new TestSetGroup('Unit', [
         new PipelineCacheTests(),
         new UsageContextTests(),
         new CliArgsTests(),
@@ -27,10 +27,10 @@ testRunner.addTestSetGroups(
     ]),
 
     // integration tests second
-    new TestSetGroup('integration'),
+    new TestSetGroup('Integration'),
 
     // end-to-end tests last
-    new TestSetGroup('endToEnd', [
+    new TestSetGroup('EndToEnd', [
         new BasicHtmlTests(),
         new FragmentOnlyTests(),
         new FragmentSlotTests(),

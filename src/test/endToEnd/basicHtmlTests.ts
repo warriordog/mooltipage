@@ -99,10 +99,10 @@ export class BasicHtmlTests implements TestSet {
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testFragmentCompile', (): void => this.testFragmentCompile()],
-            ['testFragmentNoOutput', (): void => this.testFragmentNoOutput()],
-            ['testPageCompile', (): void => this.testPageCompile()],
-            ['testPageOutput', (): void => this.testPageOutput()]
+            ['FragmentCompile', (): void => this.testFragmentCompile()],
+            ['FragmentNoOutput', (): void => this.testFragmentNoOutput()],
+            ['PageCompile', (): void => this.testPageCompile()],
+            ['PageOutput', (): void => this.testPageOutput()]
         ]);
     }
 

@@ -61,14 +61,14 @@ export class NodeConstructorTests implements TestSet {
     readonly setName: string = 'NodeConstructorTests';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['TestTagNode', (): void => this.TestTagNode()],
-            ['TestTagNodeDefaults', (): void => this.TestTagNodeDefaults()],
-            ['TestTextNode', (): void => this.TestTextNode()],
-            ['TestTextNodeDefaults', (): void => this.TestTextNodeDefaults()],
-            ['TestCommentNode', (): void => this.TestCommentNode()],
-            ['TestCommentNodeDefaults', (): void => this.TestCommentNodeDefaults()],
-            ['TestPINode', (): void => this.TestPINode()],
-            ['TestPIDefaults', (): void => this.TestPIDefaults()],
+            ['TagNode', (): void => this.TestTagNode()],
+            ['TagNodeDefaults', (): void => this.TestTagNodeDefaults()],
+            ['TextNode', (): void => this.TestTextNode()],
+            ['TextNodeDefaults', (): void => this.TestTextNodeDefaults()],
+            ['CommentNode', (): void => this.TestCommentNode()],
+            ['CommentNodeDefaults', (): void => this.TestCommentNodeDefaults()],
+            ['PINode', (): void => this.TestPINode()],
+            ['PIDefaults', (): void => this.TestPIDefaults()],
         ]);
     }
 }

@@ -123,10 +123,10 @@ export class FragmentSlotTests implements TestSet {
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['testAsFragment', (): void => this.testAsFragment()],
-            ['testAsPage', (): void => this.testAsPage()],
-            ['testFragmentRoot', (): void => this.testFragmentRoot()],
-            ['testFragmentInSlot', (): void => this.testFragmentInSlot()]
+            ['AsFragment', (): void => this.testAsFragment()],
+            ['AsPage', (): void => this.testAsPage()],
+            ['FragmentRoot', (): void => this.testFragmentRoot()],
+            ['FragmentInSlot', (): void => this.testFragmentInSlot()]
         ]);
     }
 

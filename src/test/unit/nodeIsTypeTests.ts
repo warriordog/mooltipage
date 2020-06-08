@@ -153,15 +153,15 @@ export class NodeIsTypeTests implements TestSet {
     readonly setName: string = 'NodeIsTypeTests';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['TestIsTagNode', (): void => this.TestIsTagNode()],
-            ['TestIsTextNode', (): void => this.TestIsTextNode()],
-            ['TestIsCommentNode', (): void => this.TestIsCommentNode()],
-            ['TestIsPINode', (): void => this.TestIsPINode()],
-            ['TestIsDocumentNode', (): void => this.TestIsDocumentNode()],
-            ['TestIsCdataNode', (): void => this.TestIsCdataNode()],
-            ['TestIsNodeWithChildren', (): void => this.TestIsNodeWithChildren()],
-            ['TestIsNodeWithText', (): void => this.TestIsNodeWithText()],
-            ['TestIsNodeWithData', (): void => this.TestIsNodeWithData()],
+            ['IsTagNode', (): void => this.TestIsTagNode()],
+            ['IsTextNode', (): void => this.TestIsTextNode()],
+            ['IsCommentNode', (): void => this.TestIsCommentNode()],
+            ['IsPINode', (): void => this.TestIsPINode()],
+            ['IsDocumentNode', (): void => this.TestIsDocumentNode()],
+            ['IsCdataNode', (): void => this.TestIsCdataNode()],
+            ['IsNodeWithChildren', (): void => this.TestIsNodeWithChildren()],
+            ['IsNodeWithText', (): void => this.TestIsNodeWithText()],
+            ['IsNodeWithData', (): void => this.TestIsNodeWithData()],
         ]);
     }
 }
