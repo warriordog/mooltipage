@@ -10,6 +10,7 @@ import { UsageContextTests } from './unit/usageContextTests';
 import { NodeConstructorTests } from './unit/nodeConstructorTests';
 import { NodeIsTypeTests } from './unit/nodeIsTypeTests';
 import { TemplateTextTests } from './endToEnd/templateTextTests';
+import { VarsTests } from './endToEnd/varsTests';
 
 // create test runner instance
 const testRunner: TestRunner = new TestRunner();
@@ -33,7 +34,8 @@ testRunner.addTestSetGroups(
         new BasicHtmlTests(),
         new FragmentOnlyTests(),
         new FragmentSlotTests(),
-        new TemplateTextTests()
+        new TemplateTextTests(),
+        new VarsTests()
     ])
 );
 

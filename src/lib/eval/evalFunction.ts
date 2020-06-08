@@ -1,5 +1,4 @@
-import { Pipeline } from "../pipeline/pipeline";
-import { Fragment } from "../pipeline/fragment";
-import { Page } from "../pipeline/page";
+import { EvalContext } from "./evalContext";
 
-export type EvalFunction<T> = (pipeline: Pipeline, currentFragment: Fragment, currentPage: Page | null) => T;
+// the vars definition is a lie to make typescript shut up
+export type EvalFunction<T> = ($: EvalContext, ...vars: unknown[]) => T;

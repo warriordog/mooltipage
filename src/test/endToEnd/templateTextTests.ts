@@ -132,22 +132,22 @@ export class TemplateTextTests implements TestSet {
         const pipelineText = pipelineDiv?.firstChild;
         const fragmentDiv = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'fragment');
         const fragmentText = fragmentDiv?.firstChild;
-        const pageDiv = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'page');
-        const pageText = pageDiv?.firstChild;
+        const usageContextDiv = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'usageContext');
+        const usageContextText = usageContextDiv?.firstChild;
 
         // check content
         Assert.IsNotNullish(pipelineDiv);
         Assert.IsNotNullish(pipelineText);
         Assert.IsNotNullish(fragmentDiv);
         Assert.IsNotNullish(fragmentText);
-        Assert.IsNotNullish(pageDiv);
-        Assert.IsNotNullish(pageText);
+        Assert.IsNotNullish(usageContextDiv);
+        Assert.IsNotNullish(usageContextText);
         Assert.IsTrue(TextNode.isTextNode(pipelineText as Node));
         Assert.IsTrue(TextNode.isTextNode(fragmentText as Node));
-        Assert.IsTrue(TextNode.isTextNode(pageText as Node));
+        Assert.IsTrue(TextNode.isTextNode(usageContextText as Node));
         Assert.AreEqual((pipelineText as TextNode).text, 'true');
         Assert.AreEqual((fragmentText as TextNode).text, 'true');
-        Assert.AreEqual((pageText as TextNode).text, 'true');
+        Assert.AreEqual((usageContextText as TextNode).text, 'true');
     }
 
     // test data
@@ -205,23 +205,23 @@ export class TemplateTextTests implements TestSet {
                     <title>Template Text Tests</title>
                 </head>
                 <body>
-                    <div id="pipeline">\${ pipeline != null }</div>
-                    <div id="fragment">\${ currentFragment != null }</div>
-                    <div id="page">\${ currentPage != null }</div>
+                    <div id="pipeline">\${ $.pipeline != null }</div>
+                    <div id="fragment">\${ $.currentFragment != null }</div>
+                    <div id="usageContext">\${ $.usageContext == null }</div>
                 </body>
             </html>
         `);
 
         pipelineInterface.htmlSource.set('paramsFragment.html', `
-            <div id="pipeline">\${ pipeline != null }</div>
-            <div id="fragment">\${ currentFragment != null }</div>
-            <div id="page">\${ currentPage == null }</div>
+            <div id="pipeline">\${ $.pipeline != null }</div>
+            <div id="fragment">\${ $.currentFragment != null }</div>
+            <div id="usageContext">\${ $.usageContext != null }</div>
         `);
 
         pipelineInterface.htmlSource.set('slot.html', `
             <div id="outer">
                 <m-fragment src="slot2.html">
-                    <div id="template">\${ currentFragment.resId }</div>
+                    <div id="template">\${ $.currentFragment.resId }</div>
                 </m-fragment>
             </div>
         `);

@@ -1,10 +1,10 @@
-import { CompilerModule } from "../htmlCompiler";
+import { CompilerModule, CompileData } from "../htmlCompiler";
 import { Fragment } from "../../pipeline/fragment";
 import { UsageContext } from "../../pipeline/usageContext";
 import { DocumentNode, TagNode } from "../../dom/node";
 
 export class SlotModule implements CompilerModule {
-    compileFragment(fragment: Fragment, usageContext: UsageContext): void {
+    compileFragment(fragment: Fragment, compileData: CompileData, usageContext: UsageContext): void {
         const dom: DocumentNode = fragment.dom;
         
         // find slots
