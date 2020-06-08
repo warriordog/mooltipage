@@ -1,11 +1,10 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
-import { Node, TagNode, TextNode, DocumentNode } from "../../dom/node";
+import { TagNode, DocumentNode } from "../../dom/node";
 import { Fragment } from "../../pipeline/fragment";
 import { Page } from "../../pipeline/page";
 import { UsageContext } from "../../pipeline/usageContext";
 import { Pipeline } from "../../pipeline/pipeline";
 import { EvalEngine } from "../../eval/evalEngine";
-import { findTopLevelChildNodes } from "../../dom/nodeTools";
 import { EvalContext } from "../../eval/evalContext";
 
 const handlebarsRegex = /^\s*(?<!\\){{(.*)}}\s*$/;

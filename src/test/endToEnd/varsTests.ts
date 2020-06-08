@@ -3,7 +3,7 @@ import * as Assert from '../framework/assert';
 import { MemoryPipelineInterface } from '../mocks/memoryPipelineInterface';
 import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
-import { DocumentNode, TagNode, TextNode, Node } from '../../lib/dom/node';
+import { DocumentNode, TagNode, TextNode } from '../../lib/dom/node';
 import { Page } from '../../lib/pipeline/page';
 import { Pipeline } from '../../lib/pipeline/pipeline';
 import { PipelineImpl } from '../../lib/impl/pipelineImpl';
