@@ -3,9 +3,7 @@ import { Node, TagNode, TextNode, DocumentNode } from "../../dom/node";
 import { Fragment } from "../../pipeline/fragment";
 import { Page } from "../../pipeline/page";
 import { UsageContext } from "../../pipeline/usageContext";
-import { EvalEngine } from "../../eval/evalEngine";
-import { EvalFunction } from "../../eval/evalFunction";
-import { EvalContext } from "../../eval/evalContext";
+import { EvalEngine, EvalContext, EvalFunction } from "../../eval/evalEngine";
 import { Pipeline } from "../../pipeline/pipeline";
 
 const templateTextRegex = /\${(([^\\}]|\\}|\\)*)}/;

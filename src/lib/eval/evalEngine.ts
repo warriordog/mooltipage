@@ -1,5 +1,9 @@
-import { EvalContext, EvalVars } from './evalContext';
-import { EvalFunction } from './evalFunction';
+import { Pipeline } from '../pipeline/pipeline';
+import { Fragment } from '../pipeline/fragment';
+import { UsageContext } from '../pipeline/usageContext';
+
+// the vars definition is a lie to make typescript shut up
+export type EvalFunction<T> = ($: EvalContext, ...vars: unknown[]) => T;
 
 export class EvalEngine {
     executeFunction<T>(func: EvalFunction<T>, context: EvalContext): T {
@@ -48,3 +52,12 @@ export class EvalEngine {
         }
     }
 }
+
+export interface EvalContext {
+    readonly pipeline: Pipeline;
+    readonly currentFragment: Fragment;
+    readonly usageContext?: UsageContext;
+    readonly vars: EvalVars;
+}
+
+export type EvalVars = Map<string, unknown>;

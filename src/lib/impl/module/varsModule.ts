@@ -4,8 +4,7 @@ import { Fragment } from "../../pipeline/fragment";
 import { Page } from "../../pipeline/page";
 import { UsageContext } from "../../pipeline/usageContext";
 import { Pipeline } from "../../pipeline/pipeline";
-import { EvalEngine } from "../../eval/evalEngine";
-import { EvalContext } from "../../eval/evalContext";
+import { EvalEngine, EvalContext } from "../../eval/evalEngine";
 
 const handlebarsRegex = /^\s*(?<!\\){{(.*)}}\s*$/;
 
