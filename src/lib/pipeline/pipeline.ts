@@ -69,7 +69,7 @@ export class Pipeline {
 
     compileTemplateString(templateText: string, evalContext: EvalContext): EvalContent<string> {
         // create signature
-        const signature: string = this.evalEngine.getFunctionSignature(templateText, evalContext.vars);
+        const signature: string = this.evalEngine.getFunctionSignature(templateText, evalContext.scope);
 
         // return from cache if present
         if (this.cache.hasTemplateString(signature)) {
@@ -77,7 +77,7 @@ export class Pipeline {
         }
 
         // parse into function
-        const templateFunc: EvalContent<string> = this.evalEngine.parseTemplateString(templateText, evalContext.vars);
+        const templateFunc: EvalContent<string> = this.evalEngine.parseTemplateString(templateText, evalContext.scope);
         
         // store in cache
         this.cache.storeTemplateString(signature, templateFunc);
@@ -86,9 +86,17 @@ export class Pipeline {
         return templateFunc;
     }
 
+    executeTemplateString(templateText: string, evalContext: EvalContext): string {
+        const templateFunc: EvalContent<string> = this.compileTemplateString(templateText, evalContext);
+
+        const result: string = templateFunc.invoke(evalContext);
+
+        return result;
+    }
+
     compileHandlebars(handlebarsText: string, evalContext: EvalContext): EvalContent<unknown> {
         // create signature
-        const signature: string = this.evalEngine.getFunctionSignature(handlebarsText, evalContext.vars);
+        const signature: string = this.evalEngine.getFunctionSignature(handlebarsText, evalContext.scope);
 
         // return from cache if present
         if (this.cache.hasHandlebars(signature)) {
@@ -96,13 +104,44 @@ export class Pipeline {
         }
 
         // parse into function
-        const handlebarsFunc: EvalContent<unknown> = this.evalEngine.parseHandlebars(handlebarsText, evalContext.vars);
+        const handlebarsFunc: EvalContent<unknown> = this.evalEngine.parseHandlebars(handlebarsText, evalContext.scope);
         
         // store in cache
         this.cache.storeHandlebars(signature, handlebarsFunc);
 
         // return it
         return handlebarsFunc;
+    }
+
+    executeHandlebars(handlebarsText: string, evalContext: EvalContext): unknown {
+        const handlebarsFunc: EvalContent<unknown> = this.compileHandlebars(handlebarsText, evalContext);
+
+        const result: unknown = handlebarsFunc.invoke(evalContext);
+
+        return result;
+    }
+
+    compileDomText(value: string | null, evalContext: EvalContext): unknown {
+        // value is null
+        if (value == null) {
+            return null;
+        }
+
+        // value is template string
+        if (templateTextRegex.test(value)) {
+            return this.executeTemplateString(value, evalContext);
+        }
+
+        // value is handlebars
+        const handlebarsMatches: RegExpMatchArray | null = value.match(handlebarsRegex);
+        if (handlebarsMatches != null && handlebarsMatches.length == 2) {
+            const handlebarCode: string = handlebarsMatches[1];
+
+            return this.executeHandlebars(handlebarCode, evalContext);
+        }
+
+        // value is plain string
+        return value;
     }
 
     reset(): void {
@@ -138,3 +177,9 @@ export class Pipeline {
         }
     }
 }
+
+// regular expression to detect a JS template string litteral
+export const templateTextRegex = /\${(([^\\}]|\\}|\\)*)}/;
+
+// regular expression to detect handlebars {{ }}
+export const handlebarsRegex = /^\s*(?<!\\){{(.*)}}\s*$/;

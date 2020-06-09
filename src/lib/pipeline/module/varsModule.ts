@@ -1,42 +1,31 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
 import { TagNode, DocumentNode } from "../../dom/node";
-import { Fragment } from "../fragment";
-import { UsageContext } from "../usageContext";
-import { Pipeline } from "../pipeline";
 import { EvalContext } from "../evalEngine";
 
-const handlebarsRegex = /^\s*(?<!\\){{(.*)}}\s*$/;
-
 export class VarsModule implements CompilerModule {
-    private readonly pipeline: Pipeline;
 
-    constructor(pipeline: Pipeline) {
-        this.pipeline = pipeline;
-    }
-
-    compileFragment(fragment: Fragment, compileData: CompileData, usageContext: UsageContext): void {
+    compileFragment(compileData: CompileData): void {
         // find all vars
-        const varElems: TagNode[] = this.findVarElems(fragment.dom);
-
-        // create eval context
-        const evalContext: EvalContext = {
-            pipeline: this.pipeline,
-            currentFragment: fragment,
-            usageContext: usageContext,
-            vars: compileData.vars
+        const varElems: TagNode[] = this.findVarElems(compileData.fragment.dom);
+        
+        // only process if there are any vars
+        if (varElems.length > 0) {
+    
+            // create eval context
+            const evalContext: EvalContext = compileData.createEvalContext();
+    
+            // compute values
+            const varValues: Map<string, unknown> = this.getVarValues(compileData, varElems, evalContext);
+    
+            // save in compile data
+            compileData.vars = varValues;
+    
+            // remove from DOM
+            this.removeVarElems(varElems);
         }
-
-        // compute values
-        const varValues: Map<string, unknown> = this.getVarValues(varElems, evalContext);
-
-        // save in compile data
-        compileData.vars = varValues;
-
-        // remove from DOM
-        this.removeVarElems(varElems);
     }
 
-    private getVarValues(varElems: TagNode[], evalContext: EvalContext): Map<string, unknown> {
+    private getVarValues(compileData: CompileData, varElems: TagNode[], evalContext: EvalContext): Map<string, unknown> {
         const varValues: Map<string, unknown> = new Map();
 
         for (const elem of varElems) {
@@ -45,36 +34,13 @@ export class VarsModule implements CompilerModule {
                 const value: string | null = attr[1];
 
                 // compute real value
-                const varValue = this.computeVarValue(value, evalContext);
+                const varValue = compileData.pipeline.compileDomText(value, evalContext);
 
                 varValues.set(key, varValue);
             }
         }
 
         return varValues;
-    }
-
-    private computeVarValue(value: string | null, evalContext: EvalContext): unknown {
-        if (value == null) {
-            return null;
-        }
-        
-        const matches: RegExpMatchArray | null = value.match(handlebarsRegex);
-
-        if (matches == null || matches.groups == null || matches.length != 2) {
-            return value;
-        }
-
-        // JS regex is weird
-        const functionBody: string = matches[1];
-
-        // parse handlebars
-        const evalContent = this.pipeline.compileHandlebars(functionBody, evalContext);
-
-        // execute
-        const varValue: unknown = evalContent.invoke(evalContext);
-
-        return varValue;
     }
 
     private findVarElems(dom: DocumentNode): TagNode[] {

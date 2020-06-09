@@ -36,13 +36,37 @@ export class UsageContextTests implements TestSet {
         Assert.IsTrue(usage.slotContents.has('foo'));
     }
 
+    private testConstructorUndefParams(): void {
+        const usage: UsageContext = new UsageContext(false, undefined, undefined);
+
+        Assert.IsNotNullish(usage.fragmentParams);
+        Assert.IsEmpty(usage.fragmentParams)
+    }
+
+    private testConstructorValidParams(): void {
+        const fragmentParams: Map<string, unknown> = new Map([
+            ['key1', 'val1'],
+            ['key2', 'val2']
+        ]);
+
+        const usage: UsageContext = new UsageContext(false, undefined, fragmentParams);
+
+        Assert.IsNotNullish(usage.fragmentParams);
+        Assert.IsNotEmpty(usage.fragmentParams);
+        Assert.AreEqual(usage.fragmentParams.size, 2);
+        Assert.IsTrue(usage.fragmentParams.has('key1'));
+        Assert.IsTrue(usage.fragmentParams.has('key2'));
+    }
+
     // test set boilerplate
     readonly setName: string = 'UsageContextTests';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
             ['ConstructorPage', (): void => this.testConstructorPage()],
             ['ConstructorUndefSlots', (): void => this.testConstructorUndefSlots()],
-            ['ConstructorValidSlots', (): void => this.testConstructorValidSlots()]
+            ['ConstructorValidSlots', (): void => this.testConstructorValidSlots()],
+            ['ConstructorUndefParams', (): void => this.testConstructorUndefParams()],
+            ['ConstructorValidParams', (): void => this.testConstructorValidParams()]
         ]);
     }
 }

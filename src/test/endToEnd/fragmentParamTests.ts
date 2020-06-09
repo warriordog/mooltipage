@@ -6,10 +6,36 @@ import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode, TextNode } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';
 
-export class VarsTests implements TestSet {
+export class FragmentParamTests implements TestSet {
+
+    private testSetPage(): void {
+        // compile page
+        const page: Fragment = this.getPipeline().compilePage('setPage.html');
+        const dom: DocumentNode = page.dom;
+        
+        // get content
+        const mVars = dom.findChildTags((node: TagNode) => node.tagName === 'm-var');
+        const text = dom.findChildTag((node: TagNode) => node.tagName === 'div')?.firstChild as TextNode | null | undefined;
+
+        // validate
+        Assert.IsEmpty(mVars);
+        Assert.IsNotNull(text);
+        Assert.AreEqual(text?.text, 'value');
+    }
 
     private testSetFragment(): void {
-        this.testBasic('setFragment.html');
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('setFragment.html', new UsageContext(false));
+        const dom: DocumentNode = fragment.dom;
+        
+        // get content
+        const mVars = dom.findChildTags((node: TagNode) => node.tagName === 'm-var');
+        const text = dom.findChildTag((node: TagNode) => node.tagName === 'div')?.firstChild as TextNode | null | undefined;
+
+        // validate
+        Assert.IsEmpty(mVars);
+        Assert.IsNotNull(text);
+        Assert.AreEqual(text?.text, 'value');
     }
 
     private testSetMulti(): void {
@@ -63,46 +89,40 @@ export class VarsTests implements TestSet {
         Assert.AreEqual(text6?.text, 'value6');
     }
 
-    private testSetComputedHandlebars(): void {
-        this.testBasic('setComputedHandlebars.html');
-    }
-
-    private testSetComputedTemplate(): void {
-        this.testBasic('setComputedTemplate.html');
-    }
-
-    private testSetComputedMixed(): void {
+    private testSetNoParams(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setComputedMixed.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('noParams1.html', new UsageContext(false));
         const dom: DocumentNode = fragment.dom;
         
         // get content
-        const mVars = dom.findChildTags((node: TagNode) => node.tagName === 'm-var');
-        const text1 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key1')?.firstChild as TextNode | null | undefined;
-        const text2 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key2')?.firstChild as TextNode | null | undefined;
+        const valueKey = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'noParams')?.attributes.get('result');
 
         // validate
-        Assert.IsEmpty(mVars);
-        Assert.IsNotNull(text1);
-        Assert.IsNotNull(text2);
-        Assert.AreEqual(text1?.text, 'value1');
-        Assert.AreEqual(text2?.text, 'value2');
+        Assert.AreEqual(valueKey, 'value');
     }
 
-    // shared test code
-
-    private testBasic(resId: string): void {
-        const fragment: Fragment = this.getPipeline().compileFragment(resId, new UsageContext(false));
+    private testSetParamOnly(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('paramOnly1.html', new UsageContext(false));
         const dom: DocumentNode = fragment.dom;
         
         // get content
-        const mVars = dom.findChildTags((node: TagNode) => node.tagName === 'm-var');
-        const text = dom.findChildTag((node: TagNode) => node.tagName === 'div')?.firstChild as TextNode | null | undefined;
+        const paramKey = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'paramOnly')?.attributes.get('result');
 
         // validate
-        Assert.IsEmpty(mVars);
-        Assert.IsNotNull(text);
-        Assert.AreEqual(text?.text, 'value');
+        Assert.AreEqual(paramKey, 'value');
+    }
+
+    private testSetValueOverwrite(): void {
+        // compile fragment
+        const fragment: Fragment = this.getPipeline().compileFragment('valueOverwrite1.html', new UsageContext(false));
+        const dom: DocumentNode = fragment.dom;
+        
+        // get content
+        const paramKey = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'valueOverwrite')?.attributes.get('result');
+
+        // validate
+        Assert.AreEqual(paramKey, 'inner');
     }
 
 
@@ -114,16 +134,13 @@ export class VarsTests implements TestSet {
 
     // test set boilerplate
 
-    readonly setName: string = 'VarsTests';
+    readonly setName: string = 'FragmentParamTests';
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['SetFragment', (): void => this.testSetFragment()],
-            ['SetMulti', (): void => this.testSetMulti()],
-            ['SetMultiMulti', (): void => this.testSetMultiMulti()],
-            ['SetComputedHandlebars', (): void => this.testSetComputedHandlebars()],
-            ['SetComputedTemplate', (): void => this.testSetComputedTemplate()],
-            ['SetComputedMixed', (): void => this.testSetComputedMixed()]
+            ['NoParams', (): void => this.testSetNoParams()],
+            ['ParamOnly', (): void => this.testSetParamOnly()],
+            ['ValueOverwrite', (): void => this.testSetValueOverwrite()]
         ]);
     }
     
@@ -135,43 +152,33 @@ export class VarsTests implements TestSet {
         const pipelineInterface = new MemoryPipelineInterface();
         this.pipeline = new Pipeline(pipelineInterface);
 
-        pipelineInterface.htmlSource.set('setFragment.html', `
-            <m-var key="value"></m-var>
-            <div>\${ key }</div>
+        pipelineInterface.htmlSource.set('noParams1.html', `
+            <div>
+                <m-fragment src="noParams2.html"></m-fragment>
+            </div>
+        `);
+        pipelineInterface.htmlSource.set('noParams2.html', `
+            <m-var valuekey="value"></m-var>
+            <div id="noParams" result="\${ valuekey }"></div>
         `);
 
-        pipelineInterface.htmlSource.set('setMulti.html', `
-            <m-var key1="value1" key2="value2" key3="value3"></m-var>
-            <div id="key1">\${ key1 }</div>
-            <div id="key2">\${ key2 }</div>
-            <div id="key3">\${ key3 }</div>
+        pipelineInterface.htmlSource.set('paramOnly1.html', `
+            <div>
+                <m-fragment src="paramOnly2.html" paramkey="value"></m-fragment>
+            </div>
+        `);
+        pipelineInterface.htmlSource.set('paramOnly2.html', `
+            <div id="paramOnly" result="\${ paramkey }"></div>
         `);
 
-        pipelineInterface.htmlSource.set('setMultiMulti.html', `
-            <m-var key1="value1" key2="value2" key3="value3"></m-var>
-            <m-var key4="value4" key5="value5" key6="value6"></m-var>
-            <div id="key1">\${ key1 }</div>
-            <div id="key2">\${ key2 }</div>
-            <div id="key3">\${ key3 }</div>
-            <div id="key4">\${ key4 }</div>
-            <div id="key5">\${ key5 }</div>
-            <div id="key6">\${ key6 }</div>
+        pipelineInterface.htmlSource.set('valueOverwrite1.html', `
+            <div>
+                <m-fragment src="valueOverwrite2.html" paramkey="outer"></m-fragment>
+            </div>
         `);
-
-        pipelineInterface.htmlSource.set('setComputedHandlebars.html', `
-            <m-var key="{{ 'value' }}"></m-var>
-            <div id="key">\${ key }</div>
-        `);
-
-        pipelineInterface.htmlSource.set('setComputedTemplate.html', `
-            <m-var key="\${ 'value' }"></m-var>
-            <div id="key">\${ key }</div>
-        `);
-
-        pipelineInterface.htmlSource.set('setComputedMixed.html', `
-            <m-var key1="{{ 'value1' }}" key2="\${ 'value2' }"></m-var>
-            <div id="key1">\${ key1 }</div>
-            <div id="key2">\${ key2 }</div>
+        pipelineInterface.htmlSource.set('valueOverwrite2.html', `
+            <m-var paramkey="inner"></m-var>
+            <div id="valueOverwrite" result="\${ paramkey }"></div>
         `);
     }
 }

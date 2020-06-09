@@ -1,11 +1,14 @@
 import { DocumentNode } from '../dom/node';
+import { EvalVars } from './evalEngine';
 
 export class UsageContext {
-    readonly slotContents: Map<string, DocumentNode>;
     readonly isPage: boolean;
+    readonly slotContents: Map<string, DocumentNode>;
+    readonly fragmentParams: EvalVars;
 
-    constructor(isPage: boolean, slotContents?: Map<string, DocumentNode>) {
+    constructor(isPage: boolean, slotContents?: Map<string, DocumentNode>, fragmentParams?: EvalVars) {
         this.isPage = isPage;
-        this.slotContents = slotContents ?? new Map<string, DocumentNode>();
+        this.slotContents = slotContents ?? new Map();
+        this.fragmentParams = fragmentParams ?? new Map();
     }
 }

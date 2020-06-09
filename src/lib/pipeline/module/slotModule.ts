@@ -1,19 +1,18 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
-import { Fragment } from "../../pipeline/fragment";
 import { UsageContext } from "../../pipeline/usageContext";
 import { DocumentNode, TagNode } from "../../dom/node";
 
 export class SlotModule implements CompilerModule {
-    compileFragment(fragment: Fragment, compileData: CompileData, usageContext: UsageContext): void {
+    compileFragment(compileData: CompileData): void {
         // don't run for pages
-        if (!usageContext.isPage) {
-            const dom: DocumentNode = fragment.dom;
+        if (!compileData.usageContext.isPage) {
+            const dom: DocumentNode = compileData.fragment.dom;
             
             // find slots
             const slots: Slot[] = this.findSlots(dom);
     
             // process slots
-            this.processSlots(slots, usageContext);
+            this.processSlots(slots, compileData.usageContext);
         }
     }
 
