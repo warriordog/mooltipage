@@ -5,7 +5,6 @@ import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';
-import { PipelineImpl } from '../../lib/pipeline/pipelineImpl';
 
 export class FragmentSlotTests implements TestSet {
 
@@ -135,7 +134,7 @@ export class FragmentSlotTests implements TestSet {
 
     beforeTest(): void {
         const pipelineInterface = new MemoryPipelineInterface();
-        this.pipeline = new PipelineImpl(pipelineInterface, pipelineInterface);
+        this.pipeline = new Pipeline(pipelineInterface);
 
         pipelineInterface.htmlSource.set('page.html', `
             <!DOCTYPE HTML>

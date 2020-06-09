@@ -5,7 +5,6 @@ import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode, TextNode } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';
-import { PipelineImpl } from '../../lib/pipeline/pipelineImpl';
 
 export class VarsTests implements TestSet {
 
@@ -116,7 +115,7 @@ export class VarsTests implements TestSet {
 
     beforeTest(): void {
         const pipelineInterface = new MemoryPipelineInterface();
-        this.pipeline = new PipelineImpl(pipelineInterface, pipelineInterface);
+        this.pipeline = new Pipeline(pipelineInterface);
 
         pipelineInterface.htmlSource.set('setPage.html', `
             <!DOCTYPE HTML>

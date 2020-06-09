@@ -5,7 +5,6 @@ import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, Node, TagNode, TextNode } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';
-import { PipelineImpl } from '../../lib/pipeline/pipelineImpl';
 
 export class BasicHtmlTests implements TestSet {
     // test methods
@@ -112,7 +111,7 @@ export class BasicHtmlTests implements TestSet {
 
     beforeTest(): void {
         this.pipelineInterface = new MemoryPipelineInterface();
-        this.pipeline = new PipelineImpl(this.pipelineInterface, this.pipelineInterface);
+        this.pipeline = new Pipeline(this.pipelineInterface);
         
         this.pipelineInterface.htmlSource.set('test1.html', `
             <div id="div1">

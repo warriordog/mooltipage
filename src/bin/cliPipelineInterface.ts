@@ -1,8 +1,7 @@
-import { HtmlSource } from '../lib/pipeline/htmlSource';
-import { HtmlDestination } from '../lib/pipeline/htmlDestination';
+import { PipelineInterface } from '../lib/pipeline/pipelineInterface';
 import CliFileSystem from './io/cliFileSystem';
 
-export default class CliPipelineInterface implements HtmlSource, HtmlDestination {
+export default class CliPipelineInterface implements PipelineInterface {
     private readonly sourcePath: string | null;
     private readonly destinationPath: string | null;
     private readonly cliFs: CliFileSystem;

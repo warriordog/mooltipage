@@ -1,6 +1,5 @@
 import { Args } from "./args";
 import CliPipelineInterface from './cliPipelineInterface';
-import { PipelineImpl } from '../lib/pipeline/pipelineImpl';
 import PathUtils from './pathUtils';
 import CliFileSystem from './io/cliFileSystem';
 import { HtmlFormatter } from "../lib/pipeline/htmlFormatter";
@@ -58,7 +57,7 @@ export default class MooltiPageCli {
         const formatter = this.createFormatter();
 
         // create pipeline
-        const pipeline: Pipeline = new PipelineImpl(fsInterface, fsInterface, formatter);
+        const pipeline: Pipeline = new Pipeline(fsInterface, formatter);
         
         console.log(`Source path: [${inDir}]`);
         console.log(`Destination path: [${outDir}]`);
