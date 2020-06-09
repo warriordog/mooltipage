@@ -1,7 +1,7 @@
-import { Fragment } from "../pipeline/fragment";
-import { Page } from "../pipeline/page";
+import { Fragment } from "./fragment";
 import { DocumentNode, Node, TextNode, NodeWithChildren } from '../dom/node';
-import { HtmlFormatter } from "../pipeline/htmlFormatter";
+import { HtmlFormatter } from "./htmlFormatter";
+import { UsageContext } from "./usageContext";
 
 export class BasicHtmlFormatter implements HtmlFormatter {
     private readonly isPretty: boolean;
@@ -19,19 +19,17 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         return html;
     }
 
-    // fragment-level formatting is not supported by this class
-    formatFragment(fragment: Fragment): Fragment {
+    formatFragment(fragment: Fragment, usageContext: UsageContext): Fragment {
+        // only format pages
+        if (usageContext.isPage) {
+            // pages are mutable, so we can edit in place
+            const dom: DocumentNode = fragment.dom;
+    
+            // format whitespace
+            this.formatWhitespace(dom);
+        }
+
         return fragment;
-    }
-
-    formatPage(page: Page): Page {
-        // pages are mutable, so we can edit in place
-        const dom: DocumentNode = page.dom;
-
-        // format whitespace
-        this.formatWhitespace(dom);
-
-        return page;
     }
 
     protected formatWhitespace(startNode: Node, depth = 0): void {

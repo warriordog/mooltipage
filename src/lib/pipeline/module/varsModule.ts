@@ -1,31 +1,20 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
 import { TagNode, DocumentNode } from "../../dom/node";
-import { Fragment } from "../../pipeline/fragment";
-import { Page } from "../../pipeline/page";
-import { UsageContext } from "../../pipeline/usageContext";
-import { Pipeline } from "../../pipeline/pipeline";
-import { EvalEngine, EvalContext } from "../../eval/evalEngine";
+import { Fragment } from "../fragment";
+import { UsageContext } from "../usageContext";
+import { Pipeline } from "../pipeline";
+import { EvalContext } from "../evalEngine";
 
 const handlebarsRegex = /^\s*(?<!\\){{(.*)}}\s*$/;
 
 export class VarsModule implements CompilerModule {
-    private readonly evalEngine: EvalEngine;
     private readonly pipeline: Pipeline;
 
     constructor(pipeline: Pipeline) {
         this.pipeline = pipeline;
-        this.evalEngine = new EvalEngine();
     }
 
     compileFragment(fragment: Fragment, compileData: CompileData, usageContext: UsageContext): void {
-        this.processVars(fragment, compileData, usageContext);
-    }
-
-    compilePage(page: Page, compileData: CompileData): void {
-        this.processVars(page, compileData);
-    }
-
-    private processVars(fragment: Fragment, compileData: CompileData, usageContext?: UsageContext): void {
         // find all vars
         const varElems: TagNode[] = this.findVarElems(fragment.dom);
 
@@ -79,8 +68,11 @@ export class VarsModule implements CompilerModule {
         // JS regex is weird
         const functionBody: string = matches[1];
 
+        // parse handlebars
+        const evalContent = this.pipeline.compileHandlebars(functionBody, evalContext);
+
         // execute
-        const varValue: unknown = this.evalEngine.evalHandlebars(functionBody, evalContext);
+        const varValue: unknown = evalContent.invoke(evalContext);
 
         return varValue;
     }

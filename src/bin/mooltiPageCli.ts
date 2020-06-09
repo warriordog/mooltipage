@@ -1,11 +1,11 @@
 import { Args } from "./args";
 import CliPipelineInterface from './cliPipelineInterface';
-import { PipelineImpl } from '../lib/impl/pipelineImpl';
+import { PipelineImpl } from '../lib/pipeline/pipelineImpl';
 import PathUtils from './pathUtils';
 import CliFileSystem from './io/cliFileSystem';
 import { HtmlFormatter } from "../lib/pipeline/htmlFormatter";
 import { Pipeline } from '../lib/pipeline/pipeline';
-import { BasicHtmlFormatter } from '../lib/impl/basicHtmlFormatter';
+import { BasicHtmlFormatter } from '../lib/pipeline/basicHtmlFormatter';
 import os from 'os';
 
 export default class MooltiPageCli {

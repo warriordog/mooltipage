@@ -1,14 +1,18 @@
 import { Fragment } from './fragment';
-import { Page } from './page';
+import { EvalContent } from './evalEngine';
 
 export class PipelineCache {
     private readonly fragmentCache: Map<string, Fragment>;
-    private readonly pageCache: Map<string, Page>;
+    private readonly templateStringCache: Map<string, EvalContent<string>>;
+    private readonly handlebarsCache: Map<string, EvalContent<unknown>>;
 
     constructor() {
-        this.fragmentCache = new Map<string, Fragment>();
-        this.pageCache = new Map<string, Page>();
+        this.fragmentCache = new Map();
+        this.templateStringCache = new Map();
+        this.handlebarsCache = new Map();
     }
+
+    // Fragment
 
     hasFragment(resId: string): boolean {
         return this.fragmentCache.has(resId);
@@ -17,7 +21,7 @@ export class PipelineCache {
     getFragment(resId: string): Fragment {
         const fragment: Fragment | undefined = this.fragmentCache.get(resId);
 
-        if (fragment === undefined) {
+        if (fragment == undefined) {
             throw new Error(`Fragment not found in cache: ${resId}.  Make sure to call hasFragment() before getFragment().`);
         }
 
@@ -28,26 +32,51 @@ export class PipelineCache {
         this.fragmentCache.set(fragment.resId, fragment);
     }
 
-    hasPage(resId: string): boolean {
-        return this.pageCache.has(resId);
+    // Template string
+
+    hasTemplateString(signature: string): boolean {
+        return this.templateStringCache.has(signature);
     }
 
-    getPage(resId: string): Page {
-        const page: Page | undefined = this.pageCache.get(resId);
+    getTemplateString(signature: string): EvalContent<string> {
+        const templateFunc: EvalContent<string> | undefined = this.templateStringCache.get(signature);
 
-        if (page === undefined) {
-            throw new Error(`Page not found in cache: ${resId}.  Make sure to call hasPage() before getPage().`);
+        if (templateFunc == undefined) {
+            throw new Error(`Template string function not found in cache: ${signature}.  Make sure to call hasTemplateString() before getTemplateString().`);
         }
 
-        return page;
+        return templateFunc;
     }
 
-    storePage(page: Page): void {
-        this.pageCache.set(page.resId, page);
+    storeTemplateString(signature: string, templateFunc: EvalContent<string>): void {
+        this.templateStringCache.set(signature, templateFunc);
     }
+
+    // Handlebars
+
+    hasHandlebars(signature: string): boolean {
+        return this.handlebarsCache.has(signature);
+    }
+
+    getHandlebars(signature: string): EvalContent<unknown> {
+        const handlebarsFunc: EvalContent<unknown> | undefined = this.handlebarsCache.get(signature);
+
+        if (handlebarsFunc == undefined) {
+            throw new Error(`Handlebars function not found in cache: ${signature}.  Make sure to call hasHanldebars() before getHandlebars().`);
+        }
+
+        return handlebarsFunc;
+    }
+
+    storeHandlebars(signature: string, templateFunc: EvalContent<unknown>): void {
+        this.handlebarsCache.set(signature, templateFunc);
+    }
+
+    // general
 
     clear(): void {
-        this.pageCache.clear();
         this.fragmentCache.clear();
+        this.templateStringCache.clear();
+        this.handlebarsCache.clear();
     }
 }

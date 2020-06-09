@@ -5,13 +5,16 @@ import { DocumentNode, TagNode } from "../../dom/node";
 
 export class SlotModule implements CompilerModule {
     compileFragment(fragment: Fragment, compileData: CompileData, usageContext: UsageContext): void {
-        const dom: DocumentNode = fragment.dom;
-        
-        // find slots
-        const slots: Slot[] = this.findSlots(dom);
-
-        // process slots
-        this.processSlots(slots, usageContext);
+        // don't run for pages
+        if (!usageContext.isPage) {
+            const dom: DocumentNode = fragment.dom;
+            
+            // find slots
+            const slots: Slot[] = this.findSlots(dom);
+    
+            // process slots
+            this.processSlots(slots, usageContext);
+        }
     }
 
     private findSlots(dom: DocumentNode): Slot[] {

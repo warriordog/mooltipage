@@ -1,7 +1,6 @@
 import { CompilerModule } from "../htmlCompiler";
 import { Pipeline } from "../../pipeline/pipeline";
 import { Fragment } from "../../pipeline/fragment";
-import { Page } from "../../pipeline/page";
 import { UsageContext } from "../../pipeline/usageContext";
 import { Node, DocumentNode, TagNode, NodeWithChildren } from "../../dom/node";
 
@@ -15,16 +14,6 @@ export class FragmentModule implements CompilerModule {
     compileFragment(fragment: Fragment): void {
         const dom: DocumentNode = fragment.dom;
 
-        this.processFragments(dom);
-    }
-
-    compilePage(page: Page): void {
-        const dom: DocumentNode = page.dom;
-
-        this.processFragments(dom);
-    }
-
-    private processFragments(dom: DocumentNode): void {
         // extract fragments
         const fragmentRefs: FragmentReference[] = this.extractFragmentReferences(dom);
 
@@ -60,7 +49,7 @@ export class FragmentModule implements CompilerModule {
         // process each fragment
         for (const fragment of fragmentRefs) {
             // create usage context
-            const usageContext = new UsageContext(fragment.slotContents);
+            const usageContext = new UsageContext(false, fragment.slotContents);
 
             // call pipeline to load fragment
             const compiledContents: Fragment = this.pipeline.compileFragment(fragment.sourceResId, usageContext);

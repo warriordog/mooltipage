@@ -1,8 +1,7 @@
 import { Fragment } from "./fragment";
-import { Page } from "./page";
+import { UsageContext } from "./usageContext";
 
 export interface HtmlFormatter {
-    formatFragment(fragment: Fragment): void;
-    formatPage(page: Page): void;
+    formatFragment(fragment: Fragment, usageContext: UsageContext): void;
     formatHtml(resId: string, html: string): string;
 }

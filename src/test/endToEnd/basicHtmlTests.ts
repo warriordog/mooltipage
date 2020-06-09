@@ -4,16 +4,15 @@ import { MemoryPipelineInterface } from '../mocks/memoryPipelineInterface';
 import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, Node, TagNode, TextNode } from '../../lib/dom/node';
-import { Page } from '../../lib/pipeline/page';
 import { Pipeline } from '../../lib/pipeline/pipeline';
-import { PipelineImpl } from '../../lib/impl/pipelineImpl';
+import { PipelineImpl } from '../../lib/pipeline/pipelineImpl';
 
 export class BasicHtmlTests implements TestSet {
     // test methods
     
     private testFragmentCompile(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
+        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext(false));
         const dom: DocumentNode = fragment.dom;
 
         // get contents
@@ -45,7 +44,7 @@ export class BasicHtmlTests implements TestSet {
 
     private testFragmentNoOutput(): void {
         // compile fragment
-        this.getPipeline().compileFragment('test1.html', new UsageContext());
+        this.getPipeline().compileFragment('test1.html', new UsageContext(false));
 
         // verify no output
         Assert.IsFalse(this.getPipelineInterface().hasDestination('test1.html'));
@@ -53,7 +52,7 @@ export class BasicHtmlTests implements TestSet {
 
     private testPageCompile(): void {
         // compile page
-        const page: Page = this.getPipeline().compilePage('test2.html');
+        const page: Fragment = this.getPipeline().compilePage('test2.html');
         const dom: DocumentNode = page.dom;
 
         // get contents

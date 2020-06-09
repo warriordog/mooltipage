@@ -2,11 +2,13 @@ import { TestSet, TestCallback } from "../framework/testSet";
 import { PipelineCache } from "../../lib/pipeline/pipelineCache";
 import * as Assert from '../framework/assert';
 import { Fragment } from "../../lib/pipeline/fragment";
-import { Page } from "../../lib/pipeline/page";
 import { DocumentNode } from '../../lib/dom/node';
+import { EvalContent } from "../../lib/pipeline/evalEngine";
 
 export class PipelineCacheTests implements TestSet {
     // test methods
+
+    // fragment
 
     private testFragHasPresent(): void {
         const cache = new PipelineCache();
@@ -53,60 +55,113 @@ export class PipelineCacheTests implements TestSet {
         Assert.AreEqual(value, frag2);
     }
 
-    private testPageHasPresent(): void {
+    // template string
+
+    private testTemplateStringHasPresent(): void {
         const cache = new PipelineCache();
 
-        cache.storePage(new Page('foo', new DocumentNode()));
-        const hasValue: boolean = cache.hasPage('foo');
+        cache.storeTemplateString('foo', new EvalContent(() => 'foo'));
+        const hasValue: boolean = cache.hasTemplateString('foo');
 
         Assert.IsTrue(hasValue);
     } 
 
-    private testPageHasMissing(): void {
+    private testTemplateStringHasMissing(): void {
         const cache = new PipelineCache();
 
-        const hasValue: boolean = cache.hasPage('foo');
+        const hasValue: boolean = cache.hasTemplateString('foo');
 
         Assert.IsFalse(hasValue);
     } 
 
-    private testPageGetPresent(): void {
+    private testTemplateStringGetPresent(): void {
         const cache = new PipelineCache();
-        const page = new Page('foo', new DocumentNode());
+        const content = new EvalContent(() => 'foo');
 
-        cache.storePage(page);
-        const value: Page = cache.getPage('foo');
+        cache.storeTemplateString('foo', content);
+        const value = cache.getTemplateString('foo');
 
-        Assert.AreEqual(value, page);
+        Assert.AreEqual(value, content);
     }
     
-    private testPageGetMissing(): void {
+    private testTemplateStringGetMissing(): void {
         const cache = new PipelineCache();
 
-        Assert.Throws(() => cache.getPage('foo'));
+        Assert.Throws(() => cache.getTemplateString('foo'));
     }
 
-    private testPageOverwrite(): void {
+    private testTemplateStringOverwrite(): void {
         const cache = new PipelineCache();
-        const page1 = new Page('value1', new DocumentNode());
-        const page2 = new Page('value1', new DocumentNode());
+        const content1 = new EvalContent(() => 'foo1');
+        const content2 = new EvalContent(() => 'foo2');
 
-        cache.storePage(page1);
-        cache.storePage(page2);
-        const value: Page = cache.getPage('value1');
+        cache.storeTemplateString('foo', content1);
+        cache.storeTemplateString('foo', content2);
+        const value = cache.getTemplateString('foo');
 
-        Assert.AreEqual(value, page2);
+        Assert.AreEqual(value, content2);
     }
+
+    // template string
+
+    private testHandlebarsHasPresent(): void {
+        const cache = new PipelineCache();
+
+        cache.storeHandlebars('foo', new EvalContent(() => 'foo'));
+        const hasValue: boolean = cache.hasHandlebars('foo');
+
+        Assert.IsTrue(hasValue);
+    } 
+
+    private testHandlebarsHasMissing(): void {
+        const cache = new PipelineCache();
+
+        const hasValue: boolean = cache.hasHandlebars('foo');
+
+        Assert.IsFalse(hasValue);
+    } 
+
+    private testHandlebarsGetPresent(): void {
+        const cache = new PipelineCache();
+        const content = new EvalContent(() => 'foo');
+
+        cache.storeHandlebars('foo', content);
+        const value = cache.getHandlebars('foo');
+
+        Assert.AreEqual(value, content);
+    }
+    
+    private testHandlebarsGetMissing(): void {
+        const cache = new PipelineCache();
+
+        Assert.Throws(() => cache.getHandlebars('foo'));
+    }
+
+    private testHandlebarsOverwrite(): void {
+        const cache = new PipelineCache();
+        const content1 = new EvalContent(() => 'foo1');
+        const content2 = new EvalContent(() => 'foo2');
+
+        cache.storeHandlebars('foo', content1);
+        cache.storeHandlebars('foo', content2);
+        const value = cache.getHandlebars('foo');
+
+        Assert.AreEqual(value, content2);
+    }
+
+    // general
 
     private testClear(): void {
         const cache = new PipelineCache();
-        cache.storePage(new Page('res1', new DocumentNode()));
-        cache.storeFragment(new Fragment('res2', new DocumentNode()));
+        cache.storeFragment(new Fragment('foo', new DocumentNode()));
+        cache.storeTemplateString('foo', new EvalContent(() => 'foo'));
+        cache.storeHandlebars('foo', new EvalContent(() => 'foo'));
 
         cache.clear();
 
-        Assert.IsFalse(cache.hasPage('res1'));
-        Assert.IsFalse(cache.hasFragment('res2'));
+        Assert.IsFalse(cache.hasFragment('foo'));
+        Assert.IsFalse(cache.hasTemplateString('foo'));
+        Assert.IsFalse(cache.hasHandlebars('foo'));
     }
 
     // test set boilerplate
@@ -118,11 +173,16 @@ export class PipelineCacheTests implements TestSet {
             ['FragGetPresent', (): void => this.testFragGetPresent()],
             ['FragGetMissing', (): void => this.testFragGetMissing()],
             ['FragOverwrite', (): void => this.testFragOverwrite()],
-            ['PageHasPresent', (): void => this.testPageHasPresent()],
-            ['PageHasMissing', (): void => this.testPageHasMissing()],
-            ['PageGetPresent', (): void => this.testPageGetPresent()],
-            ['PageGetMissing', (): void => this.testPageGetMissing()],
-            ['PageOverwrite', (): void => this.testPageOverwrite()],
+            ['TemplateStringHasPresent', (): void => this.testTemplateStringHasPresent()],
+            ['TemplateStringHasMissing', (): void => this.testTemplateStringHasMissing()],
+            ['TemplateStringGetPresent', (): void => this.testTemplateStringGetPresent()],
+            ['TemplateStringGetMissing', (): void => this.testTemplateStringGetMissing()],
+            ['TemplateStringOverwrite', (): void => this.testTemplateStringOverwrite()],
+            ['HandlebarsHasPresent', (): void => this.testHandlebarsHasPresent()],
+            ['HandlebarsHasMissing', (): void => this.testHandlebarsHasMissing()],
+            ['HandlebarsGetPresent', (): void => this.testHandlebarsGetPresent()],
+            ['HandlebarsGetMissing', (): void => this.testHandlebarsGetMissing()],
+            ['HandlebarsOverwrite', (): void => this.testHandlebarsOverwrite()],
             ['Clear', (): void => this.testClear()]
         ]);
     }

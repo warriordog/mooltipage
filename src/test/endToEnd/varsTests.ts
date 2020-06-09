@@ -4,15 +4,14 @@ import { MemoryPipelineInterface } from '../mocks/memoryPipelineInterface';
 import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode, TextNode } from '../../lib/dom/node';
-import { Page } from '../../lib/pipeline/page';
 import { Pipeline } from '../../lib/pipeline/pipeline';
-import { PipelineImpl } from '../../lib/impl/pipelineImpl';
+import { PipelineImpl } from '../../lib/pipeline/pipelineImpl';
 
 export class VarsTests implements TestSet {
 
     private testSetPage(): void {
         // compile page
-        const page: Page = this.getPipeline().compilePage('setPage.html');
+        const page: Fragment = this.getPipeline().compilePage('setPage.html');
         const dom: DocumentNode = page.dom;
         
         // get content
@@ -27,7 +26,7 @@ export class VarsTests implements TestSet {
 
     private testSetFragment(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setFragment.html', new UsageContext());
+        const fragment: Fragment = this.getPipeline().compileFragment('setFragment.html', new UsageContext(false));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -42,7 +41,7 @@ export class VarsTests implements TestSet {
 
     private testSetMulti(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setMulti.html', new UsageContext());
+        const fragment: Fragment = this.getPipeline().compileFragment('setMulti.html', new UsageContext(false));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -63,7 +62,7 @@ export class VarsTests implements TestSet {
 
     private testSetMultiMulti(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setMultiMulti.html', new UsageContext());
+        const fragment: Fragment = this.getPipeline().compileFragment('setMultiMulti.html', new UsageContext(false));
         const dom: DocumentNode = fragment.dom;
         
         // get content

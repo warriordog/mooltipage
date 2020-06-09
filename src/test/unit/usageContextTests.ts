@@ -6,27 +6,28 @@ import { DocumentNode } from '../../lib/dom/node';
 export class UsageContextTests implements TestSet {
     // test methods
 
-    private testConstructorNoArgs(): void {
-        const usage: UsageContext = new UsageContext();
+    private testConstructorPage(): void {
+        const usage: UsageContext = new UsageContext(true);
+
+        Assert.IsTrue(usage.isPage);
+        Assert.IsNotNullish(usage.slotContents);
+        Assert.IsEmpty(usage.slotContents);
+    }
+
+    private testConstructorUndefSlots(): void {
+        const usage: UsageContext = new UsageContext(false, undefined);
 
         Assert.IsNotNullish(usage.slotContents);
         Assert.IsEmpty(usage.slotContents);
     }
 
-    private testConstructorUndefArgs(): void {
-        const usage: UsageContext = new UsageContext(undefined);
-
-        Assert.IsNotNullish(usage.slotContents);
-        Assert.IsEmpty(usage.slotContents);
-    }
-
-    private testConstructorValidArgs(): void {
+    private testConstructorValidSlots(): void {
         const slotContents: Map<string, DocumentNode> = new Map<string, DocumentNode>([
             ['a', new DocumentNode()],
             ['foo', new DocumentNode()]
         ]);
 
-        const usage: UsageContext = new UsageContext(slotContents);
+        const usage: UsageContext = new UsageContext(false, slotContents);
 
         Assert.IsNotNullish(usage.slotContents);
         Assert.IsNotEmpty(usage.slotContents);
@@ -39,9 +40,9 @@ export class UsageContextTests implements TestSet {
     readonly setName: string = 'UsageContextTests';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
-            ['ConstructorNoArgs', (): void => this.testConstructorNoArgs()],
-            ['ConstructorUndefArgs', (): void => this.testConstructorUndefArgs()],
-            ['ConstructorValidArgs', (): void => this.testConstructorValidArgs()]
+            ['ConstructorPage', (): void => this.testConstructorPage()],
+            ['ConstructorUndefSlots', (): void => this.testConstructorUndefSlots()],
+            ['ConstructorValidSlots', (): void => this.testConstructorValidSlots()]
         ]);
     }
 }

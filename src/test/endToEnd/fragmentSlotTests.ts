@@ -4,9 +4,8 @@ import { MemoryPipelineInterface } from '../mocks/memoryPipelineInterface';
 import { Fragment } from '../../lib/pipeline/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode } from '../../lib/dom/node';
-import { Page } from '../../lib/pipeline/page';
 import { Pipeline } from '../../lib/pipeline/pipeline';
-import { PipelineImpl } from '../../lib/impl/pipelineImpl';
+import { PipelineImpl } from '../../lib/pipeline/pipelineImpl';
 
 export class FragmentSlotTests implements TestSet {
 
@@ -14,7 +13,7 @@ export class FragmentSlotTests implements TestSet {
 
     private testAsFragment(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext());
+        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext(false));
         const dom = fragment.dom;
 
         // test
@@ -23,7 +22,7 @@ export class FragmentSlotTests implements TestSet {
 
     private testAsPage(): void {
         // compile page
-        const page: Page = this.getPipeline().compilePage('page.html');
+        const page: Fragment = this.getPipeline().compilePage('page.html');
         const dom: DocumentNode = page.dom;
 
         // test
@@ -32,7 +31,7 @@ export class FragmentSlotTests implements TestSet {
 
     private testFragmentRoot(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('root1.html', new UsageContext());
+        const fragment: Fragment = this.getPipeline().compileFragment('root1.html', new UsageContext(false));
         const dom = fragment.dom;
 
         // test
@@ -49,7 +48,7 @@ export class FragmentSlotTests implements TestSet {
 
     private testFragmentInSlot(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('nested1.html', new UsageContext());
+        const fragment: Fragment = this.getPipeline().compileFragment('nested1.html', new UsageContext(false));
         const dom = fragment.dom;
 
         // test

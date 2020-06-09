@@ -1,31 +1,20 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
 import { Node, TagNode, TextNode, DocumentNode } from "../../dom/node";
-import { Fragment } from "../../pipeline/fragment";
-import { Page } from "../../pipeline/page";
-import { UsageContext } from "../../pipeline/usageContext";
-import { EvalEngine, EvalContext, EvalFunction } from "../../eval/evalEngine";
-import { Pipeline } from "../../pipeline/pipeline";
+import { Fragment } from "../fragment";
+import { UsageContext } from "../usageContext";
+import { EvalContext, EvalContent } from "../evalEngine";
+import { Pipeline } from "../pipeline";
 
 const templateTextRegex = /\${(([^\\}]|\\}|\\)*)}/;
 
 export class TemplateTextModule implements CompilerModule {
-    private readonly evalEngine: EvalEngine;
     private readonly pipeline: Pipeline;
 
     constructor(pipeline: Pipeline) {
         this.pipeline = pipeline;
-        this.evalEngine = new EvalEngine();
     }
 
     compileFragment(fragment: Fragment, compileData: CompileData, usageContext: UsageContext): void {
-        this.processTemplateText(fragment, compileData, usageContext);
-    }
-
-    compilePage(page: Page, compileData: CompileData): void {
-        this.processTemplateText(page, compileData);
-    }
-
-    processTemplateText(fragment: Fragment, compileData: CompileData, usageContext?: UsageContext): void {
         // find template text
         const templateTexts: TemplateText[] = this.findTemplateText(fragment.dom);
 
@@ -81,11 +70,14 @@ export class TemplateTextModule implements CompilerModule {
 
     private buildExecutors(templateTexts: TemplateText[], evalContext: EvalContext): TemplateTextExecutor[] {
         return templateTexts.map((templateText: TemplateText) => {
+            // get function body
+            const templateStringBody: string = templateText.template;
+
             // create a callable function from the template string
-            const evalFunc: EvalFunction<string> = this.evalEngine.parseTemplateString(templateText.template, evalContext.vars);
+            const evalContent: EvalContent<string> = this.pipeline.compileTemplateString(templateStringBody, evalContext);
 
             return {
-                evalFunction: evalFunc,
+                evalContent: evalContent,
                 templateText: templateText
             };
         });
@@ -94,7 +86,7 @@ export class TemplateTextModule implements CompilerModule {
     private executeTemplateText(executors: TemplateTextExecutor[], evalContext: EvalContext): void {
         for (const executor of executors) {
             // execute function and generate new text
-            const newText = this.evalEngine.executeFunction(executor.evalFunction, evalContext);
+            const newText: string = executor.evalContent.invoke(evalContext);
 
             // Check type of template text
             const template: TemplateText = executor.templateText;
@@ -150,5 +142,5 @@ class TextNodeTemplateText implements TemplateText {
 
 interface TemplateTextExecutor {
     readonly templateText: TemplateText;
-    readonly evalFunction: EvalFunction<string>;
+    readonly evalContent: EvalContent<string>;
 }
