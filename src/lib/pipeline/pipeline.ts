@@ -67,58 +67,52 @@ export class Pipeline {
         return page;
     }
 
-    compileTemplateString(templateText: string, evalContext: EvalContext): EvalContent<string> {
+    compileTemplateString(templateText: string): EvalContent<string> {
         const functionBody = templateText.trim();
 
-        // create signature
-        const signature: string = this.evalEngine.getFunctionSignature(functionBody, evalContext.scope);
-
         // return from cache if present
-        if (this.cache.hasTemplateString(signature)) {
-            return this.cache.getTemplateString(signature);
+        if (this.cache.hasTemplateString(functionBody)) {
+            return this.cache.getTemplateString(functionBody);
         }
 
         // parse into function
-        const templateFunc: EvalContent<string> = this.evalEngine.parseTemplateString(functionBody, evalContext.scope);
+        const templateFunc: EvalContent<string> = this.evalEngine.parseTemplateString(functionBody);
         
         // store in cache
-        this.cache.storeTemplateString(signature, templateFunc);
+        this.cache.storeTemplateString(functionBody, templateFunc);
 
         // return it
         return templateFunc;
     }
 
     executeTemplateString(templateText: string, evalContext: EvalContext): string {
-        const templateFunc: EvalContent<string> = this.compileTemplateString(templateText, evalContext);
+        const templateFunc: EvalContent<string> = this.compileTemplateString(templateText);
 
         const result: string = templateFunc.invoke(evalContext);
 
         return result;
     }
 
-    compileHandlebars(handlebarsText: string, evalContext: EvalContext): EvalContent<unknown> {
+    compileHandlebars(handlebarsText: string): EvalContent<unknown> {
         const functionBody = handlebarsText.trim();
 
-        // create signature
-        const signature: string = this.evalEngine.getFunctionSignature(functionBody, evalContext.scope);
-
         // return from cache if present
-        if (this.cache.hasHandlebars(signature)) {
-            return this.cache.getHandlebars(signature);
+        if (this.cache.hasHandlebars(functionBody)) {
+            return this.cache.getHandlebars(functionBody);
         }
 
         // parse into function
-        const handlebarsFunc: EvalContent<unknown> = this.evalEngine.parseHandlebars(functionBody, evalContext.scope);
+        const handlebarsFunc: EvalContent<unknown> = this.evalEngine.parseHandlebars(functionBody);
         
         // store in cache
-        this.cache.storeHandlebars(signature, handlebarsFunc);
+        this.cache.storeHandlebars(functionBody, handlebarsFunc);
 
         // return it
         return handlebarsFunc;
     }
 
     executeHandlebars(handlebarsText: string, evalContext: EvalContext): unknown {
-        const handlebarsFunc: EvalContent<unknown> = this.compileHandlebars(handlebarsText, evalContext);
+        const handlebarsFunc: EvalContent<unknown> = this.compileHandlebars(handlebarsText);
 
         const result: unknown = handlebarsFunc.invoke(evalContext);
 

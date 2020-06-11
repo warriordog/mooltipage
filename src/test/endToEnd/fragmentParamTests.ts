@@ -159,7 +159,7 @@ export class FragmentParamTests implements TestSet {
         `);
         pipelineInterface.htmlSource.set('noParams2.html', `
             <m-var valuekey="value"></m-var>
-            <div id="noParams" result="\${ valuekey }"></div>
+            <div id="noParams" result="\${ $.valuekey }"></div>
         `);
 
         pipelineInterface.htmlSource.set('paramOnly1.html', `
@@ -168,7 +168,7 @@ export class FragmentParamTests implements TestSet {
             </div>
         `);
         pipelineInterface.htmlSource.set('paramOnly2.html', `
-            <div id="paramOnly" result="\${ paramkey }"></div>
+            <div id="paramOnly" result="\${ $.paramkey }"></div>
         `);
 
         pipelineInterface.htmlSource.set('valueOverwrite1.html', `
@@ -178,7 +178,7 @@ export class FragmentParamTests implements TestSet {
         `);
         pipelineInterface.htmlSource.set('valueOverwrite2.html', `
             <m-var paramkey="inner"></m-var>
-            <div id="valueOverwrite" result="\${ paramkey }"></div>
+            <div id="valueOverwrite" result="\${ $.paramkey }"></div>
         `);
     }
 }

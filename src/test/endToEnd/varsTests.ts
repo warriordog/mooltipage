@@ -137,41 +137,41 @@ export class VarsTests implements TestSet {
 
         pipelineInterface.htmlSource.set('setFragment.html', `
             <m-var key="value"></m-var>
-            <div>\${ key }</div>
+            <div>\${ $.key }</div>
         `);
 
         pipelineInterface.htmlSource.set('setMulti.html', `
             <m-var key1="value1" key2="value2" key3="value3"></m-var>
-            <div id="key1">\${ key1 }</div>
-            <div id="key2">\${ key2 }</div>
-            <div id="key3">\${ key3 }</div>
+            <div id="key1">\${ $.key1 }</div>
+            <div id="key2">\${ $.key2 }</div>
+            <div id="key3">\${ $.key3 }</div>
         `);
 
         pipelineInterface.htmlSource.set('setMultiMulti.html', `
             <m-var key1="value1" key2="value2" key3="value3"></m-var>
             <m-var key4="value4" key5="value5" key6="value6"></m-var>
-            <div id="key1">\${ key1 }</div>
-            <div id="key2">\${ key2 }</div>
-            <div id="key3">\${ key3 }</div>
-            <div id="key4">\${ key4 }</div>
-            <div id="key5">\${ key5 }</div>
-            <div id="key6">\${ key6 }</div>
+            <div id="key1">\${ $.key1 }</div>
+            <div id="key2">\${ $.key2 }</div>
+            <div id="key3">\${ $.key3 }</div>
+            <div id="key4">\${ $.key4 }</div>
+            <div id="key5">\${ $.key5 }</div>
+            <div id="key6">\${ $.key6 }</div>
         `);
 
         pipelineInterface.htmlSource.set('setComputedHandlebars.html', `
             <m-var key="{{ 'value' }}"></m-var>
-            <div id="key">\${ key }</div>
+            <div id="key">\${ $.key }</div>
         `);
 
         pipelineInterface.htmlSource.set('setComputedTemplate.html', `
             <m-var key="\${ 'value' }"></m-var>
-            <div id="key">\${ key }</div>
+            <div id="key">\${ $.key }</div>
         `);
 
         pipelineInterface.htmlSource.set('setComputedMixed.html', `
             <m-var key1="{{ 'value1' }}" key2="\${ 'value2' }"></m-var>
-            <div id="key1">\${ key1 }</div>
-            <div id="key2">\${ key2 }</div>
+            <div id="key1">\${ $.key1 }</div>
+            <div id="key2">\${ $.key2 }</div>
         `);
     }
 }

@@ -203,23 +203,23 @@ export class TemplateTextTests implements TestSet {
                     <title>Template Text Tests</title>
                 </head>
                 <body>
-                    <div id="pipeline">\${ $.pipeline != null }</div>
-                    <div id="fragment">\${ $.currentFragment != null }</div>
-                    <div id="usageContext">\${ $.usageContext != null }</div>
+                    <div id="pipeline">\${ $$.pipeline != null }</div>
+                    <div id="fragment">\${ $$.currentFragment != null }</div>
+                    <div id="usageContext">\${ $$.usageContext != null }</div>
                 </body>
             </html>
         `);
 
         pipelineInterface.htmlSource.set('paramsFragment.html', `
-            <div id="pipeline">\${ $.pipeline != null }</div>
-            <div id="fragment">\${ $.currentFragment != null }</div>
-            <div id="usageContext">\${ $.usageContext != null }</div>
+            <div id="pipeline">\${ $$.pipeline != null }</div>
+            <div id="fragment">\${ $$.currentFragment != null }</div>
+            <div id="usageContext">\${ $$.usageContext != null }</div>
         `);
 
         pipelineInterface.htmlSource.set('slot.html', `
             <div id="outer">
                 <m-fragment src="slot2.html">
-                    <div id="template">\${ $.currentFragment.resId }</div>
+                    <div id="template">\${ $$.currentFragment.resId }</div>
                 </m-fragment>
             </div>
         `);

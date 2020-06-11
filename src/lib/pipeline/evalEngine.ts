@@ -5,7 +5,7 @@ import { UsageContext } from './usageContext';
 export class EvalEngine {
     evalHandlebars(functionBody: string, context: EvalContext): unknown {
         // parse handlebars
-        const evalContent: EvalContent<unknown> = this.parseHandlebars(functionBody, context.scope);
+        const evalContent: EvalContent<unknown> = this.parseHandlebars(functionBody);
 
         // execute
         const result: unknown = evalContent.invoke(context);
@@ -13,13 +13,13 @@ export class EvalEngine {
         return result;
     }
 
-    parseTemplateString(templateString: string, scope: EvalVars): EvalContent<string> {
+    parseTemplateString(templateString: string): EvalContent<string> {
         // generate function body for template
         const functionBody: string = 'return `' + templateString + '`;';
 
         // Parse function body into callable constructor.
         // This is inherently not type-safe, as the purpose is to run unknown JS code.
-        const evalFunc = this.createEvalFunction<string>(functionBody, scope);
+        const evalFunc = this.createEvalFunction<string>(functionBody);
 
         // create content
         const evalContent: EvalContent<string> = new EvalContent<string>(evalFunc);
@@ -27,12 +27,12 @@ export class EvalEngine {
         return evalContent;
     }
 
-    parseHandlebars(jsString: string, scope: EvalVars): EvalContent<unknown> {
+    parseHandlebars(jsString: string): EvalContent<unknown> {
         // generate body for function
         const functionBody: string = 'return ' + jsString + ';';
 
         // parse it
-        const evalFunc = this.createEvalFunction<unknown>(functionBody, scope);
+        const evalFunc = this.createEvalFunction<unknown>(functionBody);
 
         // create content
         const evalContent: EvalContent<unknown> = new EvalContent<unknown>(evalFunc);
@@ -40,48 +40,16 @@ export class EvalEngine {
         return evalContent;
     }
 
-    getFunctionSignature(functionBody: string, scope: EvalVars): string {
-        const sigParts: string[] = [ functionBody ];
-
-        for (const varName of scope.keys()) {
-            sigParts.push(varName);
-        }
-
-        const sig: string = sigParts.join('|');
-
-        return sig;
-    }
-
-    private createEvalFunction<T>(functionBody: string, scope: EvalVars): EvalFunction<T> {
+    private createEvalFunction<T>(functionBody: string): EvalFunction<T> {
         try {
-            const scopeKeys: Iterable<string> = scope.keys();
-
-            const fullFunctionBody = this.createFullFunctionBody(functionBody, scopeKeys);
-
             // Parse function body into callable constructor.
             // This is inherently not type-safe, as the purpose is to run unknown JS code.
-            const functionObj: EvalFunction<T> = new Function('$', fullFunctionBody) as EvalFunction<T>;
+            const functionObj: EvalFunction<T> = new Function('$', '$$', functionBody) as EvalFunction<T>;
 
             return functionObj;
         } catch (error) {
             throw new Error(`Parse error in function: ${ error }.  Function body: ${ functionBody }`);
         }
-    }
-
-    private createFullFunctionBody(functionBody: string, vars: Iterable<string>): string {
-        const funcParts: string[] = [];
-
-        for (const varName of vars) {
-            funcParts.push('const ');
-            funcParts.push(varName);
-            funcParts.push(' = $.scope.get(\'');
-            funcParts.push(varName);
-            funcParts.push('\');');
-        }
-
-        funcParts.push(functionBody);
-
-        return funcParts.join('');
     }
 }
 
@@ -94,7 +62,7 @@ export class EvalContent<T> {
 
     invoke(evalContext: EvalContext): T {
         // execute the function
-        return this.evalFunction(evalContext);
+        return this.evalFunction(evalContext.scope, evalContext);
     }
 }
 
@@ -104,7 +72,7 @@ export class EvalContext {
     readonly usageContext: UsageContext;
     readonly variables: EvalVars;
     readonly parameters: EvalVars;
-    readonly scope: EvalVars;
+    readonly scope: Record<string, unknown>;
 
     constructor(pipeline: Pipeline, currentFragment: Fragment, usageContext: UsageContext, variables: EvalVars) {
         this.pipeline = pipeline;
@@ -117,11 +85,14 @@ export class EvalContext {
     }
 }
 
-function buildScope(parameters: EvalVars, variables: EvalVars): EvalVars {
-    const scope: EvalVars = new Map(parameters);
+function buildScope(parameters: EvalVars, variables: EvalVars): Record<string, unknown> {
+    const scope: Record<string, unknown> = {};
 
+    for (const entry of parameters) {
+        scope[entry[0]] = entry[1];
+    }
     for (const entry of variables) {
-        scope.set(entry[0], entry[1]);
+        scope[entry[0]] = entry[1];
     }
 
     return scope;
@@ -130,4 +101,4 @@ function buildScope(parameters: EvalVars, variables: EvalVars): EvalVars {
 export type EvalVars = Map<string, unknown>;
 
 // the vars definition is a lie to make typescript shut up
-type EvalFunction<T> = ($: EvalContext) => T;
+type EvalFunction<T> = ($: Record<string, unknown>, $$: EvalContext) => T;
