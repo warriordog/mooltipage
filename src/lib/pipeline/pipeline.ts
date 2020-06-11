@@ -68,8 +68,10 @@ export class Pipeline {
     }
 
     compileTemplateString(templateText: string, evalContext: EvalContext): EvalContent<string> {
+        const functionBody = templateText.trim();
+
         // create signature
-        const signature: string = this.evalEngine.getFunctionSignature(templateText, evalContext.scope);
+        const signature: string = this.evalEngine.getFunctionSignature(functionBody, evalContext.scope);
 
         // return from cache if present
         if (this.cache.hasTemplateString(signature)) {
@@ -77,7 +79,7 @@ export class Pipeline {
         }
 
         // parse into function
-        const templateFunc: EvalContent<string> = this.evalEngine.parseTemplateString(templateText, evalContext.scope);
+        const templateFunc: EvalContent<string> = this.evalEngine.parseTemplateString(functionBody, evalContext.scope);
         
         // store in cache
         this.cache.storeTemplateString(signature, templateFunc);
@@ -95,8 +97,10 @@ export class Pipeline {
     }
 
     compileHandlebars(handlebarsText: string, evalContext: EvalContext): EvalContent<unknown> {
+        const functionBody = handlebarsText.trim();
+
         // create signature
-        const signature: string = this.evalEngine.getFunctionSignature(handlebarsText, evalContext.scope);
+        const signature: string = this.evalEngine.getFunctionSignature(functionBody, evalContext.scope);
 
         // return from cache if present
         if (this.cache.hasHandlebars(signature)) {
@@ -104,7 +108,7 @@ export class Pipeline {
         }
 
         // parse into function
-        const handlebarsFunc: EvalContent<unknown> = this.evalEngine.parseHandlebars(handlebarsText, evalContext.scope);
+        const handlebarsFunc: EvalContent<unknown> = this.evalEngine.parseHandlebars(functionBody, evalContext.scope);
         
         // store in cache
         this.cache.storeHandlebars(signature, handlebarsFunc);

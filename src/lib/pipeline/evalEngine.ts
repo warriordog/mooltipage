@@ -56,14 +56,32 @@ export class EvalEngine {
         try {
             const scopeKeys: Iterable<string> = scope.keys();
 
+            const fullFunctionBody = this.createFullFunctionBody(functionBody, scopeKeys);
+
             // Parse function body into callable constructor.
             // This is inherently not type-safe, as the purpose is to run unknown JS code.
-            const functionObj: EvalFunction<T> = new Function('$', ...scopeKeys, functionBody) as EvalFunction<T>;
+            const functionObj: EvalFunction<T> = new Function('$', fullFunctionBody) as EvalFunction<T>;
 
             return functionObj;
         } catch (error) {
             throw new Error(`Parse error in function: ${ error }.  Function body: ${ functionBody }`);
         }
+    }
+
+    private createFullFunctionBody(functionBody: string, vars: Iterable<string>): string {
+        const funcParts: string[] = [];
+
+        for (const varName of vars) {
+            funcParts.push('const ');
+            funcParts.push(varName);
+            funcParts.push(' = $.scope.get(\'');
+            funcParts.push(varName);
+            funcParts.push('\');');
+        }
+
+        funcParts.push(functionBody);
+
+        return funcParts.join('');
     }
 }
 
@@ -75,10 +93,8 @@ export class EvalContent<T> {
     }
 
     invoke(evalContext: EvalContext): T {
-        const vars: Iterable<unknown> = evalContext.scope.values();
-
         // execute the function
-        return this.evalFunction(evalContext, ...vars);
+        return this.evalFunction(evalContext);
     }
 }
 
@@ -114,4 +130,4 @@ function buildScope(parameters: EvalVars, variables: EvalVars): EvalVars {
 export type EvalVars = Map<string, unknown>;
 
 // the vars definition is a lie to make typescript shut up
-type EvalFunction<T> = ($: EvalContext, ...vars: unknown[]) => T;
+type EvalFunction<T> = ($: EvalContext) => T;
