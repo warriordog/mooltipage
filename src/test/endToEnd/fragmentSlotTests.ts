@@ -117,7 +117,7 @@ export class FragmentSlotTests implements TestSet {
 
     // test set boilerplate
 
-    readonly setName: string = 'FragmentSlotTests';
+    readonly setName: string = 'FragmentSlot';
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([

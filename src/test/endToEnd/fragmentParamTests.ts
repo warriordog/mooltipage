@@ -134,7 +134,7 @@ export class FragmentParamTests implements TestSet {
 
     // test set boilerplate
 
-    readonly setName: string = 'FragmentParamTests';
+    readonly setName: string = 'FragmentParam';
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([

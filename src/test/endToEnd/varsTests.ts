@@ -114,7 +114,7 @@ export class VarsTests implements TestSet {
 
     // test set boilerplate
 
-    readonly setName: string = 'VarsTests';
+    readonly setName: string = 'Vars';
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([

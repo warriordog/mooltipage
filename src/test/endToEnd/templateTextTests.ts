@@ -156,7 +156,7 @@ export class TemplateTextTests implements TestSet {
 
     // test set boilerplate
 
-    readonly setName: string = 'TemplateTextTests';
+    readonly setName: string = 'TemplateText';
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([

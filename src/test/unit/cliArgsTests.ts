@@ -104,7 +104,7 @@ export class CliArgsTests implements TestSet {
     }
 
     // test set boilerplate
-    readonly setName: string = 'CliArgsTests';
+    readonly setName: string = 'CliArgs';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
             ['NoArgs', (): void => this.testNoArgs()],

@@ -73,7 +73,7 @@ export class FragmentOnlyTests implements TestSet {
 
     // test set boilerplate
 
-    readonly setName: string = 'FragmentOnlyTests';
+    readonly setName: string = 'FragmentOnly';
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([

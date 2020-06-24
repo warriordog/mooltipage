@@ -59,7 +59,7 @@ export class UsageContextTests implements TestSet {
     }
 
     // test set boilerplate
-    readonly setName: string = 'UsageContextTests';
+    readonly setName: string = 'UsageContext';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
             ['ConstructorPage', (): void => this.testConstructorPage()],

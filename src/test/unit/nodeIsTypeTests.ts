@@ -150,7 +150,7 @@ export class NodeIsTypeTests implements TestSet {
     }
 
     // test set boilerplate
-    readonly setName: string = 'NodeIsTypeTests';
+    readonly setName: string = 'NodeIsType';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
             ['IsTagNode', (): void => this.TestIsTagNode()],

@@ -165,7 +165,7 @@ export class PipelineCacheTests implements TestSet {
     }
 
     // test set boilerplate
-    readonly setName: string = 'PipelineCacheTests';
+    readonly setName: string = 'PipelineCache';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
             ['FragHasPresent', (): void => this.testFragHasPresent()],

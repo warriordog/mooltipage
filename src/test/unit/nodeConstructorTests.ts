@@ -58,7 +58,7 @@ export class NodeConstructorTests implements TestSet {
     }
 
     // test set boilerplate
-    readonly setName: string = 'NodeConstructorTests';
+    readonly setName: string = 'NodeConstructor';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
             ['TagNode', (): void => this.TestTagNode()],

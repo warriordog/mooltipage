@@ -93,7 +93,7 @@ export class BasicHtmlTests implements TestSet {
 
     // test set boilerplate
 
-    readonly setName: string = 'BasicHtmlTests';
+    readonly setName: string = 'BasicHtml';
 
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
