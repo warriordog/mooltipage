@@ -1,4 +1,4 @@
-import { Fragment } from "./fragment";
+import { Fragment } from "./object/fragment";
 import { UsageContext } from "./usageContext";
 
 export interface HtmlFormatter {

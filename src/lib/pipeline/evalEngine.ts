@@ -1,5 +1,5 @@
 import { Pipeline } from './pipeline';
-import { Fragment } from './fragment';
+import { Fragment } from './object/fragment';
 import { UsageContext } from './usageContext';
 
 export class EvalEngine {
@@ -72,7 +72,7 @@ export class EvalContext {
     readonly usageContext: UsageContext;
     readonly variables: EvalVars;
     readonly parameters: EvalVars;
-    readonly scope: Record<string, unknown>;
+    readonly scope: EvalScope;
 
     constructor(pipeline: Pipeline, currentFragment: Fragment, usageContext: UsageContext, variables: EvalVars) {
         this.pipeline = pipeline;
@@ -85,8 +85,8 @@ export class EvalContext {
     }
 }
 
-function buildScope(parameters: EvalVars, variables: EvalVars): Record<string, unknown> {
-    const scope: Record<string, unknown> = {};
+function buildScope(parameters: EvalVars, variables: EvalVars): EvalScope {
+    const scope: EvalScope = {};
 
     for (const entry of parameters) {
         scope[entry[0]] = entry[1];
@@ -101,4 +101,18 @@ function buildScope(parameters: EvalVars, variables: EvalVars): Record<string, u
 export type EvalVars = Map<string, unknown>;
 
 // the vars definition is a lie to make typescript shut up
-type EvalFunction<T> = ($: Record<string, unknown>, $$: EvalContext) => T;
+type EvalFunction<T> = ($: EvalScope, $$: EvalContext) => T;
+
+export type EvalScope = Record<string, unknown>;
+
+/**
+ * An instance of the backing code for a component
+ */
+export type ComponentClass = Record<string, unknown>;
+
+/**
+ * Constructor for {@link ComponentClass}
+ */
+export interface ComponentClassConstructor {
+    new (scope: EvalScope, context: EvalContext): ComponentClass;
+}

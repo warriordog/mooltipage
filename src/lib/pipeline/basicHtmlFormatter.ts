@@ -1,4 +1,4 @@
-import { Fragment } from "./fragment";
+import { Fragment } from "./object/fragment";
 import { DocumentNode, Node, TextNode, NodeWithChildren } from '../dom/node';
 import { HtmlFormatter } from "./htmlFormatter";
 import { UsageContext } from "./usageContext";

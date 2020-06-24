@@ -1,7 +1,7 @@
 import { TestSet, TestCallback } from '../framework/testSet';
 import * as Assert from '../framework/assert';
 import { MemoryPipelineInterface } from '../mocks/memoryPipelineInterface';
-import { Fragment } from '../../lib/pipeline/fragment';
+import { Fragment } from '../../lib/pipeline/object/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode, TextNode, Node } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';

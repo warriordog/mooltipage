@@ -1,6 +1,6 @@
 import { Pipeline } from "./pipeline";
 import { DomSerializer } from '../dom/domSerializer';
-import { Fragment } from "./fragment";
+import { Fragment } from "./object/fragment";
 
 export class HtmlSerializer {
     private readonly pipeline: Pipeline;

@@ -1,4 +1,4 @@
-import { Fragment } from './fragment';
+import { Fragment } from './object/fragment';
 import { PipelineCache } from './pipelineCache';
 import { UsageContext } from './usageContext';
 import { PipelineInterface } from './pipelineInterface';

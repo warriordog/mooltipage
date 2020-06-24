@@ -1,5 +1,5 @@
 import { Pipeline } from "./pipeline";
-import { Fragment } from "./fragment";
+import { Fragment } from "./object/fragment";
 import { UsageContext } from './usageContext';
 import { SlotModule } from "./module/slotModule";
 import { FragmentModule } from "./module/fragmentModule";

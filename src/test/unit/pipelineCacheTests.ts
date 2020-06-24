@@ -1,7 +1,7 @@
 import { TestSet, TestCallback } from "../framework/testSet";
 import { PipelineCache } from "../../lib/pipeline/pipelineCache";
 import * as Assert from '../framework/assert';
-import { Fragment } from "../../lib/pipeline/fragment";
+import { Fragment } from "../../lib/pipeline/object/fragment";
 import { DocumentNode } from '../../lib/dom/node';
 import { EvalContent } from "../../lib/pipeline/evalEngine";
 

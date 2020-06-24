@@ -1,6 +1,7 @@
-import { DocumentNode } from '../dom/node';
+import { DocumentNode } from '../../dom/node';
+import { PipelineObject } from './pipelineObject';
 
-export class Fragment {
+export class Fragment implements PipelineObject {
     readonly resId: string;
     readonly dom: DocumentNode;
 

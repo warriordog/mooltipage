@@ -1,5 +1,5 @@
 import { Pipeline } from "./pipeline";
-import { Fragment } from "./fragment";
+import { Fragment } from "./object/fragment";
 import { DocumentNode } from '../dom/node';
 import { Parser } from 'htmlparser2';
 import { DomParser } from '../dom/domParser';

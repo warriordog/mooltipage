@@ -1,5 +1,5 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
-import { Fragment } from "../../pipeline/fragment";
+import { Fragment } from "../../pipeline/object/fragment";
 import { UsageContext } from "../../pipeline/usageContext";
 import { Node, DocumentNode, TagNode, NodeWithChildren } from "../../dom/node";
 import { EvalVars, EvalContext } from "../evalEngine";
