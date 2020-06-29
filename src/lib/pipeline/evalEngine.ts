@@ -1,6 +1,7 @@
 import { Pipeline } from './pipeline';
 import { Fragment } from './object/fragment';
 import { UsageContext } from './usageContext';
+import { ComponentScriptInstance } from './object/component';
 
 export class EvalEngine {
     evalHandlebars(functionBody: string, context: EvalContext): unknown {
@@ -80,39 +81,41 @@ export class EvalContext {
         this.usageContext = usageContext;
         this.variables = variables;
         this.parameters = usageContext.fragmentParams;
-        this.scope = buildScope(usageContext.fragmentParams, variables);
-
+        this.scope = new Proxy({}, new EvalScopeProxy(usageContext.fragmentParams, variables));
     }
-}
-
-function buildScope(parameters: EvalVars, variables: EvalVars): EvalScope {
-    const scope: EvalScope = {};
-
-    for (const entry of parameters) {
-        scope[entry[0]] = entry[1];
-    }
-    for (const entry of variables) {
-        scope[entry[0]] = entry[1];
-    }
-
-    return scope;
 }
 
 export type EvalVars = Map<string, unknown>;
 
+export type EvalScope = Record<string, unknown>;
+
 // the vars definition is a lie to make typescript shut up
 type EvalFunction<T> = ($: EvalScope, $$: EvalContext) => T;
 
-export type EvalScope = Record<string, unknown>;
+class EvalScopeProxy implements ProxyHandler<EvalScope> {
+    private readonly parameters: EvalVars;
+    private readonly variables: EvalVars;
+    private readonly component?: ComponentScriptInstance;
+    
+    constructor(parameters: EvalVars, variables: EvalVars, component?: ComponentScriptInstance) {
+        this.parameters = parameters;
+        this.variables = variables;
+        this.component = component;
+    }
 
-/**
- * An instance of the backing code for a component
- */
-export type ComponentClass = Record<string, unknown>;
+    get (target: EvalScope, key: PropertyKey): unknown {
+        if (typeof(key) === 'string') {
+            if (this.component?.hasOwnProperty(key)) {
+                return this.component[key];
+            }
+            if (this.variables.has(key)) {
+                return this.variables.get(key);
+            }
+            if (this.parameters.has(key)) {
+                return this.parameters.get(key);
+            }
+        }
 
-/**
- * Constructor for {@link ComponentClass}
- */
-export interface ComponentClassConstructor {
-    new (scope: EvalScope, context: EvalContext): ComponentClass;
+        return undefined;
+    }
 }
