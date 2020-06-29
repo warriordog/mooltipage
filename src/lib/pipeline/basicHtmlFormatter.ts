@@ -1,7 +1,6 @@
-import { Fragment } from "./object/fragment";
 import { DocumentNode, Node, TextNode, NodeWithChildren } from '../dom/node';
 import { HtmlFormatter } from "./htmlFormatter";
-import { UsageContext } from "./usageContext";
+import { Page } from "./object/page";
 
 export class BasicHtmlFormatter implements HtmlFormatter {
     private readonly isPretty: boolean;
@@ -14,22 +13,14 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         this.indentString = indentString ?? (isPretty ? '    ' : '');
     }
 
-    // html-level formatting is not supported by this class
-    formatHtml(resId: string, html: string): string {
-        return html;
-    }
+    formatPage(page: Page): Page {
+        // pages are mutable, so we can edit in place
+        const dom: DocumentNode = page.dom;
 
-    formatFragment(fragment: Fragment, usageContext: UsageContext): Fragment {
-        // only format pages
-        if (usageContext.isPage) {
-            // pages are mutable, so we can edit in place
-            const dom: DocumentNode = fragment.dom;
-    
-            // format whitespace
-            this.formatWhitespace(dom);
-        }
+        // format whitespace
+        this.formatWhitespace(dom);
 
-        return fragment;
+        return page;
     }
 
     protected formatWhitespace(startNode: Node, depth = 0): void {

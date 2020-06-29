@@ -4,10 +4,58 @@ import * as Assert from '../framework/assert';
 import { Fragment } from "../../lib/pipeline/object/fragment";
 import { DocumentNode } from '../../lib/dom/node';
 import { EvalContent } from "../../lib/pipeline/evalEngine";
+import { Page } from "../../lib/pipeline/object/page";
 
 export class PipelineCacheTests implements TestSet {
     // test methods
 
+    // page
+
+    private testPageHasPresent(): void {
+        const cache = new PipelineCache();
+
+        cache.storePage(new Page('foo', new DocumentNode()));
+        const hasValue: boolean = cache.hasPage('foo');
+
+        Assert.IsTrue(hasValue);
+    } 
+
+    private testPageHasMissing(): void {
+        const cache = new PipelineCache();
+
+        const hasValue: boolean = cache.hasPage('foo');
+
+        Assert.IsFalse(hasValue);
+    } 
+
+    private testPageGetPresent(): void {
+        const cache = new PipelineCache();
+        const frag = new Page('foo', new DocumentNode());
+
+        cache.storePage(frag);
+        const value: Page = cache.getPage('foo');
+
+        Assert.AreEqual(value, frag);
+    }
+
+    private testPageGetMissing(): void {
+        const cache = new PipelineCache();
+
+        Assert.Throws(() => cache.getPage('foo'));
+    }
+
+    private testPageOverwrite(): void {
+        const cache = new PipelineCache();
+        const frag1 = new Page('foo', new DocumentNode());
+        const frag2 = new Page('foo', new DocumentNode());
+
+        cache.storePage(frag1);
+        cache.storePage(frag2);
+        const value: Page = cache.getPage('foo');
+
+        Assert.AreEqual(value, frag2);
+    }
+    
     // fragment
 
     private testFragHasPresent(): void {
@@ -102,7 +150,7 @@ export class PipelineCacheTests implements TestSet {
         Assert.AreEqual(value, content2);
     }
 
-    // template string
+    // handlebars
 
     private testHandlebarsHasPresent(): void {
         const cache = new PipelineCache();
@@ -168,6 +216,11 @@ export class PipelineCacheTests implements TestSet {
     readonly setName: string = 'PipelineCache';
     getTests(): Map<string, TestCallback> {
         return new Map<string, TestCallback>([
+            ['PageHasPresent', (): void => this.testPageHasPresent()],
+            ['PageHasMissing', (): void => this.testPageHasMissing()],
+            ['PageGetPresent', (): void => this.testPageGetPresent()],
+            ['PageGetMissing', (): void => this.testPageGetMissing()],
+            ['PageOverwrite', (): void => this.testPageOverwrite()],
             ['FragHasPresent', (): void => this.testFragHasPresent()],
             ['FragHasMissing', (): void => this.testFragHasMissing()],
             ['FragGetPresent', (): void => this.testFragGetPresent()],

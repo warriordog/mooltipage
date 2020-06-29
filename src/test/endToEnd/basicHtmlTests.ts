@@ -5,13 +5,14 @@ import { Fragment } from '../../lib/pipeline/object/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, Node, TagNode, TextNode } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';
+import { Page } from '../../lib/pipeline/object/page';
 
 export class BasicHtmlTests implements TestSet {
     // test methods
     
     private testFragmentCompile(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
 
         // get contents
@@ -43,7 +44,7 @@ export class BasicHtmlTests implements TestSet {
 
     private testFragmentNoOutput(): void {
         // compile fragment
-        this.getPipeline().compileFragment('test1.html', new UsageContext(false));
+        this.getPipeline().compileFragment('test1.html', new UsageContext(new Page('123', new DocumentNode())));
 
         // verify no output
         Assert.IsFalse(this.getPipelineInterface().hasDestination('test1.html'));

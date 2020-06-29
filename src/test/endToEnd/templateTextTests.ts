@@ -5,6 +5,7 @@ import { Fragment } from '../../lib/pipeline/object/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode, TextNode, Node } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';
+import { Page } from '../../lib/pipeline/object/page';
 
 export class TemplateTextTests implements TestSet {
 
@@ -12,7 +13,7 @@ export class TemplateTextTests implements TestSet {
 
     private testBasicFragment(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('fragment.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('fragment.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
 
         // test
@@ -30,7 +31,7 @@ export class TemplateTextTests implements TestSet {
 
     private testParamsFragment(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('paramsFragment.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('paramsFragment.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
 
         // test
@@ -48,7 +49,7 @@ export class TemplateTextTests implements TestSet {
 
     private testSlot(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('slot.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('slot.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
 
         // test
@@ -63,7 +64,7 @@ export class TemplateTextTests implements TestSet {
 
     private testAttributes(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('attributes.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('attributes.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
 
         // test
@@ -78,7 +79,7 @@ export class TemplateTextTests implements TestSet {
 
     private testAttributesMulti(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('attributesMulti.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('attributesMulti.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
 
         // test
@@ -91,7 +92,7 @@ export class TemplateTextTests implements TestSet {
 
     private testEscape(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('escape.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('escape.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
 
         // test
@@ -102,7 +103,7 @@ export class TemplateTextTests implements TestSet {
 
     private testEscapeMixed(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('escapeMixed.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('escapeMixed.html', new UsageContext(new Page('123', new DocumentNode())));
 
         // test
         const div = fragment.dom.findChildTag((node: TagNode) => node.tagName === 'div');

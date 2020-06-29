@@ -24,7 +24,7 @@ export class HtmlCompiler {
         ];
     }
 
-    compileFragment(fragment: Fragment, usageContext: UsageContext): void {
+    compileHtml(fragment: Fragment, usageContext: UsageContext): void {
         // create compile data
         const compileData: CompileData = new CompileData(this.pipeline, fragment, usageContext);
 

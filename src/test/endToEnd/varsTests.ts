@@ -5,6 +5,7 @@ import { Fragment } from '../../lib/pipeline/object/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode, TextNode } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';
+import { Page } from '../../lib/pipeline/object/page';
 
 export class VarsTests implements TestSet {
 
@@ -14,7 +15,7 @@ export class VarsTests implements TestSet {
 
     private testSetMulti(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setMulti.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('setMulti.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -35,7 +36,7 @@ export class VarsTests implements TestSet {
 
     private testSetMultiMulti(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setMultiMulti.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('setMultiMulti.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -73,7 +74,7 @@ export class VarsTests implements TestSet {
 
     private testSetComputedMixed(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setComputedMixed.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('setComputedMixed.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -92,7 +93,7 @@ export class VarsTests implements TestSet {
     // shared test code
 
     private testBasic(resId: string): void {
-        const fragment: Fragment = this.getPipeline().compileFragment(resId, new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment(resId, new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content

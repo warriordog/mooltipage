@@ -1,6 +1,5 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
 import { Fragment } from "../../pipeline/object/fragment";
-import { UsageContext } from "../../pipeline/usageContext";
 import { Node, DocumentNode, TagNode, NodeWithChildren } from "../../dom/node";
 import { EvalVars, EvalContext } from "../evalEngine";
 
@@ -56,7 +55,7 @@ export class FragmentModule implements CompilerModule {
         // process each fragment
         for (const fragment of fragmentRefs) {
             // create usage context
-            const usageContext = new UsageContext(false, fragment.slotContents, fragment.fragmentParams);
+            const usageContext = compileData.usageContext.createSubContext(fragment.slotContents, fragment.fragmentParams);
 
             // call pipeline to load fragment
             const compiledContents: Fragment = compileData.pipeline.compileFragment(fragment.sourceResId, usageContext);

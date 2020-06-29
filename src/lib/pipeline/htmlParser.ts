@@ -3,6 +3,7 @@ import { Fragment } from "./object/fragment";
 import { DocumentNode } from '../dom/node';
 import { Parser } from 'htmlparser2';
 import { DomParser } from '../dom/domParser';
+import { Page } from "./object/page";
 
 export class HtmlParser {
     private readonly pipeline: Pipeline;
@@ -17,6 +18,14 @@ export class HtmlParser {
 
         // create fragment
         return new Fragment(resId, dom);
+    }
+
+    parsePage(resId: string, html: string): Page {
+        // parse HTML
+        const dom: DocumentNode = this.parseDom(resId, html);
+
+        // create page
+        return new Page(resId, dom);
     }
 
     private parseDom(resId: string, html: string): DocumentNode {

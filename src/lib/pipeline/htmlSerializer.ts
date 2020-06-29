@@ -1,6 +1,6 @@
 import { Pipeline } from "./pipeline";
 import { DomSerializer } from '../dom/domSerializer';
-import { Fragment } from "./object/fragment";
+import { Page } from "./object/page";
 
 export class HtmlSerializer {
     private readonly pipeline: Pipeline;
@@ -11,7 +11,7 @@ export class HtmlSerializer {
         this.serializer = new DomSerializer();
     }
     
-    serializeFragment(fragment: Fragment): string {
-        return this.serializer.serialize(fragment.dom);
+    serializePage(page: Page): string {
+        return this.serializer.serialize(page.dom);
     }
 }

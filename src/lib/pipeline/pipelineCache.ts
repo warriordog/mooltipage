@@ -1,15 +1,38 @@
 import { Fragment } from './object/fragment';
 import { EvalContent } from './evalEngine';
+import { Page } from './object/page';
 
 export class PipelineCache {
+    private readonly pageCache: Map<string, Page>;
     private readonly fragmentCache: Map<string, Fragment>;
     private readonly templateStringCache: Map<string, EvalContent<string>>;
     private readonly handlebarsCache: Map<string, EvalContent<unknown>>;
 
     constructor() {
+        this.pageCache = new Map();
         this.fragmentCache = new Map();
         this.templateStringCache = new Map();
         this.handlebarsCache = new Map();
+    }
+
+    // Page
+
+    hasPage(resId: string): boolean {
+        return this.pageCache.has(resId);
+    }
+
+    getPage(resId: string): Page {
+        const page: Page | undefined = this.pageCache.get(resId);
+
+        if (page == undefined) {
+            throw new Error(`Page not found in cache: ${resId}.  Make sure to call hasPage() before getPage().`);
+        }
+
+        return page;
+    }
+
+    storePage(page: Page): void {
+        this.pageCache.set(page.resId, page);
     }
 
     // Fragment
@@ -75,6 +98,7 @@ export class PipelineCache {
     // general
 
     clear(): void {
+        this.pageCache.clear();
         this.fragmentCache.clear();
         this.templateStringCache.clear();
         this.handlebarsCache.clear();

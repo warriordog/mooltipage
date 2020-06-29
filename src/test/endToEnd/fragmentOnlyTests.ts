@@ -5,6 +5,7 @@ import { Fragment } from '../../lib/pipeline/object/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';
+import { Page } from '../../lib/pipeline/object/page';
 
 export class FragmentOnlyTests implements TestSet {
 
@@ -12,7 +13,7 @@ export class FragmentOnlyTests implements TestSet {
 
     private testAsFragment(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('test1.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
 
         // test
@@ -30,7 +31,7 @@ export class FragmentOnlyTests implements TestSet {
 
     private testFragmentRoot(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('root1.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('root1.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
 
         // test

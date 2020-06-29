@@ -5,6 +5,7 @@ import { Fragment } from '../../lib/pipeline/object/fragment';
 import { UsageContext } from '../../lib/pipeline/usageContext';
 import { DocumentNode, TagNode, TextNode } from '../../lib/dom/node';
 import { Pipeline } from '../../lib/pipeline/pipeline';
+import { Page } from '../../lib/pipeline/object/page';
 
 export class FragmentParamTests implements TestSet {
 
@@ -25,7 +26,7 @@ export class FragmentParamTests implements TestSet {
 
     private testSetFragment(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setFragment.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('setFragment.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -40,7 +41,7 @@ export class FragmentParamTests implements TestSet {
 
     private testSetMulti(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setMulti.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('setMulti.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -61,7 +62,7 @@ export class FragmentParamTests implements TestSet {
 
     private testSetMultiMulti(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('setMultiMulti.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('setMultiMulti.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -91,7 +92,7 @@ export class FragmentParamTests implements TestSet {
 
     private testSetNoParams(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('noParams1.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('noParams1.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -103,7 +104,7 @@ export class FragmentParamTests implements TestSet {
 
     private testSetParamOnly(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('paramOnly1.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('paramOnly1.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content
@@ -115,7 +116,7 @@ export class FragmentParamTests implements TestSet {
 
     private testSetValueOverwrite(): void {
         // compile fragment
-        const fragment: Fragment = this.getPipeline().compileFragment('valueOverwrite1.html', new UsageContext(false));
+        const fragment: Fragment = this.getPipeline().compileFragment('valueOverwrite1.html', new UsageContext(new Page('123', new DocumentNode())));
         const dom: DocumentNode = fragment.dom;
         
         // get content

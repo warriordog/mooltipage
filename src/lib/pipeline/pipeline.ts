@@ -7,6 +7,8 @@ import { HtmlParser } from './htmlParser';
 import { HtmlSerializer }  from './htmlSerializer';
 import { HtmlCompiler } from './htmlCompiler';
 import { EvalContent, EvalContext, EvalEngine } from './evalEngine';
+import { Component } from './object/component';
+import { Page } from './object/page';
 
 export class Pipeline {
     private readonly cache: PipelineCache;
@@ -28,44 +30,58 @@ export class Pipeline {
         this.htmlSerializer = new HtmlSerializer(this);
     }
 
-    compileFragment(resId: string, usageContext: UsageContext): Fragment {
-        // get fragment from cache or htmlSource
-        const fragment: Fragment = this.createFragment(resId);
+    compilePage(resId: string): Fragment {
+        // parse page
+        //const page: Fragment = this.compileFragment(resId, usageContext);
+        const page: Page = this.getOrParsePage(resId);
 
-        // compile under current context
-        this.htmlCompiler.compileFragment(fragment, usageContext);
+        // create usage context for compile
+        const usageContext: UsageContext = new UsageContext(page);
 
-        // format fragment
-        if (this.htmlFormatter != undefined) {
-            this.htmlFormatter.formatFragment(fragment, usageContext);
+        // compile page
+        this.htmlCompiler.compileHtml(page, usageContext);
+
+        // format page
+        if (this.htmlFormatter?.formatPage != undefined) {
+            this.htmlFormatter.formatPage(page);
         }
 
-        // apply page-only steps
-        if (usageContext.isPage) {
-            // serialize to HTML
-            let outHtml: string = this.htmlSerializer.serializeFragment(fragment);
+        // serialize to HTML
+        let outHtml: string = this.htmlSerializer.serializePage(page);
 
-            // format HTML
-            if (this.htmlFormatter != undefined) {
-                outHtml = this.htmlFormatter.formatHtml(resId, outHtml);
-            }
+        // format HTML
+        if (this.htmlFormatter?.formatHtml != undefined) {
+            outHtml = this.htmlFormatter.formatHtml(resId, outHtml);
+        }
 
-            // write HTML
-            this.pipelineInterface.writeHtml(resId, outHtml);
+        // write HTML
+        this.pipelineInterface.writeHtml(resId, outHtml);
+
+        return page;
+    }
+
+    compileFragment(resId: string, usageContext: UsageContext): Fragment {
+        // get fragment from cache or htmlSource
+        const fragment: Fragment = this.getOrParseFragment(resId);
+
+        // compile under current context
+        this.htmlCompiler.compileHtml(fragment, usageContext);
+
+        // format fragment
+        if (this.htmlFormatter?.formatFragment != undefined) {
+            this.htmlFormatter.formatFragment(fragment, usageContext);
         }
 
         return fragment;
     }
 
-    compilePage(resId: string) : Fragment {
-        // create page usage context
-        const usageContext: UsageContext = new UsageContext(true);
+    /*compileComponent(resId: string): Fragment {
+        // get or parse component
+        const component: Component = this.getOrParseComponent(resId);
 
-        // compile fragment as page
-        const page: Fragment = this.compileFragment(resId, usageContext);
+        // create component instance
 
-        return page;
-    }
+    }*/
 
     compileTemplateString(templateText: string): EvalContent<string> {
         const functionBody = templateText.trim();
@@ -83,14 +99,6 @@ export class Pipeline {
 
         // return it
         return templateFunc;
-    }
-
-    executeTemplateString(templateText: string, evalContext: EvalContext): string {
-        const templateFunc: EvalContent<string> = this.compileTemplateString(templateText);
-
-        const result: string = templateFunc.invoke(evalContext);
-
-        return result;
     }
 
     compileHandlebars(handlebarsText: string): EvalContent<unknown> {
@@ -111,14 +119,6 @@ export class Pipeline {
         return handlebarsFunc;
     }
 
-    executeHandlebars(handlebarsText: string, evalContext: EvalContext): unknown {
-        const handlebarsFunc: EvalContent<unknown> = this.compileHandlebars(handlebarsText);
-
-        const result: unknown = handlebarsFunc.invoke(evalContext);
-
-        return result;
-    }
-
     compileDomText(value: string | null, evalContext: EvalContext): unknown {
         // value is null
         if (value == null) {
@@ -127,15 +127,28 @@ export class Pipeline {
 
         // value is template string
         if (templateTextRegex.test(value)) {
-            return this.executeTemplateString(value, evalContext);
+            // compile template string
+            const templateStringFunc: EvalContent<string> = this.compileTemplateString(value);
+
+            // execute it
+            const evaluatedString: string = templateStringFunc.invoke(evalContext);
+
+            return evaluatedString;
         }
 
         // value is handlebars
         const handlebarsMatches: RegExpMatchArray | null = value.match(handlebarsRegex);
-        if (handlebarsMatches != null && handlebarsMatches.length == 2) {
+        if (handlebarsMatches != null && handlebarsMatches.length === 2) {
+            // get JS code from handlebars test
             const handlebarCode: string = handlebarsMatches[1];
 
-            return this.executeHandlebars(handlebarCode, evalContext);
+            // parse handlebars code
+            const handlebarsFunc: EvalContent<unknown> = this.compileHandlebars(handlebarCode);
+
+            // execute handlebars
+            const handlebarsResult: unknown = handlebarsFunc.invoke(evalContext);
+
+            return handlebarsResult;
         }
 
         // value is plain string
@@ -147,32 +160,48 @@ export class Pipeline {
         this.cache.clear();
     }
 
-    protected createFragment(resId: string): Fragment {
-        // get from cache or source
-        const fragment: Fragment = this.getOrParseFragment(resId);
+    private getOrParsePage(resId: string): Page {
+        let page: Page;
 
-        // clone it to avoid corrupting shared copy
-        const clonedFragment: Fragment = fragment.clone();
+        if (this.cache.hasPage(resId)) {
+            // use cached page
+            page = this.cache.getPage(resId);
+        } else {
+            // read HTML
+            const html: string = this.pipelineInterface.getHtml(resId);
 
-        return clonedFragment;
+            // parse page
+            const parsedPage: Page = this.htmlParser.parsePage(resId, html);
+
+            // keep in cache
+            this.cache.storePage(parsedPage);
+
+            page = parsedPage;
+        }
+
+        return page.clone();
     }
 
     private getOrParseFragment(resId: string): Fragment {
+        let fragment: Fragment;
+
         if (this.cache.hasFragment(resId)) {
             // use cached fragment
-            return this.cache.getFragment(resId);
+            fragment = this.cache.getFragment(resId);
         } else {
             // read HTML
             const html: string = this.pipelineInterface.getHtml(resId);
 
             // parse fragment
-            const fragment: Fragment = this.htmlParser.parseFragment(resId, html);
+            const parsedFragment: Fragment = this.htmlParser.parseFragment(resId, html);
 
             // keep in cache
-            this.cache.storeFragment(fragment);
+            this.cache.storeFragment(parsedFragment);
 
-            return fragment;
+            fragment = parsedFragment;
         }
+
+        return fragment.clone();
     }
 }
 
