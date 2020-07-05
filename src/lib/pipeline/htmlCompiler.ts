@@ -2,7 +2,7 @@ import { Pipeline } from "./pipeline";
 import { Fragment } from "./object/fragment";
 import { UsageContext } from './usageContext';
 import { SlotModule } from "./module/slotModule";
-import { FragmentModule } from "./module/fragmentModule";
+import { ReferenceModule } from "./module/referenceModule";
 import { TemplateTextModule } from "./module/templateTextModule";
 import { VarsModule } from "./module/varsModule";
 import { EvalContext } from "./evalEngine";
@@ -15,12 +15,12 @@ export class HtmlCompiler {
         this.pipeline = pipeline;
 
         // these are order-specific!
-        // FragmentModule splits up the DOM and would hide elements from the other steps
+        // ReferenceModule splits up the DOM and would hide elements from the other steps
         this.modules = [
             new SlotModule(),
             new VarsModule(),
             new TemplateTextModule(),
-            new FragmentModule()
+            new ReferenceModule()
         ];
     }
 

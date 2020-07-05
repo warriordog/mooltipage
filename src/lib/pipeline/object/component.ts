@@ -1,6 +1,6 @@
 import { PipelineObject } from "./pipelineObject";
 import { DocumentNode } from "../../dom/node";
-import { EvalContext, EvalScope } from "../evalEngine";
+import { EvalContext, EvalContent } from "../evalEngine";
 
 export class Component implements PipelineObject {
     readonly resId: string;
@@ -67,7 +67,7 @@ export class ComponentTemplate {
     }
 }
 
-export abstract class ComponentScript {
+export class ComponentScript {
     /**
      * Type of this script.
      * @see {@link ComponentScriptType}
@@ -80,69 +80,19 @@ export abstract class ComponentScript {
      */
     readonly srcResId?: string;
 
-    constructor(type: ComponentScriptType, srcResId?: string) {
+    readonly scriptFunction: EvalContent<ComponentScriptInstance>;
+
+    constructor(type: ComponentScriptType, scriptFunction: EvalContent<ComponentScriptInstance>, srcResId?: string) {
         this.type = type;
+        this.scriptFunction = scriptFunction;
         this.srcResId = srcResId;
     }
 
     /**
-     * Executes this component script in the provided context
-     * @param context The evaluation context to provide to the function
-     * @returns The object containing data to reference in the component
-     */
-    abstract invoke(context: EvalContext): ComponentScriptInstance;
-
-    /**
      * Clones this script
      */
-    abstract clone(): ComponentScript;
-}
-
-/**
- * Type of component script that is backed by an ES6 class
- * @see {@link ComponentScript}
- */
-export class ClassComponentScript extends ComponentScript {
-    readonly classConstructor: new (scope: EvalScope, context: EvalContext) => ComponentScriptInstance;
-
-    constructor(classConstructor: new (scope: EvalScope, context: EvalContext) => ComponentScriptInstance, srcResId?: string) {
-        super(ComponentScriptType.CLASS, srcResId);
-
-        this.classConstructor = classConstructor;
-    }
-
-    invoke(context: EvalContext): ComponentScriptInstance {
-        const componentInstance: ComponentScriptInstance = new this.classConstructor(context.scope, context);
-
-        return componentInstance;
-    }
-
-    clone(): ClassComponentScript {
-        return new ClassComponentScript(this.classConstructor, this.srcResId);
-    }
-}
-
-/**
- * Type of component script that is backed by a tradition JS function
- * @see {@link ComponentScript}
- */
-export class FunctionComponentScript extends ComponentScript {
-    readonly classFunction: (scope: EvalScope, context: EvalContext) => ComponentScriptInstance;
-
-    constructor(classFunction: (scope: EvalScope, context: EvalContext) => ComponentScriptInstance, srcResId?: string) {
-        super(ComponentScriptType.FUNCTION, srcResId);
-
-        this.classFunction = classFunction;
-    }
-
-    invoke(context: EvalContext): ComponentScriptInstance {
-        const componentInstance: ComponentScriptInstance = this.classFunction(context.scope, context);
-
-        return componentInstance;
-    }
-
-    clone(): FunctionComponentScript {
-        return new FunctionComponentScript(this.classFunction, this.srcResId);
+    clone(): ComponentScript {
+        return new ComponentScript(this.type, this.scriptFunction, this.srcResId);
     }
 }
 

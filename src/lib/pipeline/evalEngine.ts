@@ -4,26 +4,13 @@ import { UsageContext } from './usageContext';
 import { ComponentScriptInstance } from './object/component';
 
 export class EvalEngine {
-    evalHandlebars(functionBody: string, context: EvalContext): unknown {
-        // parse handlebars
-        const evalContent: EvalContent<unknown> = this.parseHandlebars(functionBody);
-
-        // execute
-        const result: unknown = evalContent.invoke(context);
-
-        return result;
-    }
 
     parseTemplateString(templateString: string): EvalContent<string> {
         // generate function body for template
         const functionBody: string = 'return `' + templateString + '`;';
 
-        // Parse function body into callable constructor.
-        // This is inherently not type-safe, as the purpose is to run unknown JS code.
-        const evalFunc = this.createEvalFunction<string>(functionBody);
-
         // create content
-        const evalContent: EvalContent<string> = new EvalContent<string>(evalFunc);
+        const evalContent: EvalContent<string> = this.createEvalContent(functionBody);
 
         return evalContent;
     }
@@ -32,30 +19,68 @@ export class EvalEngine {
         // generate body for function
         const functionBody: string = 'return ' + jsString + ';';
 
-        // parse it
-        const evalFunc = this.createEvalFunction<unknown>(functionBody);
-
         // create content
-        const evalContent: EvalContent<unknown> = new EvalContent<unknown>(evalFunc);
+        const evalContent: EvalContent<unknown> = this.createEvalContent(functionBody);
 
         return evalContent;
     }
 
-    private createEvalFunction<T>(functionBody: string): EvalFunction<T> {
-        try {
-            // Parse function body into callable constructor.
-            // This is inherently not type-safe, as the purpose is to run unknown JS code.
-            const functionObj: EvalFunction<T> = new Function('$', '$$', functionBody) as EvalFunction<T>;
+    parseComponentFunction(jsText: string): EvalContent<ComponentScriptInstance> {
+        // generate body for function
+        const functionBody = jsText.trim();
 
-            return functionObj;
+        // create content
+        const evalContent: EvalContent<ComponentScriptInstance> = this.createEvalContent(functionBody);
+
+        return evalContent;
+    }
+
+    parseComponentClass(jsText: string): EvalContent<ComponentScriptInstance> {
+        // generate body for function
+        const functionBody = jsText.trim();
+
+        // parse class declaration
+        const classDeclarationFunc = this.parseNoArgsFunction<EvalConstructor<ComponentScriptInstance>>(functionBody);
+
+        // execute class declaration
+        const classConstructor: EvalConstructor<ComponentScriptInstance> = classDeclarationFunc();
+
+        // create eval content
+        const evalContent = new EvalContentConstructor(classConstructor);
+
+        return evalContent;
+    }
+
+    private createEvalContent<T>(functionBody: string): EvalContent<T> {
+        try {
+            // Parse function body into callable function.
+            // This is inherently not type-safe, as the purpose is to run unknown JS code.
+            const functionObj = new Function('$', '$$', functionBody) as EvalFunction<T>;
+
+            return new EvalContentFunction(functionObj);
+        } catch (error) {
+            throw new Error(`Parse error in function: ${ error }.  Function body: ${ functionBody }`);
+        }
+    }
+
+    private parseNoArgsFunction<T>(functionBody: string): () => T  {
+        try {
+            return new Function(functionBody) as () => T;
         } catch (error) {
             throw new Error(`Parse error in function: ${ error }.  Function body: ${ functionBody }`);
         }
     }
 }
 
-export class EvalContent<T> {
-    private readonly evalFunction: EvalFunction<T>;
+export interface EvalContent<T> {
+    invoke(evalContext: EvalContext): T;
+}
+
+export type EvalFunction<T> = ($: EvalScope, $$: EvalContext) => T;
+export type EvalConstructor<T> = new ($: EvalScope, $$: EvalContext) => T;
+
+export class EvalContentFunction<T> implements EvalContent<T> {
+    protected readonly evalFunction: EvalFunction<T>;
 
     constructor(evalFunction: EvalFunction<T>) {
         this.evalFunction = evalFunction;
@@ -64,6 +89,19 @@ export class EvalContent<T> {
     invoke(evalContext: EvalContext): T {
         // execute the function
         return this.evalFunction(evalContext.scope, evalContext);
+    }
+}
+
+export class EvalContentConstructor<T> implements EvalContent<T> {
+    protected readonly evalConstructor: EvalConstructor<T>;
+
+    constructor(evalConstructor: EvalConstructor<T>) {
+        this.evalConstructor = evalConstructor;
+    }
+
+    invoke(evalContext: EvalContext): T {
+        // execute the function
+        return new this.evalConstructor(evalContext.scope, evalContext);
     }
 }
 
@@ -81,16 +119,13 @@ export class EvalContext {
         this.usageContext = usageContext;
         this.variables = variables;
         this.parameters = usageContext.fragmentParams;
-        this.scope = new Proxy({}, new EvalScopeProxy(usageContext.fragmentParams, variables));
+        this.scope = new Proxy({}, new EvalScopeProxy(usageContext.fragmentParams, variables, usageContext.componentInstance));
     }
 }
 
 export type EvalVars = Map<string, unknown>;
 
 export type EvalScope = Record<string, unknown>;
-
-// the vars definition is a lie to make typescript shut up
-type EvalFunction<T> = ($: EvalScope, $$: EvalContext) => T;
 
 class EvalScopeProxy implements ProxyHandler<EvalScope> {
     private readonly parameters: EvalVars;

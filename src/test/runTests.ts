@@ -12,6 +12,7 @@ import { NodeIsTypeTests } from './unit/nodeIsTypeTests';
 import { TemplateTextTests } from './endToEnd/templateTextTests';
 import { VarsTests } from './endToEnd/varsTests';
 import { FragmentParamTests } from './endToEnd/fragmentParamTests';
+import { ComponentTests } from './endToEnd/componentTests';
 
 // create test runner instance
 const testRunner: TestRunner = new TestRunner();
@@ -37,7 +38,8 @@ testRunner.addTestSetGroups(
         new FragmentSlotTests(),
         new TemplateTextTests(),
         new VarsTests(),
-        new FragmentParamTests()
+        new FragmentParamTests(),
+        new ComponentTests()
     ])
 );
 

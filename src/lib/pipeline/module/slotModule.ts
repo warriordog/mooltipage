@@ -2,6 +2,9 @@ import { CompilerModule, CompileData } from "../htmlCompiler";
 import { UsageContext } from "../../pipeline/usageContext";
 import { DocumentNode, TagNode } from "../../dom/node";
 
+/**
+ * Processes <m-slot> tags by replacing them with content extracted from <m-content> tags at the point of reference.
+ */
 export class SlotModule implements CompilerModule {
     compileFragment(compileData: CompileData): void {
         const dom: DocumentNode = compileData.fragment.dom;

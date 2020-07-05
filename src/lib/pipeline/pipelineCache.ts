@@ -1,16 +1,19 @@
 import { Fragment } from './object/fragment';
 import { EvalContent } from './evalEngine';
 import { Page } from './object/page';
+import { Component } from './object/component';
 
 export class PipelineCache {
     private readonly pageCache: Map<string, Page>;
     private readonly fragmentCache: Map<string, Fragment>;
+    private readonly componentCache: Map<string, Component>;
     private readonly templateStringCache: Map<string, EvalContent<string>>;
     private readonly handlebarsCache: Map<string, EvalContent<unknown>>;
 
     constructor() {
         this.pageCache = new Map();
         this.fragmentCache = new Map();
+        this.componentCache = new Map();
         this.templateStringCache = new Map();
         this.handlebarsCache = new Map();
     }
@@ -53,6 +56,26 @@ export class PipelineCache {
 
     storeFragment(fragment: Fragment): void {
         this.fragmentCache.set(fragment.resId, fragment);
+    }
+
+    // Component
+
+    hasComponent(resId: string): boolean {
+        return this.componentCache.has(resId);
+    }
+
+    getComponent(resId: string): Component {
+        const component: Component | undefined = this.componentCache.get(resId);
+
+        if (component == undefined) {
+            throw new Error(`Component not found in cache: ${resId}.  Make sure to call hasComponent() before getComponent().`);
+        }
+
+        return component;
+    }
+
+    storeComponent(component: Component): void {
+        this.componentCache.set(component.resId, component);
     }
 
     // Template string
@@ -100,6 +123,7 @@ export class PipelineCache {
     clear(): void {
         this.pageCache.clear();
         this.fragmentCache.clear();
+        this.componentCache.clear();
         this.templateStringCache.clear();
         this.handlebarsCache.clear();
     }

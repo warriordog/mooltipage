@@ -7,17 +7,21 @@ import { HtmlParser } from './htmlParser';
 import { HtmlSerializer }  from './htmlSerializer';
 import { HtmlCompiler } from './htmlCompiler';
 import { EvalContent, EvalContext, EvalEngine } from './evalEngine';
-import { Component } from './object/component';
+import { Component, ComponentScriptInstance } from './object/component';
 import { Page } from './object/page';
+import { DocumentNode } from '../dom/node';
+import { CssCompiler } from './cssCompiler';
 
 export class Pipeline {
     private readonly cache: PipelineCache;
-    private readonly pipelineInterface: PipelineInterface;
-    private readonly htmlFormatter?: HtmlFormatter;
-    private readonly htmlParser: HtmlParser;
-    private readonly htmlCompiler: HtmlCompiler;
-    private readonly htmlSerializer: HtmlSerializer;
-    private readonly evalEngine: EvalEngine;
+
+    readonly pipelineInterface: PipelineInterface;
+    readonly htmlFormatter?: HtmlFormatter;
+    readonly htmlParser: HtmlParser;
+    readonly htmlCompiler: HtmlCompiler;
+    readonly cssCompiler: CssCompiler;
+    readonly htmlSerializer: HtmlSerializer;
+    readonly evalEngine: EvalEngine;
 
     constructor(pipelineInterface: PipelineInterface, htmlFormatter?: HtmlFormatter) {
         this.pipelineInterface = pipelineInterface;
@@ -27,12 +31,12 @@ export class Pipeline {
         this.evalEngine = new EvalEngine();
         this.htmlParser = new HtmlParser(this);
         this.htmlCompiler = new HtmlCompiler(this);
+        this.cssCompiler = new CssCompiler(this);
         this.htmlSerializer = new HtmlSerializer(this);
     }
 
-    compilePage(resId: string): Fragment {
+    compilePage(resId: string): Page {
         // parse page
-        //const page: Fragment = this.compileFragment(resId, usageContext);
         const page: Page = this.getOrParsePage(resId);
 
         // create usage context for compile
@@ -75,13 +79,37 @@ export class Pipeline {
         return fragment;
     }
 
-    /*compileComponent(resId: string): Fragment {
+    compileComponent(resId: string, baseUsageContext: UsageContext): Fragment {
         // get or parse component
         const component: Component = this.getOrParseComponent(resId);
 
-        // create component instance
+        // create fragment
+        const fragDom: DocumentNode = component.template.dom;
+        const fragResId = component.template.srcResId ?? resId;
+        const fragment: Fragment = new Fragment(fragResId, fragDom);
 
-    }*/
+        // create component script instance
+        const componentInstanceEvalContext: EvalContext = new EvalContext(this, fragment, baseUsageContext, new Map());
+        const componentInstance: ComponentScriptInstance = component.script.scriptFunction.invoke(componentInstanceEvalContext);
+
+        // add component script data to context
+        const componentUsageContext: UsageContext = baseUsageContext.createSubContext(baseUsageContext.slotContents, baseUsageContext.fragmentParams, componentInstance);
+
+        // compile HTML
+        this.htmlCompiler.compileHtml(fragment, componentUsageContext);
+
+        // compile styles
+        if (component.style != undefined) {
+            this.cssCompiler.compileComponentStyle(component, component.style, componentUsageContext);
+        }
+
+        // format fragment
+        if (this.htmlFormatter?.formatFragment != undefined) {
+            this.htmlFormatter.formatFragment(fragment, componentUsageContext);
+        }
+
+        return fragment;
+    }
 
     compileTemplateString(templateText: string): EvalContent<string> {
         const functionBody = templateText.trim();
@@ -202,6 +230,28 @@ export class Pipeline {
         }
 
         return fragment.clone();
+    }
+
+    private getOrParseComponent(resId: string): Component {
+        let component: Component;
+
+        if (this.cache.hasComponent(resId)) {
+            // use cached component
+            component = this.cache.getComponent(resId);
+        } else {
+            // read HTML
+            const html: string = this.pipelineInterface.getHtml(resId);
+
+            // parse component
+            const parsedComponent: Component = this.htmlParser.parseComponent(resId, html);
+
+            // keep in cache
+            this.cache.storeComponent(parsedComponent);
+
+            component = parsedComponent;
+        }
+
+        return component.clone();
     }
 }
 

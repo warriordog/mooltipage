@@ -3,8 +3,9 @@ import { PipelineCache } from "../../lib/pipeline/pipelineCache";
 import * as Assert from '../framework/assert';
 import { Fragment } from "../../lib/pipeline/object/fragment";
 import { DocumentNode } from '../../lib/dom/node';
-import { EvalContent } from "../../lib/pipeline/evalEngine";
+import { EvalContentFunction } from "../../lib/pipeline/evalEngine";
 import { Page } from "../../lib/pipeline/object/page";
+import { Component, ComponentTemplate, ComponentScript, ComponentScriptType } from "../../lib/pipeline/object/component";
 
 export class PipelineCacheTests implements TestSet {
     // test methods
@@ -103,12 +104,68 @@ export class PipelineCacheTests implements TestSet {
         Assert.AreEqual(value, frag2);
     }
 
+
+    
+    // component
+
+    private testCompHasPresent(): void {
+        const cache = new PipelineCache();
+        const temp = new ComponentTemplate(new DocumentNode());
+        const script = new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))
+        const comp = new Component('foo', temp, script);
+
+        cache.storeComponent(comp);
+        const hasValue: boolean = cache.hasComponent('foo');
+
+        Assert.IsTrue(hasValue);
+    } 
+
+    private testCompHasMissing(): void {
+        const cache = new PipelineCache();
+
+        const hasValue: boolean = cache.hasComponent('foo');
+
+        Assert.IsFalse(hasValue);
+    } 
+
+    private testCompGetPresent(): void {
+        const cache = new PipelineCache();
+        const temp = new ComponentTemplate(new DocumentNode());
+        const script = new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))
+        const comp = new Component('foo', temp, script);
+
+        cache.storeComponent(comp);
+        const value: Component = cache.getComponent('foo');
+
+        Assert.AreEqual(value, comp);
+    }
+    
+    private testCompGetMissing(): void {
+        const cache = new PipelineCache();
+
+        Assert.Throws(() => cache.getComponent('foo'));
+    }
+
+    private testCompOverwrite(): void {
+        const cache = new PipelineCache();
+        const temp = new ComponentTemplate(new DocumentNode());
+        const script = new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))
+        const comp1 = new Component('foo', temp, script);
+        const comp2 = new Component('foo', temp, script);
+
+        cache.storeComponent(comp1);
+        cache.storeComponent(comp2);
+        const value: Component = cache.getComponent('foo');
+
+        Assert.AreEqual(value, comp2);
+    }
+
     // template string
 
     private testTemplateStringHasPresent(): void {
         const cache = new PipelineCache();
 
-        cache.storeTemplateString('foo', new EvalContent(() => 'foo'));
+        cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
         const hasValue: boolean = cache.hasTemplateString('foo');
 
         Assert.IsTrue(hasValue);
@@ -124,7 +181,7 @@ export class PipelineCacheTests implements TestSet {
 
     private testTemplateStringGetPresent(): void {
         const cache = new PipelineCache();
-        const content = new EvalContent(() => 'foo');
+        const content = new EvalContentFunction(() => 'foo');
 
         cache.storeTemplateString('foo', content);
         const value = cache.getTemplateString('foo');
@@ -140,8 +197,8 @@ export class PipelineCacheTests implements TestSet {
 
     private testTemplateStringOverwrite(): void {
         const cache = new PipelineCache();
-        const content1 = new EvalContent(() => 'foo1');
-        const content2 = new EvalContent(() => 'foo2');
+        const content1 = new EvalContentFunction(() => 'foo1');
+        const content2 = new EvalContentFunction(() => 'foo2');
 
         cache.storeTemplateString('foo', content1);
         cache.storeTemplateString('foo', content2);
@@ -155,7 +212,7 @@ export class PipelineCacheTests implements TestSet {
     private testHandlebarsHasPresent(): void {
         const cache = new PipelineCache();
 
-        cache.storeHandlebars('foo', new EvalContent(() => 'foo'));
+        cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
         const hasValue: boolean = cache.hasHandlebars('foo');
 
         Assert.IsTrue(hasValue);
@@ -171,7 +228,7 @@ export class PipelineCacheTests implements TestSet {
 
     private testHandlebarsGetPresent(): void {
         const cache = new PipelineCache();
-        const content = new EvalContent(() => 'foo');
+        const content = new EvalContentFunction(() => 'foo');
 
         cache.storeHandlebars('foo', content);
         const value = cache.getHandlebars('foo');
@@ -187,8 +244,8 @@ export class PipelineCacheTests implements TestSet {
 
     private testHandlebarsOverwrite(): void {
         const cache = new PipelineCache();
-        const content1 = new EvalContent(() => 'foo1');
-        const content2 = new EvalContent(() => 'foo2');
+        const content1 = new EvalContentFunction(() => 'foo1');
+        const content2 = new EvalContentFunction(() => 'foo2');
 
         cache.storeHandlebars('foo', content1);
         cache.storeHandlebars('foo', content2);
@@ -202,8 +259,8 @@ export class PipelineCacheTests implements TestSet {
     private testClear(): void {
         const cache = new PipelineCache();
         cache.storeFragment(new Fragment('foo', new DocumentNode()));
-        cache.storeTemplateString('foo', new EvalContent(() => 'foo'));
-        cache.storeHandlebars('foo', new EvalContent(() => 'foo'));
+        cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
+        cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
 
         cache.clear();
 
@@ -226,6 +283,11 @@ export class PipelineCacheTests implements TestSet {
             ['FragGetPresent', (): void => this.testFragGetPresent()],
             ['FragGetMissing', (): void => this.testFragGetMissing()],
             ['FragOverwrite', (): void => this.testFragOverwrite()],
+            ['CompgHasPresent', (): void => this.testCompHasPresent()],
+            ['CompHasMissing', (): void => this.testCompHasMissing()],
+            ['CompGetPresent', (): void => this.testCompGetPresent()],
+            ['CompGetMissing', (): void => this.testCompGetMissing()],
+            ['CompOverwrite', (): void => this.testCompOverwrite()],
             ['TemplateStringHasPresent', (): void => this.testTemplateStringHasPresent()],
             ['TemplateStringHasMissing', (): void => this.testTemplateStringHasMissing()],
             ['TemplateStringGetPresent', (): void => this.testTemplateStringGetPresent()],

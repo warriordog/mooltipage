@@ -97,6 +97,10 @@ export abstract class NodeWithChildren extends Node {
         NodeTools.walkDom(this, callback);
     }
 
+    createDomFromChildren(): DocumentNode {
+        return NodeTools.createDomFromChildren(this);
+    }
+
     static isNodeWithChildren(node: Node): node is NodeWithChildren {
         return node.nodeType === NodeType.CDATA || node.nodeType === NodeType.Tag || node.nodeType === NodeType.Document;
     }

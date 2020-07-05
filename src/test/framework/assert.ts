@@ -1,10 +1,10 @@
-export function AreEqual<T>(actual: T, expected: T): void {
+export function AreEqual<T>(expected: T, actual: T): void {
     if (expected !== actual) {
         RaiseError('AreEqual', actual, expected);
     }
 }
 
-export function AreEqualish<T>(actual: T, expected: T): void {
+export function AreEqualish<T>(expected: T, actual: T): void {
     if (expected != actual) {
         RaiseError('AreEqualish', actual, expected);
     }

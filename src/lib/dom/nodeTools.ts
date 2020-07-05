@@ -266,16 +266,16 @@ export function findTopLevelChildTags(parent: NodeWithChildren, matcher: (tag: T
 export function replaceNode(remove: Node, replacements: Node[]): void {
     let prevNode: Node = remove;
 
-    for (const replaceNode of replacements) {
-        prevNode.appendSibling(replaceNode);
-        prevNode = replaceNode;
+    for (const newNode of replacements) {
+        prevNode.appendSibling(newNode);
+        prevNode = newNode;
     }
 
     detatchNode(remove);
 }
 
-export function getChildTags(node: NodeWithChildren): TagNode[] {
-    return node.childNodes.filter((node: Node) => TagNode.isTagNode(node)) as TagNode[];
+export function getChildTags(parent: NodeWithChildren): TagNode[] {
+    return parent.childNodes.filter((node: Node) => TagNode.isTagNode(node)) as TagNode[];
 }
 
 export function walkDom(node: Node, callback: (node: Node) => void): void {
@@ -307,6 +307,16 @@ export function findChildTagsByPath(root: NodeWithChildren, matchers: ((tag: Tag
     }
 
     return matches;
+}
+
+export function createDomFromChildren(parent: NodeWithChildren): DocumentNode {
+    // create dom
+    const dom: DocumentNode = new DocumentNode();
+
+    // transfer children
+    dom.appendChildren(parent.childNodes);
+
+    return dom;
 }
 
 // not exported
