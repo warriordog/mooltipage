@@ -1,5 +1,5 @@
 import { Handler } from 'htmlparser2/lib/Parser';
-import { TagNode, NodeWithChildren, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode } from "./node";
+import { TagNode, NodeWithChildren, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode } from "./node";
 
 export class DomParser implements Partial<Handler> {
     dom: DocumentNode;
@@ -20,6 +20,9 @@ export class DomParser implements Partial<Handler> {
     }
 
     onopentag(name: string, attribs: { [s: string]: string }): void {
+        // normalize tag name
+        const tagName = name.toLowerCase();
+
         // copy attribs
         const attributes = new Map<string, string | null>();
         for (const key of Object.keys(attribs)) {
@@ -29,7 +32,7 @@ export class DomParser implements Partial<Handler> {
         }
 
         // create tag
-        const tag: TagNode = new TagNode(name, attributes);
+        const tag: TagNode = this.createTagNode(tagName, attributes);
 
         this.pushParent(tag);
     }
@@ -95,5 +98,22 @@ export class DomParser implements Partial<Handler> {
         }
         
         this.currentParent = this.currentParent.parentNode ?? this.dom;
+    }
+    
+    private createTagNode(tagName: string, attributes: Map<string, string | null>): TagNode {
+        switch (tagName) {
+            case 'm-fragment':
+                return new MFragmentNode(attributes);
+            case 'm-component':
+                return new MComponentNode(attributes);
+            case 'm-slot':
+                return new MSlotNode(attributes);
+            case 'm-content':
+                return new MContentNode(attributes);
+            case 'm-var':
+                return new MVarNode(attributes);
+            default:
+                return new TagNode(tagName, attributes);
+        }
     }
 }

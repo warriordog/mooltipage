@@ -38,7 +38,7 @@ export class FragmentOnlyTests implements TestSet {
         const divs = dom.findChildTags((node: TagNode) => node.tagName === 'div', true);
         const mFragments = dom.findChildTags((node: TagNode) => node.tagName === 'm-fragment', true);
 
-        Assert.AreEqual(divs.length, 1);
+        Assert.AreEqual(1, divs.length);
         Assert.IsEmpty(mFragments);
     }
 
@@ -46,24 +46,24 @@ export class FragmentOnlyTests implements TestSet {
 
     private validateContent(dom: DocumentNode): void {
         // get counts
-        const test1divs = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test1div', true);
-        const test2divs = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test2div', true);
-        const test3div1s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test3div1', true);
-        const test3div2s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test3div2', true);
-        const test4divs = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test4div', true);
-        const test5divs = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test5div', true);
+        const test1divs = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test1div', true);
+        const test2divs = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test2div', true);
+        const test3div1s = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test3div1', true);
+        const test3div2s = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test3div2', true);
+        const test4divs = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test4div', true);
+        const test5divs = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test5div', true);
         const spans = dom.findChildTags((node: TagNode) => node.tagName === 'span', true);
         const mFragments = dom.findChildTags((node: TagNode) => node.tagName === 'm-fragment', true);
 
         // check counts
         Assert.IsEmpty(mFragments);
-        Assert.AreEqual(test1divs.length, 1);
-        Assert.AreEqual(test2divs.length, 2);
-        Assert.AreEqual(test3div1s.length, 4);
-        Assert.AreEqual(test3div2s.length, 4);
-        Assert.AreEqual(test4divs.length, 6);
-        Assert.AreEqual(test5divs.length, 4);
-        Assert.AreEqual(spans.length, 10);
+        Assert.AreEqual(1, test1divs.length);
+        Assert.AreEqual(2, test2divs.length);
+        Assert.AreEqual(4, test3div1s.length);
+        Assert.AreEqual(4, test3div2s.length);
+        Assert.AreEqual(6, test4divs.length);
+        Assert.AreEqual(4, test5divs.length);
+        Assert.AreEqual(10, spans.length);
     }
 
     // test data

@@ -16,13 +16,16 @@ export class BasicHtmlTests implements TestSet {
         const dom: DocumentNode = fragment.dom;
 
         // get contents
-        const div1 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div1', true);
-        const div2 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div2', true);
+        const div1 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'div1', true);
+        const div2 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'div2', true);
         const div2text = div2?.firstChild;
+        const div2textText = (div2text as TextNode).text;
         const h1 = dom.findChildTag((node: TagNode) => node.tagName === 'h1', true);
         const h1text = h1?.firstChild;
+        const h1textText = (h1text as TextNode).text;
         const p = dom.findChildTag((node: TagNode) => node.tagName === 'p', true);
         const ptext = p?.firstChild;
+        const ptextText = (ptext as TextNode).text;
 
         // verify content
         Assert.IsNotNullish(div1);
@@ -35,10 +38,10 @@ export class BasicHtmlTests implements TestSet {
         Assert.IsTrue(TextNode.isTextNode(div2text as Node));
         Assert.IsTrue(TextNode.isTextNode(h1text as Node));
         Assert.IsTrue(TextNode.isTextNode(ptext as Node));
-        Assert.AreEqual(div1?.getChildTags().length, 3);
-        Assert.AreEqual((div2text as TextNode).text, 'This is div2');
-        Assert.AreEqual((h1text as TextNode).text, 'This is h1');
-        Assert.AreEqual((ptext as TextNode).text, 'This is p');
+        Assert.AreEqual(3, div1?.getChildTags().length);
+        Assert.AreEqual('This is div2', div2textText);
+        Assert.AreEqual('This is h1', h1textText);
+        Assert.AreEqual('This is p', ptextText);
 
     }
 
@@ -58,8 +61,10 @@ export class BasicHtmlTests implements TestSet {
         // get contents
         const title = dom.findChildTag((node: TagNode) => node.tagName === 'title', true);
         const titletext = title?.firstChild;
+        const titletextText = (titletext as TextNode).text;
         const div = dom.findChildTag((node: TagNode) => node.tagName === 'div', true);
         const divtext = div?.firstChild;
+        const divtextText = (divtext as TextNode).text;
 
         // verify content
         Assert.IsNotNullish(title);
@@ -68,8 +73,8 @@ export class BasicHtmlTests implements TestSet {
         Assert.IsNotNullish(divtext);
         Assert.IsTrue(TextNode.isTextNode(titletext as Node));
         Assert.IsTrue(TextNode.isTextNode(divtext as Node));
-        Assert.AreEqual((titletext as TextNode).text, 'Test2 File');
-        Assert.AreEqual((divtext as TextNode).text, 'This is the body.');
+        Assert.AreEqual('Test2 File', titletextText);
+        Assert.AreEqual('This is the body.', divtextText);
 
     }
 

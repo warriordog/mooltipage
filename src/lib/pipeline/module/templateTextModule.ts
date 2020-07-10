@@ -26,17 +26,15 @@ export class TemplateTextModule implements CompilerModule {
     }
 
     private processTagNode(compileData: CompileData, node: TagNode, evalContext: EvalContext): void {
-        const attributeKeys = node.attributes.keys();
-
         // loop through each attribute and compile it
-        for (const key of attributeKeys) {
-            const value = node.attributes.get(key);
+        for (const key of node.getAttributes().keys()) {
+            const value = node.getAttribute(key);
 
             if (value != null) {
                 // compile the value to text, either by preserving existing text ofr by executing JS
                 const newValue = this.compileToText(compileData, value, evalContext);
 
-                node.attributes.set(key, newValue);
+                node.setAttribute(key, newValue);
             }
         }
     }

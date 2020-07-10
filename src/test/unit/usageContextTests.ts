@@ -35,7 +35,7 @@ export class UsageContextTests implements TestSet {
 
         Assert.IsNotNullish(usage.slotContents);
         Assert.IsNotEmpty(usage.slotContents);
-        Assert.AreEqual(usage.slotContents.size, 2);
+        Assert.AreEqual(2, usage.slotContents.size);
         Assert.IsTrue(usage.slotContents.has('a'));
         Assert.IsTrue(usage.slotContents.has('foo'));
     }
@@ -59,7 +59,7 @@ export class UsageContextTests implements TestSet {
 
         Assert.IsNotNullish(usage.fragmentParams);
         Assert.IsNotEmpty(usage.fragmentParams);
-        Assert.AreEqual(usage.fragmentParams.size, 2);
+        Assert.AreEqual(2, usage.fragmentParams.size);
         Assert.IsTrue(usage.fragmentParams.has('key1'));
         Assert.IsTrue(usage.fragmentParams.has('key2'));
     }

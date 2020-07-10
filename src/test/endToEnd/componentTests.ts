@@ -17,12 +17,12 @@ export class ComponentTests implements TestSet {
 
         // validate page content
         const styles = head.findChildTags((tag: TagNode) => tag.tagName === 'style');
-        const comp1s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.attributes.get('class') === 'comp1');
-        const comp2s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.attributes.get('class') === 'comp2');
-        const comp3s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.attributes.get('class') === 'comp3');
-        const comp1div1s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.attributes.get('class') === 'comp1div1');
-        const comp1div2s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.attributes.get('class') === 'comp1div2');
-        const comp1div3s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.attributes.get('class') === 'comp1div3');
+        const comp1s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.getAttribute('class') === 'comp1');
+        const comp2s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2');
+        const comp3s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.getAttribute('class') === 'comp3');
+        const comp1div1s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.getAttribute('class') === 'comp1div1');
+        const comp1div2s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.getAttribute('class') === 'comp1div2');
+        const comp1div3s = body.findChildTags((tag: TagNode) => tag.tagName === 'div' && tag.getAttribute('class') === 'comp1div3');
         const comp1div3text = comp1div3s.find((tag: TagNode) => tag.firstChild != null && TextNode.isTextNode(tag.firstChild))?.firstChild as TextNode | undefined;
         const comp3text = comp3s.find((tag: TagNode) => tag.firstChild != null && TextNode.isTextNode(tag.firstChild))?.firstChild as TextNode | undefined;
 

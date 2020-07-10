@@ -57,7 +57,7 @@ export class HtmlParser {
         }
 
         // get template src
-        const templateSrc: string | undefined = templateNode.attributes.get('src') ?? undefined;
+        const templateSrc: string | undefined = templateNode.getOptionalValueAttribute('src');
         
         // get contents of template as dom
         const templateDom: DocumentNode = this.getDomForComponentSection(templateSrc, templateNode);
@@ -76,10 +76,10 @@ export class HtmlParser {
         }
 
         // get script src
-        const scriptSrc: string | undefined = scriptNode.attributes.get('src') ?? undefined;
+        const scriptSrc: string | undefined = scriptNode.getOptionalValueAttribute('src');
 
         // get script type
-        const scriptTypeName: string = scriptNode.attributes.get('type') ?? ComponentScriptType.CLASS;
+        const scriptTypeName: string = scriptNode.getOptionalValueAttribute('type') ?? ComponentScriptType.CLASS;
         if (!Object.values(ComponentScriptType).includes(scriptTypeName as ComponentScriptType)) {
             throw new Error(`Unknown component <script> type: '${scriptTypeName}'`);
         }
@@ -114,10 +114,10 @@ export class HtmlParser {
         }
 
         // get style src
-        const styleSrc: string | undefined = styleNode.attributes.get('src') ?? undefined;
+        const styleSrc: string | undefined = styleNode.getOptionalValueAttribute('src');
 
         // get style bind
-        const styleBindName: string = styleNode.attributes.get('bind') ?? ComponentStyleBindType.HEAD;
+        const styleBindName: string = styleNode.getOptionalValueAttribute('bind') ?? ComponentStyleBindType.HEAD;
         if (!Object.values(ComponentStyleBindType).includes(styleBindName as ComponentStyleBindType)) {
             throw new Error(`Unknown component <style> bind: '${styleBindName}'`);
         }

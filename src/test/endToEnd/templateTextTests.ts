@@ -53,13 +53,14 @@ export class TemplateTextTests implements TestSet {
         const dom: DocumentNode = fragment.dom;
 
         // test
-        const template = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'template');
+        const template = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'template');
         const templateText = template?.firstChild;
+        const templateTextText = (templateText as TextNode).text;
         
         Assert.IsNotNullish(template);
         Assert.IsNotNullish(templateText);
         Assert.IsTrue(TextNode.isTextNode(templateText as Node));
-        Assert.AreEqual((templateText as TextNode).text, 'slot.html');
+        Assert.AreEqual('slot.html', templateTextText);
     }
 
     private testAttributes(): void {
@@ -68,13 +69,16 @@ export class TemplateTextTests implements TestSet {
         const dom: DocumentNode = fragment.dom;
 
         // test
-        const div1 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div1');
-        const div2 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div2');
-        const div3 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'div3');
+        const div1 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'div1');
+        const div1Value = div1?.getAttribute('value');
+        const div2 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'div2');
+        const div2Value = div2?.getAttribute('value');
+        const div3 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'div3');
+        const div3Value = div3?.getAttribute('value');
 
-        Assert.AreEqual(div1?.attributes.get('value'), 'value1');
-        Assert.AreEqual(div2?.attributes.get('value'), 'value2');
-        Assert.AreEqual(div3?.attributes.get('value'), 'value3');
+        Assert.AreEqual('value1', div1Value);
+        Assert.AreEqual('value2', div2Value);
+        Assert.AreEqual('value3', div3Value);
     }
 
     private testAttributesMulti(): void {
@@ -84,10 +88,13 @@ export class TemplateTextTests implements TestSet {
 
         // test
         const div = dom.findChildTag((node: TagNode) => node.tagName === 'div');
+        const divValue1 = div?.getAttribute('a1');
+        const divValue2 = div?.getAttribute('a2');
+        const divValue3 = div?.getAttribute('a3');
 
-        Assert.AreEqual(div?.attributes.get('a1'), 'value1');
-        Assert.AreEqual(div?.attributes.get('a2'), 'value2');
-        Assert.AreEqual(div?.attributes.get('a3'), 'value3');
+        Assert.AreEqual('value1', divValue1);
+        Assert.AreEqual('value2', divValue2);
+        Assert.AreEqual('value3', divValue3);
     }
 
     private testEscape(): void {
@@ -97,8 +104,9 @@ export class TemplateTextTests implements TestSet {
 
         // test
         const div = dom.findChildTag((node: TagNode) => node.tagName === 'div');
+        const divValue = div?.getAttribute('value');
 
-        Assert.AreEqual(div?.attributes.get('value'), '${ \'escaped\' }');
+        Assert.AreEqual('${ \'escaped\' }', divValue);
     }
 
     private testEscapeMixed(): void {
@@ -107,8 +115,9 @@ export class TemplateTextTests implements TestSet {
 
         // test
         const div = fragment.dom.findChildTag((node: TagNode) => node.tagName === 'div');
+        const divValue = div?.getAttribute('value');
 
-        Assert.AreEqual(div?.attributes.get('value'), '${ \'escaped\' }not escaped');
+        Assert.AreEqual('${ \'escaped\' }not escaped', divValue);
     }
 
     // shared test code
@@ -122,16 +131,16 @@ export class TemplateTextTests implements TestSet {
         Assert.IsNotNullish(div);
         Assert.IsNotNullish(text);
         Assert.IsTrue(TextNode.isTextNode(text as Node));
-        Assert.AreEqual((text as TextNode).text, 'div content');
+        Assert.AreEqual('div content', (text as TextNode).text);
     }
 
     private validateParams(dom: DocumentNode): void {
         // get counts
-        const pipelineDiv = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'pipeline');
+        const pipelineDiv = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'pipeline');
         const pipelineText = pipelineDiv?.firstChild;
-        const fragmentDiv = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'fragment');
+        const fragmentDiv = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'fragment');
         const fragmentText = fragmentDiv?.firstChild;
-        const usageContextDiv = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'usageContext');
+        const usageContextDiv = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'usageContext');
         const usageContextText = usageContextDiv?.firstChild;
 
         // check content
@@ -144,9 +153,9 @@ export class TemplateTextTests implements TestSet {
         Assert.IsTrue(TextNode.isTextNode(pipelineText as Node));
         Assert.IsTrue(TextNode.isTextNode(fragmentText as Node));
         Assert.IsTrue(TextNode.isTextNode(usageContextText as Node));
-        Assert.AreEqual((pipelineText as TextNode).text, 'true');
-        Assert.AreEqual((fragmentText as TextNode).text, 'true');
-        Assert.AreEqual((usageContextText as TextNode).text, 'true');
+        Assert.AreEqual('true', (pipelineText as TextNode).text);
+        Assert.AreEqual('true', (fragmentText as TextNode).text);
+        Assert.AreEqual('true', (usageContextText as TextNode).text);
     }
 
     // test data

@@ -40,7 +40,7 @@ export class FragmentSlotTests implements TestSet {
         const mContents = dom.findChildTags((node: TagNode) => node.tagName === 'm-content', true);
         const mSlots = dom.findChildTags((node: TagNode) => node.tagName === 'm-slot', true);
 
-        Assert.AreEqual(divs.length, 1);
+        Assert.AreEqual(1, divs.length);
         Assert.IsEmpty(mFragments);
         Assert.IsEmpty(mContents);
         Assert.IsEmpty(mSlots);
@@ -57,43 +57,43 @@ export class FragmentSlotTests implements TestSet {
         const mFragments = dom.findChildTags((node: TagNode) => node.tagName === 'm-fragment');
         const mContents = dom.findChildTags((node: TagNode) => node.tagName === 'm-content');
         const mSlots = dom.findChildTags((node: TagNode) => node.tagName === 'm-slot');
-        const nested1s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'nested1');
-        const nested2s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'nested2');
-        const nested3s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'nested3');
+        const nested1s = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'nested1');
+        const nested2s = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'nested2');
+        const nested3s = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'nested3');
         const innerh1s = dom.findChildTagsByPath([
-            (node: TagNode) => node.tagName === 'div' && node.attributes.get('class') === 'nested1',
-            (node: TagNode) => node.tagName === 'div' && node.attributes.get('class') === 'nested2',
-            (node: TagNode) => node.tagName === 'div' && node.attributes.get('class') === 'nested3',
+            (node: TagNode) => node.tagName === 'div' && node.getAttribute('class') === 'nested1',
+            (node: TagNode) => node.tagName === 'div' && node.getAttribute('class') === 'nested2',
+            (node: TagNode) => node.tagName === 'div' && node.getAttribute('class') === 'nested3',
             (node: TagNode) => node.tagName === 'h1'
         ]);
 
         Assert.IsEmpty(mFragments);
         Assert.IsEmpty(mContents);
         Assert.IsEmpty(mSlots);
-        Assert.AreEqual(divs.length, 3);
-        Assert.AreEqual(h1s.length, 1);
-        Assert.AreEqual(nested1s.length, 1);
-        Assert.AreEqual(nested2s.length, 1);
-        Assert.AreEqual(nested3s.length, 1);
-        Assert.AreEqual(innerh1s.length, 1);
+        Assert.AreEqual(3, divs.length);
+        Assert.AreEqual(1, h1s.length);
+        Assert.AreEqual(1, nested1s.length);
+        Assert.AreEqual(1, nested2s.length);
+        Assert.AreEqual(1, nested3s.length);
+        Assert.AreEqual(1, innerh1s.length);
     }
 
     // shared test code
 
     private validateContent(dom: DocumentNode): void {
         // get counts
-        const test1divs = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test1div', true);
-        const test2divs = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test2div', true);
-        const test3divs = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test3div', true);
-        const test1slot1s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test1slot1', true);
-        const test1slot2s = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test1slot2', true);
-        const test1slotDs = dom.findChildTags((node: TagNode) => node.attributes.get('class') === 'test1slotD', true);
+        const test1divs = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test1div', true);
+        const test2divs = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test2div', true);
+        const test3divs = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test3div', true);
+        const test1slot1s = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test1slot1', true);
+        const test1slot2s = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test1slot2', true);
+        const test1slotDs = dom.findChildTags((node: TagNode) => node.getAttribute('class') === 'test1slotD', true);
         const divs = dom.findChildTags((node: TagNode) => node.tagName === 'div', true);
         const mFragments = dom.findChildTags((node: TagNode) => node.tagName === 'm-fragment', true);
         const mContents1 = dom.findChildTags((node: TagNode) => node.tagName === 'm-content', true);
-        const mContents2 = dom.findChildTags((node: TagNode) => node.attributes.get('m-content') != null, true);
+        const mContents2 = dom.findChildTags((node: TagNode) => node.getAttribute('m-content') != null, true);
         const mSlots1 = dom.findChildTags((node: TagNode) => node.tagName === 'm-slot', true);
-        const mSlots2 = dom.findChildTags((node: TagNode) => node.attributes.get('m-slot') != null, true);
+        const mSlots2 = dom.findChildTags((node: TagNode) => node.getAttribute('m-slot') != null, true);
 
         // verify counts
         Assert.IsEmpty(mFragments);
@@ -101,13 +101,13 @@ export class FragmentSlotTests implements TestSet {
         Assert.IsEmpty(mContents2);
         Assert.IsEmpty(mSlots1);
         Assert.IsEmpty(mSlots2);
-        Assert.AreEqual(test1divs.length, 1);
-        Assert.AreEqual(test2divs.length, 1);
-        Assert.AreEqual(test3divs.length, 1);
-        Assert.AreEqual(test1slot1s.length, 1);
-        Assert.AreEqual(test1slot2s.length, 1);
-        Assert.AreEqual(test1slotDs.length, 1);
-        Assert.AreEqual(divs.length, 7);
+        Assert.AreEqual(1, test1divs.length);
+        Assert.AreEqual(1, test2divs.length);
+        Assert.AreEqual(1, test3divs.length);
+        Assert.AreEqual(1, test1slot1s.length);
+        Assert.AreEqual(1, test1slot2s.length);
+        Assert.AreEqual(1, test1slotDs.length);
+        Assert.AreEqual(7, divs.length);
     }
 
     // test data
@@ -166,7 +166,7 @@ export class FragmentSlotTests implements TestSet {
         pipelineInterface.htmlSource.set('test2.html', `
             <div class="test2div">
                 <m-fragment src="test3.html">
-                    <m-slot name="slot1"></m-slot>
+                    <m-slot slot="slot1"></m-slot>
                     <div m-slot="slot2"></div>
                     <m-slot></m-slot>
                 </m-fragment>
@@ -207,7 +207,7 @@ export class FragmentSlotTests implements TestSet {
 
         pipelineInterface.htmlSource.set('nested2.html', `
             <div class="nested2">
-                <m-slot name="slot1"></m-slot>
+                <m-slot slot="slot1"></m-slot>
             </div>
         `);
 

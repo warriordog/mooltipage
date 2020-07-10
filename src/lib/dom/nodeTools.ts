@@ -1,4 +1,4 @@
-import { Node, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode, NodeWithChildren } from './node';
+import { Node, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode, NodeWithChildren, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode } from './node';
 
 export function detatchNode(node: Node): void {
     if (node.parentNode != null) {
@@ -128,21 +128,37 @@ export function getLastChild(childNodes: Node[]): Node | null {
     }
 }
 
-export function cloneTagNode(node: TagNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): TagNode {
-    const newAttrs = new Map<string, string | null>();
-    for (const entry of node.attributes.entries()) {
-        newAttrs.set(entry[0], entry[1]);
+// not exported
+function processClonedNode<T extends Node>(oldNode: T, newNode: T, callback?: (oldNode: Node, newNode: Node) => void): void {
+    if (callback != undefined) {
+        callback(oldNode, newNode);
     }
+}
+
+// not exported
+function processClonedParentNode<T extends NodeWithChildren>(oldNode: T, newNode: T, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): void {
+    processClonedNode(oldNode, newNode, callback);
+
+    if (deep) {
+        cloneChildNodes(newNode, oldNode.childNodes, callback);
+    }
+}
+
+// not exported
+function cloneAttributes(node: TagNode): Map<string, string | null> {
+    const oldAttrs = node.getAttributes();
+
+    const attrEntries = oldAttrs.entries();
+
+    return new Map(attrEntries);
+}
+
+export function cloneTagNode(node: TagNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): TagNode {
+    const newAttrs = cloneAttributes(node);
 
     const newNode: TagNode = new TagNode(node.tagName, newAttrs);
 
-    if (callback != undefined) {
-        callback(node, newNode);
-    }
-
-    if (deep) {
-        cloneChildNodes(newNode, node.childNodes, callback);
-    }
+    processClonedParentNode(node, newNode, deep, callback);
 
     return newNode;
 }
@@ -150,9 +166,7 @@ export function cloneTagNode(node: TagNode, deep: boolean, callback?: (oldNode: 
 export function cloneTextNode(node: TextNode, callback?: (oldNode: Node, newNode: Node) => void): TextNode {
     const newNode: TextNode = new TextNode(node.text);
     
-    if (callback != undefined) {
-        callback(node, newNode);
-    }
+    processClonedNode(node, newNode, callback);
 
     return newNode;
 }
@@ -160,9 +174,7 @@ export function cloneTextNode(node: TextNode, callback?: (oldNode: Node, newNode
 export function cloneCommentNode(node: CommentNode, callback?: (oldNode: Node, newNode: Node) => void): CommentNode {
     const newNode: CommentNode = new CommentNode(node.text);
     
-    if (callback != undefined) {
-        callback(node, newNode);
-    }
+    processClonedNode(node, newNode, callback);
 
     return newNode;
 }
@@ -170,13 +182,7 @@ export function cloneCommentNode(node: CommentNode, callback?: (oldNode: Node, n
 export function cloneCDATANode(node: CDATANode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): CDATANode {
     const newNode: CDATANode = new CDATANode();
 
-    if (callback != undefined) {
-        callback(node, newNode);
-    }
-
-    if (deep) {
-        cloneChildNodes(newNode, node.childNodes, callback);
-    }
+    processClonedParentNode(node, newNode, deep, callback);
 
     return newNode;
 }
@@ -184,9 +190,7 @@ export function cloneCDATANode(node: CDATANode, deep: boolean, callback?: (oldNo
 export function cloneProcessingInstructionNode(node: ProcessingInstructionNode, callback?: (oldNode: Node, newNode: Node) => void): ProcessingInstructionNode {
     const newNode: ProcessingInstructionNode = new ProcessingInstructionNode(node.name, node.data);
     
-    if (callback != undefined) {
-        callback(node, newNode);
-    }
+    processClonedNode(node, newNode, callback);
 
     return newNode;
 }
@@ -194,13 +198,58 @@ export function cloneProcessingInstructionNode(node: ProcessingInstructionNode, 
 export function cloneDocumentNode(node: DocumentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): DocumentNode {
     const newNode: DocumentNode = new DocumentNode();
 
-    if (callback != undefined) {
-        callback(node, newNode);
-    }
+    processClonedParentNode(node, newNode, deep, callback);
 
-    if (deep) {
-        cloneChildNodes(newNode, node.childNodes, callback);
-    }
+    return newNode;
+}
+
+
+export function cloneMFragmentNode(node: MFragmentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MFragmentNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode: MFragmentNode = new MFragmentNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+export function cloneMComponentNode(node: MComponentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MComponentNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode: MComponentNode = new MComponentNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+export function cloneMSlotNode(node: MSlotNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MSlotNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode: MSlotNode = new MSlotNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+export function cloneMContentNode(node: MContentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MContentNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode: MContentNode = new MContentNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+export function cloneMVarNode(node: MVarNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MVarNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode: MVarNode = new MVarNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
 
     return newNode;
 }

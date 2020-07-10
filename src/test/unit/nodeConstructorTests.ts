@@ -11,32 +11,32 @@ export class NodeConstructorTests implements TestSet {
 
         const node: TagNode = new TagNode('sometag', attributes);
 
-        Assert.AreEqual(node.tagName, 'sometag');
-        Assert.AreEqual(node.attributes.get('foo'), 'bar');
+        Assert.AreEqual('sometag', node.tagName);
+        Assert.AreEqual('bar', node.getAttribute('foo'));
     }
     private TestTagNodeDefaults(): void {
         const node: TagNode = new TagNode('sometag');
 
-        Assert.AreEqual(node.tagName, 'sometag');
-        Assert.IsNotNullish(node.attributes);
-        Assert.IsEmpty(node.attributes);
+        Assert.AreEqual('sometag', node.tagName);
+        Assert.IsNotNullish(node.getAttributes());
+        Assert.IsEmpty(node.getAttributes());
     }
     
     private TestTextNode(): void {
         const node: TextNode = new TextNode('some text');
 
-        Assert.AreEqual(node.text, 'some text');
+        Assert.AreEqual('some text', node.text);
     }
     private TestTextNodeDefaults(): void {
         const node: TextNode = new TextNode();
 
-        Assert.AreEqual(node.text, '');
+        Assert.AreEqual('', node.text);
     }
     
     private TestCommentNode(): void {
         const node: CommentNode = new CommentNode('some text');
 
-        Assert.AreEqual(node.text, 'some text');
+        Assert.AreEqual('some text', node.text);
     }
     private TestCommentNodeDefaults(): void {
         const node: CommentNode = new CommentNode();
@@ -47,14 +47,14 @@ export class NodeConstructorTests implements TestSet {
     private TestPINode(): void {
         const node: ProcessingInstructionNode = new ProcessingInstructionNode('name', 'data');
 
-        Assert.AreEqual(node.name, 'name');
-        Assert.AreEqual(node.data, 'data');
+        Assert.AreEqual('name', node.name);
+        Assert.AreEqual('data', node.data);
     }
     private TestPIDefaults(): void {
         const node: ProcessingInstructionNode = new ProcessingInstructionNode();
 
-        Assert.AreEqual(node.name, '');
-        Assert.AreEqual(node.data, '');
+        Assert.AreEqual('', node.name);
+        Assert.AreEqual('', node.data);
     }
 
     // test set boilerplate

@@ -36,7 +36,7 @@ export class PipelineCacheTests implements TestSet {
         cache.storePage(frag);
         const value: Page = cache.getPage('foo');
 
-        Assert.AreEqual(value, frag);
+        Assert.AreEqual(frag, value);
     }
 
     private testPageGetMissing(): void {
@@ -54,7 +54,7 @@ export class PipelineCacheTests implements TestSet {
         cache.storePage(frag2);
         const value: Page = cache.getPage('foo');
 
-        Assert.AreEqual(value, frag2);
+        Assert.AreEqual(frag2, value);
     }
     
     // fragment
@@ -83,7 +83,7 @@ export class PipelineCacheTests implements TestSet {
         cache.storeFragment(frag);
         const value: Fragment = cache.getFragment('foo');
 
-        Assert.AreEqual(value, frag);
+        Assert.AreEqual(frag, value);
     }
     
     private testFragGetMissing(): void {
@@ -101,7 +101,7 @@ export class PipelineCacheTests implements TestSet {
         cache.storeFragment(frag2);
         const value: Fragment = cache.getFragment('foo');
 
-        Assert.AreEqual(value, frag2);
+        Assert.AreEqual(frag2, value);
     }
 
 
@@ -137,7 +137,7 @@ export class PipelineCacheTests implements TestSet {
         cache.storeComponent(comp);
         const value: Component = cache.getComponent('foo');
 
-        Assert.AreEqual(value, comp);
+        Assert.AreEqual(comp, value);
     }
     
     private testCompGetMissing(): void {
@@ -157,7 +157,7 @@ export class PipelineCacheTests implements TestSet {
         cache.storeComponent(comp2);
         const value: Component = cache.getComponent('foo');
 
-        Assert.AreEqual(value, comp2);
+        Assert.AreEqual(comp2, value);
     }
 
     // template string
@@ -186,7 +186,7 @@ export class PipelineCacheTests implements TestSet {
         cache.storeTemplateString('foo', content);
         const value = cache.getTemplateString('foo');
 
-        Assert.AreEqual(value, content);
+        Assert.AreEqual(content, value);
     }
     
     private testTemplateStringGetMissing(): void {
@@ -204,7 +204,7 @@ export class PipelineCacheTests implements TestSet {
         cache.storeTemplateString('foo', content2);
         const value = cache.getTemplateString('foo');
 
-        Assert.AreEqual(value, content2);
+        Assert.AreEqual(content2, value);
     }
 
     // handlebars
@@ -259,12 +259,16 @@ export class PipelineCacheTests implements TestSet {
     private testClear(): void {
         const cache = new PipelineCache();
         cache.storeFragment(new Fragment('foo', new DocumentNode()));
+        cache.storePage(new Page('foo', new DocumentNode()));
+        cache.storeComponent(new Component('foo', new ComponentTemplate(new DocumentNode()), new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))));
         cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
         cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
 
         cache.clear();
 
         Assert.IsFalse(cache.hasFragment('foo'));
+        Assert.IsFalse(cache.hasPage('foo'));
+        Assert.IsFalse(cache.hasComponent('foo'));
         Assert.IsFalse(cache.hasTemplateString('foo'));
         Assert.IsFalse(cache.hasHandlebars('foo'));
     }

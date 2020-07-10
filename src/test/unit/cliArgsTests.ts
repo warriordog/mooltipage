@@ -28,8 +28,8 @@ export class CliArgsTests implements TestSet {
         const args: Args = parseResult.getArgs();
 
         Assert.IsTrue(parseResult.isValid);
-        Assert.AreEqual(args.inPath, './src');
-        Assert.AreEqual(args.outPath, './dest');
+        Assert.AreEqual('./src', args.inPath);
+        Assert.AreEqual('./dest', args.outPath);
         Assert.IsUndefined(args.pagePaths);
     }
 
@@ -54,14 +54,14 @@ export class CliArgsTests implements TestSet {
         const args: Args = parseResult.getArgs();
 
         Assert.IsTrue(parseResult.isValid);
-        Assert.AreEqual(args.inPath, './src');
-        Assert.AreEqual(args.outPath, './dest');
+        Assert.AreEqual('./src', args.inPath);
+        Assert.AreEqual('./dest', args.outPath, );
 
         Assert.IsNotNullish(args.pagePaths);
         const validPagePaths: Array<string> = args.pagePaths as Array<string>;
 
-        Assert.AreEqual(validPagePaths.length, 1);
-        Assert.AreEqual(validPagePaths[0], './src/pages');
+        Assert.AreEqual(1, validPagePaths.length);
+        Assert.AreEqual('./src/pages', validPagePaths[0]);
     }
 
     private testValidMultiplePages(): void {
@@ -71,16 +71,16 @@ export class CliArgsTests implements TestSet {
         const args: Args = parseResult.getArgs();
 
         Assert.IsTrue(parseResult.isValid);
-        Assert.AreEqual(args.inPath, './src');
-        Assert.AreEqual(args.outPath, './dest');
+        Assert.AreEqual('./src', args.inPath, );
+        Assert.AreEqual('./dest', args.outPath);
 
         Assert.IsNotNullish(args.pagePaths);
         const validPagePaths: Array<string> = args.pagePaths as Array<string>;
 
-        Assert.AreEqual(validPagePaths.length, 3);
-        Assert.AreEqual(validPagePaths[0], './src/pages');
-        Assert.AreEqual(validPagePaths[1], './src/pages2');
-        Assert.AreEqual(validPagePaths[2], './src/foo/page1.html');
+        Assert.AreEqual(3, validPagePaths.length);
+        Assert.AreEqual('./src/pages', validPagePaths[0], );
+        Assert.AreEqual('./src/pages2', validPagePaths[1]);
+        Assert.AreEqual('./src/foo/page1.html', validPagePaths[2]);
     }
     
     private testFormatter(): void {
@@ -90,7 +90,7 @@ export class CliArgsTests implements TestSet {
         const args: Args = parseResult.getArgs();
 
         Assert.IsNotNullish(args.formatter);
-        Assert.AreEqual(args.formatter, 'name');
+        Assert.AreEqual('name', args.formatter);
     }
     
     private testDefaultFormatter(): void {
@@ -100,7 +100,7 @@ export class CliArgsTests implements TestSet {
         const args: Args = parseResult.getArgs();
 
         Assert.IsTrue(parseResult.isValid);
-        Assert.AreEqual(args.formatter, 'pretty');
+        Assert.AreEqual('pretty', args.formatter);
     }
 
     // test set boilerplate

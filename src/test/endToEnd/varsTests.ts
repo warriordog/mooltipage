@@ -20,18 +20,21 @@ export class VarsTests implements TestSet {
         
         // get content
         const mVars = dom.findChildTags((node: TagNode) => node.tagName === 'm-var');
-        const text1 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key1')?.firstChild as TextNode | null | undefined;
-        const text2 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key2')?.firstChild as TextNode | null | undefined;
-        const text3 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key3')?.firstChild as TextNode | null | undefined;
+        const text1 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key1')?.firstChild as TextNode | null | undefined;
+        const text1text = text1?.text;
+        const text2 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key2')?.firstChild as TextNode | null | undefined;
+        const text2text = text2?.text;
+        const text3 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key3')?.firstChild as TextNode | null | undefined;
+        const text3text = text3?.text;
 
         // validate
         Assert.IsEmpty(mVars);
         Assert.IsNotNull(text1);
         Assert.IsNotNull(text2);
         Assert.IsNotNull(text3);
-        Assert.AreEqual(text1?.text, 'value1');
-        Assert.AreEqual(text2?.text, 'value2');
-        Assert.AreEqual(text3?.text, 'value3');
+        Assert.AreEqual('value1', text1text);
+        Assert.AreEqual('value2', text2text);
+        Assert.AreEqual('value3', text3text);
     }
 
     private testSetMultiMulti(): void {
@@ -41,12 +44,18 @@ export class VarsTests implements TestSet {
         
         // get content
         const mVars = dom.findChildTags((node: TagNode) => node.tagName === 'm-var');
-        const text1 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key1')?.firstChild as TextNode | null | undefined;
-        const text2 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key2')?.firstChild as TextNode | null | undefined;
-        const text3 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key3')?.firstChild as TextNode | null | undefined;
-        const text4 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key4')?.firstChild as TextNode | null | undefined;
-        const text5 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key5')?.firstChild as TextNode | null | undefined;
-        const text6 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key6')?.firstChild as TextNode | null | undefined;
+        const text1 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key1')?.firstChild as TextNode | null | undefined;
+        const text1text = text1?.text;
+        const text2 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key2')?.firstChild as TextNode | null | undefined;
+        const text2text = text2?.text;
+        const text3 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key3')?.firstChild as TextNode | null | undefined;
+        const text3text = text3?.text;
+        const text4 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key4')?.firstChild as TextNode | null | undefined;
+        const text4text = text4?.text;
+        const text5 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key5')?.firstChild as TextNode | null | undefined;
+        const text5text = text5?.text;
+        const text6 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key6')?.firstChild as TextNode | null | undefined;
+        const text6text = text6?.text;
 
         // validate
         Assert.IsEmpty(mVars);
@@ -56,12 +65,12 @@ export class VarsTests implements TestSet {
         Assert.IsNotNull(text4);
         Assert.IsNotNull(text5);
         Assert.IsNotNull(text6);
-        Assert.AreEqual(text1?.text, 'value1');
-        Assert.AreEqual(text2?.text, 'value2');
-        Assert.AreEqual(text3?.text, 'value3');
-        Assert.AreEqual(text4?.text, 'value4');
-        Assert.AreEqual(text5?.text, 'value5');
-        Assert.AreEqual(text6?.text, 'value6');
+        Assert.AreEqual('value1', text1text);
+        Assert.AreEqual('value2', text2text);
+        Assert.AreEqual('value3', text3text);
+        Assert.AreEqual('value4', text4text);
+        Assert.AreEqual('value5', text5text);
+        Assert.AreEqual('value6', text6text);
     }
 
     private testSetComputedHandlebars(): void {
@@ -79,15 +88,17 @@ export class VarsTests implements TestSet {
         
         // get content
         const mVars = dom.findChildTags((node: TagNode) => node.tagName === 'm-var');
-        const text1 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key1')?.firstChild as TextNode | null | undefined;
-        const text2 = dom.findChildTag((node: TagNode) => node.attributes.get('id') === 'key2')?.firstChild as TextNode | null | undefined;
+        const text1 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key1')?.firstChild as TextNode | null | undefined;
+        const text1text = text1?.text;
+        const text2 = dom.findChildTag((node: TagNode) => node.getAttribute('id') === 'key2')?.firstChild as TextNode | null | undefined;
+        const text2text = text2?.text;
 
         // validate
         Assert.IsEmpty(mVars);
         Assert.IsNotNull(text1);
         Assert.IsNotNull(text2);
-        Assert.AreEqual(text1?.text, 'value1');
-        Assert.AreEqual(text2?.text, 'value2');
+        Assert.AreEqual('value1', text1text);
+        Assert.AreEqual('value2', text2text);
     }
 
     // shared test code
@@ -99,11 +110,12 @@ export class VarsTests implements TestSet {
         // get content
         const mVars = dom.findChildTags((node: TagNode) => node.tagName === 'm-var');
         const text = dom.findChildTag((node: TagNode) => node.tagName === 'div')?.firstChild as TextNode | null | undefined;
+        const textText = text?.text;
 
         // validate
         Assert.IsEmpty(mVars);
         Assert.IsNotNull(text);
-        Assert.AreEqual(text?.text, 'value');
+        Assert.AreEqual('value', textText);
     }
 
 

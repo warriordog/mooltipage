@@ -133,8 +133,8 @@ export abstract class NodeWithData extends Node {
 }
 
 export class TagNode extends NodeWithChildren {
-    tagName: string;
-    attributes: Map<string, string | null>;
+    readonly tagName: string;
+    protected attributes: Map<string, string | null>;
 
     constructor(tagName: string, attributes?: Map<string, string | null>) {
         super(NodeType.Tag);
@@ -144,6 +144,53 @@ export class TagNode extends NodeWithChildren {
 
     hasAttribute(name: string): boolean {
         return this.attributes.has(name);
+    }
+
+    getAttribute(name: string): string | null | undefined {
+        return this.attributes.get(name);
+    }
+
+    getRequiredAttribute(name: string): string | null {
+        if (!this.hasAttribute(name)) {
+            throw new Error(`Missing required attribute '${name}'`);
+        }
+
+        // cannot be undefined, because we check above
+        return this.getAttribute(name) as string | null;
+    }
+
+    getRequiredValueAttribute(name: string): string {
+        const attr: string | null = this.getRequiredAttribute(name);
+
+        if (attr == null) {
+            throw new Error(`Missing value for required value attribute '${name}'`);
+        }
+
+        return attr;
+    }
+
+    getOptionalValueAttribute(name: string): string | undefined {
+        if (this.hasAttribute(name)) {
+            return this.getRequiredValueAttribute(name);
+        } else {
+            return undefined;
+        }
+    }
+
+    setAttribute(name: string, value: string | null): void {
+        this.attributes.set(name, value);
+    }
+
+    setRequiredValueAttribute(name: string, value: string): void {
+        this.setAttribute(name, value);
+    }
+
+    deleteAttribute(name: string): void {
+        this.attributes.delete(name);
+    }
+
+    getAttributes(): ReadonlyMap<string, string | null> {
+        return this.attributes;
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): TagNode {
@@ -225,5 +272,129 @@ export class DocumentNode extends NodeWithChildren {
 
     static isDocumentNode(node: Node): node is DocumentNode {
         return node.nodeType === NodeType.Document;
+    }
+}
+
+export abstract class ExternalReferenceNode extends TagNode {
+    readonly parameters: Map<string, string> = new Map();
+
+    readonly src: string;
+
+    constructor(tagName: string, attributes: Map<string, string | null>) {
+        super(tagName, attributes);
+
+        this.src = this.getRequiredValueAttribute('src');
+
+        // extract fragment params
+        for (const entry of this.attributes) {
+            const key: string = entry[0];
+            const value: string | null = entry[1];
+
+            if (key != 'src' && value != null) {
+                this.parameters.set(key, value);
+            }
+        }
+    }
+
+    abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ExternalReferenceNode;
+}
+
+export class MFragmentNode extends ExternalReferenceNode {
+    constructor(attributes: Map<string, string | null>) {
+        super('m-fragment', attributes);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MFragmentNode {
+        return NodeTools.cloneMFragmentNode(this, deep, callback);
+    }
+
+    static isMFragmentNode(node: Node): node is MFragmentNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-fragment';
+    }
+}
+
+export class MComponentNode extends ExternalReferenceNode {
+    constructor(attributes: Map<string, string | null>) {
+        super('m-component', attributes);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MComponentNode {
+        return NodeTools.cloneMComponentNode(this, deep, callback);
+    }
+
+    static isMComponentNode(node: Node): node is MComponentNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-component';
+    }
+}
+
+export abstract class SlotReferenceNode extends TagNode {
+    readonly slotName: string;
+
+    constructor(tagName: string, attributes?: Map<string, string | null>) {
+        super(tagName, attributes);
+
+        // extract or generate slot name
+        if (this.hasAttribute('slot')) {
+            this.slotName = this.getRequiredValueAttribute('slot');
+        } else {
+            this.slotName = '[default]';
+            this.setAttribute('slot', this.slotName);
+        }
+    }
+
+    abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): SlotReferenceNode;
+}
+
+export class MContentNode extends SlotReferenceNode {
+    constructor(attributes?: Map<string, string | null>) {
+        super('m-content', attributes);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MContentNode {
+        return NodeTools.cloneMContentNode(this, deep, callback);
+    }
+
+    static isMContentNode(node: Node): node is MContentNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-content';
+    }
+}
+
+export class MSlotNode extends SlotReferenceNode {
+    constructor(attributes?: Map<string, string | null>) {
+        super('m-slot', attributes);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MSlotNode {
+        return NodeTools.cloneMSlotNode(this, deep, callback);
+    }
+
+    static isMSlotNode(node: Node): node is MSlotNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-slot';
+    }
+}
+
+export class MVarNode extends TagNode {
+    readonly variables: Map<string, string> = new Map();
+
+    constructor(attributes?: Map<string, string | null>) {
+        super('m-var', attributes);
+
+        // extract variables
+        for (const entry of this.attributes) {
+            const key: string = entry[0];
+            const value: string | null = entry[1];
+
+            if (value != null) {
+                this.variables.set(key, value);
+            }
+        }
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MVarNode {
+        return NodeTools.cloneMVarNode(this, deep, callback);
+    }
+
+    static isMVarNode(node: Node): node is MVarNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-var';
     }
 }

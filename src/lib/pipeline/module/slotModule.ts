@@ -1,6 +1,6 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
 import { UsageContext } from "../../pipeline/usageContext";
-import { DocumentNode, TagNode } from "../../dom/node";
+import { DocumentNode, TagNode, MSlotNode } from "../../dom/node";
 
 /**
  * Processes <m-slot> tags by replacing them with content extracted from <m-content> tags at the point of reference.
@@ -17,23 +17,42 @@ export class SlotModule implements CompilerModule {
     }
 
     private findSlots(dom: DocumentNode): Slot[] {
-        // find slot nodes
-        const slotNodes: TagNode[] = dom.findChildTags((node: TagNode) => node.tagName === 'm-slot' || node.hasAttribute('m-slot'));
+        // list of slots
+        const slotObjects: Slot[] = [];
 
-        // convert to slots
-        const slotObjects: Slot[] = slotNodes.map((slotNode: TagNode) => {
-            if (slotNode.tagName === 'm-slot') {
-                // create tag slot
-                const slotName: string = slotNode.attributes.get('name')?.toLowerCase() ?? '[default]';
-                return new Slot(slotName, slotNode, false);
-            } else {
-                // create attribute slot
-                const slotName: string = slotNode.attributes.get('m-slot')?.toLowerCase() ?? '[default]';
-                return new Slot(slotName, slotNode, true);
-            }
-        });
+        // get m-slot slots
+        this.findMSlotSlots(dom, slotObjects);
+
+        // get standalone slots
+        this.findStandaloneSlots(dom, slotObjects);
 
         return slotObjects;
+    }
+
+    private findMSlotSlots(dom: DocumentNode, slotObjects: Slot[]): void {
+        // find m-slots
+        const mSlots = dom.findChildTags((node: TagNode) => MSlotNode.isMSlotNode(node)) as MSlotNode[];
+
+        // convert m-slots
+        for (const mSlot of mSlots) {
+            const slotObject = new Slot(mSlot.slotName, mSlot, false);
+
+            slotObjects.push(slotObject);
+        }
+    }
+
+    private findStandaloneSlots(dom: DocumentNode, slotObjects: Slot[]): void {
+        // find standalone slots
+        const slotNodes: TagNode[] = dom.findChildTags((node: TagNode) => node.hasAttribute('m-slot'));
+
+        // convert slots
+        for (const slot of slotNodes) {
+            const slotName = slot.getRequiredAttribute('m-slot') ?? '[default]';
+
+            const slotObject = new Slot(slotName, slot, true);
+
+            slotObjects.push(slotObject);
+        }
     }
 
     private processSlots(slots: Slot[], usageContext: UsageContext): void {
@@ -52,7 +71,7 @@ export class SlotModule implements CompilerModule {
                 }
                 
                 // delete slot attribute, since slot is processed
-                slot.node.attributes.delete('m-slot');
+                slot.node.deleteAttribute('m-slot');
             } else {
                 if (content != undefined) {
                     // fill tag slot

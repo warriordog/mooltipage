@@ -60,8 +60,8 @@ export class DomSerializer {
         html.push('<');
         html.push(tagName);
         
-        if (tag.attributes.size > 0) {
-            this.appendAttributeList(tag.attributes, html);
+        if (tag.getAttributes().size > 0) {
+            this.appendAttributeList(tag.getAttributes(), html);
         }
 
         if (this.isSelfClosingTag(tagName)) {
@@ -136,7 +136,7 @@ export class DomSerializer {
         return textContent.replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('&', '&amp;');
     }
 
-    private appendAttributeList(attributeMap: Map<string, string | null>, html: string[]): void {
+    private appendAttributeList(attributeMap: ReadonlyMap<string, string | null>, html: string[]): void {
         for (const entry of attributeMap.entries()) {
             const key = entry[0];
             const value = entry[1];

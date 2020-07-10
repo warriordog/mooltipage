@@ -1,12 +1,12 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
-import { TagNode, DocumentNode } from "../../dom/node";
+import { TagNode, DocumentNode, MVarNode } from "../../dom/node";
 import { EvalContext } from "../evalEngine";
 
 export class VarsModule implements CompilerModule {
 
     compileFragment(compileData: CompileData): void {
         // find all vars
-        const varElems: TagNode[] = this.findVarElems(compileData.fragment.dom);
+        const varElems: MVarNode[] = this.findVarElems(compileData.fragment.dom);
         
         // only process if there are any vars
         if (varElems.length > 0) {
@@ -25,26 +25,26 @@ export class VarsModule implements CompilerModule {
         }
     }
 
-    private getVarValues(compileData: CompileData, varElems: TagNode[], evalContext: EvalContext): Map<string, unknown> {
+    private getVarValues(compileData: CompileData, varNodes: MVarNode[], evalContext: EvalContext): Map<string, unknown> {
         const varValues: Map<string, unknown> = new Map();
 
-        for (const elem of varElems) {
-            for (const attr of elem.attributes) {
-                const key: string = attr[0];
-                const value: string | null = attr[1];
+        for (const mVar of varNodes) {
+            for (const variable of mVar.variables.entries()) {
+                const varName: string = variable[0];
+                const srcValue: string | null = variable[1];
 
                 // compute real value
-                const varValue = compileData.pipeline.compileDomText(value, evalContext);
+                const varValue = compileData.pipeline.compileDomText(srcValue, evalContext);
 
-                varValues.set(key, varValue);
+                varValues.set(varName, varValue);
             }
         }
 
         return varValues;
     }
 
-    private findVarElems(dom: DocumentNode): TagNode[] {
-        return dom.findChildTags((tag: TagNode) => tag.tagName === 'm-var');
+    private findVarElems(dom: DocumentNode): MVarNode[] {
+        return dom.findChildTags((tag: TagNode) => MVarNode.isMVarNode(tag)) as MVarNode[];
     }
 
     private removeVarElems(varElems: TagNode[]): void {
