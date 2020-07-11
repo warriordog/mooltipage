@@ -4,6 +4,7 @@
         "outDir": "../../dist/test",
     },
     "include": ["**/*"],
+    "exclude": ["**/*.spec.ts"],
     "references": [
         {
             "path": "../lib"

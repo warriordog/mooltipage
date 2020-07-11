@@ -16,3 +16,7 @@ npm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Code coverage
+.nyc_output
+coverage

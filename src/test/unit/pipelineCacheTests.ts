@@ -1,308 +1,248 @@
-import { TestSet, TestCallback } from "../framework/testSet";
-import { PipelineCache } from "../../lib/pipeline/pipelineCache";
-import * as Assert from '../framework/assert';
-import { Fragment } from "../../lib/pipeline/object/fragment";
-import { DocumentNode } from '../../lib/dom/node';
-import { EvalContentFunction } from "../../lib/pipeline/evalEngine";
-import { Page } from "../../lib/pipeline/object/page";
-import { Component, ComponentTemplate, ComponentScript, ComponentScriptType } from "../../lib/pipeline/object/component";
-
-export class PipelineCacheTests implements TestSet {
-    // test methods
-
-    // page
-
-    private testPageHasPresent(): void {
-        const cache = new PipelineCache();
-
-        cache.storePage(new Page('foo', new DocumentNode()));
-        const hasValue: boolean = cache.hasPage('foo');
-
-        Assert.IsTrue(hasValue);
-    } 
-
-    private testPageHasMissing(): void {
-        const cache = new PipelineCache();
-
-        const hasValue: boolean = cache.hasPage('foo');
-
-        Assert.IsFalse(hasValue);
-    } 
-
-    private testPageGetPresent(): void {
-        const cache = new PipelineCache();
-        const frag = new Page('foo', new DocumentNode());
-
-        cache.storePage(frag);
-        const value: Page = cache.getPage('foo');
-
-        Assert.AreEqual(frag, value);
-    }
-
-    private testPageGetMissing(): void {
-        const cache = new PipelineCache();
-
-        Assert.Throws(() => cache.getPage('foo'));
-    }
-
-    private testPageOverwrite(): void {
-        const cache = new PipelineCache();
-        const frag1 = new Page('foo', new DocumentNode());
-        const frag2 = new Page('foo', new DocumentNode());
-
-        cache.storePage(frag1);
-        cache.storePage(frag2);
-        const value: Page = cache.getPage('foo');
-
-        Assert.AreEqual(frag2, value);
-    }
-    
-    // fragment
-
-    private testFragHasPresent(): void {
-        const cache = new PipelineCache();
-
-        cache.storeFragment(new Fragment('foo', new DocumentNode()));
-        const hasValue: boolean = cache.hasFragment('foo');
-
-        Assert.IsTrue(hasValue);
-    } 
-
-    private testFragHasMissing(): void {
-        const cache = new PipelineCache();
-
-        const hasValue: boolean = cache.hasFragment('foo');
-
-        Assert.IsFalse(hasValue);
-    } 
-
-    private testFragGetPresent(): void {
-        const cache = new PipelineCache();
-        const frag = new Fragment('foo', new DocumentNode());
-
-        cache.storeFragment(frag);
-        const value: Fragment = cache.getFragment('foo');
-
-        Assert.AreEqual(frag, value);
-    }
-    
-    private testFragGetMissing(): void {
-        const cache = new PipelineCache();
-
-        Assert.Throws(() => cache.getFragment('foo'));
-    }
-
-    private testFragOverwrite(): void {
-        const cache = new PipelineCache();
-        const frag1 = new Fragment('foo', new DocumentNode());
-        const frag2 = new Fragment('foo', new DocumentNode());
-
-        cache.storeFragment(frag1);
-        cache.storeFragment(frag2);
-        const value: Fragment = cache.getFragment('foo');
-
-        Assert.AreEqual(frag2, value);
-    }
-
-
-    
-    // component
-
-    private testCompHasPresent(): void {
-        const cache = new PipelineCache();
-        const temp = new ComponentTemplate(new DocumentNode());
-        const script = new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))
-        const comp = new Component('foo', temp, script);
-
-        cache.storeComponent(comp);
-        const hasValue: boolean = cache.hasComponent('foo');
-
-        Assert.IsTrue(hasValue);
-    } 
-
-    private testCompHasMissing(): void {
-        const cache = new PipelineCache();
-
-        const hasValue: boolean = cache.hasComponent('foo');
-
-        Assert.IsFalse(hasValue);
-    } 
-
-    private testCompGetPresent(): void {
-        const cache = new PipelineCache();
-        const temp = new ComponentTemplate(new DocumentNode());
-        const script = new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))
-        const comp = new Component('foo', temp, script);
-
-        cache.storeComponent(comp);
-        const value: Component = cache.getComponent('foo');
-
-        Assert.AreEqual(comp, value);
-    }
-    
-    private testCompGetMissing(): void {
-        const cache = new PipelineCache();
-
-        Assert.Throws(() => cache.getComponent('foo'));
-    }
-
-    private testCompOverwrite(): void {
-        const cache = new PipelineCache();
-        const temp = new ComponentTemplate(new DocumentNode());
-        const script = new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))
-        const comp1 = new Component('foo', temp, script);
-        const comp2 = new Component('foo', temp, script);
-
-        cache.storeComponent(comp1);
-        cache.storeComponent(comp2);
-        const value: Component = cache.getComponent('foo');
-
-        Assert.AreEqual(comp2, value);
-    }
-
-    // template string
-
-    private testTemplateStringHasPresent(): void {
-        const cache = new PipelineCache();
-
-        cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
-        const hasValue: boolean = cache.hasTemplateString('foo');
-
-        Assert.IsTrue(hasValue);
-    } 
-
-    private testTemplateStringHasMissing(): void {
-        const cache = new PipelineCache();
-
-        const hasValue: boolean = cache.hasTemplateString('foo');
-
-        Assert.IsFalse(hasValue);
-    } 
-
-    private testTemplateStringGetPresent(): void {
-        const cache = new PipelineCache();
-        const content = new EvalContentFunction(() => 'foo');
-
-        cache.storeTemplateString('foo', content);
-        const value = cache.getTemplateString('foo');
-
-        Assert.AreEqual(content, value);
-    }
-    
-    private testTemplateStringGetMissing(): void {
-        const cache = new PipelineCache();
-
-        Assert.Throws(() => cache.getTemplateString('foo'));
-    }
-
-    private testTemplateStringOverwrite(): void {
-        const cache = new PipelineCache();
-        const content1 = new EvalContentFunction(() => 'foo1');
-        const content2 = new EvalContentFunction(() => 'foo2');
-
-        cache.storeTemplateString('foo', content1);
-        cache.storeTemplateString('foo', content2);
-        const value = cache.getTemplateString('foo');
-
-        Assert.AreEqual(content2, value);
-    }
-
-    // handlebars
-
-    private testHandlebarsHasPresent(): void {
-        const cache = new PipelineCache();
-
-        cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
-        const hasValue: boolean = cache.hasHandlebars('foo');
-
-        Assert.IsTrue(hasValue);
-    } 
-
-    private testHandlebarsHasMissing(): void {
-        const cache = new PipelineCache();
-
-        const hasValue: boolean = cache.hasHandlebars('foo');
-
-        Assert.IsFalse(hasValue);
-    } 
-
-    private testHandlebarsGetPresent(): void {
-        const cache = new PipelineCache();
-        const content = new EvalContentFunction(() => 'foo');
-
-        cache.storeHandlebars('foo', content);
-        const value = cache.getHandlebars('foo');
-
-        Assert.AreEqual(value, content);
-    }
-    
-    private testHandlebarsGetMissing(): void {
-        const cache = new PipelineCache();
-
-        Assert.Throws(() => cache.getHandlebars('foo'));
-    }
-
-    private testHandlebarsOverwrite(): void {
-        const cache = new PipelineCache();
-        const content1 = new EvalContentFunction(() => 'foo1');
-        const content2 = new EvalContentFunction(() => 'foo2');
-
-        cache.storeHandlebars('foo', content1);
-        cache.storeHandlebars('foo', content2);
-        const value = cache.getHandlebars('foo');
-
-        Assert.AreEqual(value, content2);
-    }
-
-    // general
-
-    private testClear(): void {
-        const cache = new PipelineCache();
-        cache.storeFragment(new Fragment('foo', new DocumentNode()));
-        cache.storePage(new Page('foo', new DocumentNode()));
-        cache.storeComponent(new Component('foo', new ComponentTemplate(new DocumentNode()), new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))));
-        cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
-        cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
-
-        cache.clear();
-
-        Assert.IsFalse(cache.hasFragment('foo'));
-        Assert.IsFalse(cache.hasPage('foo'));
-        Assert.IsFalse(cache.hasComponent('foo'));
-        Assert.IsFalse(cache.hasTemplateString('foo'));
-        Assert.IsFalse(cache.hasHandlebars('foo'));
-    }
-
-    // test set boilerplate
-    readonly setName: string = 'PipelineCache';
-    getTests(): Map<string, TestCallback> {
-        return new Map<string, TestCallback>([
-            ['PageHasPresent', (): void => this.testPageHasPresent()],
-            ['PageHasMissing', (): void => this.testPageHasMissing()],
-            ['PageGetPresent', (): void => this.testPageGetPresent()],
-            ['PageGetMissing', (): void => this.testPageGetMissing()],
-            ['PageOverwrite', (): void => this.testPageOverwrite()],
-            ['FragHasPresent', (): void => this.testFragHasPresent()],
-            ['FragHasMissing', (): void => this.testFragHasMissing()],
-            ['FragGetPresent', (): void => this.testFragGetPresent()],
-            ['FragGetMissing', (): void => this.testFragGetMissing()],
-            ['FragOverwrite', (): void => this.testFragOverwrite()],
-            ['CompgHasPresent', (): void => this.testCompHasPresent()],
-            ['CompHasMissing', (): void => this.testCompHasMissing()],
-            ['CompGetPresent', (): void => this.testCompGetPresent()],
-            ['CompGetMissing', (): void => this.testCompGetMissing()],
-            ['CompOverwrite', (): void => this.testCompOverwrite()],
-            ['TemplateStringHasPresent', (): void => this.testTemplateStringHasPresent()],
-            ['TemplateStringHasMissing', (): void => this.testTemplateStringHasMissing()],
-            ['TemplateStringGetPresent', (): void => this.testTemplateStringGetPresent()],
-            ['TemplateStringGetMissing', (): void => this.testTemplateStringGetMissing()],
-            ['TemplateStringOverwrite', (): void => this.testTemplateStringOverwrite()],
-            ['HandlebarsHasPresent', (): void => this.testHandlebarsHasPresent()],
-            ['HandlebarsHasMissing', (): void => this.testHandlebarsHasMissing()],
-            ['HandlebarsGetPresent', (): void => this.testHandlebarsGetPresent()],
-            ['HandlebarsGetMissing', (): void => this.testHandlebarsGetMissing()],
-            ['HandlebarsOverwrite', (): void => this.testHandlebarsOverwrite()],
-            ['Clear', (): void => this.testClear()]
-        ]);
-    }
+import test from 'ava';
+import { PipelineCache, Fragment, DocumentNode, EvalContentFunction, Page, Component, ComponentTemplate, ComponentScript, ComponentScriptType } from '../../lib/index';
+
+function createTestComponent(): Component {
+    const template = new ComponentTemplate(new DocumentNode());
+    const script = new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))
+    return new Component('foo', template, script);
 }
+
+/*
+ * Page
+ */
+
+test('[unit] PipelineCache.hasPage() present', t => {
+    const cache = new PipelineCache();
+
+    cache.storePage(new Page('foo', new DocumentNode()));
+
+    t.true(cache.hasPage('foo'));
+});
+
+test('[unit] PipelineCache.hasPage() missing', t => {
+    const cache = new PipelineCache();
+
+    t.false(cache.hasPage('foo'));
+});
+
+test('[unit] PipelineCache.getPage() present', t => {
+    const cache = new PipelineCache();
+    const page = new Page('foo', new DocumentNode());
+
+    cache.storePage(page);
+
+    t.is(cache.getPage('foo'), page);
+});
+
+test('[unit] PipelineCache.getPage() missing', t => {
+    const cache = new PipelineCache();
+
+    t.throws(() => cache.getPage('foo'));
+});
+
+test('[unit] PipelineCache overwrite page', t => {
+    const cache = new PipelineCache();
+    const page1 = new Page('foo', new DocumentNode());
+    const page2 = new Page('foo', new DocumentNode());
+
+    cache.storePage(page1);
+    cache.storePage(page2);
+
+    t.is(cache.getPage('foo'), page2);
+});
+
+/*
+ * Fragment
+ */
+
+test('[unit] PipelineCache.hasFragment() present', t => {
+    const cache = new PipelineCache();
+
+    cache.storeFragment(new Fragment('foo', new DocumentNode()));
+
+    t.true(cache.hasFragment('foo'));
+});
+
+test('[unit] PipelineCache.hasFragment() missing', t => {
+    const cache = new PipelineCache();
+
+    t.false(cache.hasFragment('foo'));
+});
+
+test('[unit] PipelineCache.getFragment() present', t => {
+    const cache = new PipelineCache();
+    const fragment = new Fragment('foo', new DocumentNode());
+
+    cache.storeFragment(fragment);
+
+    t.is(cache.getFragment('foo'), fragment);
+});
+
+test('[unit] PipelineCache.getFragment() missing', t => {
+    const cache = new PipelineCache();
+
+    t.throws(() => cache.getFragment('foo'));
+});
+
+test('[unit] PipelineCache overwrite fragment', t => {
+    const cache = new PipelineCache();
+    const fragment1 = new Fragment('foo', new DocumentNode());
+    const fragment2 = new Fragment('foo', new DocumentNode());
+
+    cache.storeFragment(fragment1);
+    cache.storeFragment(fragment2);
+
+    t.is(cache.getFragment('foo'), fragment2);
+});
+
+/*
+ * Component
+ */
+
+test('[unit] PipelineCache.hasComponent() present', t => {
+    const cache = new PipelineCache();
+
+    cache.storeComponent(createTestComponent());
+
+    t.true(cache.hasComponent('foo'));
+});
+
+test('[unit] PipelineCache.hasComponent() missing', t => {
+    const cache = new PipelineCache();
+
+    t.false(cache.hasComponent('foo'));
+});
+
+test('[unit] PipelineCache.getComponent() present', t => {
+    const cache = new PipelineCache();
+    const component = createTestComponent();
+
+    cache.storeComponent(component);
+
+    t.is(cache.getComponent('foo'), component);
+});
+
+test('[unit] PipelineCache.getComponent() missing', t => {
+    const cache = new PipelineCache();
+
+    t.throws(() => cache.getComponent('foo'));
+});
+
+test('[unit] PipelineCache overwrite component', t => {
+    const cache = new PipelineCache();
+    const component1 = createTestComponent();
+    const component2 = createTestComponent();
+
+    cache.storeComponent(component1);
+    cache.storeComponent(component2);
+
+    t.is(cache.getComponent('foo'), component2);
+});
+
+/*
+ * TemplateString
+ */
+
+test('[unit] PipelineCache.hasTemplateString() present', t => {
+    const cache = new PipelineCache();
+
+    cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
+
+    t.true(cache.hasTemplateString('foo'));
+});
+
+test('[unit] PipelineCache.hasTemplateString() missing', t => {
+    const cache = new PipelineCache();
+
+    t.false(cache.hasTemplateString('foo'));
+});
+
+test('[unit] PipelineCache.getTemplateString() present', t => {
+    const cache = new PipelineCache();
+    const templateString = new EvalContentFunction(() => 'foo');
+
+    cache.storeTemplateString('foo', templateString);
+
+    t.is(cache.getTemplateString('foo'), templateString);
+});
+
+test('[unit] PipelineCache.getTemplateString() missing', t => {
+    const cache = new PipelineCache();
+
+    t.throws(() => cache.getTemplateString('foo'));
+});
+
+test('[unit] PipelineCache overwrite templateString', t => {
+    const cache = new PipelineCache();
+    const templateString1 = new EvalContentFunction(() => 'foo');
+    const templateString2 = new EvalContentFunction(() => 'foo');
+
+    cache.storeTemplateString('foo', templateString1);
+    cache.storeTemplateString('foo', templateString2);
+
+    t.is(cache.getTemplateString('foo'), templateString2);
+});
+
+/*
+ * Handlebars
+ */
+
+test('[unit] PipelineCache.hasHandlebars() present', t => {
+    const cache = new PipelineCache();
+
+    cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
+
+    t.true(cache.hasHandlebars('foo'));
+});
+
+test('[unit] PipelineCache.hasHandlebars() missing', t => {
+    const cache = new PipelineCache();
+
+    t.false(cache.hasHandlebars('foo'));
+});
+
+test('[unit] PipelineCache.getHandlebars() present', t => {
+    const cache = new PipelineCache();
+    const handlebars = new EvalContentFunction(() => 'foo');
+
+    cache.storeHandlebars('foo', handlebars);
+
+    t.is(cache.getHandlebars('foo'), handlebars);
+});
+
+test('[unit] PipelineCache.getHandlebars() missing', t => {
+    const cache = new PipelineCache();
+
+    t.throws(() => cache.getHandlebars('foo'));
+});
+
+test('[unit] PipelineCache overwrite handlebars', t => {
+    const cache = new PipelineCache();
+    const handlebars1 = new EvalContentFunction(() => 'foo');
+    const handlebars2 = new EvalContentFunction(() => 'foo');
+
+    cache.storeHandlebars('foo', handlebars1);
+    cache.storeHandlebars('foo', handlebars2);
+
+    t.is(cache.getHandlebars('foo'), handlebars2);
+});
+
+/*
+ * General
+ */
+test('[unit] PipelineCache.clear()', t => {
+    const cache = new PipelineCache();
+    cache.storeFragment(new Fragment('foo', new DocumentNode()));
+    cache.storePage(new Page('foo', new DocumentNode()));
+    cache.storeComponent(createTestComponent());
+    cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
+    cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
+    
+    cache.clear();
+
+    t.false(cache.hasFragment('foo'));
+    t.false(cache.hasPage('foo'));
+    t.false(cache.hasComponent('foo'));
+    t.false(cache.hasTemplateString('foo'));
+    t.false(cache.hasHandlebars('foo'));
+});
