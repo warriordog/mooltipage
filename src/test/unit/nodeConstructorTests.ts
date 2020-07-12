@@ -1,5 +1,5 @@
 import test from 'ava';
-import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode } from '../../lib/index';
+import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MImportNode } from '../../lib/index';
 
 test('[unit] TagNode constructor handles arguments', t => {
     const attributes: Map<string, string | null> = new Map([['foo', 'bar'], ['attr', null]]);
@@ -56,73 +56,67 @@ test('[unit] ProcessingInstructionNode constructor populates defaults', t => {
 });
 
 test('[unit] MFragmentNode constructor handles arguments', t => {
-    const attributes: Map<string, string | null> = new Map([['src', 'resId'], ['param', 'value']]);
+    const src = 'resId';
+    const attributes: Map<string, string | null> = new Map([['src', src], ['param', 'value']]);
 
-    const node = new MFragmentNode(attributes);
+    const node = new MFragmentNode(src, attributes);
 
     t.is(node.tagName, 'm-fragment');
-    t.is(node.src, 'resId');
+    t.is(node.src, src);
     t.deepEqual(node.parameters, new Map([['param', 'value']]));
     t.deepEqual(node.getAttributes(), attributes);
-});
-
-test('[unit] MFragmentNode constructor throws on invalid arguments', t => {
-    const attributes: Map<string, string | null> = new Map([['param', 'value']]);
-
-    t.throws(() => new MFragmentNode(attributes))
 });
 
 test('[unit] MComponentNode constructor handles arguments', t => {
-    const attributes: Map<string, string | null> = new Map([['src', 'resId'], ['param', 'value']]);
+    const src = 'resId';
+    const attributes: Map<string, string | null> = new Map([['src', src], ['param', 'value']]);
 
-    const node = new MComponentNode(attributes);
+    const node = new MComponentNode(src, attributes);
 
     t.is(node.tagName, 'm-component');
-    t.is(node.src, 'resId');
+    t.is(node.src, src);
     t.deepEqual(node.parameters, new Map([['param', 'value']]));
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] MComponentNode constructor throws on invalid arguments', t => {
-    const attributes: Map<string, string | null> = new Map([['param', 'value']]);
-
-    t.throws(() => new MComponentNode(attributes))
-});
-
 test('[unit] MContentNode constructor handles arguments', t => {
-    const attributes: Map<string, string | null> = new Map([['slot', 'slotName'], ['foo', 'bar']]);
+    const slot = 'slotName';
+    const attributes: Map<string, string | null> = new Map([['slot', slot], ['foo', 'bar']]);
 
-    const node = new MContentNode(attributes);
+    const node = new MContentNode(slot, attributes);
 
     t.is(node.tagName, 'm-content');
-    t.is(node.slotName, 'slotName');
+    t.is(node.slot, 'slotName');
     t.deepEqual(node.getAttributes(), attributes);
 });
 
 test('[unit] MContentNode constructor populates defaults', t => {
     const attributes: Map<string, string | null> = new Map([['param', 'value']]);
 
-    const node = new MContentNode(attributes);
+    const node = new MContentNode(null, attributes);
 
-    t.is(node.slotName, '[default]');
+    t.is(node.slot, '[default]');
+    t.is(node.getAttribute('slot'), '[default]');
 });
 
 test('[unit] MSlotNode constructor handles arguments', t => {
-    const attributes: Map<string, string | null> = new Map([['slot', 'slotName'], ['foo', 'bar']]);
+    const slot = 'slotName';
+    const attributes: Map<string, string | null> = new Map([['slot', slot], ['foo', 'bar']]);
 
-    const node = new MSlotNode(attributes);
+    const node = new MSlotNode(slot, attributes);
 
     t.is(node.tagName, 'm-slot');
-    t.is(node.slotName, 'slotName');
+    t.is(node.slot, slot);
     t.deepEqual(node.getAttributes(), attributes);
 });
 
 test('[unit] MSlotNode constructor populates defaults', t => {
     const attributes: Map<string, string | null> = new Map([['param', 'value']]);
 
-    const node = new MSlotNode(attributes);
+    const node = new MSlotNode(null, attributes);
 
-    t.is(node.slotName, '[default]');
+    t.is(node.slot, '[default]');
+    t.is(node.getAttribute('slot'), '[default]');
 });
 
 test('[unit] MVarNode constructor handles arguments', t => {
@@ -133,4 +127,21 @@ test('[unit] MVarNode constructor handles arguments', t => {
     t.is(node.tagName, 'm-var');
     t.deepEqual(node.variables, new Map([['param', 'value'], ['foo', 'bar']]));
     t.deepEqual(node.getAttributes(), attributes);
+});
+
+test('[unit] MImportNode constructor handles arguments', t => {
+    const src = 'resId';
+    const as = 'foo';
+
+    const node = new MImportNode(src, as, true, false, new Map());
+
+    t.is(node.tagName, 'm-import');
+    t.is(node.src, src);
+    t.is(node.as, as);
+    t.true(node.fragment);
+    t.false(node.component);
+    t.is(node.getAttribute('src'), src);
+    t.is(node.getAttribute('as'), as);
+    t.true(node.hasAttribute('fragment'));
+    t.false(node.hasAttribute('component'));
 });

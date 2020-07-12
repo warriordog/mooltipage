@@ -107,6 +107,7 @@ export abstract class NodeWithChildren extends Node {
     findChildTagByTagName(tagName: 'm-content', deep?: boolean): MContentNode | null;
     findChildTagByTagName(tagName: 'm-slot', deep?: boolean): MSlotNode | null;
     findChildTagByTagName(tagName: 'm-var', deep?: boolean): MVarNode | null;
+    findChildTagByTagName(tagName: 'm-import', deep?: boolean): MImportNode | null;
     findChildTagByTagName(tagName: string, deep?: boolean): TagNode | null;
     findChildTagByTagName(tagName: string, deep = true): TagNode | null {
         return this.findChildTag(tag => tag.tagName === tagName, deep);
@@ -116,6 +117,7 @@ export abstract class NodeWithChildren extends Node {
     findChildTagsByTagName(tagName: 'm-content', deep?: boolean): MContentNode[];
     findChildTagsByTagName(tagName: 'm-slot', deep?: boolean): MSlotNode[];
     findChildTagsByTagName(tagName: 'm-var', deep?: boolean): MVarNode[];
+    findChildTagsByTagName(tagName: 'm-import', deep?: boolean): MImportNode[];
     findChildTagsByTagName(tagName: string, deep?: boolean): TagNode[];
     findChildTagsByTagName(tagName: string, deep = true): TagNode[] {
         return this.findChildTags(tag => tag.tagName === tagName, deep);
@@ -139,6 +141,10 @@ export abstract class NodeWithChildren extends Node {
         } else {
             super.removeSelf();
         }
+    }
+
+    swapSelf(replacement: NodeWithChildren): void {
+        NodeTools.swapNode(this, replacement);
     }
 
     static isNodeWithChildren(node: Node): node is NodeWithChildren {
@@ -219,6 +225,14 @@ export class TagNode extends NodeWithChildren {
 
     setAttribute(name: string, value: string | null): void {
         this.attributes.set(name, value);
+    }
+
+    setBooleanAttribute(name: string, value: boolean): void {
+        if (value) {
+            this.setAttribute(name, null);
+        } else {
+            this.deleteAttribute(name);
+        }
     }
 
     setRequiredValueAttribute(name: string, value: string): void {
@@ -316,12 +330,10 @@ export class DocumentNode extends NodeWithChildren {
 }
 
 export abstract class ExternalReferenceNode extends TagNode {
-    readonly src: string;
-
-    constructor(tagName: string, attributes: Map<string, string | null>) {
+    constructor(tagName: string, src: string, attributes?: Map<string, string | null>) {
         super(tagName, attributes);
 
-        this.src = this.getRequiredValueAttribute('src');
+        this.setAttribute('src', src);
     }
 
     // must be dynamic to reflect changes to attributes
@@ -342,14 +354,19 @@ export abstract class ExternalReferenceNode extends TagNode {
         return params;
     }
 
-
+    get src(): string {
+        return this.getRequiredValueAttribute('src');
+    }
+    set src(newSrc: string) {
+        this.setAttribute('src', newSrc);
+    }
 
     abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ExternalReferenceNode;
 }
 
 export class MFragmentNode extends ExternalReferenceNode {
-    constructor(attributes: Map<string, string | null>) {
-        super('m-fragment', attributes);
+    constructor(src: string, attributes?: Map<string, string | null>) {
+        super('m-fragment', src, attributes);
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MFragmentNode {
@@ -362,8 +379,8 @@ export class MFragmentNode extends ExternalReferenceNode {
 }
 
 export class MComponentNode extends ExternalReferenceNode {
-    constructor(attributes: Map<string, string | null>) {
-        super('m-component', attributes);
+    constructor(src: string, attributes?: Map<string, string | null>) {
+        super('m-component', src, attributes);
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MComponentNode {
@@ -376,26 +393,27 @@ export class MComponentNode extends ExternalReferenceNode {
 }
 
 export abstract class SlotReferenceNode extends TagNode {
-    constructor(tagName: string, attributes?: Map<string, string | null>) {
+    constructor(tagName: string, slot?: string | null | undefined, attributes?: Map<string, string | null>) {
         super(tagName, attributes);
 
         // populate slot name if missing
-        if (!this.hasAttribute('slot')) {
-            this.setAttribute('slot', '[default]');
-        }
+        this.setAttribute('slot', slot ?? '[default]');
     }
 
     // must be dynamic to reflect attribute changes
-    get slotName(): string {
+    get slot(): string {
         return this.getRequiredValueAttribute('slot')
+    }
+    set slot(newSlotName: string) {
+        this.setAttribute('slot', newSlotName);
     }
 
     abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): SlotReferenceNode;
 }
 
 export class MContentNode extends SlotReferenceNode {
-    constructor(attributes?: Map<string, string | null>) {
-        super('m-content', attributes);
+    constructor(slot?: string | null | undefined, attributes?: Map<string, string | null>) {
+        super('m-content', slot, attributes);
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MContentNode {
@@ -408,8 +426,8 @@ export class MContentNode extends SlotReferenceNode {
 }
 
 export class MSlotNode extends SlotReferenceNode {
-    constructor(attributes?: Map<string, string | null>) {
-        super('m-slot', attributes);
+    constructor(slot?: string | null | undefined, attributes?: Map<string, string | null>) {
+        super('m-slot', slot, attributes);
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MSlotNode {
@@ -449,5 +467,52 @@ export class MVarNode extends TagNode {
 
     static isMVarNode(node: Node): node is MVarNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-var';
+    }
+}
+
+export class MImportNode extends TagNode {
+    constructor(src: string, as: string, fragment: boolean, component: boolean, attributes?: Map<string, string | null>) {
+        super('m-import', attributes);
+
+        this.setAttribute('src', src);
+        this.setAttribute('as', as);
+        this.setBooleanAttribute('fragment', fragment);
+        this.setBooleanAttribute('component', component);
+    }
+
+    get src(): string {
+        return this.getRequiredValueAttribute('src');
+    }
+    set src(newSrc: string) {
+        this.setAttribute('src', newSrc);
+    }
+
+    get as(): string {
+        return this.getRequiredValueAttribute('as');
+    }
+    set as(newAs: string) {
+        this.setAttribute('as', newAs);
+    }
+
+    get fragment(): boolean {
+        return this.hasAttribute('fragment');
+    }
+    set fragment(newFragment: boolean) {
+        this.setBooleanAttribute('fragment', newFragment);
+    }
+
+    get component(): boolean {
+        return this.hasAttribute('component');
+    }
+    set component(newComponent: boolean) {
+        this.setBooleanAttribute('component', newComponent);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MImportNode {
+        return NodeTools.cloneMImportNode(this, deep, callback);
+    }
+
+    static isMImportNode(node: Node): node is MImportNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-import';
     }
 }

@@ -212,3 +212,44 @@ test('[endToEnd] Repeated component usages have correct scope', t => {
     t.is(comp2_4?.getAttribute('param'), 'value4');
     t.is(comp2_4?.getAttribute('value'), 'value');
 });
+
+test('[endToEnd] Imported component compiles correctly', t => {
+    // set up pipeline
+    const pi = createRootPi();
+    pi.htmlSource.set('comp.html', `
+        <template>
+            <m-import component src="comp2.html" as="imported-component" />
+            <div class="comp">
+                <imported-component />
+                <imported-component id="{{ 1 }}" />
+            </div>
+        </template>
+        <script type="class">
+            return class Comp {
+                constructor() {}
+            }
+        </script>
+    `);
+    pi.htmlSource.set('comp2.html', `
+        <template>
+            <div class="comp2" id="{{ $.id }}"></div>
+        </template>
+        <script type="class">
+            return class Comp {
+                constructor(scope) {
+                    this.id = scope.id || 0;
+                }
+            }
+        </script>
+    `);
+    const pipeline = new Pipeline(pi);
+
+    // compile component
+    const page = pipeline.compilePage('page.html');
+    const comp2_0 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === "0");
+    const comp2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === "1");
+
+    // validate
+    t.truthy(comp2_0);
+    t.truthy(comp2_1);
+});

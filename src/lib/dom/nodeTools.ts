@@ -1,4 +1,4 @@
-import { Node, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode, NodeWithChildren, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode } from './node';
+import { Node, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode, NodeWithChildren, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode } from './node';
 
 export function detatchNode(node: Node): void {
     if (node.parentNode != null) {
@@ -207,7 +207,7 @@ export function cloneDocumentNode(node: DocumentNode, deep: boolean, callback?: 
 export function cloneMFragmentNode(node: MFragmentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MFragmentNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode: MFragmentNode = new MFragmentNode(newAttrs);
+    const newNode: MFragmentNode = new MFragmentNode(node.src, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -217,7 +217,7 @@ export function cloneMFragmentNode(node: MFragmentNode, deep: boolean, callback?
 export function cloneMComponentNode(node: MComponentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MComponentNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode: MComponentNode = new MComponentNode(newAttrs);
+    const newNode: MComponentNode = new MComponentNode(node.src, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -227,7 +227,7 @@ export function cloneMComponentNode(node: MComponentNode, deep: boolean, callbac
 export function cloneMSlotNode(node: MSlotNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MSlotNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode: MSlotNode = new MSlotNode(newAttrs);
+    const newNode: MSlotNode = new MSlotNode(node.slot, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -237,7 +237,7 @@ export function cloneMSlotNode(node: MSlotNode, deep: boolean, callback?: (oldNo
 export function cloneMContentNode(node: MContentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MContentNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode: MContentNode = new MContentNode(newAttrs);
+    const newNode: MContentNode = new MContentNode(node.slot, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -248,6 +248,16 @@ export function cloneMVarNode(node: MVarNode, deep: boolean, callback?: (oldNode
     const newAttrs = cloneAttributes(node);
 
     const newNode: MVarNode = new MVarNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+export function cloneMImportNode(node: MImportNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MImportNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MImportNode(node.src, node.as, node.fragment, node.component, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -304,6 +314,12 @@ export function replaceNode(remove: Node, replacements: Node[]): void {
     }
 
     detatchNode(remove);
+}
+
+export function swapNode(remove: NodeWithChildren, replacement: NodeWithChildren): void {
+    replacement.appendChildren(remove.childNodes);
+
+    remove.replaceSelf(replacement);
 }
 
 export function getChildTags(parent: NodeWithChildren): TagNode[] {

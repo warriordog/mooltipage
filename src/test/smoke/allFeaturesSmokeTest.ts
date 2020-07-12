@@ -47,24 +47,25 @@ function createPipeline(): Pipeline {
     `);
     pipelineInterface.htmlSource.set('mainContent.html', `
         <m-var name="\${ 'Main' + 'Content' }Page" />
+        <m-import component src="section.html" as="custom-section" />
 
         <m-fragment src="header.html" title="{{ $.name }}" />
 
         <br>
 
-        <m-component src="section.html" title="Section 1">
+        <custom-section title="Section 1">
             <p>This is the content of section 1.</p>
-        </m-component>
+        </custom-section>
 
         <br>
 
-        <m-component src="section.html" title="Section 2">
+        <custom-section title="Section 2">
             <p>This is the content of section 2.</p>
-        </m-component>
+        </custom-section>
 
         <br>
 
-        <m-component src="section.html" title="Section 3">
+        <custom-section title="Section 3">
             <m-content slot="subheader">
                 <m-fragment src="header.html" title="Subtitle" class="subheader" />
             </m-content>
@@ -72,7 +73,7 @@ function createPipeline(): Pipeline {
             <br>
 
             <p>This is the content of section 3.</p>
-        </m-component>
+        </custom-section>
     `);
     pipelineInterface.htmlSource.set('header.html', `
         <header class="pageTitle \${ $.class || '' }">\${ $.name }</header>

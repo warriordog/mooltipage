@@ -20,7 +20,7 @@ export class SlotModule implements CompilerModule {
         // fill or remove
         for (const slot of slots) {
             // get contents from context, and clone in case slot is repeated
-            const content: DocumentNode | undefined = usageContext.slotContents.get(slot.slotName)?.clone();
+            const content: DocumentNode | undefined = usageContext.slotContents.get(slot.slot)?.clone();
 
             if (content != undefined) {
                 // fill content

@@ -1,5 +1,5 @@
 import { Handler } from 'htmlparser2/lib/Parser';
-import { TagNode, NodeWithChildren, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode } from "./node";
+import { TagNode, NodeWithChildren, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode } from "./node";
 
 export class DomParser implements Partial<Handler> {
     dom: DocumentNode;
@@ -103,17 +103,51 @@ export class DomParser implements Partial<Handler> {
     private createTagNode(tagName: string, attributes: Map<string, string | null>): TagNode {
         switch (tagName) {
             case 'm-fragment':
-                return new MFragmentNode(attributes);
+                return this.createMFragmentNode(attributes);
             case 'm-component':
-                return new MComponentNode(attributes);
+                return this.createMComponentNode(attributes);
             case 'm-slot':
-                return new MSlotNode(attributes);
+                return this.createMSlotNode(attributes);
             case 'm-content':
-                return new MContentNode(attributes);
+                return this.createMContentNode(attributes);
             case 'm-var':
                 return new MVarNode(attributes);
+            case 'm-import':
+                return this.createMImportNode(attributes);
             default:
                 return new TagNode(tagName, attributes);
         }
+    }
+
+    private createMFragmentNode(attributes: Map<string, string | null>): MFragmentNode {
+        const src = attributes.get('src');
+        if (src == undefined) throw new Error('Parse error: <m-fragment> is missing required attribute: src');
+        return new MFragmentNode(src, attributes);
+    }
+
+    private createMComponentNode(attributes: Map<string, string | null>): MComponentNode {
+        const src = attributes.get('src');
+        if (src == undefined) throw new Error('Parse error: <m-component> is missing required attribute: src');
+        return new MComponentNode(src, attributes);
+    }
+
+    private createMSlotNode(attributes: Map<string, string | null>): MSlotNode {
+        const slot = attributes.get('slot');
+        return new MSlotNode(slot, attributes);
+    }
+
+    private createMContentNode(attributes: Map<string, string | null>): MContentNode {
+        const slot = attributes.get('slot');
+        return new MContentNode(slot, attributes);
+    }
+
+    private createMImportNode(attributes: Map<string, string | null>): MImportNode {
+        const src = attributes.get('src');
+        if (src == undefined) throw new Error('Parse error: <m-import> is missing required attribute: src');
+        const as = attributes.get('as');
+        if (as == undefined) throw new Error('Parse error: <m-import> is missing required attribute: as');
+        const fragment = attributes.has('fragment');
+        const component = attributes.has('component');
+        return new MImportNode(src, as, fragment, component, attributes);
     }
 }

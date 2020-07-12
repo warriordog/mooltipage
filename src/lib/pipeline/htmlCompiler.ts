@@ -6,6 +6,7 @@ import { ReferenceModule } from "./module/referenceModule";
 import { TemplateTextModule } from "./module/templateTextModule";
 import { VarsModule } from "./module/varsModule";
 import { EvalContext } from "./evalEngine";
+import { ImportsModule } from "./module/importsModule";
 
 export class HtmlCompiler {
     private readonly pipeline: Pipeline;
@@ -15,12 +16,12 @@ export class HtmlCompiler {
         this.pipeline = pipeline;
 
         // these are order-specific!
-        // ReferenceModule splits up the DOM and would hide elements from the other steps
         this.modules = [
-            new SlotModule(),
+            new SlotModule(), // SlotModule changes the pre-compiled DOM, so it needs to run first.
+            new ImportsModule(), // ImportsModule affects how the later modules interpret the dom 
             new VarsModule(),
-            new TemplateTextModule(),
-            new ReferenceModule()
+            new TemplateTextModule(), // TemplateTextModule depends on VarsModule
+            new ReferenceModule() // ReferenceModule splits up the DOM and would hide elements from the other steps.
         ];
     }
 

@@ -224,3 +224,35 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
     // validate
     t.is(html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
 });
+
+test('[endToEnd] Imported fragment compiles correctly', t => {
+    // set up pipeline
+    const pi = createRootPi();
+    pi.htmlSource.set('frag1.html', `
+        <div class="frag1">
+            <m-import fragment src="frag2.html" as="imported-fragment" />
+
+            <imported-fragment count="1"/>
+            <imported-fragment count="{{ 2 }}"/>
+            <imported-fragment count="{{ 2 }}"/>
+            <imported-fragment count="\${ 3 }"/>
+            <imported-fragment count="\${ 3 }"/>
+            <imported-fragment count="\${ 3 }"/>
+        </div>
+    `);
+    pi.htmlSource.set('frag2.html', `
+        <div class="frag2" count="\${ $.count }"></div>
+    `);
+    const pipeline = new Pipeline(pi);
+
+    // compile fragment
+    const page = pipeline.compilePage('page.html');
+    const frag2count1s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '1');
+    const frag2count2s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '2');
+    const frag2count3s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '3');
+
+    // validate
+    t.is(frag2count1s.length, 1);
+    t.is(frag2count2s.length, 2);
+    t.is(frag2count3s.length, 3);
+});
