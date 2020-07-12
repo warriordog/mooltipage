@@ -11,6 +11,7 @@ export * from './pipeline/htmlFormatter';
 export * from './pipeline/pipeline';
 export * from './pipeline/pipelineCache';
 export * from './pipeline/usageContext';
+export * from './pipeline/textCompiler';
 export * from './pipeline/object/fragment';
 export * from './pipeline/object/pipelineObject';
 export * from './pipeline/object/component';

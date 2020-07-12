@@ -1,14 +1,8 @@
-import { Pipeline } from "./pipeline";
 import { ComponentStyle, ComponentStyleBindType, Component } from "./object/component";
 import { UsageContext } from "./usageContext";
 import { TextNode, TagNode } from "../dom/node";
 
 export class CssCompiler {
-    private readonly pipeline: Pipeline;
-
-    constructor(pipeline: Pipeline) {
-        this.pipeline = pipeline;
-    }
 
     compileComponentStyle(component: Component, style: ComponentStyle, usageContext: UsageContext): void {
         switch (style.bindType) {

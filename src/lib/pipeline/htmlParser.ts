@@ -1,17 +1,16 @@
-import { Pipeline } from "./pipeline";
 import { Fragment } from "./object/fragment";
 import { DocumentNode, TagNode, TextNode, Node } from '../dom/node';
 import { Parser, ParserOptions } from 'htmlparser2';
 import { DomParser } from '../dom/domParser';
 import { Page } from "./object/page";
 import { Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ComponentScriptInstance, ComponentStyleBindType } from "./object/component";
-import { EvalContent } from "./evalEngine";
+import { EvalContent, EvalEngine } from "./evalEngine";
 
 export class HtmlParser {
-    private readonly pipeline: Pipeline;
+    private readonly evalEngine: EvalEngine;
 
-    constructor(pipeline: Pipeline) {
-        this.pipeline = pipeline;
+    constructor() {
+        this.evalEngine = new EvalEngine();
     }
 
     parseFragment(resId: string, html: string): Fragment {
@@ -149,9 +148,9 @@ export class HtmlParser {
 
     private parseComponentScriptJs(scriptType: ComponentScriptType, text: string): EvalContent<Record<string, unknown>> {
         if (scriptType === ComponentScriptType.CLASS) {
-            return this.pipeline.evalEngine.parseComponentClass(text);
+            return this.evalEngine.parseComponentClass(text);
         } else if (scriptType === ComponentScriptType.FUNCTION) {
-            return this.pipeline.evalEngine.parseComponentFunction(text);
+            return this.evalEngine.parseComponentFunction(text);
         } else {
             throw new Error(`Unsupported component <script> type: '${scriptType}'`);
         }

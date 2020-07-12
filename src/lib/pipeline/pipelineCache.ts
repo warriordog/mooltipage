@@ -7,15 +7,13 @@ export class PipelineCache {
     private readonly pageCache: Map<string, Page>;
     private readonly fragmentCache: Map<string, Fragment>;
     private readonly componentCache: Map<string, Component>;
-    private readonly templateStringCache: Map<string, EvalContent<string>>;
-    private readonly handlebarsCache: Map<string, EvalContent<unknown>>;
+    private readonly scriptTextCache: Map<string, EvalContent<unknown>>;
 
     constructor() {
         this.pageCache = new Map();
         this.fragmentCache = new Map();
         this.componentCache = new Map();
-        this.templateStringCache = new Map();
-        this.handlebarsCache = new Map();
+        this.scriptTextCache = new Map();
     }
 
     // Page
@@ -78,44 +76,24 @@ export class PipelineCache {
         this.componentCache.set(component.resId, component);
     }
 
-    // Template string
+    // Script text
 
-    hasTemplateString(signature: string): boolean {
-        return this.templateStringCache.has(signature);
+    hasScriptText(signature: string): boolean {
+        return this.scriptTextCache.has(signature);
     }
 
-    getTemplateString(signature: string): EvalContent<string> {
-        const templateFunc: EvalContent<string> | undefined = this.templateStringCache.get(signature);
+    getScriptText(signature: string): EvalContent<unknown> {
+        const templateFunc: EvalContent<unknown> | undefined = this.scriptTextCache.get(signature);
 
         if (templateFunc == undefined) {
-            throw new Error(`Template string function not found in cache: ${signature}.  Make sure to call hasTemplateString() before getTemplateString().`);
+            throw new Error(`Script text function not found in cache: ${signature}.  Make sure to call hasScriptText() before getScriptText().`);
         }
 
         return templateFunc;
     }
 
-    storeTemplateString(signature: string, templateFunc: EvalContent<string>): void {
-        this.templateStringCache.set(signature, templateFunc);
-    }
-
-    // Handlebars
-
-    hasHandlebars(signature: string): boolean {
-        return this.handlebarsCache.has(signature);
-    }
-
-    getHandlebars(signature: string): EvalContent<unknown> {
-        const handlebarsFunc: EvalContent<unknown> | undefined = this.handlebarsCache.get(signature);
-
-        if (handlebarsFunc == undefined) {
-            throw new Error(`Handlebars function not found in cache: ${signature}.  Make sure to call hasHanldebars() before getHandlebars().`);
-        }
-
-        return handlebarsFunc;
-    }
-
-    storeHandlebars(signature: string, templateFunc: EvalContent<unknown>): void {
-        this.handlebarsCache.set(signature, templateFunc);
+    storeScriptText(signature: string, templateFunc: EvalContent<unknown>): void {
+        this.scriptTextCache.set(signature, templateFunc);
     }
 
     // general
@@ -124,7 +102,6 @@ export class PipelineCache {
         this.pageCache.clear();
         this.fragmentCache.clear();
         this.componentCache.clear();
-        this.templateStringCache.clear();
-        this.handlebarsCache.clear();
+        this.scriptTextCache.clear();
     }
 }

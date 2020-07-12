@@ -140,92 +140,49 @@ test('[unit] PipelineCache.storeComponent() can overwrite an existing entry', t 
 });
 
 /*
- * TemplateString
+ * ScriptText
  */
 
-test('[unit] PipelineCache.hasTemplateString() returns true when object is cached', t => {
+test('[unit] PipelineCache.hasScriptText() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
-    cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
+    cache.storeScriptText('foo', new EvalContentFunction(() => 'foo'));
 
-    t.true(cache.hasTemplateString('foo'));
+    t.true(cache.hasScriptText('foo'));
 });
 
-test('[unit] PipelineCache.hasTemplateString() returns false when object is not cached', t => {
+test('[unit] PipelineCache.hasScriptText() returns false when object is not cached', t => {
     const cache = new PipelineCache();
 
-    t.false(cache.hasTemplateString('foo'));
+    t.false(cache.hasScriptText('foo'));
 });
 
-test('[unit] PipelineCache.getTemplateString() returns cached object when present', t => {
+test('[unit] PipelineCache.getScriptText() returns cached object when present', t => {
     const cache = new PipelineCache();
-    const templateString = new EvalContentFunction(() => 'foo');
+    const scriptText = new EvalContentFunction(() => 'foo');
 
-    cache.storeTemplateString('foo', templateString);
+    cache.storeScriptText('foo', scriptText);
 
-    t.is(cache.getTemplateString('foo'), templateString);
+    t.is(cache.getScriptText('foo'), scriptText);
 });
 
-test('[unit] PipelineCache.getTemplateString() throws when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.throws(() => cache.getTemplateString('foo'));
-});
-
-test('[unit] PipelineCache.storeTemplateString() can overwrite an existing entry', t => {
-    const cache = new PipelineCache();
-    const templateString1 = new EvalContentFunction(() => 'foo');
-    const templateString2 = new EvalContentFunction(() => 'foo');
-
-    cache.storeTemplateString('foo', templateString1);
-    cache.storeTemplateString('foo', templateString2);
-
-    t.is(cache.getTemplateString('foo'), templateString2);
-});
-
-/*
- * Handlebars
- */
-
-test('[unit] PipelineCache.hasHandlebars() returns true when object is cached', t => {
+test('[unit] PipelineCache.getScriptText() throws when object is not cached', t => {
     const cache = new PipelineCache();
 
-    cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
-
-    t.true(cache.hasHandlebars('foo'));
+    t.throws(() => cache.getScriptText('foo'));
 });
 
-test('[unit] PipelineCache.hasHandlebars() returns false when object is not cached', t => {
+test('[unit] PipelineCache.storeScriptText() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
+    const scriptText1 = new EvalContentFunction(() => 'foo');
+    const scriptText2 = new EvalContentFunction(() => 'foo');
 
-    t.false(cache.hasHandlebars('foo'));
+    cache.storeScriptText('foo', scriptText1);
+    cache.storeScriptText('foo', scriptText2);
+
+    t.is(cache.getScriptText('foo'), scriptText2);
 });
 
-test('[unit] PipelineCache.getHandlebars() returns cached object when present', t => {
-    const cache = new PipelineCache();
-    const handlebars = new EvalContentFunction(() => 'foo');
-
-    cache.storeHandlebars('foo', handlebars);
-
-    t.is(cache.getHandlebars('foo'), handlebars);
-});
-
-test('[unit] PipelineCache.getHandlebars() throws when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.throws(() => cache.getHandlebars('foo'));
-});
-
-test('[unit] PipelineCache.storeHandlebars() can overwrite an existing entry', t => {
-    const cache = new PipelineCache();
-    const handlebars1 = new EvalContentFunction(() => 'foo');
-    const handlebars2 = new EvalContentFunction(() => 'foo');
-
-    cache.storeHandlebars('foo', handlebars1);
-    cache.storeHandlebars('foo', handlebars2);
-
-    t.is(cache.getHandlebars('foo'), handlebars2);
-});
 
 /*
  * General
@@ -235,14 +192,12 @@ test('[unit] PipelineCache.clear() clears all caches', t => {
     cache.storeFragment(new Fragment('foo', new DocumentNode()));
     cache.storePage(new Page('foo', new DocumentNode()));
     cache.storeComponent(createTestComponent());
-    cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
-    cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
+    cache.storeScriptText('foo', new EvalContentFunction(() => 'foo'));
     
     cache.clear();
 
     t.false(cache.hasFragment('foo'));
     t.false(cache.hasPage('foo'));
     t.false(cache.hasComponent('foo'));
-    t.false(cache.hasTemplateString('foo'));
-    t.false(cache.hasHandlebars('foo'));
+    t.false(cache.hasScriptText('foo'));
 });

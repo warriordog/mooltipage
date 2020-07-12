@@ -6,11 +6,12 @@ import { HtmlFormatter } from './htmlFormatter';
 import { HtmlParser } from './htmlParser';
 import { HtmlSerializer }  from './htmlSerializer';
 import { HtmlCompiler } from './htmlCompiler';
-import { EvalContent, EvalContext, EvalEngine } from './evalEngine';
+import { EvalContent, EvalContext } from './evalEngine';
 import { Component, ComponentScriptInstance } from './object/component';
 import { Page } from './object/page';
 import { DocumentNode } from '../dom/node';
 import { CssCompiler } from './cssCompiler';
+import { TextCompiler } from './textCompiler';
 
 export class Pipeline {
     private readonly cache: PipelineCache;
@@ -21,18 +22,18 @@ export class Pipeline {
     readonly htmlCompiler: HtmlCompiler;
     readonly cssCompiler: CssCompiler;
     readonly htmlSerializer: HtmlSerializer;
-    readonly evalEngine: EvalEngine;
+    readonly textCompiler: TextCompiler;
 
     constructor(pipelineInterface: PipelineInterface, htmlFormatter?: HtmlFormatter) {
         this.pipelineInterface = pipelineInterface;
         this.htmlFormatter = htmlFormatter;
 
         this.cache = new PipelineCache();
-        this.evalEngine = new EvalEngine();
-        this.htmlParser = new HtmlParser(this);
+        this.htmlParser = new HtmlParser();
         this.htmlCompiler = new HtmlCompiler(this);
-        this.cssCompiler = new CssCompiler(this);
-        this.htmlSerializer = new HtmlSerializer(this);
+        this.cssCompiler = new CssCompiler();
+        this.htmlSerializer = new HtmlSerializer();
+        this.textCompiler = new TextCompiler();
     }
 
     compilePage(resId: string): Page {
@@ -111,72 +112,23 @@ export class Pipeline {
         return fragment;
     }
 
-    compileTemplateString(templateText: string): EvalContent<string> {
-        const functionBody = templateText.trim();
-
-        // return from cache if present
-        if (this.cache.hasTemplateString(functionBody)) {
-            return this.cache.getTemplateString(functionBody);
-        }
-
-        // parse into function
-        const templateFunc: EvalContent<string> = this.evalEngine.parseTemplateString(functionBody);
-        
-        // store in cache
-        this.cache.storeTemplateString(functionBody, templateFunc);
-
-        // return it
-        return templateFunc;
-    }
-
-    compileHandlebars(handlebarsText: string): EvalContent<unknown> {
-        const functionBody = handlebarsText.trim();
-
-        // return from cache if present
-        if (this.cache.hasHandlebars(functionBody)) {
-            return this.cache.getHandlebars(functionBody);
-        }
-
-        // parse into function
-        const handlebarsFunc: EvalContent<unknown> = this.evalEngine.parseHandlebars(functionBody);
-        
-        // store in cache
-        this.cache.storeHandlebars(functionBody, handlebarsFunc);
-
-        // return it
-        return handlebarsFunc;
-    }
-
     compileDomText(value: string | null, evalContext: EvalContext): unknown {
         // value is null
         if (value == null) {
             return null;
         }
 
-        // value is template string
-        if (templateTextRegex.test(value)) {
-            // compile template string
-            const templateStringFunc: EvalContent<string> = this.compileTemplateString(value);
+        // check if this text contains JS code to evaluate
+        if (this.textCompiler.isScriptText(value)) {
+            const scriptText = value.trim();
 
+            // get function for script
+            const scriptTextFunc = this.getOrParseScriptText(scriptText);
+            
             // execute it
-            const evaluatedString: string = templateStringFunc.invoke(evalContext);
+            const scriptTextOutput: unknown = scriptTextFunc.invoke(evalContext);
 
-            return evaluatedString;
-        }
-
-        // value is handlebars
-        const handlebarsMatches: RegExpMatchArray | null = value.match(handlebarsRegex);
-        if (handlebarsMatches != null && handlebarsMatches.length === 2) {
-            // get JS code from handlebars test
-            const handlebarCode: string = handlebarsMatches[1];
-
-            // parse handlebars code
-            const handlebarsFunc: EvalContent<unknown> = this.compileHandlebars(handlebarCode);
-
-            // execute handlebars
-            const handlebarsResult: unknown = handlebarsFunc.invoke(evalContext);
-
-            return handlebarsResult;
+            return scriptTextOutput;
         }
 
         // value is plain string
@@ -253,10 +205,21 @@ export class Pipeline {
 
         return component.clone();
     }
+
+    private getOrParseScriptText(scriptText: string): EvalContent<unknown> {
+        let scriptTextFunc: EvalContent<unknown>;
+
+        // get from cache, if present
+        if (this.cache.hasScriptText(scriptText)) {
+            scriptTextFunc = this.cache.getScriptText(scriptText);
+        } else {
+            // compile text
+            scriptTextFunc = this.textCompiler.compileScriptText(scriptText);
+
+            // store in cache
+            this.cache.storeScriptText(scriptText, scriptTextFunc);
+        }
+
+        return scriptTextFunc;
+    }
 }
-
-// regular expression to detect a JS template string litteral
-export const templateTextRegex = /\${(([^\\}]|\\}|\\)*)}/;
-
-// regular expression to detect handlebars {{ }}
-export const handlebarsRegex = /^\s*(?<!\\){{(.*)}}\s*$/;
