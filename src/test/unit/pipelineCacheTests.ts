@@ -11,7 +11,7 @@ function createTestComponent(): Component {
  * Page
  */
 
-test('[unit] PipelineCache.hasPage() present', t => {
+test('[unit] PipelineCache.hasPage() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
     cache.storePage(new Page('foo', new DocumentNode()));
@@ -19,13 +19,13 @@ test('[unit] PipelineCache.hasPage() present', t => {
     t.true(cache.hasPage('foo'));
 });
 
-test('[unit] PipelineCache.hasPage() missing', t => {
+test('[unit] PipelineCache.hasPage() returns false when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.false(cache.hasPage('foo'));
 });
 
-test('[unit] PipelineCache.getPage() present', t => {
+test('[unit] PipelineCache.getPage() returns cached object when present', t => {
     const cache = new PipelineCache();
     const page = new Page('foo', new DocumentNode());
 
@@ -34,13 +34,13 @@ test('[unit] PipelineCache.getPage() present', t => {
     t.is(cache.getPage('foo'), page);
 });
 
-test('[unit] PipelineCache.getPage() missing', t => {
+test('[unit] PipelineCache.getPage() throws when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.throws(() => cache.getPage('foo'));
 });
 
-test('[unit] PipelineCache overwrite page', t => {
+test('[unit] PipelineCache.storePage() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
     const page1 = new Page('foo', new DocumentNode());
     const page2 = new Page('foo', new DocumentNode());
@@ -55,7 +55,7 @@ test('[unit] PipelineCache overwrite page', t => {
  * Fragment
  */
 
-test('[unit] PipelineCache.hasFragment() present', t => {
+test('[unit] PipelineCache.hasFragment() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
     cache.storeFragment(new Fragment('foo', new DocumentNode()));
@@ -63,13 +63,13 @@ test('[unit] PipelineCache.hasFragment() present', t => {
     t.true(cache.hasFragment('foo'));
 });
 
-test('[unit] PipelineCache.hasFragment() missing', t => {
+test('[unit] PipelineCache.hasFragment() returns false when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.false(cache.hasFragment('foo'));
 });
 
-test('[unit] PipelineCache.getFragment() present', t => {
+test('[unit] PipelineCache.getFragment() returns cached object when present', t => {
     const cache = new PipelineCache();
     const fragment = new Fragment('foo', new DocumentNode());
 
@@ -78,13 +78,13 @@ test('[unit] PipelineCache.getFragment() present', t => {
     t.is(cache.getFragment('foo'), fragment);
 });
 
-test('[unit] PipelineCache.getFragment() missing', t => {
+test('[unit] PipelineCache.getFragment() throws when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.throws(() => cache.getFragment('foo'));
 });
 
-test('[unit] PipelineCache overwrite fragment', t => {
+test('[unit] PipelineCache.storeFragment() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
     const fragment1 = new Fragment('foo', new DocumentNode());
     const fragment2 = new Fragment('foo', new DocumentNode());
@@ -99,7 +99,7 @@ test('[unit] PipelineCache overwrite fragment', t => {
  * Component
  */
 
-test('[unit] PipelineCache.hasComponent() present', t => {
+test('[unit] PipelineCache.hasComponent() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
     cache.storeComponent(createTestComponent());
@@ -107,13 +107,13 @@ test('[unit] PipelineCache.hasComponent() present', t => {
     t.true(cache.hasComponent('foo'));
 });
 
-test('[unit] PipelineCache.hasComponent() missing', t => {
+test('[unit] PipelineCache.hasComponent() returns false when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.false(cache.hasComponent('foo'));
 });
 
-test('[unit] PipelineCache.getComponent() present', t => {
+test('[unit] PipelineCache.getComponent() returns cached object when present', t => {
     const cache = new PipelineCache();
     const component = createTestComponent();
 
@@ -122,13 +122,13 @@ test('[unit] PipelineCache.getComponent() present', t => {
     t.is(cache.getComponent('foo'), component);
 });
 
-test('[unit] PipelineCache.getComponent() missing', t => {
+test('[unit] PipelineCache.getComponent() throws when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.throws(() => cache.getComponent('foo'));
 });
 
-test('[unit] PipelineCache overwrite component', t => {
+test('[unit] PipelineCache.storeComponent() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
     const component1 = createTestComponent();
     const component2 = createTestComponent();
@@ -143,7 +143,7 @@ test('[unit] PipelineCache overwrite component', t => {
  * TemplateString
  */
 
-test('[unit] PipelineCache.hasTemplateString() present', t => {
+test('[unit] PipelineCache.hasTemplateString() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
     cache.storeTemplateString('foo', new EvalContentFunction(() => 'foo'));
@@ -151,13 +151,13 @@ test('[unit] PipelineCache.hasTemplateString() present', t => {
     t.true(cache.hasTemplateString('foo'));
 });
 
-test('[unit] PipelineCache.hasTemplateString() missing', t => {
+test('[unit] PipelineCache.hasTemplateString() returns false when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.false(cache.hasTemplateString('foo'));
 });
 
-test('[unit] PipelineCache.getTemplateString() present', t => {
+test('[unit] PipelineCache.getTemplateString() returns cached object when present', t => {
     const cache = new PipelineCache();
     const templateString = new EvalContentFunction(() => 'foo');
 
@@ -166,13 +166,13 @@ test('[unit] PipelineCache.getTemplateString() present', t => {
     t.is(cache.getTemplateString('foo'), templateString);
 });
 
-test('[unit] PipelineCache.getTemplateString() missing', t => {
+test('[unit] PipelineCache.getTemplateString() throws when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.throws(() => cache.getTemplateString('foo'));
 });
 
-test('[unit] PipelineCache overwrite templateString', t => {
+test('[unit] PipelineCache.storeTemplateString() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
     const templateString1 = new EvalContentFunction(() => 'foo');
     const templateString2 = new EvalContentFunction(() => 'foo');
@@ -187,7 +187,7 @@ test('[unit] PipelineCache overwrite templateString', t => {
  * Handlebars
  */
 
-test('[unit] PipelineCache.hasHandlebars() present', t => {
+test('[unit] PipelineCache.hasHandlebars() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
     cache.storeHandlebars('foo', new EvalContentFunction(() => 'foo'));
@@ -195,13 +195,13 @@ test('[unit] PipelineCache.hasHandlebars() present', t => {
     t.true(cache.hasHandlebars('foo'));
 });
 
-test('[unit] PipelineCache.hasHandlebars() missing', t => {
+test('[unit] PipelineCache.hasHandlebars() returns false when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.false(cache.hasHandlebars('foo'));
 });
 
-test('[unit] PipelineCache.getHandlebars() present', t => {
+test('[unit] PipelineCache.getHandlebars() returns cached object when present', t => {
     const cache = new PipelineCache();
     const handlebars = new EvalContentFunction(() => 'foo');
 
@@ -210,13 +210,13 @@ test('[unit] PipelineCache.getHandlebars() present', t => {
     t.is(cache.getHandlebars('foo'), handlebars);
 });
 
-test('[unit] PipelineCache.getHandlebars() missing', t => {
+test('[unit] PipelineCache.getHandlebars() throws when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.throws(() => cache.getHandlebars('foo'));
 });
 
-test('[unit] PipelineCache overwrite handlebars', t => {
+test('[unit] PipelineCache.storeHandlebars() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
     const handlebars1 = new EvalContentFunction(() => 'foo');
     const handlebars2 = new EvalContentFunction(() => 'foo');
@@ -230,7 +230,7 @@ test('[unit] PipelineCache overwrite handlebars', t => {
 /*
  * General
  */
-test('[unit] PipelineCache.clear()', t => {
+test('[unit] PipelineCache.clear() clears all caches', t => {
     const cache = new PipelineCache();
     cache.storeFragment(new Fragment('foo', new DocumentNode()));
     cache.storePage(new Page('foo', new DocumentNode()));

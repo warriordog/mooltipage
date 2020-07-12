@@ -34,6 +34,6 @@ function testHtml(t: ExecutionContext, resId: string, expected: string): void {
     t.is(output, expected);
 }
 
-test('[endToEnd] Raw HTML is passed through unchanged (minimized)', testHtml, 'pageMin.html', PAGE_MIN);
-test('[endToEnd] Raw HTML is passed through unchanged (pretty)', testHtml, 'pagePretty.html', PAGE_PRETTY);
+test('[endToEnd] Raw HTML is passed through pipeline unchanged (minimized)', testHtml, 'pageMin.html', PAGE_MIN);
+test('[endToEnd] Raw HTML is passed through pipeline unchanged (pretty)', testHtml, 'pagePretty.html', PAGE_PRETTY);
 

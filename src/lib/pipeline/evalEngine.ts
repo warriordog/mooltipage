@@ -123,7 +123,7 @@ export class EvalContext {
     }
 }
 
-export type EvalVars = Map<string, unknown>;
+export type EvalVars = ReadonlyMap<string, unknown>;
 
 export type EvalScope = Record<string, unknown>;
 

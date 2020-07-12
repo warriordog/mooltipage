@@ -276,14 +276,17 @@ export class DocumentNode extends NodeWithChildren {
 }
 
 export abstract class ExternalReferenceNode extends TagNode {
-    readonly parameters: Map<string, string> = new Map();
-
     readonly src: string;
 
     constructor(tagName: string, attributes: Map<string, string | null>) {
         super(tagName, attributes);
 
         this.src = this.getRequiredValueAttribute('src');
+    }
+
+    // must be dynamic to reflect changes to attributes
+    get parameters(): ReadonlyMap<string, string> {
+        const params: Map<string, string> = new Map();
 
         // extract fragment params
         for (const entry of this.attributes) {
@@ -291,10 +294,15 @@ export abstract class ExternalReferenceNode extends TagNode {
             const value: string | null = entry[1];
 
             if (key != 'src' && value != null) {
-                this.parameters.set(key, value);
+                params.set(key, value);
             }
+        
         }
+
+        return params;
     }
+
+
 
     abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ExternalReferenceNode;
 }
@@ -328,18 +336,18 @@ export class MComponentNode extends ExternalReferenceNode {
 }
 
 export abstract class SlotReferenceNode extends TagNode {
-    readonly slotName: string;
-
     constructor(tagName: string, attributes?: Map<string, string | null>) {
         super(tagName, attributes);
 
-        // extract or generate slot name
-        if (this.hasAttribute('slot')) {
-            this.slotName = this.getRequiredValueAttribute('slot');
-        } else {
-            this.slotName = '[default]';
-            this.setAttribute('slot', this.slotName);
+        // populate slot name if missing
+        if (!this.hasAttribute('slot')) {
+            this.setAttribute('slot', '[default]');
         }
+    }
+
+    // must be dynamic to reflect attribute changes
+    get slotName(): string {
+        return this.getRequiredValueAttribute('slot')
     }
 
     abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): SlotReferenceNode;
@@ -374,10 +382,13 @@ export class MSlotNode extends SlotReferenceNode {
 }
 
 export class MVarNode extends TagNode {
-    readonly variables: Map<string, string> = new Map();
-
     constructor(attributes?: Map<string, string | null>) {
         super('m-var', attributes);
+    }
+
+    // this must be dynamic to reflect changes to attributes
+    get variables(): ReadonlyMap<string, string> {
+        const vars: Map<string, string> = new Map();
 
         // extract variables
         for (const entry of this.attributes) {
@@ -385,9 +396,11 @@ export class MVarNode extends TagNode {
             const value: string | null = entry[1];
 
             if (value != null) {
-                this.variables.set(key, value);
+                vars.set(key, value);
             }
         }
+
+        return vars;
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MVarNode {

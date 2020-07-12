@@ -2,7 +2,7 @@ import test from 'ava';
 import { Pipeline, BasicHtmlFormatter } from '../../lib/index';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
-test('[smoke] Build with all features produces valid page', t => {
+test('[smoke] Build produces a page and does not crash', t => {
     // set up pipeline
     const pipeline = createPipeline();
 
@@ -11,13 +11,9 @@ test('[smoke] Build with all features produces valid page', t => {
 
     // check output
     t.truthy(page);
-    t.truthy(page.dom);
-    t.truthy(page.head); // there should be a head
-    t.truthy(page.body); // there should be a body
-    t.is(page.dom.findChildTags(tag => tag.tagName === 'header').length, 6); // there should be 6 <header>
-    t.is(page.dom.findChildTags(tag => tag.tagName === 'style').length, 3) // should be 3 <style>
-    t.is(page.dom.findChildTags(tag => tag.tagName === 'script').length, 1) // should be 1 <script>
-    t.is(page.dom.findChildTags(tag => tag.tagName === 'p').length, 3) // should be 3 <p>
+    t.truthy(page.dom, 'Generated page should have a DOM');
+    t.truthy(page.head, 'Generated page should have a HEAD');
+    t.truthy(page.body, 'Generated page should have a BODY');
 });
 
 function createPipeline(): Pipeline {
@@ -50,7 +46,7 @@ function createPipeline(): Pipeline {
         </html>
     `);
     pipelineInterface.htmlSource.set('mainContent.html', `
-        <v-var name="\${ 'Main' + 'Content' }Page" />
+        <m-var name="\${ 'Main' + 'Content' }Page" />
 
         <m-fragment src="header.html" title="{{ $.name }}" />
 
