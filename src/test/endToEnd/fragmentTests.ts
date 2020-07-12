@@ -133,7 +133,7 @@ test('[endToEnd] Repeated fragment usages have correct scope', t => {
     t.is(frag2_4?.getAttribute('value'), 'value');
 });
 
-test('[endToEnd] Fragment slots correctly', t => {
+test('[endToEnd] Fragment slots are filled correctly', t => {
     // set up pipeline
     const pi = createRootPi();
     pi.htmlSource.set('frag1.html', `
@@ -187,4 +187,40 @@ test('[endToEnd] Fragment slots correctly', t => {
 
     // validate
     t.is(html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><div class="[default]"></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>1</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>2</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>3</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>4.1</div></div><div class="slot1"><div>4.2</div></div></div><div class="frag2"><div class="[default]"><div>5.1</div></div><div class="slot1"><div>5.2</div></div></div></div></body></html>');
+});
+
+test('[endToEnd] Fragment slot placeholder content is left when slot is unused', t => {
+    // set up pipeline
+    const pi = createRootPi();
+    pi.htmlSource.set('frag1.html', `
+        <div>
+            <m-fragment src="frag2.html" />
+            <m-fragment src="frag2.html">filled</m-fragment>
+            <m-fragment src="frag3.html" />
+            <m-fragment src="frag3.html">
+                <m-content slot="named">filled</m-content>
+            </m-fragment>
+        </div>
+    `);
+    pi.htmlSource.set('frag2.html', `
+        <div>
+            <m-slot>empty</m-slot>
+        </div>
+    `);
+    pi.htmlSource.set('frag3.html', `
+        <div>
+            <div class="named">
+                <m-slot slot="named">empty</m-slot>
+            </div>
+        </div>
+    `);
+    const htmlFormatter = new BasicHtmlFormatter(false);
+    const pipeline = new Pipeline(pi, htmlFormatter);
+
+    // compile fragment
+    pipeline.compilePage('page.html');
+    const html = pi.htmlDestination.get('page.html');
+
+    // validate
+    t.is(html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
 });

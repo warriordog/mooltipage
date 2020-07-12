@@ -101,6 +101,14 @@ export abstract class NodeWithChildren extends Node {
         return NodeTools.createDomFromChildren(this);
     }
 
+    removeSelf(keepChildren = false): void {
+        if (keepChildren) {
+            NodeTools.replaceNode(this, this.childNodes);
+        } else {
+            super.removeSelf();
+        }
+    }
+
     static isNodeWithChildren(node: Node): node is NodeWithChildren {
         return node.nodeType === NodeType.CDATA || node.nodeType === NodeType.Tag || node.nodeType === NodeType.Document;
     }

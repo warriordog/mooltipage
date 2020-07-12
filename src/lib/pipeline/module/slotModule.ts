@@ -27,8 +27,7 @@ export class SlotModule implements CompilerModule {
                 slot.replaceSelf(...content.childNodes);
             } else {
                 // remove slot tag
-                // TODO leave default content
-                slot.removeSelf();
+                slot.removeSelf(true);
             }
         }
     }
