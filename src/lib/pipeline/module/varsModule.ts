@@ -1,12 +1,12 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
-import { TagNode, DocumentNode, MVarNode } from "../../dom/node";
+import { TagNode, MVarNode } from "../../dom/node";
 import { EvalContext } from "../evalEngine";
 
 export class VarsModule implements CompilerModule {
 
     compileFragment(compileData: CompileData): void {
         // find all vars
-        const varElems: MVarNode[] = this.findVarElems(compileData.fragment.dom);
+        const varElems = compileData.fragment.dom.findChildTagsByTagName('m-var');
         
         // only process if there are any vars
         if (varElems.length > 0) {
@@ -41,10 +41,6 @@ export class VarsModule implements CompilerModule {
         }
 
         return varValues;
-    }
-
-    private findVarElems(dom: DocumentNode): MVarNode[] {
-        return dom.findChildTags((tag: TagNode) => MVarNode.isMVarNode(tag)) as MVarNode[];
     }
 
     private removeVarElems(varElems: TagNode[]): void {

@@ -75,18 +75,50 @@ export abstract class NodeWithChildren extends Node {
     findChildNodes(matcher: (node: Node) => boolean, deep = true): Node[] {
         return NodeTools.findChildNodes(this, matcher, deep);
     }
-    findTopLevelChildNodes(matcher: (node: Node) => boolean): Node[] {
-        return NodeTools.findTopLevelChildNodes(this, matcher);
-    }
-
     findChildTag(matcher: (tag: TagNode) => boolean, deep = true): TagNode | null {
         return NodeTools.findChildTag(this, matcher, deep);
     }
     findChildTags(matcher: (tag: TagNode) => boolean, deep = true): TagNode[] {
         return NodeTools.findChildTags(this, matcher, deep);
     }
-    findTopLevelChildTags(matcher: (node: TagNode) => boolean): TagNode[] {
-        return NodeTools.findTopLevelChildTags(this, matcher);
+
+    findChildNodeByNodeType(nodeType: NodeType.Document, deep?: boolean): DocumentNode | null;
+    findChildNodeByNodeType(nodeType: NodeType.Tag, deep?: boolean): TagNode | null;
+    findChildNodeByNodeType(nodeType: NodeType.Text, deep?: boolean): TextNode | null;
+    findChildNodeByNodeType(nodeType: NodeType.Comment, deep?: boolean): CommentNode | null;
+    findChildNodeByNodeType(nodeType: NodeType.CDATA, deep?: boolean): CDATANode | null;
+    findChildNodeByNodeType(nodeType: NodeType.ProcessingInstruction, deep?: boolean): ProcessingInstructionNode | null;
+    findChildNodeByNodeType(nodeType: NodeType, deep?: boolean): Node | null
+    findChildNodeByNodeType(nodeType: NodeType, deep = true): Node | null {
+        return this.findChildNode(node => node.nodeType === nodeType, deep);
+    }
+    findChildNodesByNodeType(nodeType: NodeType.Document, deep?: boolean): DocumentNode[];
+    findChildNodesByNodeType(nodeType: NodeType.Tag, deep?: boolean): TagNode[];
+    findChildNodesByNodeType(nodeType: NodeType.Text, deep?: boolean): TextNode[];
+    findChildNodesByNodeType(nodeType: NodeType.Comment, deep?: boolean): CommentNode[];
+    findChildNodesByNodeType(nodeType: NodeType.CDATA, deep?: boolean): CDATANode[];
+    findChildNodesByNodeType(nodeType: NodeType.ProcessingInstruction, deep?: boolean): ProcessingInstructionNode[];
+    findChildNodesByNodeType(nodeType: NodeType, deep?: boolean): Node[];
+    findChildNodesByNodeType(nodeType: NodeType, deep = true): Node[] {
+        return this.findChildNodes(node => node.nodeType === nodeType, deep);
+    }
+    findChildTagByTagName(tagName: 'm-fragment', deep?: boolean): MFragmentNode | null;
+    findChildTagByTagName(tagName: 'm-component', deep?: boolean): MComponentNode | null;
+    findChildTagByTagName(tagName: 'm-content', deep?: boolean): MContentNode | null;
+    findChildTagByTagName(tagName: 'm-slot', deep?: boolean): MSlotNode | null;
+    findChildTagByTagName(tagName: 'm-var', deep?: boolean): MVarNode | null;
+    findChildTagByTagName(tagName: string, deep?: boolean): TagNode | null;
+    findChildTagByTagName(tagName: string, deep = true): TagNode | null {
+        return this.findChildTag(tag => tag.tagName === tagName, deep);
+    }
+    findChildTagsByTagName(tagName: 'm-fragment', deep?: boolean): MFragmentNode[];
+    findChildTagsByTagName(tagName: 'm-component', deep?: boolean): MComponentNode[];
+    findChildTagsByTagName(tagName: 'm-content', deep?: boolean): MContentNode[];
+    findChildTagsByTagName(tagName: 'm-slot', deep?: boolean): MSlotNode[];
+    findChildTagsByTagName(tagName: 'm-var', deep?: boolean): MVarNode[];
+    findChildTagsByTagName(tagName: string, deep?: boolean): TagNode[];
+    findChildTagsByTagName(tagName: string, deep = true): TagNode[] {
+        return this.findChildTags(tag => tag.tagName === tagName, deep);
     }
     
     findChildTagsByPath(matchers: ((tag: TagNode) => boolean)[]): TagNode[] {

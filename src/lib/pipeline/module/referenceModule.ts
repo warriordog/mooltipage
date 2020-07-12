@@ -1,6 +1,6 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
 import { Fragment } from "../../pipeline/object/fragment";
-import { Node, DocumentNode, TagNode, MFragmentNode, MContentNode, ExternalReferenceNode, MComponentNode } from "../../dom/node";
+import { Node, DocumentNode, MFragmentNode, MContentNode, ExternalReferenceNode, MComponentNode } from "../../dom/node";
 import { UsageContext } from "../usageContext";
 import { Pipeline } from "../pipeline";
 
@@ -20,8 +20,10 @@ export class ReferenceModule implements CompilerModule {
     private extractReferences(compileData: CompileData): ExternalReference[] {
         const dom: DocumentNode = compileData.fragment.dom;
 
-        // get all non-nested m-fragments and m-component elements
-        const referenceTags = dom.findTopLevelChildTags((tag: TagNode) => MFragmentNode.isMFragmentNode(tag) || MComponentNode.isMComponentNode(tag)) as Array<ExternalReferenceNode>;
+        // get all m-fragments and m-component elements
+        const mFragments = dom.findChildTagsByTagName('m-fragment');
+        const mComponents = dom.findChildTagsByTagName('m-component');
+        const referenceTags: ExternalReferenceNode[] = mFragments.concat(mComponents);
 
         // parse tags
         const externalReferences: ExternalReference[] = referenceTags.map((refTag: ExternalReferenceNode) => {

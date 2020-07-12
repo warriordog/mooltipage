@@ -48,7 +48,7 @@ export class HtmlParser {
 
     private parseComponentTemplate(resId: string, dom: DocumentNode): ComponentTemplate {
         // find template node
-        const templateNode: TagNode | null = dom.findChildTag((node: TagNode) => node.tagName === 'template', false);
+        const templateNode = dom.findChildTagByTagName('template', false);
 
         // make sure it exists
         if (templateNode == null) {
@@ -67,7 +67,7 @@ export class HtmlParser {
 
     private parseComponentScript(resId: string, dom: DocumentNode): ComponentScript {
         // find script node
-        const scriptNode: TagNode | null = dom.findChildTag((node: TagNode) => node.tagName === 'script', false);
+        const scriptNode = dom.findChildTagByTagName('script', false);
 
         // make sure it exists
         if (scriptNode == null) {
@@ -105,7 +105,7 @@ export class HtmlParser {
 
     private parseComponentStyle(resId: string, dom: DocumentNode): ComponentStyle | undefined {
         // find style node
-        const styleNode: TagNode | null = dom.findChildTag((node: TagNode) => node.tagName === 'style', false);
+        const styleNode = dom.findChildTagByTagName('style', false);
 
         // make sure it exists
         if (styleNode == null) {

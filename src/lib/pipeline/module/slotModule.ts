@@ -1,6 +1,6 @@
 import { CompilerModule, CompileData } from "../htmlCompiler";
 import { UsageContext } from "../../pipeline/usageContext";
-import { DocumentNode, TagNode, MSlotNode } from "../../dom/node";
+import { DocumentNode, MSlotNode } from "../../dom/node";
 
 /**
  * Processes <m-slot> tags by replacing them with content extracted from <m-content> tags at the point of reference.
@@ -10,7 +10,7 @@ export class SlotModule implements CompilerModule {
         const dom: DocumentNode = compileData.fragment.dom;
         
         // find slots
-        const slots: MSlotNode[] = dom.findChildTags((node: TagNode) => MSlotNode.isMSlotNode(node)) as MSlotNode[];
+        const slots = dom.findChildTagsByTagName('m-slot');
 
         // process slots
         this.processSlots(slots, compileData.usageContext);

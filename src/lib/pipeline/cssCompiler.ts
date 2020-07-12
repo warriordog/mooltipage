@@ -3,11 +3,10 @@ import { UsageContext } from "./usageContext";
 import { TextNode, TagNode } from "../dom/node";
 
 export class CssCompiler {
-
     compileComponentStyle(component: Component, style: ComponentStyle, usageContext: UsageContext): void {
         switch (style.bindType) {
             case ComponentStyleBindType.HEAD: {
-                this.compileComponentStyleHead(component, style, usageContext);
+                this.compileComponentStyleHead(style, usageContext);
                 break;
             }
             case ComponentStyleBindType.LINK: {
@@ -19,7 +18,7 @@ export class CssCompiler {
         }
     }
 
-    private compileComponentStyleHead(component: Component, style: ComponentStyle, usageContext: UsageContext): void {
+    private compileComponentStyleHead(style: ComponentStyle, usageContext: UsageContext): void {
         // wrap styles in text node
         const styleText: TextNode = new TextNode(style.styleContent);
 

@@ -285,18 +285,6 @@ export function findChildNodes(parent: NodeWithChildren, matcher: (node: Node) =
     return matches;
 }
 
-export function findTopLevelChildNodes(parent: NodeWithChildren, matcher: (node: Node) => boolean, matches: Node[] = []): Node[] {
-    for (const childNode of parent.childNodes) {
-        if (matcher(childNode)) {
-            matches.push(childNode);
-        } else if (NodeWithChildren.isNodeWithChildren(childNode)) {
-            findTopLevelChildNodes(childNode, matcher, matches);
-        }
-    }
-
-    return matches;
-}
-
 export function findChildTag(parent: NodeWithChildren, matcher: (tag: TagNode) => boolean, deep: boolean): TagNode | null {
     const newMatcher = (node: Node) => TagNode.isTagNode(node) && matcher(node);
     return findChildNode(parent, newMatcher, deep) as TagNode;
@@ -305,11 +293,6 @@ export function findChildTag(parent: NodeWithChildren, matcher: (tag: TagNode) =
 export function findChildTags(parent: NodeWithChildren, matcher: (tag: TagNode) => boolean, deep: boolean): TagNode[] {
     const newMatcher = (node: Node) => TagNode.isTagNode(node) && matcher(node);
     return findChildNodes(parent, newMatcher, deep) as TagNode[];
-}
-
-export function findTopLevelChildTags(parent: NodeWithChildren, matcher: (tag: TagNode) => boolean): TagNode[] {
-    const newMatcher = (node: Node) => TagNode.isTagNode(node) && matcher(node);
-    return findTopLevelChildNodes(parent, newMatcher) as TagNode[];
 }
 
 export function replaceNode(remove: Node, replacements: Node[]): void {

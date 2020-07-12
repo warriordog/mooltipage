@@ -29,8 +29,8 @@ test('[endToEnd] Basic component compiles correctly', t => {
 
     // compile component
     const page = pipeline.compilePage('page.html');
-    const div = page.dom.findChildTag(tag => tag.tagName === 'div');
-    const style = page.dom.findChildTag(tag => tag.tagName === 'style');
+    const div = page.dom.findChildTagByTagName('div');
+    const style = page.dom.findChildTagByTagName('style');
 
     // validate
     t.truthy(div);
@@ -58,7 +58,7 @@ test('[endToEnd] Component with scope compiles correctly', t => {
 
     // compile component
     const page = pipeline.compilePage('page.html');
-    const div = page.dom.findChildTag(tag => tag.tagName === 'div');
+    const div = page.dom.findChildTagByTagName('div');
 
     // validate
     t.is(div?.getAttribute('value1'), 'value1', 'component object should be available to template text scope');

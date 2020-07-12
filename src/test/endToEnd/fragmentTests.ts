@@ -18,7 +18,7 @@ test('[endToEnd] Basic fragment compiles correctly', t => {
 
     // compile fragment
     const page = pipeline.compilePage('page.html');
-    const div = page.dom.findChildTag(tag => tag.tagName === 'div');
+    const div = page.dom.findChildTagByTagName('div');
 
     // validate
     t.truthy(div);
