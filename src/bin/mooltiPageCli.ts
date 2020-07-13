@@ -1,74 +1,39 @@
-import { Args } from "./args";
-import CliPipelineInterface from './cliPipelineInterface';
-import PathUtils from './pathUtils';
-import CliFileSystem from './io/cliFileSystem';
-import { HtmlFormatter } from "../lib/pipeline/htmlFormatter";
-import { Pipeline } from '../lib/pipeline/pipeline';
-import { BasicHtmlFormatter } from '../lib/pipeline/basicHtmlFormatter';
 import os from 'os';
 
-export default class MooltiPageCli {
-    private readonly args: Args;
+import { CliArgs } from "./args";
+import { CliPipelineInterface } from './cliPipelineInterface';
+import { PathUtils } from './pathUtils';
+import { CliFileSystem } from './io/cliFileSystem';
+import { Pipeline, HtmlFormatter, BasicHtmlFormatter } from "../lib/index";
+
+export class MooltiPageCli {
+    private readonly args: CliArgs;
     private readonly cliFs: CliFileSystem;
     private readonly pathUtils: PathUtils;
 
-    constructor(args: Args, cliFs: CliFileSystem) {
+    constructor(args: CliArgs, cliFs: CliFileSystem) {
         this.args = args;
         this.cliFs = cliFs;
-        this.pathUtils = new PathUtils(cliFs);
+        this.pathUtils = new PathUtils(cliFs, args.inPath);
     }
 
     runCompile(): void {
-        if (this.cliFs.pathIsDirectory(this.args.inPath)) {
-            this.runCompileBulk();
-        } else {
-            this.runCompileSingle();
-        }
-    }
-    
-    private runCompileBulk(): void {
-        // get list of inputs to recurse through
-        const pagePaths: Array<string> = this.args.pagePaths ?? [ this.args.inPath ];
-        
-        // extract all HTML paths from pagePaths
-        const htmlFilePaths: Array<string> = this.pathUtils.extractHtmlPaths(pagePaths, this.args.inPath);
-    
-        // process all inputs
-        this.executePipeline(this.args.inPath, this.args.outPath, htmlFilePaths);
-    }
-    
-    private runCompileSingle(): void {
-        // adjust paths for single file
-        const inDir = this.cliFs.getDirectoryName(this.args.inPath);
-        const outDir = this.cliFs.pathIsFile(this.args.outPath) ? this.cliFs.getDirectoryName(this.args.outPath) : this.args.outPath;
-    
-        // compute input file name
-        const pagePaths: Array<string> = [ this.cliFs.getFileName(this.args.inPath) ];
-    
-        // process input file
-        this.executePipeline(inDir, outDir, pagePaths);
-    }
-    
-    private executePipeline(inDir: string, outDir: string, pagePaths: Array<string>) {
-        // create FS interface mapped to provided directories
-        const fsInterface: CliPipelineInterface = new CliPipelineInterface(this.cliFs, inDir, outDir);
-    
-        // create formatter
-        const formatter = this.createFormatter();
-
         // create pipeline
-        const pipeline: Pipeline = new Pipeline(fsInterface, formatter);
-        
-        console.log(`Source path: [${inDir}]`);
-        console.log(`Destination path: [${outDir}]`);
-        console.log(`Page count: ${pagePaths.length}`);
-        console.log();
-    
-        // loop through each page input and process it
-        for (const pagePath of pagePaths) {
-            console.log(`Compiling [${pagePath}]...`);
-            // compile the page - pipline will save automatically
-            pipeline.compilePage(pagePath);
+        const pipelineInterface = new CliPipelineInterface(this.cliFs, this.args.inPath, this.args.outPath);
+        const formatter = this.createFormatter();
+        const pipeline = new Pipeline(pipelineInterface, formatter);
+
+        // convert page arguments into full list of pages
+        const pages = this.pathUtils.expandPagePaths(this.args.pages);
+
+        // print stats
+        this.printStats(pages);
+
+        // compile each page
+        for (const page of pages) {
+            console.log(`Compiling [${ page }]...`);
+            
+            pipeline.compilePage(page);
         }
 
         console.log();
@@ -89,5 +54,12 @@ export default class MooltiPageCli {
                 throw new Error(`Unknown HTML formatter: ${this.args.formatter}`);
             }
         }
+    }
+
+    private printStats(pages: string[]): void {
+        console.log(`Source path: [${ this.args.inPath ?? '*unspecified*' }]`);
+        console.log(`Destination path: [${ this.args.outPath ?? '*unspecified*' }]`);
+        console.log(`Page count: ${ pages.length }`);
+        console.log();
     }
 }

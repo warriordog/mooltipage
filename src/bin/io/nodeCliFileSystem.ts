@@ -1,9 +1,10 @@
 import fs from 'fs';
 import Path from 'path';
+import process from 'process';
 
-import CliFileSystem from './cliFileSystem';
+import { CliFileSystem } from './cliFileSystem';
 
-export default class NodeCliFileSystem implements CliFileSystem {
+export class NodeCliFileSystem implements CliFileSystem {
     pathExists(path: string): boolean {
         return fs.existsSync(path);
     }
@@ -55,5 +56,13 @@ export default class NodeCliFileSystem implements CliFileSystem {
 
     relativePath(from: string, to: string): string {
         return Path.relative(from, to);
+    }
+
+    joinPaths(...pathParts: string[]): string {
+        return Path.join(...pathParts);
+    }
+
+    getWorkingDirectory(): string {
+        return process.cwd();
     }
 }

@@ -3,6 +3,5 @@
     "compilerOptions": {
         "outDir": "../../dist/lib",
     },
-    "include": ["**/*"],
-    "exclude": ["**/*.spec.ts"]
+    "include": ["**/*"]
 }

@@ -1,12 +1,12 @@
 import { PipelineInterface } from '../lib/pipeline/pipelineInterface';
-import CliFileSystem from './io/cliFileSystem';
+import { CliFileSystem } from './io/cliFileSystem';
 
-export default class CliPipelineInterface implements PipelineInterface {
-    private readonly sourcePath: string | null;
-    private readonly destinationPath: string | null;
+export class CliPipelineInterface implements PipelineInterface {
+    private readonly sourcePath?: string;
+    private readonly destinationPath?: string;
     private readonly cliFs: CliFileSystem;
 
-    constructor(cliFs: CliFileSystem, sourcePath: string | null, destinationPath: string | null) {
+    constructor(cliFs: CliFileSystem, sourcePath?: string, destinationPath?: string) {
         this.cliFs = cliFs;
         this.sourcePath = sourcePath;
         this.destinationPath = destinationPath;
@@ -25,14 +25,14 @@ export default class CliPipelineInterface implements PipelineInterface {
     }
 
     private resolveSourceResource(resId: string): string {
-        return this.resolvePath(this.sourcePath, resId);
+        return this.resolvePath(resId, this.sourcePath);
     }
 
     private resolveDestinationResource(resId: string): string {
-        return this.resolvePath(this.destinationPath, resId);
+        return this.resolvePath(resId, this.destinationPath);
     }
 
-    private resolvePath(directory: string | null, resId: string): string {
+    private resolvePath(resId: string, directory?: string): string {
         if (directory != null) {
             return this.cliFs.resolvePaths(directory, resId);
         } else {

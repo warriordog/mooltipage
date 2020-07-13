@@ -1,38 +1,53 @@
-import CliFileSystem from './io/cliFileSystem';
-    
-export default class PathUtils {
-    private readonly cliFs: CliFileSystem;
+import { CliFileSystem } from './io/cliFileSystem';
 
-    constructor(cliFs: CliFileSystem) {
+
+export class PathUtils {
+    private readonly cliFs: CliFileSystem;
+    private readonly inPath?: string;
+
+    constructor(cliFs: CliFileSystem, inPath?: string) {
         this.cliFs = cliFs;
+        this.inPath = inPath;
     }
     
-    extractHtmlPaths(pagePaths: Array<string>, basePath: string): Array<string> {
-        const htmlPaths: Array<string> = new Array<string>();
-    
-        // process each input
-        for (const pagePath of pagePaths) {
-            this.extractHtmlFromPath(pagePath, basePath, htmlPaths);
+    expandPagePaths(pages: string[]): string[] {
+        const outPages: string[] = [];
+
+        for (const rawPath of pages) {
+            this.expandPagePath(rawPath, outPages);
         }
-    
-        return htmlPaths;
+
+        return outPages;
     }
-    
-    private extractHtmlFromPath(currPath: string, basePath: string, htmlPaths: Array<string>): void {
-        const realPath: string = this.cliFs.resolvePaths(currPath);
-    
-        // add directory contents
+
+    private expandPagePath(pagePath: string, outPaths: string[]): void {
+        const realPath = this.resolvePath(pagePath, this.inPath);
+        console.log(`'${pagePath}' -> '${realPath}'`);
+
+        // directories need to be reciursively searched
         if (this.cliFs.pathIsDirectory(realPath)) {
-            // loop through directory and process each file
-            for (const file of this.cliFs.getDirectoryContents(realPath)) {
-                this.extractHtmlFromPath(this.cliFs.resolvePaths(realPath, file), basePath, htmlPaths);
+            for (const subFile of this.cliFs.getDirectoryContents(realPath)) {
+                const subFilePath = this.cliFs.joinPaths(pagePath, subFile);
+
+                // recurse with each directory content
+                this.expandPagePath(subFilePath, outPaths);
             }
-    
-        // add input files
-        } else if (this.cliFs.pathIsFile(realPath) && realPath.endsWith('.html')) {
-            const pipelinePath: string = this.cliFs.relativePath(basePath, realPath);
-    
-            htmlPaths.push(pipelinePath);
+        }
+
+        // HTML are added directly
+        if (this.cliFs.pathIsFile(realPath) && realPath.toLowerCase().endsWith('.html')) {
+            outPaths.push(pagePath);
+        }
+
+        // other file types (such as links) are currently skipped
+    }
+
+    private resolvePath(rawPath: string, inPath?: string): string {
+        if (inPath != undefined) {
+            // resolve path to input directory, if specified
+            return this.cliFs.resolvePaths(inPath, rawPath);
+        } else {
+            return rawPath;
         }
     }
 }

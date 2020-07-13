@@ -1,135 +1,81 @@
-import os from 'os';
-
-export class Args {
-    readonly outPath: string;
-    readonly inPath: string;
-    readonly pagePaths?: Array<string>;
-    readonly formatter?: string;
-
-    constructor(outPath: string, inPath: string, pagePaths?: Array<string>, formatter?: string) {
-        this.outPath = outPath;
-        this.inPath = inPath;
-        this.pagePaths = pagePaths;
-        this.formatter = formatter ?? 'pretty';
-    }
+export interface CliArgs {
+    outPath?: string;
+    inPath?: string;
+    isHelp?: boolean;
+    formatter: string;
+    pages: string[];
 }
 
-export class ParseResult {
-    readonly args: Args | null;
-    readonly output: string | null;
-    readonly isValid: boolean;
+export function parseArgs(args: string[]): CliArgs {
+    // create parsing data object
+    const parseData: CliArgs = {
+        pages: [],
+        formatter: 'pretty'
+    };
 
-    constructor(args: Args | null, output: string | null, isValid: boolean) {
-        if (isValid && args == null) {
-            throw new Error('A valid ParseResult must have a parsed Args object');
-        }
-
-        this.args = args;
-        this.output = output;
-        this.isValid = isValid;
-    }
-
-    getArgs(): Args {
-        if (this.isValid && this.args != null) {
-            return this.args;
-        } else {
-            throw new Error('Cannot get args from invalid ParseResult');
-        }
-    }
-
-    getOutput(): string {
-        return this.output ?? '';
-    }
-}
-
-export function parseArgs(args: Array<string>): ParseResult {
-    const pagePaths: Array<string> = [];
-    let outPath: string;
-    let inPath: string;
-    let formatter: string | undefined;
-
+    // print help if no args specified
     if (args.length == 0) {
-        // print help if no args specified
-        return createInvalidResult(printHelp());
-    } else if (args.length >= 2) {
-        // process args if enough found
-        inPath = args[0];
-        outPath = args[1];
-    
-        // parse any extra
-        for (let i = 2; i < args.length; i++) {
-            const arg = args[i];
-            const argLower = arg.toLowerCase();
-            
-            if (argLower.startsWith('--page=')) {
-                const pagePath = getArgValue(arg);
+        parseData.isHelp = true;
+    } else {
+        // parse args
+        parsePages(args, parseData);
+        parseOptions(args, parseData);
+    }
 
-                // make sure its valid
-                if (pagePath != null) {
-                    pagePaths.push(pagePath);
-                } else {
-                    return createInvalidResult(printInvalidArgs());
-                }
-            } else if (argLower.startsWith('--formatter=')) {
-                const formatterArg = getArgValue(arg);
+    return parseData;
+}
 
-                // make sure its valid
-                if (formatterArg != null) {
-                    formatter = formatterArg.toLowerCase();
-                } else {
-                    return createInvalidResult(printInvalidArgs());
-                }
-            } else {
-                return createInvalidResult(printInvalidArgs());
+function parsePages(args: string[], parseData: CliArgs): void {
+    // get page args
+    const pages = args.filter(arg => !arg.startsWith('--'));
+
+    if (pages.length > 0) {
+        parseData.pages = pages;
+    }
+}
+function parseOptions(args: string[], parseData: CliArgs): void {
+    // get option args
+    const options: CliOption[] = args
+       .filter(arg => arg.startsWith('--'))
+       .map(arg => {
+           const parts = arg.split('=');
+           return {
+               label: parts[0],
+               name: parts[0].toLowerCase(),
+               value: parts.length > 1 ? parts[1] : undefined
+           } as CliOption;
+       });
+
+    // process each option
+    for (const option of options) {
+        switch (option.name) {
+            case '--help': {
+                parseData.isHelp = true;
+                break;
             }
+            case '--inpath': {
+                if (!option.value) throw new Error('inPath requires a value');
+                parseData.inPath = option.value;
+                break;
+            }
+            case '--outpath': {
+                if (!option.value) throw new Error('outPath requires a value');
+                parseData.outPath = option.value;
+                break;
+            }
+            case '--formatter': {
+                if (!option.value) throw new Error('formatter requires a value');
+                parseData.formatter = option.value;
+                break;
+            }
+            default:
+                throw new Error(`Unkown option: ${option.label}`);
         }
-
-        // args are OK
-        const argsObj: Args = new Args(outPath, inPath, pagePaths.length > 0 ? pagePaths : undefined, formatter);
-
-        return new ParseResult(argsObj, null, true);
-    } else {
-        // print help for wrong number of args
-        return createInvalidResult(printInvalidArgs());
     }
 }
 
-function getArgValue(arg: string): string | null {
-    const argParts = arg.split('=');
-
-    // make sure a value was specified
-    if (argParts.length == 2) {
-        const argValue = argParts[1].trim();
-
-        // make sure the value is not empty
-        if (argValue.length > 0) {
-            return argValue;
-        } else {
-            return null;
-        }
-    } else {
-        return null;
-    }
-}
-
-function createInvalidResult(output: string): ParseResult {
-    return new ParseResult(null, output, false);
-}
-
-function printInvalidArgs(): string {
-    return 'Invalid arguments.' + os.EOL + printHelp();
-}
-
-function printHelp(): string {
-    return (
-        'Usage: mooltipage <in_path> <out_path> [options]' + os.EOL +
-        'If in_path and out_path are directories, then they will be recursively processed.' + os.EOL +
-        'To limit which files are treated as pages, include one or more --page options.' + os.EOL +
-        'Individual files or entire directories can be specified with --page.' + os.EOL +
-        'CLI paths are resolved relative to the current working directory.' + os.EOL +
-        os.EOL +
-        'Options:' + os.EOL +
-        '  --page=<page_path>' + os.EOL +
-        '  --formatter=<html_formatter_name>'
-    );
+interface CliOption {
+    label: string,
+    name: string,
+    value?: string
 }
