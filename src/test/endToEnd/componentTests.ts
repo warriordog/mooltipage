@@ -16,7 +16,7 @@ test('[endToEnd] Basic component compiles correctly', t => {
         <template>
             <div class="comp"></div>
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp {
                 constructor(scope, context) {}
             }
@@ -45,7 +45,7 @@ test('[endToEnd] Component with scope compiles correctly', t => {
         <template>
             <div class="comp" value1="\${ $.value1 }" value2="{{ $.value2 }}"></div>
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp {
                 constructor(scope, context) {
                     this.value1 = "value1";
@@ -73,7 +73,7 @@ test('[endToEnd] Nested components compile correctly', t => {
             <div class="comp1" value="{{ $.value }}"></div>
             <m-component src="comp2.html" param="{{ $.value }}" />
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp {
                 constructor(scope, context) {
                     this.value = "value";
@@ -85,7 +85,7 @@ test('[endToEnd] Nested components compile correctly', t => {
         <template>
             <div class="comp2" value="{{ $.value }}" param="{{ $.param }}"></div>
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp2 {
                 constructor(scope, context) {
                     this.value = "value2";
@@ -119,7 +119,7 @@ test('[endToEnd] Components compile to correct DOM', t => {
                 <p>\${ $.world }</p>
             </div>
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp {
                 constructor(scope, context) {
                     this.hello = "Hello,";
@@ -135,7 +135,7 @@ test('[endToEnd] Components compile to correct DOM', t => {
         <template>
             <div class="comp2">\${ $.message }</div>
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp2 {
                 constructor(scope, context) {
                     this.message = "This is component 2.";
@@ -169,7 +169,7 @@ test('[endToEnd] Repeated component usages have correct scope', t => {
                 <m-component src="comp2.html" id="4" param="value4" value="{{ $.sharedValue }}" />
             </div>
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp {
                 constructor(scope, context) {
                     this.sharedValue = 'value';
@@ -181,7 +181,7 @@ test('[endToEnd] Repeated component usages have correct scope', t => {
         <template>
             <div class="comp2" id="{{ $.id }}" param="{{ $.param }}" value="{{ $.thisValue }}"></div>
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp2 {
                 constructor(scope, context) {
                     this.thisValue = scope.value;
@@ -224,7 +224,7 @@ test('[endToEnd] Imported component compiles correctly', t => {
                 <imported-component id="{{ 1 }}" />
             </div>
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp {
                 constructor() {}
             }
@@ -234,7 +234,7 @@ test('[endToEnd] Imported component compiles correctly', t => {
         <template>
             <div class="comp2" id="{{ $.id }}"></div>
         </template>
-        <script type="class">
+        <script mode="class">
             return class Comp {
                 constructor(scope) {
                     this.id = scope.id || 0;

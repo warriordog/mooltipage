@@ -78,9 +78,9 @@ export class HtmlParser {
         const scriptSrc: string | undefined = scriptNode.getOptionalValueAttribute('src');
 
         // get script type
-        const scriptTypeName: string = scriptNode.getOptionalValueAttribute('type') ?? ComponentScriptType.CLASS;
+        const scriptTypeName: string = scriptNode.getOptionalValueAttribute('mode') ?? ComponentScriptType.CLASS;
         if (!Object.values(ComponentScriptType).includes(scriptTypeName as ComponentScriptType)) {
-            throw new Error(`Unknown component <script> type: '${scriptTypeName}'`);
+            throw new Error(`Unknown component <script> mode: '${scriptTypeName}'`);
         }
         const scriptType: ComponentScriptType = scriptTypeName as ComponentScriptType;
         
