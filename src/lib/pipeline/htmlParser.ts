@@ -1,15 +1,20 @@
 import { Fragment } from "./object/fragment";
-import { DocumentNode, TagNode, TextNode, Node } from '../dom/node';
+import { DocumentNode, TagNode, TextNode } from '../dom/node';
 import { Parser, ParserOptions } from 'htmlparser2';
 import { DomParser } from '../dom/domParser';
 import { Page } from "./object/page";
-import { Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ComponentScriptInstance, ComponentStyleBindType } from "./object/component";
+import { Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ComponentScriptInstance } from "./object/component";
 import { EvalContent, EvalEngine } from "./evalEngine";
+import { StyleBindType } from "./resourceBinder";
+import { ResourceType } from "./pipelineInterface";
+import { Pipeline } from "./pipeline";
 
 export class HtmlParser {
     private readonly evalEngine: EvalEngine;
+    private readonly pipeline: Pipeline;
 
-    constructor() {
+    constructor(pipeline: Pipeline) {
+        this.pipeline = pipeline;
         this.evalEngine = new EvalEngine();
     }
 
@@ -59,7 +64,7 @@ export class HtmlParser {
         const templateSrc: string | undefined = templateNode.getOptionalValueAttribute('src');
         
         // get contents of template as dom
-        const templateDom: DocumentNode = this.getDomForComponentSection(templateSrc, templateNode);
+        const templateDom: DocumentNode = this.resolveDomSection(templateSrc, templateNode);
 
         // create component template
         return new ComponentTemplate(templateDom, templateSrc);
@@ -83,21 +88,12 @@ export class HtmlParser {
             throw new Error(`Unknown component <script> mode: '${scriptTypeName}'`);
         }
         const scriptType: ComponentScriptType = scriptTypeName as ComponentScriptType;
-        
-        // get contents of script tag as dom
-        const scriptDom: DocumentNode = this.getDomForComponentSection(scriptSrc, scriptNode);
 
         // get JS content
-        const scriptText: Node | null = scriptDom.firstChild;
-        if (scriptText == null) {
-            throw new Error(`Component script section cannot be empty`);
-        }
-        if (!TextNode.isTextNode(scriptText)) {
-            throw new Error(`Component <script> section can only contain text`);
-        }
+        const scriptText = this.resolveResourceSection(scriptSrc, scriptNode, ResourceType.JAVASCRIPT);
 
         // parse JS
-        const scriptFunc: EvalContent<ComponentScriptInstance> = this.parseComponentScriptJs(scriptType, scriptText.text);
+        const scriptFunc: EvalContent<ComponentScriptInstance> = this.parseComponentScriptJs(scriptType, scriptText);
 
         // create component template
         return new ComponentScript(scriptType, scriptFunc, scriptSrc);
@@ -116,31 +112,47 @@ export class HtmlParser {
         const styleSrc: string | undefined = styleNode.getOptionalValueAttribute('src');
 
         // get style bind
-        const styleBindName: string = styleNode.getOptionalValueAttribute('bind') ?? ComponentStyleBindType.HEAD;
-        if (!Object.values(ComponentStyleBindType).includes(styleBindName as ComponentStyleBindType)) {
+        const styleBindName: string = styleNode.getOptionalValueAttribute('bind') ?? StyleBindType.HEAD;
+        if (!Object.values(StyleBindType).includes(styleBindName as StyleBindType)) {
             throw new Error(`Unknown component <style> bind: '${styleBindName}'`);
         }
-        const styleBind: ComponentStyleBindType = styleBindName as ComponentStyleBindType;
-        
-        // get contents of style tag as dom
-        const styleDom: DocumentNode = this.getDomForComponentSection(styleSrc, styleNode);
+        const styleBind: StyleBindType = styleBindName as StyleBindType;
 
-        // get JS content
-        const styleText: Node | null = styleDom.firstChild;
-        if (styleText == null) {
-            throw new Error(`Component <style> section cannot be empty`);
-        }
-        if (!TextNode.isTextNode(styleText)) {
-            throw new Error(`Component <style> section can only contain text`);
-        }
+        // get style content
+        const styleText = this.resolveResourceSection(styleSrc, styleNode, ResourceType.CSS);
 
         // create component template
-        return new ComponentStyle(styleText.text, styleBind, styleSrc);
+        return new ComponentStyle(styleText, styleBind, styleSrc);
     }
 
-    private getDomForComponentSection(src: string | undefined, sectionNode: TagNode): DocumentNode {
+    private resolveResourceSection(src: string | undefined, sectionNode: TagNode, resourceType: ResourceType): string {
         if (src != undefined) {
-            throw new Error('External resoruce loading is not implmented');
+            // get ID of external resource
+            const resId = sectionNode.getRequiredValueAttribute('src');
+
+            // load resource
+            return this.pipeline.getRawResource(resourceType, resId);
+        } else {
+            const textNode = sectionNode.firstChild;
+            if (textNode == null) {
+                throw new Error(`Component section cannot be empty`);
+            }
+            if (!TextNode.isTextNode(textNode)) {
+                throw new Error(`Component section can only contain text`);
+            }
+            return textNode.text;
+        }
+    }
+
+    private resolveDomSection(src: string | undefined, sectionNode: TagNode): DocumentNode {
+        if (src != undefined) {
+            // get ID of external resource
+            const resId = sectionNode.getRequiredValueAttribute('src');
+
+            // load resource
+            const fragment = this.pipeline.getRawFragment(resId);
+
+            return fragment.dom;
         } else {
             return sectionNode.createDomFromChildren();
         }

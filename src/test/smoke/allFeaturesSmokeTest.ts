@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Pipeline, BasicHtmlFormatter } from '../../lib/index';
+import { Pipeline, BasicHtmlFormatter, ResourceType } from '../../lib/index';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 test('[smoke] Build produces a page and does not crash', t => {
@@ -18,7 +18,7 @@ test('[smoke] Build produces a page and does not crash', t => {
 
 function createPipeline(): Pipeline {
     const pipelineInterface = new MemoryPipelineInterface();
-    pipelineInterface.htmlSource.set('page.html', `
+    pipelineInterface.setSourceHtml('page.html', `
         <!DOCTYPE html>
         <html lang="en">
             <head>
@@ -45,7 +45,7 @@ function createPipeline(): Pipeline {
             </body>
         </html>
     `);
-    pipelineInterface.htmlSource.set('mainContent.html', `
+    pipelineInterface.setSourceHtml('mainContent.html', `
         <m-var name="\${ 'Main' + 'Content' }Page" />
         <m-import component src="section.html" as="custom-section" />
 
@@ -75,10 +75,10 @@ function createPipeline(): Pipeline {
             <p>This is the content of section 3.</p>
         </custom-section>
     `);
-    pipelineInterface.htmlSource.set('header.html', `
+    pipelineInterface.setSourceHtml('header.html', `
         <header class="pageTitle \${ $.class || '' }">\${ $.name }</header>
     `);
-    pipelineInterface.htmlSource.set('section.html', `
+    pipelineInterface.setSourceHtml('section.html', `
         <template>
             <section class="\${ $.sectionClass }">
                 <header>\${ $.sectionTitle }</header>
@@ -104,12 +104,16 @@ function createPipeline(): Pipeline {
             }
         </script>
 
-        <style bind="head">
+        <style bind="head" src="section.style.css"></style>
+    `);
+    pipelineInterface.setSource('section.style.css', {
+        type: ResourceType.CSS,
+        content: `
             section.defaultSection {
                 background-color: white;
             }
-        </style>
-    `);
+        `
+    });
 
     // enable pretty formatting
     const htmlFormatter = new BasicHtmlFormatter(true);

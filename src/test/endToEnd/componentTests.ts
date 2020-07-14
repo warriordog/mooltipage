@@ -4,7 +4,7 @@ import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 function createRootPi(): MemoryPipelineInterface {
     const pi = new MemoryPipelineInterface();
-    pi.htmlSource.set('page.html', '<!DOCTYPE html><html><head><title>Component Tests</title></head><body><m-component src="comp.html" /></body></html>');
+    pi.setSourceHtml('page.html', '<!DOCTYPE html><html><head><title>Component Tests</title></head><body><m-component src="comp.html" /></body></html>');
 
     return pi;
 }
@@ -12,7 +12,7 @@ function createRootPi(): MemoryPipelineInterface {
 test('[endToEnd] Basic component compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('comp.html', `
+    pi.setSourceHtml('comp.html', `
         <template>
             <div class="comp"></div>
         </template>
@@ -41,7 +41,7 @@ test('[endToEnd] Basic component compiles correctly', t => {
 test('[endToEnd] Component with scope compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('comp.html', `
+    pi.setSourceHtml('comp.html', `
         <template>
             <div class="comp" value1="\${ $.value1 }" value2="{{ $.value2 }}"></div>
         </template>
@@ -68,7 +68,7 @@ test('[endToEnd] Component with scope compiles correctly', t => {
 test('[endToEnd] Nested components compile correctly', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('comp.html', `
+    pi.setSourceHtml('comp.html', `
         <template>
             <div class="comp1" value="{{ $.value }}"></div>
             <m-component src="comp2.html" param="{{ $.value }}" />
@@ -81,7 +81,7 @@ test('[endToEnd] Nested components compile correctly', t => {
             }
         </script>
     `);
-    pi.htmlSource.set('comp2.html', `
+    pi.setSourceHtml('comp2.html', `
         <template>
             <div class="comp2" value="{{ $.value }}" param="{{ $.param }}"></div>
         </template>
@@ -111,7 +111,7 @@ test('[endToEnd] Nested components compile correctly', t => {
 test('[endToEnd] Components compile to correct DOM', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('comp.html', `
+    pi.setSourceHtml('comp.html', `
         <template>
             <div class="comp1">
                 <p>\${ $.hello }</p>
@@ -131,7 +131,7 @@ test('[endToEnd] Components compile to correct DOM', t => {
             .comp1 {}
         </style>
     `);
-    pi.htmlSource.set('comp2.html', `
+    pi.setSourceHtml('comp2.html', `
         <template>
             <div class="comp2">\${ $.message }</div>
         </template>
@@ -151,7 +151,7 @@ test('[endToEnd] Components compile to correct DOM', t => {
 
     // compile component
     pipeline.compilePage('page.html');
-    const html = pi.htmlDestination.get('page.html');
+    const html = pi.getDestinationValue('page.html');
 
     // validate
     t.is(html, '<!DOCTYPE html><html><head><title>Component Tests</title><style>.comp2 {}</style><style>.comp1 {}</style></head><body><div class="comp1"><p>Hello,</p><div class="comp2">This is component 2.</div><p>World!</p></div></body></html>');
@@ -160,7 +160,7 @@ test('[endToEnd] Components compile to correct DOM', t => {
 test('[endToEnd] Repeated component usages have correct scope', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('comp.html', `
+    pi.setSourceHtml('comp.html', `
         <template>
             <div class="comp1">
                 <m-component src="comp2.html" id="1" param="value1" value="{{ $.sharedValue }}" />
@@ -177,7 +177,7 @@ test('[endToEnd] Repeated component usages have correct scope', t => {
             }
         </script>
     `);
-    pi.htmlSource.set('comp2.html', `
+    pi.setSourceHtml('comp2.html', `
         <template>
             <div class="comp2" id="{{ $.id }}" param="{{ $.param }}" value="{{ $.thisValue }}"></div>
         </template>
@@ -216,7 +216,7 @@ test('[endToEnd] Repeated component usages have correct scope', t => {
 test('[endToEnd] Imported component compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('comp.html', `
+    pi.setSourceHtml('comp.html', `
         <template>
             <m-import component src="comp2.html" as="imported-component" />
             <div class="comp">
@@ -230,7 +230,7 @@ test('[endToEnd] Imported component compiles correctly', t => {
             }
         </script>
     `);
-    pi.htmlSource.set('comp2.html', `
+    pi.setSourceHtml('comp2.html', `
         <template>
             <div class="comp2" id="{{ $.id }}"></div>
         </template>

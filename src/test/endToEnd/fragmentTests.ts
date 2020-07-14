@@ -5,7 +5,7 @@ import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 function createRootPi(): MemoryPipelineInterface {
     const pi = new MemoryPipelineInterface();
-    pi.htmlSource.set('page.html', '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><m-fragment src="frag1.html" /></body></html>');
+    pi.setSourceHtml('page.html', '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><m-fragment src="frag1.html" /></body></html>');
 
     return pi;
 }
@@ -13,7 +13,7 @@ function createRootPi(): MemoryPipelineInterface {
 test('[endToEnd] Basic fragment compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('frag1.html', '<div class="frag1"></div>');
+    pi.setSourceHtml('frag1.html', '<div class="frag1"></div>');
     const pipeline = new Pipeline(pi);
 
     // compile fragment
@@ -28,12 +28,12 @@ test('[endToEnd] Basic fragment compiles correctly', t => {
 test('[endToEnd] Nested fragments compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('frag1.html', `
+    pi.setSourceHtml('frag1.html', `
         <div class="frag1">
             <m-fragment src="frag2.html" />
         </div>
     `);
-    pi.htmlSource.set('frag2.html', `
+    pi.setSourceHtml('frag2.html', `
         <div class="frag2"></div>
     `);
     const pipeline = new Pipeline(pi);
@@ -51,12 +51,12 @@ test('[endToEnd] Nested fragments compiles correctly', t => {
 test('[endToEnd] Fragment params compile correctly', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('frag1.html', `
+    pi.setSourceHtml('frag1.html', `
         <div class="frag1">
             <m-fragment src="frag2.html" param1="value1" param2="\${ 'value2' }" param3="{{ 'value3' }}"/>
         </div>
     `);
-    pi.htmlSource.set('frag2.html', `
+    pi.setSourceHtml('frag2.html', `
         <div class="frag2" param1="{{ $.param1 }}" param2="{{ $.param2 }}" param3="{{ $.param3 }}">
         </div>
     `);
@@ -76,12 +76,12 @@ test('[endToEnd] Fragment params compile correctly', t => {
 test('[endToEnd] Fragment compile to correct DOM', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('frag1.html', `
+    pi.setSourceHtml('frag1.html', `
         <div class="frag1">
             <m-fragment src="frag2.html" />
         </div>
     `);
-    pi.htmlSource.set('frag2.html', `
+    pi.setSourceHtml('frag2.html', `
         <div class="frag2"></div>
     `);
     const htmlFormatter = new BasicHtmlFormatter(false);
@@ -89,7 +89,7 @@ test('[endToEnd] Fragment compile to correct DOM', t => {
 
     // compile fragment
     pipeline.compilePage('page.html');
-    const html = pi.htmlDestination.get('page.html');
+    const html = pi.getDestinationValue('page.html');
 
     // validate
     t.is(html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"></div></div></body></html>');
@@ -98,7 +98,7 @@ test('[endToEnd] Fragment compile to correct DOM', t => {
 test('[endToEnd] Repeated fragment usages have correct scope', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('frag1.html', `
+    pi.setSourceHtml('frag1.html', `
         <div class="comp1">
             <m-fragment src="frag2.html" id="1" param="value1" value="value" />
             <m-fragment src="frag2.html" id="2" param="value2" value="value" />
@@ -106,7 +106,7 @@ test('[endToEnd] Repeated fragment usages have correct scope', t => {
             <m-fragment src="frag2.html" id="4" param="value4" value="value" />
         </div>
     `);
-    pi.htmlSource.set('frag2.html', `
+    pi.setSourceHtml('frag2.html', `
         <div class="frag2" id="{{ $.id }}" param="{{ $.param }}" value="{{ $.value }}"></div>
     `);
     const pipeline = new Pipeline(pi);
@@ -136,7 +136,7 @@ test('[endToEnd] Repeated fragment usages have correct scope', t => {
 test('[endToEnd] Fragment slots are filled correctly', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('frag1.html', `
+    pi.setSourceHtml('frag1.html', `
         <div class="frag1">
             <m-fragment src="frag2.html" />
             <m-fragment src="frag2.html">
@@ -168,7 +168,7 @@ test('[endToEnd] Fragment slots are filled correctly', t => {
             </m-fragment>
         </div>
     `);
-    pi.htmlSource.set('frag2.html', `
+    pi.setSourceHtml('frag2.html', `
         <div class="frag2">
             <div class="[default]">
                 <m-slot />
@@ -183,7 +183,7 @@ test('[endToEnd] Fragment slots are filled correctly', t => {
 
     // compile fragment
     pipeline.compilePage('page.html');
-    const html = pi.htmlDestination.get('page.html');
+    const html = pi.getDestinationValue('page.html');
 
     // validate
     t.is(html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><div class="[default]"></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>1</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>2</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>3</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>4.1</div></div><div class="slot1"><div>4.2</div></div></div><div class="frag2"><div class="[default]"><div>5.1</div></div><div class="slot1"><div>5.2</div></div></div></div></body></html>');
@@ -192,7 +192,7 @@ test('[endToEnd] Fragment slots are filled correctly', t => {
 test('[endToEnd] Fragment slot placeholder content is left when slot is unused', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('frag1.html', `
+    pi.setSourceHtml('frag1.html', `
         <div>
             <m-fragment src="frag2.html" />
             <m-fragment src="frag2.html">filled</m-fragment>
@@ -202,12 +202,12 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
             </m-fragment>
         </div>
     `);
-    pi.htmlSource.set('frag2.html', `
+    pi.setSourceHtml('frag2.html', `
         <div>
             <m-slot>empty</m-slot>
         </div>
     `);
-    pi.htmlSource.set('frag3.html', `
+    pi.setSourceHtml('frag3.html', `
         <div>
             <div class="named">
                 <m-slot slot="named">empty</m-slot>
@@ -219,7 +219,7 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
 
     // compile fragment
     pipeline.compilePage('page.html');
-    const html = pi.htmlDestination.get('page.html');
+    const html = pi.getDestinationValue('page.html');
 
     // validate
     t.is(html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
@@ -228,7 +228,7 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
 test('[endToEnd] Imported fragment compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
-    pi.htmlSource.set('frag1.html', `
+    pi.setSourceHtml('frag1.html', `
         <div class="frag1">
             <m-import fragment src="frag2.html" as="imported-fragment" />
 
@@ -240,7 +240,7 @@ test('[endToEnd] Imported fragment compiles correctly', t => {
             <imported-fragment count="\${ 3 }"/>
         </div>
     `);
-    pi.htmlSource.set('frag2.html', `
+    pi.setSourceHtml('frag2.html', `
         <div class="frag2" count="\${ $.count }"></div>
     `);
     const pipeline = new Pipeline(pi);

@@ -1,6 +1,7 @@
 import { PipelineObject } from "./pipelineObject";
 import { DocumentNode } from "../../dom/node";
 import { EvalContext, EvalContent } from "../evalEngine";
+import { StyleBindType } from "../resourceBinder";
 
 export class Component implements PipelineObject {
     readonly resId: string;
@@ -134,7 +135,7 @@ export class ComponentStyle {
      * Binding type for this stylesheet.
      * @see {@link ComponentStyleBindType}
      */
-    readonly bindType: ComponentStyleBindType;
+    readonly bindType: StyleBindType;
 
     /**
      * Resource ID of the external source for this stylesheet, if applicable.
@@ -142,7 +143,7 @@ export class ComponentStyle {
      */
     readonly srcResId?: string;
 
-    constructor(styleContent: string, bindType: ComponentStyleBindType, srcResId?: string) {
+    constructor(styleContent: string, bindType: StyleBindType, srcResId?: string) {
         this.styleContent = styleContent;
         this.bindType = bindType;
         this.srcResId = srcResId;
@@ -154,19 +155,4 @@ export class ComponentStyle {
     clone(): ComponentStyle {
         return new ComponentStyle(this.styleContent, this.bindType, this.srcResId);
     }
-}
-
-/**
- * Recognised binding types for component style sections
- */
-export enum ComponentStyleBindType {
-    /**
-     * Stylesheet will be placed in an inline <style> block in the page <head> section.
-     */
-    HEAD = 'head',
-
-    /**
-     * Stylesheet will be placed in an external CSS file and referenced via a <link> tag.
-     */
-    LINK = 'link'
 }

@@ -1,10 +1,11 @@
-import { PipelineInterface } from '../lib/pipeline/pipelineInterface';
+import { PipelineInterface, ResourceType, getResourceTypeExtension } from '../lib/pipeline/pipelineInterface';
 import { CliFileSystem } from './io/cliFileSystem';
 
 export class CliPipelineInterface implements PipelineInterface {
     private readonly sourcePath?: string;
     private readonly destinationPath?: string;
     private readonly cliFs: CliFileSystem;
+    private nextResIndex = 0;
 
     constructor(cliFs: CliFileSystem, sourcePath?: string, destinationPath?: string) {
         this.cliFs = cliFs;
@@ -12,16 +13,25 @@ export class CliPipelineInterface implements PipelineInterface {
         this.destinationPath = destinationPath;
     }
 
-    getHtml(resId: string): string {
+    getResource(type: ResourceType, resId: string): string {
         const htmlPath = this.resolveSourceResource(resId);
 
         return this.cliFs.readFile(htmlPath);
     }
 
-    writeHtml(resId: string, content: string): void {
+    writeResource(type: ResourceType, resId: string, content: string): void {
         const htmlPath = this.resolveDestinationResource(resId);
 
         this.cliFs.writeFile(htmlPath, content, true);
+    }
+
+    // sourceResId is available as last parameter, if needed
+    createResource(type: ResourceType, contents: string): string {
+        const resId = this.createResId(type);
+
+        this.writeResource(type, resId, contents);
+
+        return resId;
     }
 
     private resolveSourceResource(resId: string): string {
@@ -38,5 +48,16 @@ export class CliPipelineInterface implements PipelineInterface {
         } else {
             return this.cliFs.resolvePaths(resId);
         }
+    }
+
+    // TODO better implementation
+    private createResId(type: ResourceType): string {
+        const index = this.nextResIndex;
+        this.nextResIndex++;
+
+        const extension = getResourceTypeExtension(type);
+        const fileName = `${ index }.${ extension }`;
+
+        return this.cliFs.joinPaths('resources', fileName);
     }
 }

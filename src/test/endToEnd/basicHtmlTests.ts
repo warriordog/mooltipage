@@ -22,13 +22,13 @@ const PAGE_PRETTY = `
 function testHtml(t: ExecutionContext, resId: string, expected: string): void {
     // set up pipeline
     const pi = new MemoryPipelineInterface();
-    pi.htmlSource.set('pageMin.html', PAGE_MIN);
-    pi.htmlSource.set('pagePretty.html', PAGE_PRETTY);
+    pi.setSourceHtml('pageMin.html', PAGE_MIN);
+    pi.setSourceHtml('pagePretty.html', PAGE_PRETTY);
     const pipeline = new Pipeline(pi);
 
     // run build
     pipeline.compilePage(resId);
-    const output = pi.htmlDestination.get(resId);
+    const output = pi.getDestinationValue(resId);
 
     // check output
     t.is(output, expected);

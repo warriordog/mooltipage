@@ -1,7 +1,7 @@
 import { Fragment } from './object/fragment';
 import { PipelineCache } from './pipelineCache';
 import { UsageContext } from './usageContext';
-import { PipelineInterface } from './pipelineInterface';
+import { PipelineInterface, ResourceType } from './pipelineInterface';
 import { HtmlFormatter } from './htmlFormatter';
 import { HtmlParser } from './htmlParser';
 import { HtmlSerializer }  from './htmlSerializer';
@@ -10,7 +10,7 @@ import { EvalContent, EvalContext } from './evalEngine';
 import { Component, ComponentScriptInstance } from './object/component';
 import { Page } from './object/page';
 import { DocumentNode } from '../dom/node';
-import { CssCompiler } from './cssCompiler';
+import { ResourceBinder } from './resourceBinder';
 import { TextCompiler } from './textCompiler';
 
 export class Pipeline {
@@ -20,7 +20,7 @@ export class Pipeline {
     readonly htmlFormatter?: HtmlFormatter;
     readonly htmlParser: HtmlParser;
     readonly htmlCompiler: HtmlCompiler;
-    readonly cssCompiler: CssCompiler;
+    readonly resourceBinder: ResourceBinder;
     readonly htmlSerializer: HtmlSerializer;
     readonly textCompiler: TextCompiler;
 
@@ -29,9 +29,9 @@ export class Pipeline {
         this.htmlFormatter = htmlFormatter;
 
         this.cache = new PipelineCache();
-        this.htmlParser = new HtmlParser();
+        this.htmlParser = new HtmlParser(this);
         this.htmlCompiler = new HtmlCompiler(this);
-        this.cssCompiler = new CssCompiler();
+        this.resourceBinder = new ResourceBinder(this);
         this.htmlSerializer = new HtmlSerializer();
         this.textCompiler = new TextCompiler();
     }
@@ -60,7 +60,7 @@ export class Pipeline {
         }
 
         // write HTML
-        this.pipelineInterface.writeHtml(resId, outHtml);
+        this.pipelineInterface.writeResource(ResourceType.HTML, resId, outHtml);
 
         return page;
     }
@@ -101,7 +101,11 @@ export class Pipeline {
 
         // compile styles
         if (component.style != undefined) {
-            this.cssCompiler.compileComponentStyle(component, component.style, componentUsageContext);
+            // compile CSS
+            const compiledStyle = this.compileCss(component.style.styleContent);
+
+            // bind to page
+            this.resourceBinder.bindStyle(component.resId, compiledStyle, component.style.bindType, componentUsageContext);
         }
 
         // format fragment
@@ -135,6 +139,22 @@ export class Pipeline {
         return value;
     }
 
+    compileCss(css: string): string {
+        return css;
+    }
+
+    linkResource(type: ResourceType, contents: string, sourceResId: string): string {
+        return this.pipelineInterface.createResource(type, contents, sourceResId);
+    }
+
+    getRawResource(type: ResourceType, resId: string): string {
+        return this.pipelineInterface.getResource(type, resId);
+    }
+
+    getRawFragment(resId: string): Fragment {
+        return this.getOrParseFragment(resId);
+    }
+
     reset(): void {
         // clear cache to reset state
         this.cache.clear();
@@ -148,7 +168,7 @@ export class Pipeline {
             page = this.cache.getPage(resId);
         } else {
             // read HTML
-            const html: string = this.pipelineInterface.getHtml(resId);
+            const html: string = this.pipelineInterface.getResource(ResourceType.HTML, resId);
 
             // parse page
             const parsedPage: Page = this.htmlParser.parsePage(resId, html);
@@ -170,7 +190,7 @@ export class Pipeline {
             fragment = this.cache.getFragment(resId);
         } else {
             // read HTML
-            const html: string = this.pipelineInterface.getHtml(resId);
+            const html: string = this.pipelineInterface.getResource(ResourceType.HTML, resId);
 
             // parse fragment
             const parsedFragment: Fragment = this.htmlParser.parseFragment(resId, html);
@@ -192,7 +212,7 @@ export class Pipeline {
             component = this.cache.getComponent(resId);
         } else {
             // read HTML
-            const html: string = this.pipelineInterface.getHtml(resId);
+            const html: string = this.pipelineInterface.getResource(ResourceType.HTML, resId);
 
             // parse component
             const parsedComponent: Component = this.htmlParser.parseComponent(resId, html);
