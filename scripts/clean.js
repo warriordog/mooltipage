@@ -3,7 +3,7 @@ const fs = require('fs');
 const rmOptions = {
     recursive: true,
     maxRetries: 5,
-    retryDelay: 25
+    retryDelay: 250
 };
 
 fs.rmdirSync('dist', rmOptions);

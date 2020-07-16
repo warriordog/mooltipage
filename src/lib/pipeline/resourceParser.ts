@@ -1,6 +1,5 @@
 import { Fragment } from "./object/fragment";
 import { DocumentNode, TagNode, TextNode } from '../dom/node';
-import { Parser, ParserOptions } from 'htmlparser2';
 import { DomParser } from '../dom/domParser';
 import { Page } from "./object/page";
 import { Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ComponentScriptInstance } from "./object/component";
@@ -9,18 +8,20 @@ import { StyleBindType } from "./resourceBinder";
 import { ResourceType } from "./pipelineInterface";
 import { Pipeline } from "./pipeline";
 
-export class HtmlParser {
+export class ResourceParser {
     private readonly evalEngine: EvalEngine;
     private readonly pipeline: Pipeline;
+    private readonly domParser: DomParser;
 
     constructor(pipeline: Pipeline) {
         this.pipeline = pipeline;
         this.evalEngine = new EvalEngine();
+        this.domParser = new DomParser();
     }
 
     parseFragment(resId: string, html: string): Fragment {
         // parse HTML
-        const dom: DocumentNode = this.parseDom(resId, html);
+        const dom: DocumentNode = this.domParser.parseDom(html);
 
         // create fragment
         return new Fragment(resId, dom);
@@ -28,7 +29,7 @@ export class HtmlParser {
 
     parsePage(resId: string, html: string): Page {
         // parse HTML
-        const dom: DocumentNode = this.parseDom(resId, html);
+        const dom: DocumentNode = this.domParser.parseDom(html);
 
         // create page
         return new Page(resId, dom);
@@ -36,7 +37,7 @@ export class HtmlParser {
 
     parseComponent(resId: string, html: string): Component {
         // parse HTML
-        const dom: DocumentNode = this.parseDom(resId, html);
+        const dom: DocumentNode = this.domParser.parseDom(html);
 
         // parse <template>
         const componentTemplate: ComponentTemplate = this.parseComponentTemplate(resId, dom);
@@ -166,30 +167,5 @@ export class HtmlParser {
         } else {
             throw new Error(`Unsupported component <script> type: '${scriptType}'`);
         }
-    }
-
-    private parseDom(resId: string, html: string): DocumentNode {
-        // set up handler
-        const handler: DomParser = new DomParser();
-
-        // create options
-        const options: ParserOptions = {
-            recognizeSelfClosing: true,
-            lowerCaseTags: true
-        };
-
-        // create parser
-        const parser: Parser = new Parser(handler, options);
-
-        // process html
-        parser.write(html);
-        parser.end();
-
-        // verify roots
-        if (handler.dom == null) {
-            throw new Error(`No dom was generated for resource ${resId}`);
-        }
-
-        return handler.dom;
     }
 }

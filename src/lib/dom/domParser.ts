@@ -1,13 +1,62 @@
-import { Handler } from 'htmlparser2/lib/Parser';
+import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
 import { TagNode, NodeWithChildren, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode } from "./node";
 
-export class DomParser implements Partial<Handler> {
-    dom: DocumentNode;
-    currentParent: NodeWithChildren;
+export class DomParser {
+    private readonly handler: DomHandler;
+    private readonly parser: Parser;
+
+    constructor(userOptions?: ParserOptions) {
+        // get parser otions
+        const options = createParserOptions(userOptions);
+
+        // set up handler
+        this.handler = new DomHandler();
+
+        // create parser
+        this.parser = new Parser(this.handler, options);
+    }
+
+    parseDom(html: string): DocumentNode {
+        // reset parser
+        this.parser.reset();
+
+        // process html
+        this.parser.write(html);
+        this.parser.end();
+
+        // get generated dom
+        return this.handler.getDom();
+    }
+
+
+}
+
+function createParserOptions(userOptions?: ParserOptions) {
+    // base (default) options
+    const options: ParserOptions = {
+        recognizeSelfClosing: true,
+        lowerCaseTags: true
+    };
+
+    // load user-supplied options
+    if (userOptions != undefined) {
+        Object.assign(options, userOptions);
+    }
+
+    return options;
+}
+
+export class DomHandler implements Partial<Handler> {
+    private dom: DocumentNode;
+    private currentParent: NodeWithChildren;
 
     constructor() {
         this.dom = new DocumentNode();
         this.currentParent = this.dom;
+    }
+
+    getDom(): DocumentNode {
+        return this.dom;
     }
 
     onreset(): void {
@@ -27,7 +76,7 @@ export class DomParser implements Partial<Handler> {
         const attributes = new Map<string, string | null>();
         for (const key of Object.keys(attribs)) {
             const attrVal = attribs[key];
-            const value: string | null = attrVal != undefined && attrVal.length > 0 ? attrVal : null;
+            const value: string | null = (attrVal != undefined && attrVal.length > 0) ? attrVal : null;
             attributes.set(key, value);
         }
 

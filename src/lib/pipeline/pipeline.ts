@@ -3,7 +3,7 @@ import { PipelineCache } from './pipelineCache';
 import { UsageContext } from './usageContext';
 import { PipelineInterface, ResourceType } from './pipelineInterface';
 import { HtmlFormatter } from './htmlFormatter';
-import { HtmlParser } from './htmlParser';
+import { ResourceParser } from './resourceParser';
 import { HtmlSerializer }  from './htmlSerializer';
 import { HtmlCompiler } from './htmlCompiler';
 import { EvalContent, EvalContext } from './evalEngine';
@@ -18,7 +18,7 @@ export class Pipeline {
 
     readonly pipelineInterface: PipelineInterface;
     readonly htmlFormatter?: HtmlFormatter;
-    readonly htmlParser: HtmlParser;
+    readonly htmlParser: ResourceParser;
     readonly htmlCompiler: HtmlCompiler;
     readonly resourceBinder: ResourceBinder;
     readonly htmlSerializer: HtmlSerializer;
@@ -29,7 +29,7 @@ export class Pipeline {
         this.htmlFormatter = htmlFormatter;
 
         this.cache = new PipelineCache();
-        this.htmlParser = new HtmlParser(this);
+        this.htmlParser = new ResourceParser(this);
         this.htmlCompiler = new HtmlCompiler(this);
         this.resourceBinder = new ResourceBinder(this);
         this.htmlSerializer = new HtmlSerializer();
