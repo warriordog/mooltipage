@@ -36,7 +36,7 @@ export class Pipeline {
         this.textCompiler = new TextCompiler();
     }
 
-    compilePage(resId: string): Page {
+    compilePage(resId: string): CompiledPage {
         // parse page
         const page: Page = this.getOrParsePage(resId);
 
@@ -62,7 +62,11 @@ export class Pipeline {
         // write HTML
         this.pipelineInterface.writeResource(ResourceType.HTML, resId, outHtml);
 
-        return page;
+        // create CompiledPage
+        return {
+            page: page,
+            html: outHtml
+        };
     }
 
     compileFragment(resId: string, usageContext: UsageContext): Fragment {
@@ -242,4 +246,9 @@ export class Pipeline {
 
         return scriptTextFunc;
     }
+}
+
+export interface CompiledPage {
+    page: Page;
+    html: string;
 }

@@ -17,3 +17,4 @@ export * from './pipeline/object/fragment';
 export * from './pipeline/object/pipelineObject';
 export * from './pipeline/object/component';
 export * from './pipeline/object/page';
+export * from './mooltipage';

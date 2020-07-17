@@ -27,11 +27,10 @@ function testHtml(t: ExecutionContext, resId: string, expected: string): void {
     const pipeline = new Pipeline(pi);
 
     // run build
-    pipeline.compilePage(resId);
-    const output = pi.getDestinationValue(resId);
+    const output = pipeline.compilePage(resId);
 
     // check output
-    t.is(output, expected);
+    t.is(output.html, expected);
 }
 
 test('[endToEnd] Raw HTML is passed through pipeline unchanged (minimized)', testHtml, 'pageMin.html', PAGE_MIN);

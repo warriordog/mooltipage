@@ -17,7 +17,8 @@ test('[endToEnd] Basic fragment compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const div = page.dom.findChildTagByTagName('div');
 
     // validate
@@ -39,7 +40,8 @@ test('[endToEnd] Nested fragments compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const frag1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag1');
     const frag2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2');
 
@@ -63,7 +65,8 @@ test('[endToEnd] Fragment params compile correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const frag2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2');
 
     // validate
@@ -88,7 +91,8 @@ test('[endToEnd] Fragment compile to correct DOM', t => {
     const pipeline = new Pipeline(pi, htmlFormatter);
 
     // compile fragment
-    pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const html = pi.getDestinationValue('page.html');
 
     // validate
@@ -112,7 +116,8 @@ test('[endToEnd] Repeated fragment usages have correct scope', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const frag2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '1');
     const frag2_2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '2');
     const frag2_3 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '3');
@@ -182,11 +187,10 @@ test('[endToEnd] Fragment slots are filled correctly', t => {
     const pipeline = new Pipeline(pi, htmlFormatter);
 
     // compile fragment
-    pipeline.compilePage('page.html');
-    const html = pi.getDestinationValue('page.html');
+    const output = pipeline.compilePage('page.html');
 
     // validate
-    t.is(html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><div class="[default]"></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>1</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>2</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>3</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>4.1</div></div><div class="slot1"><div>4.2</div></div></div><div class="frag2"><div class="[default]"><div>5.1</div></div><div class="slot1"><div>5.2</div></div></div></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><div class="[default]"></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>1</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>2</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>3</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>4.1</div></div><div class="slot1"><div>4.2</div></div></div><div class="frag2"><div class="[default]"><div>5.1</div></div><div class="slot1"><div>5.2</div></div></div></div></body></html>');
 });
 
 test('[endToEnd] Fragment slot placeholder content is left when slot is unused', t => {
@@ -218,11 +222,10 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
     const pipeline = new Pipeline(pi, htmlFormatter);
 
     // compile fragment
-    pipeline.compilePage('page.html');
-    const html = pi.getDestinationValue('page.html');
+    const output = pipeline.compilePage('page.html');
 
     // validate
-    t.is(html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
 });
 
 test('[endToEnd] Imported fragment compiles correctly', t => {
@@ -246,7 +249,8 @@ test('[endToEnd] Imported fragment compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const frag2count1s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '1');
     const frag2count2s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '2');
     const frag2count3s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '3');
@@ -255,4 +259,37 @@ test('[endToEnd] Imported fragment compiles correctly', t => {
     t.is(frag2count1s.length, 1);
     t.is(frag2count2s.length, 2);
     t.is(frag2count3s.length, 3);
+});
+
+test('[endToEnd] Nested fragment slot content is placed correctly', t => {
+    // set up pipeline
+    const pi = createRootPi();
+    pi.setSourceHtml('frag1.html', `
+        <m-var localval="frag1" />
+        <div class="frag1">
+            <m-fragment src="frag2.html">
+                <test-div expected="frag1" actual="{{ $.localval }}" />
+                <m-fragment src="frag2.html">
+                    <test-div expected="frag1" actual="{{ $.localval }}" />
+                </m-fragment>
+                <test-div expected="frag1" actual="{{ $.localval }}" />
+            </m-fragment>
+        </div>
+    `);
+    pi.setSourceHtml('frag2.html', `
+        <m-var localval="frag2" />
+        <div class="frag2">
+            <test-div expected="frag2" actual="{{ $.localval }}" />
+            <m-slot />
+            <test-div expected="frag2" actual="{{ $.localval }}" />
+        </div>
+    `);
+    const htmlFormatter = new BasicHtmlFormatter(false);
+    const pipeline = new Pipeline(pi, htmlFormatter);
+
+    // compile fragment
+    const output = pipeline.compilePage('page.html');
+
+    // validate
+    t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div></div></body></html>');
 });

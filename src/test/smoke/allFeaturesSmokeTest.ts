@@ -7,13 +7,15 @@ test('[smoke] Build produces a page and does not crash', t => {
     const pipeline = createPipeline();
 
     // run build
-    const page = pipeline.compilePage('page.html');
+    const result = pipeline.compilePage('page.html');
 
     // check output
-    t.truthy(page);
-    t.truthy(page.dom, 'Generated page should have a DOM');
-    t.truthy(page.head, 'Generated page should have a HEAD');
-    t.truthy(page.body, 'Generated page should have a BODY');
+    t.truthy(result);
+    t.truthy(result.page);
+    t.truthy(result.html);
+    t.truthy(result.page.dom, 'Generated page should have a DOM');
+    t.truthy(result.page.head, 'Generated page should have a HEAD');
+    t.truthy(result.page.body, 'Generated page should have a BODY');
 });
 
 function createPipeline(): Pipeline {

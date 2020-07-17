@@ -21,10 +21,10 @@ export class ReferenceModule implements CompilerModule {
         const dom: DocumentNode = compileData.fragment.dom;
 
         // get m-fragment references
-        const mFragmentRefs = dom.findChildTagsByTagName('m-fragment');
+        const mFragmentRefs = dom.findTopLevelChildTagsByTagName('m-fragment');
 
         // get m-component references
-        const mComponentRefs = dom.findChildTagsByTagName('m-component');
+        const mComponentRefs = dom.findTopLevelChildTagsByTagName('m-component');
 
         // combine all external references
         const refNodes: ExternalReferenceNode[] = mFragmentRefs.concat(mComponentRefs);

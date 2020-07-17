@@ -28,7 +28,8 @@ test('[endToEnd] Basic component compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const div = page.dom.findChildTagByTagName('div');
     const style = page.dom.findChildTagByTagName('style');
 
@@ -57,7 +58,8 @@ test('[endToEnd] Component with scope compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const div = page.dom.findChildTagByTagName('div');
 
     // validate
@@ -96,7 +98,8 @@ test('[endToEnd] Nested components compile correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const comp = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp1');
     const comp2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2');
 
@@ -150,11 +153,10 @@ test('[endToEnd] Components compile to correct DOM', t => {
     const pipeline = new Pipeline(pi, htmlFormatter);
 
     // compile component
-    pipeline.compilePage('page.html');
-    const html = pi.getDestinationValue('page.html');
+    const output = pipeline.compilePage('page.html');
 
     // validate
-    t.is(html, '<!DOCTYPE html><html><head><title>Component Tests</title><style>.comp2 {}</style><style>.comp1 {}</style></head><body><div class="comp1"><p>Hello,</p><div class="comp2">This is component 2.</div><p>World!</p></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html><head><title>Component Tests</title><style>.comp2 {}</style><style>.comp1 {}</style></head><body><div class="comp1"><p>Hello,</p><div class="comp2">This is component 2.</div><p>World!</p></div></body></html>');
 });
 
 test('[endToEnd] Repeated component usages have correct scope', t => {
@@ -192,7 +194,8 @@ test('[endToEnd] Repeated component usages have correct scope', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const comp2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '1');
     const comp2_2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '2');
     const comp2_3 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '3');
@@ -245,7 +248,8 @@ test('[endToEnd] Imported component compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const page = pipeline.compilePage('page.html');
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
     const comp2_0 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === "0");
     const comp2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === "1");
 

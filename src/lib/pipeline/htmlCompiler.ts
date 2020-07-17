@@ -15,13 +15,39 @@ export class HtmlCompiler {
     constructor(pipeline: Pipeline) {
         this.pipeline = pipeline;
 
-        // these are order-specific!
+        // These are order-specific! See the comments for details.
         this.modules = [
-            new SlotModule(), // SlotModule changes the pre-compiled DOM, so it needs to run first.
-            new ImportsModule(), // ImportsModule affects how the later modules interpret the dom 
+            // SlotModule is responsible for pre-processing the uncompiled DOM to ensure that it contains the final version of the uncompiled input.
+            // It changes the pre-compiled DOM, so it needs to run first.
+            // Incomming slot content may not be fully compiled, and should be compiled as if it is part of this compilation unit.
+            new SlotModule(),
+
+            // !! New pre-compile DOM manipulation goes here
+
+            // VarsModule is responsible for initializing the scripting / expression scope.
+            // All other modules have access to local scope, so vars needs to go next.
+            // It runs pre-scope, so it has no dependency on TemplateText
             new VarsModule(),
-            new TemplateTextModule(), // TemplateTextModule depends on VarsModule
-            new ReferenceModule() // ReferenceModule splits up the DOM and would hide elements from the other steps.
+
+            // !! New scope processing goes here
+
+            // TemplateTextModule is responsible for compiling inline expressions.
+            // It needs to go before any modules that use data from attributes, except vars.
+            new TemplateTextModule(), 
+
+            // !! New attribute / text processing goes here
+
+            // ImportsModule is responsible for converting custom tag names.
+            // It needs to go before any modules that use data from tag names
+            new ImportsModule(),
+
+            // !! New element processing goes here
+
+            // ReferenceModule is responsible for loading in content that requires a separate compilation round.
+            // Content loaded by ReferenceModule is 100% compiled.
+            new ReferenceModule()
+
+            // !! New external processing goes here
         ];
     }
 

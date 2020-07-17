@@ -2,9 +2,8 @@
 
 import os from 'os';
 import { CliArgs, parseArgs } from './args';
-import { MooltiPageCli } from './mooltiPageCli';
-import { CliFileSystem } from './io/cliFileSystem';
-import { NodeCliFileSystem } from './io/nodeCliFileSystem';
+import { Mooltipage } from "../lib/index";
+import * as FsUtils from "../lib/fs/fsUtils";
 
 
 console.log('MooltiPage CLI' + os.EOL);
@@ -21,12 +20,28 @@ if (args.isHelp) {
 }
 
 function runApp(): void {
-    // init CLI engine
-    const cliFs: CliFileSystem = new NodeCliFileSystem();
-    const cli: MooltiPageCli = new MooltiPageCli(args, cliFs);
+    // create mooltipage instance
+    const mooltipage = new Mooltipage({
+        inPath: args.inPath,
+        outPath: args.outPath,
+        formatter: args.formatter,
+        onPageCompiled: (pagePath) => console.log(`Compiled [${ pagePath }].`)
+    });
 
-    // process
-    cli.runCompile();
+    // convert page arguments into full list of pages
+    const pages = FsUtils.expandPagePaths(args.pages, args.inPath);
+
+    // print stats
+    console.log(`Source path: [${ args.inPath ?? '*unspecified*' }]`);
+    console.log(`Destination path: [${ args.outPath ?? '*unspecified*' }]`);
+    console.log(`Page count: ${ pages.length }`);
+    console.log();
+
+    // compile each page
+    mooltipage.processPages(pages);
+
+    console.log();
+    console.log('Done.');
 }
 
 function printHelp(): void {

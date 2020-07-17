@@ -81,6 +81,9 @@ export abstract class NodeWithChildren extends Node {
     findChildTags(matcher: (tag: TagNode) => boolean, deep = true): TagNode[] {
         return NodeTools.findChildTags(this, matcher, deep);
     }
+    findTopLevelChildTags(matcher: (node: TagNode) => boolean): TagNode[] {
+        return NodeTools.findTopLevelChildTags(this, matcher);
+    }
 
     findChildNodeByNodeType(nodeType: NodeType.Document, deep?: boolean): DocumentNode | null;
     findChildNodeByNodeType(nodeType: NodeType.Tag, deep?: boolean): TagNode | null;
@@ -121,6 +124,16 @@ export abstract class NodeWithChildren extends Node {
     findChildTagsByTagName(tagName: string, deep?: boolean): TagNode[];
     findChildTagsByTagName(tagName: string, deep = true): TagNode[] {
         return this.findChildTags(tag => tag.tagName === tagName, deep);
+    }
+    findTopLevelChildTagsByTagName(tagName: 'm-fragment'): MFragmentNode[];
+    findTopLevelChildTagsByTagName(tagName: 'm-component'): MComponentNode[];
+    findTopLevelChildTagsByTagName(tagName: 'm-content'): MContentNode[];
+    findTopLevelChildTagsByTagName(tagName: 'm-slot'): MSlotNode[];
+    findTopLevelChildTagsByTagName(tagName: 'm-var'): MVarNode[];
+    findTopLevelChildTagsByTagName(tagName: 'm-import'): MImportNode[];
+    findTopLevelChildTagsByTagName(tagName: string): TagNode[];
+    findTopLevelChildTagsByTagName(tagName: string): TagNode[] {
+        return this.findTopLevelChildTags(tag => tag.tagName === tagName);
     }
     
     findChildTagsByPath(matchers: ((tag: TagNode) => boolean)[]): TagNode[] {

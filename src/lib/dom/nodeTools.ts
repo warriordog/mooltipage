@@ -357,6 +357,18 @@ export function findChildTagsByPath(root: NodeWithChildren, matchers: ((tag: Tag
     return matches;
 }
 
+export function findTopLevelChildTags(parent: NodeWithChildren, matcher: (tag: TagNode) => boolean, matches: TagNode[] = []): TagNode[] {
+    for (const childNode of parent.childNodes) {
+        if (TagNode.isTagNode(childNode) && matcher(childNode)) {
+            matches.push(childNode);
+        } else if (NodeWithChildren.isNodeWithChildren(childNode)) {
+            findTopLevelChildTags(childNode, matcher, matches);
+        }
+    }
+
+    return matches;
+}
+
 export function createDomFromChildren(parent: NodeWithChildren): DocumentNode {
     // create dom
     const dom: DocumentNode = new DocumentNode();
