@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import { ContentHasher } from '../../lib/index';
+import { ContentHasher } from '../../lib';
 
 test('[unit] ContentHasher.fastHashContent() should hash html content', t => {
     const hasher = new ContentHasher();

@@ -1,6 +1,9 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
-import { TagNode, NodeWithChildren, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode } from "./node";
+import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode } from '..';
 
+/**
+ * Parses HTML into a dom using htmlparser2
+ */
 export class DomParser {
     private readonly handler: DomHandler;
     private readonly parser: Parser;
@@ -16,6 +19,10 @@ export class DomParser {
         this.parser = new Parser(this.handler, options);
     }
 
+    /**
+     * Parse a string of HTML into a Document
+     * @param html HTML to parse
+     */
     parseDom(html: string): DocumentNode {
         // reset parser
         this.parser.reset();
@@ -27,8 +34,6 @@ export class DomParser {
         // get generated dom
         return this.handler.getDom();
     }
-
-
 }
 
 function createParserOptions(userOptions?: ParserOptions) {

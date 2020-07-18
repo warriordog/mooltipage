@@ -1,9 +1,9 @@
-import { CompilerModule, CompileData } from "../htmlCompiler";
-import { TagNode, MVarNode } from "../../dom/node";
-import { EvalContext } from "../evalEngine";
+import { CompilerModule, CompileData, EvalContext, MVarNode, TagNode } from "../..";
 
+/**
+ * Compile module that implements <m-var> parsing
+ */
 export class VarsModule implements CompilerModule {
-
     compileFragment(compileData: CompileData): void {
         // find all vars
         const varElems = compileData.fragment.dom.findChildTagsByTagName('m-var');

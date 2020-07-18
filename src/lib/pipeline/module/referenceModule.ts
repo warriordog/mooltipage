@@ -1,8 +1,4 @@
-import { CompilerModule, CompileData } from "../htmlCompiler";
-import { Fragment } from "../../pipeline/object/fragment";
-import { Node, DocumentNode, MContentNode, NodeWithChildren, ExternalReferenceNode, MFragmentNode, MComponentNode } from "../../dom/node";
-import { UsageContext } from "../usageContext";
-import { Pipeline } from "../pipeline";
+import { CompilerModule, CompileData, DocumentNode, ExternalReferenceNode, Fragment, UsageContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode } from "../..";
 
 /**
  * Process external references, such as m-fragment and m-component.

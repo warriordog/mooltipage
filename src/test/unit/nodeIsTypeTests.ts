@@ -1,5 +1,5 @@
 import test, { ExecutionContext } from 'ava';
-import { Node, TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, DocumentNode, CDATANode, MImportNode } from '../../lib/index';
+import { Node, TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, DocumentNode, CDATANode, MImportNode } from '../../lib';
 
 function testNode(t: ExecutionContext, node: Node, isTag: boolean, isText: boolean, isComment: boolean, isPi: boolean, isDom: boolean, isCData: boolean, isMFragment: boolean, isMComponent: boolean, isMContent: boolean, isMSlot: boolean, isMVar: boolean, isMImport: boolean) {
     t.is(TagNode.isTagNode(node), isTag);

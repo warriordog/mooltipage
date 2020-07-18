@@ -1,8 +1,8 @@
-import { Node, TagNode, NodeWithChildren, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, DocumentNode } from "./node";
+import { Node, TagNode, TextNode, CommentNode, DocumentNode, CDATANode, ProcessingInstructionNode, NodeWithChildren } from "..";
 
 // From https://stackoverflow.com/a/34838936/1857993
 // contextual self-closing tags are not supported
-export const selfClosingTags: ReadonlyArray<string> = [
+const selfClosingTags: ReadonlyArray<string> = [
     'area',
     'base',
     'br',
@@ -21,8 +21,14 @@ export const selfClosingTags: ReadonlyArray<string> = [
     'wbr'
 ];
 
+/**
+ * Serializes a DOM into HTML
+ */
 export class DomSerializer {
-
+    /**
+     * Serialize a DOM tree
+     * @param node Root node
+     */
     serialize(node: Node): string {
         const html: string[] = [];
 

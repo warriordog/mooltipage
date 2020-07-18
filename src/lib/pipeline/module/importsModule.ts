@@ -1,5 +1,4 @@
-import { CompilerModule, CompileData } from "../htmlCompiler";
-import { MImportNode, TagNode, MComponentNode, MFragmentNode } from "../../dom/node";
+import { CompilerModule, CompileData, MImportNode, TagNode, MComponentNode, MFragmentNode } from "../..";
 
 /**
  * Process imports / aliases via m-import

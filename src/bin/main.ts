@@ -2,8 +2,7 @@
 
 import os from 'os';
 import { CliArgs, parseArgs } from './args';
-import { Mooltipage } from "../lib/index";
-import * as FsUtils from "../lib/fs/fsUtils";
+import { Mooltipage, FsUtils } from "../lib";
 
 
 console.log('MooltiPage CLI' + os.EOL);

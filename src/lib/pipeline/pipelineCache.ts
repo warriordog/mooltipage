@@ -1,7 +1,8 @@
-import { Fragment } from './object/fragment';
-import { EvalContent } from './evalEngine';
-import { Component } from './object/component';
+import { Fragment, Component, EvalContent } from "..";
 
+/**
+ * Caches any data that can be reused by the pipeline
+ */
 export class PipelineCache {
     private readonly fragmentCache: Map<string, Fragment> = new Map();
     private readonly componentCache: Map<string, Component> = new Map();

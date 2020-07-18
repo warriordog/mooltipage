@@ -1,36 +1,82 @@
 import os from 'os';
 import Path from 'path';
 
-import { HtmlFormatter, BasicHtmlFormatter } from ".";
-import { Pipeline } from './pipeline/pipeline';
-import { PipelineInterface, ResourceType, getResourceTypeExtension } from './pipeline/pipelineInterface';
-import { Page } from './pipeline/object/page';
-import * as FsUtils from './fs/fsUtils';
+import { HtmlFormatter, BasicHtmlFormatter, Pipeline, PipelineInterface, ResourceType, getResourceTypeExtension, Page, FsUtils } from ".";
 
+/**
+ * List of built-in HTML formatters
+ */
 export enum StandardFormatters {
+    /**
+     * No formatter
+     */
     NONE = 'none',
+
+    /**
+     * BasicHtmlFormatter in "pretty" mode
+     */
     PRETTY = 'pretty',
+
+    /**
+     * BasicHtmlFormatter in "ugly" / minimization mode
+     */
     MINIMIZED = 'minimized'
 }
 
+/**
+ * Called whenever a page is compiled.
+ * @param pagePath Path to the page
+ * @param html HTML content of the page
+ * @param page Compiled page object
+ */
 export type PageCompiledCallback = (pagePath: string, html: string, page: Page) => void;
 
+/**
+ * Options recognized by MooltiPage
+ */
 export interface MpOptions {
+    /**
+     * Path to look for input files.
+     * Optional, defaults to current working directory.
+     */
     readonly inPath?: string;
+
+    /**
+     * Path to place output files
+     * Optional, defaults to current working directory.
+     */
     readonly outPath?: string;
+
+    /**
+     * Name of the HTML formatter to use.
+     * Optional, defaults to "pretty" formatter.
+     */
     readonly formatter?: string;
 
+    /**
+     * Callback for page compilation. Optional.
+     */
     readonly onPageCompiled?: PageCompiledCallback;
 }
 
+/**
+ * Default Mooltipage options
+ */
 export class DefaultMpOptions implements MpOptions {
     formatter?: StandardFormatters.PRETTY;
 }
 
+/**
+ * Mooltipage JS API entry point.
+ */
 export class Mooltipage {
     private readonly options: MpOptions;
     private readonly pipeline: Pipeline;
 
+    /**
+     * Constructs a new Mooltipage instance using the provided options, or defaults if not specified.
+     * @param options Configuration options
+     */
     constructor(options?: MpOptions) {
         if (options) {
             this.options = options;
@@ -41,12 +87,20 @@ export class Mooltipage {
         this.pipeline = createPipeline(this.options);
     }
 
+    /**
+     * Compiles a list of pages.
+     * @param pagePaths List paths to pages to compile
+     */
     processPages(pagePaths: string[]): void {
         for (const pagePath of pagePaths) {
             this.processPage(pagePath);
         }
     }
 
+    /**
+     * Compiles a single page.
+     * @param pagePath Path to page to compile
+     */
     processPage(pagePath: string): void {
         // compile page
         const output = this.pipeline.compilePage(pagePath);
@@ -63,14 +117,9 @@ function createPipeline(options: MpOptions): Pipeline {
     const formatter: HtmlFormatter | undefined = createFormatter(options);
 
     // create interface
-    const pi: PipelineInterface = createPipelineInterface(options);
-
+    const pi = new NodePipelineInterface(options.inPath, options.outPath);
     // create pipeline
     return new Pipeline(pi, formatter);
-}
-
-function createPipelineInterface(options: MpOptions): PipelineInterface {
-    return new NodePipelineInterface(options.inPath, options.outPath);
 }
 
 function createFormatter(options: MpOptions): HtmlFormatter | undefined {
@@ -88,6 +137,9 @@ function createFormatter(options: MpOptions): HtmlFormatter | undefined {
     }
 }
 
+/**
+ * Pipeline interface that uses Node.JS file APIs
+ */
 class NodePipelineInterface implements PipelineInterface {
     private readonly sourcePath?: string;
     private readonly destinationPath?: string;

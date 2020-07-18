@@ -1,6 +1,4 @@
-import { CompilerModule, CompileData } from "../htmlCompiler";
-import { UsageContext } from "../../pipeline/usageContext";
-import { DocumentNode, MSlotNode } from "../../dom/node";
+import { CompilerModule, CompileData, DocumentNode, MSlotNode, UsageContext } from "../..";
 
 /**
  * Processes <m-slot> tags by replacing them with content extracted from <m-content> tags at the point of reference.

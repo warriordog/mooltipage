@@ -1,10 +1,14 @@
-import { Pipeline } from './pipeline';
-import { Fragment } from './object/fragment';
-import { UsageContext } from './usageContext';
-import { ComponentScriptInstance } from './object/component';
+import { ComponentScriptInstance, Pipeline, Fragment, UsageContext } from "..";
 
+/**
+ * Evaluates JS expressions
+ */
 export class EvalEngine {
-
+    /**
+     * Parse an ES6 template literal
+     * 
+     * @param templateString Contents of the template string, excluding the backticks
+     */
     parseTemplateString(templateString: string): EvalContent<string> {
         // generate function body for template
         const functionBody: string = 'return `' + templateString + '`;';
@@ -15,6 +19,11 @@ export class EvalEngine {
         return evalContent;
     }
 
+    /**
+     * Parse a handlebars expression.  Ex. {{ foo() }}
+     * 
+     * @param jsString Contents of the handlebars expression, excluding the braces
+     */
     parseHandlebars(jsString: string): EvalContent<unknown> {
         // generate body for function
         const functionBody: string = 'return ' + jsString + ';';
@@ -25,6 +34,11 @@ export class EvalEngine {
         return evalContent;
     }
 
+    /**
+     * Parse a function-style component script.
+     * 
+     * @param jsText Text content of the script
+     */
     parseComponentFunction(jsText: string): EvalContent<ComponentScriptInstance> {
         // generate body for function
         const functionBody = jsText.trim();
@@ -35,6 +49,11 @@ export class EvalEngine {
         return evalContent;
     }
 
+    /**
+     * Parse a class-style component script.
+     * 
+     * @param jsText Text content of the script
+     */
     parseComponentClass(jsText: string): EvalContent<ComponentScriptInstance> {
         // generate body for function
         const functionBody = jsText.trim();
@@ -72,13 +91,31 @@ export class EvalEngine {
     }
 }
 
+/**
+ * A parsed, executable JS expression that can be called with a provided evaluation context to produce the result of the expression.
+ * Can be safely cached or reused.
+ */
 export interface EvalContent<T> {
+    /**
+     * Invoke the expression in the specified content.
+     * @param evalContext Context to execute within
+     */
     invoke(evalContext: EvalContext): T;
 }
 
+/**
+ * A function-based expression
+ */
 export type EvalFunction<T> = ($: EvalScope, $$: EvalContext) => T;
+
+/**
+ * A constructor (class) based expression
+ */
 export type EvalConstructor<T> = new ($: EvalScope, $$: EvalContext) => T;
 
+/**
+ * Implementation of EvalContext that can execute a function
+ */
 export class EvalContentFunction<T> implements EvalContent<T> {
     protected readonly evalFunction: EvalFunction<T>;
 
@@ -92,6 +129,9 @@ export class EvalContentFunction<T> implements EvalContent<T> {
     }
 }
 
+/**
+ * Implementation of EvalContext that can execute a constructor
+ */
 export class EvalContentConstructor<T> implements EvalContent<T> {
     protected readonly evalConstructor: EvalConstructor<T>;
 
@@ -105,12 +145,38 @@ export class EvalContentConstructor<T> implements EvalContent<T> {
     }
 }
 
+/**
+ * Context available to an evaluated script / expression
+ */
 export class EvalContext {
+    /**
+     * Pipeline instance
+     */
     readonly pipeline: Pipeline;
+
+    /**
+     * Current fragment being processed
+     */
     readonly currentFragment: Fragment;
+
+    /**
+     * Current usage context
+     */
     readonly usageContext: UsageContext;
+
+    /**
+     * Variables declared in the current scope
+     */
     readonly variables: EvalVars;
+
+    /**
+     * Parameters provided to the current scope
+     */
     readonly parameters: EvalVars;
+
+    /**
+     * Compiled scope instance, with proper shadowing  and overloading applied
+     */
     readonly scope: EvalScope;
 
     constructor(pipeline: Pipeline, currentFragment: Fragment, usageContext: UsageContext, variables: EvalVars) {
@@ -123,8 +189,14 @@ export class EvalContext {
     }
 }
 
+/**
+ * A set of variables that can be provided to a script
+ */
 export type EvalVars = ReadonlyMap<string, unknown>;
 
+/**
+ * Compiled scope instance that can be used to access all available variables with proper shadowing and overloading
+ */
 export type EvalScope = Record<string, unknown>;
 
 class EvalScopeProxy implements ProxyHandler<EvalScope> {

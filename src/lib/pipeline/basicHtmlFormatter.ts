@@ -1,12 +1,20 @@
-import { DocumentNode, Node, TextNode, NodeWithChildren } from '../dom/node';
-import { HtmlFormatter } from "./htmlFormatter";
-import { Page } from "./object/page";
+import { HtmlFormatter, Page, DocumentNode, Node, TextNode, NodeWithChildren } from "..";
 
+/**
+ * Basic HTML formatter that can produce a pretty (formatted) or ugly (minimized) dom
+ */
 export class BasicHtmlFormatter implements HtmlFormatter {
     private readonly isPretty: boolean;
     private readonly eol: string;
     private readonly indentString: string;
 
+    /**
+     * Create a new BasicHtmlFormatter
+     * 
+     * @param isPretty Select pretty mode or ugly mode
+     * @param eol Set the line ending for pretty mode (default \n)
+     * @param indentString Set the indentation string for pretty mode (default 4 spaces)
+     */
     constructor(isPretty: boolean, eol?: string, indentString?: string) {
         this.isPretty = isPretty;
         this.eol = eol ?? (isPretty ? '\n' : '');

@@ -1,13 +1,8 @@
-import { Pipeline } from "./pipeline";
-import { Fragment } from "./object/fragment";
-import { UsageContext } from './usageContext';
-import { SlotModule } from "./module/slotModule";
-import { ReferenceModule } from "./module/referenceModule";
-import { TemplateTextModule } from "./module/templateTextModule";
-import { VarsModule } from "./module/varsModule";
-import { EvalContext } from "./evalEngine";
-import { ImportsModule } from "./module/importsModule";
+import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule } from "..";
 
+/**
+ * Provides HTML compilation support to the pipeline.
+ */
 export class HtmlCompiler {
     private readonly pipeline: Pipeline;
     private readonly modules: CompilerModule[];
@@ -51,6 +46,12 @@ export class HtmlCompiler {
         ];
     }
 
+    /**
+     * Compiles a fragment into pure HTML
+     * 
+     * @param fragment Fragment to compile
+     * @param usageContext Current usage context
+     */
     compileHtml(fragment: Fragment, usageContext: UsageContext): void {
         // create compile data
         const compileData: CompileData = new CompileData(this.pipeline, fragment, usageContext);
@@ -62,15 +63,40 @@ export class HtmlCompiler {
     }
 }
 
+/**
+ * A modular component of the HTML compiler
+ */
 export interface CompilerModule {
+    /**
+     * Compile a fragment
+     * 
+     * @param compileData Compilation data
+     */
     compileFragment(compileData: CompileData): void;
 }
 
+/**
+ * Stateful compilation context that is shared between all compiler modules.
+ */
 export class CompileData {
+    /**
+     * Pipeline instance
+     */
     readonly pipeline: Pipeline;
+
+    /**
+     * Current fragmnet
+     */
     readonly fragment: Fragment;
+
+    /**
+     * Current usage context
+     */
     readonly usageContext: UsageContext;
 
+    /**
+     * Local vars declared in this fragment, after JS evaluation
+     */
     vars: Map<string, unknown> = new Map();
 
     constructor(pipeline: Pipeline, fragment: Fragment, usageContext: UsageContext) {
@@ -79,6 +105,9 @@ export class CompileData {
         this.usageContext = usageContext;
     }
 
+    /**
+     * Creates an EvalContext that can be used to execute embedded JS in a context matching the current compilation state.
+     */
     createEvalContext(): EvalContext {
         return new EvalContext(this.pipeline, this.fragment, this.usageContext, this.vars);
     }

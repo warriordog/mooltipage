@@ -1,19 +1,13 @@
-import { Fragment } from './object/fragment';
-import { PipelineCache } from './pipelineCache';
-import { UsageContext } from './usageContext';
-import { PipelineInterface, ResourceType } from './pipelineInterface';
-import { HtmlFormatter } from './htmlFormatter';
-import { ResourceParser } from './resourceParser';
-import { HtmlSerializer }  from './htmlSerializer';
-import { HtmlCompiler } from './htmlCompiler';
-import { EvalContent, EvalContext } from './evalEngine';
-import { Component, ComponentScriptInstance } from './object/component';
-import { Page } from './object/page';
-import { DocumentNode } from '../dom/node';
-import { ResourceBinder } from './resourceBinder';
-import { TextCompiler } from './textCompiler';
-import { ContentHasher } from './contentHasher';
+import { PipelineCache, PipelineInterface, HtmlFormatter, ResourceParser, HtmlCompiler, ResourceBinder, HtmlSerializer, TextCompiler, ContentHasher, Page, UsageContext, ResourceType, Fragment, Component, DocumentNode, EvalContext, ComponentScriptInstance, EvalContent } from "..";
 
+/**
+ * Primary compilation pipeline.
+ * Takes one raw, uncompiled page from the pipeline input, and writes one compiled, pure-html page to the pipeline output.
+ * The produced page is fully compiled and ready to be rendered by a standard web browser.
+ * Additionally, it will be formatted by any HTML Formatter provided.
+ * 
+ * Any incidental resources (such as stylesheets) will be fed to the pipeline interface via createResource().
+ */
 export class Pipeline {
     private readonly cache: PipelineCache;
 
@@ -26,6 +20,17 @@ export class Pipeline {
     readonly textCompiler: TextCompiler;
     readonly contentHasher: ContentHasher;
 
+    /**
+     * Create a new instance of the pipeline
+     * @param pipelineInterface Pipeline interface instance
+     * @param htmlFormatter Optional HTML formatter to use
+     * @param resourceParser Optional override for standard ResourceParser
+     * @param htmlCompiler Optional override for standard HtmlCompiler
+     * @param resourceBinder Optional override for standard ResourceBinder
+     * @param htmlSerializer Optional override for standard HtmlSerializer
+     * @param textCompiler Optional override for standard TextCompiler
+     * @param contentHasher Optional override for standard ContentHasher
+     */
     constructor(pipelineInterface: PipelineInterface, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler, resourceBinder?: ResourceBinder, htmlSerializer?: HtmlSerializer, textCompiler?: TextCompiler, contentHasher?: ContentHasher) {
         // internal
         this.cache = new PipelineCache();
@@ -45,6 +50,12 @@ export class Pipeline {
         this.contentHasher = contentHasher ?? new ContentHasher();
     }
 
+    /**
+     * Compiles a page from start to finish.
+     * This is the only entry point that should be called by user code.
+     * 
+     * @param resPath Path to the page, relative to both source and destination.
+     */
     compilePage(resPath: string): CompiledPage {
         // parse page HTML as fragment
         const pageFragment = this.getOrParseFragment(resPath);
@@ -80,6 +91,12 @@ export class Pipeline {
         };
     }
 
+    /**
+     * Compiles a fragment. Internal use only.
+     * 
+     * @param resPath Path to fragment source
+     * @param usageContext Current usage context
+     */
     compileFragment(resPath: string, usageContext: UsageContext): Fragment {
         // get fragment from cache or htmlSource
         const fragment: Fragment = this.getOrParseFragment(resPath);
@@ -95,6 +112,12 @@ export class Pipeline {
         return fragment;
     }
 
+    /**
+     * Compiles a component. Internal use only.
+     * 
+     * @param resPath Path to component source
+     * @param usageContext Current usage context
+     */
     compileComponent(resPath: string, baseUsageContext: UsageContext): Fragment {
         // get or parse component
         const component: Component = this.getOrParseComponent(resPath);
@@ -102,10 +125,10 @@ export class Pipeline {
         // create fragment
         const fragDom: DocumentNode = component.template.dom;
         const fragResPath = component.template.srcResPath ?? resPath;
-        const fragment: Fragment = new Fragment(fragResPath, fragDom);
+        const fragment = new Fragment(fragResPath, fragDom);
 
         // create component script instance
-        const componentInstanceEvalContext: EvalContext = new EvalContext(this, fragment, baseUsageContext, new Map());
+        const componentInstanceEvalContext = new EvalContext(this, fragment, baseUsageContext, new Map());
         const componentInstance: ComponentScriptInstance = component.script.scriptFunction.invoke(componentInstanceEvalContext);
 
         // add component script data to context
@@ -131,6 +154,14 @@ export class Pipeline {
         return fragment;
     }
 
+    /**
+     * Compiles text in a Document.
+     * Embedded scripts will be evaluated in the current context.
+     * Internal use only.
+     * 
+     * @param value Text value
+     * @param evalContext Current compilation context
+     */
     compileDomText(value: string | null, evalContext: EvalContext): unknown {
         // value is null
         if (value == null) {
@@ -154,10 +185,26 @@ export class Pipeline {
         return value;
     }
 
+    /**
+     * Compiles CSS. Currently a no-op.
+     * Internal use only.
+     * 
+     * @param css CSS text
+     */
     compileCss(css: string): string {
         return css;
     }
 
+    /**
+     * Links a created resource to the compilation output.
+     * This method ONLY handles saving the contents, it does not compile them or link them to the page context.
+     * This method is ONLY for created (incidental) resources.
+     * Internal use only.
+     * 
+     * @param type Type of resource
+     * @param contents Contents as a UTF-8 string
+     * @param sourceResPath Path to the explicit resource that has produced this created resource
+     */
     linkResource(type: ResourceType, contents: string, sourceResPath: string): string {
         // hash contents
         const contentsHash = this.contentHasher.fastHashContent(contents);
@@ -186,14 +233,19 @@ export class Pipeline {
         return resPath;
     }
 
-    getRawResource(type: ResourceType, resPath: string): string {
-        return this.pipelineInterface.getResource(type, resPath);
-    }
-
+    /**
+     * Gets a raw (parsed but uncompiled) fragment.
+     * Internal use only.
+     * 
+     * @param resPath Path to fragment
+     */
     getRawFragment(resPath: string): Fragment {
         return this.getOrParseFragment(resPath);
     }
 
+    /**
+     * Resets the pipeline to its initial state.
+     */
     reset(): void {
         // clear cache to reset state
         this.cache.clear();
@@ -261,6 +313,10 @@ export class Pipeline {
     }
 }
 
+/**
+ * The ouput of page compilation.
+ * Contains compiled HTML and page DOM.
+ */
 export interface CompiledPage {
     page: Page;
     html: string;

@@ -1,13 +1,8 @@
-import { Fragment } from "./object/fragment";
-import { DocumentNode, TagNode, TextNode } from '../dom/node';
-import { DomParser } from '../dom/domParser';
-import { Page } from "./object/page";
-import { Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ComponentScriptInstance } from "./object/component";
-import { EvalContent, EvalEngine } from "./evalEngine";
-import { StyleBindType } from "./resourceBinder";
-import { ResourceType } from "./pipelineInterface";
-import { Pipeline } from "./pipeline";
+import { EvalEngine, Pipeline, DomParser, Fragment, DocumentNode, Page, Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ResourceType, EvalContent, ComponentScriptInstance, StyleBindType, TagNode, TextNode } from "..";
 
+/**
+ * Provides input parsing functionality to the pipeline
+ */
 export class ResourceParser {
     private readonly evalEngine: EvalEngine;
     private readonly pipeline: Pipeline;
@@ -19,6 +14,11 @@ export class ResourceParser {
         this.domParser = new DomParser();
     }
 
+    /**
+     * Parse HTML text as a fragment
+     * @param resPath Source path
+     * @param html HTMl content
+     */
     parseFragment(resPath: string, html: string): Fragment {
         // parse HTML
         const dom: DocumentNode = this.domParser.parseDom(html);
@@ -27,6 +27,11 @@ export class ResourceParser {
         return new Fragment(resPath, dom);
     }
 
+    /**
+     * Parse HTML text as a page
+     * @param resPath Source path
+     * @param html HTMl content
+     */
     parsePage(resPath: string, html: string): Page {
         // parse HTML
         const dom: DocumentNode = this.domParser.parseDom(html);
@@ -35,6 +40,11 @@ export class ResourceParser {
         return new Page(resPath, dom);
     }
 
+    /**
+     * Parse HTML text as a component
+     * @param resPath Source path
+     * @param html HTMl content
+     */
     parseComponent(resPath: string, html: string): Component {
         // parse HTML
         const dom: DocumentNode = this.domParser.parseDom(html);
@@ -52,6 +62,11 @@ export class ResourceParser {
         return new Component(resPath, componentTemplate, componentScript, componentStyle);
     }
 
+    /**
+     * Extract and parse the <template> section of a component
+     * @param resPath Path to component
+     * @param dom Component root document
+     */
     private parseComponentTemplate(resPath: string, dom: DocumentNode): ComponentTemplate {
         // find template node
         const templateNode = dom.findChildTagByTagName('template', false);
@@ -71,6 +86,13 @@ export class ResourceParser {
         return new ComponentTemplate(templateDom, templateSrc);
     }
 
+    /**
+     * Extract and parse the <script> section of a component.
+     * If section is external, then it will be loaded via the pipeline.
+     * 
+     * @param resPath Path to component
+     * @param dom Component root document
+     */
     private parseComponentScript(resPath: string, dom: DocumentNode): ComponentScript {
         // find script node
         const scriptNode = dom.findChildTagByTagName('script', false);
@@ -100,6 +122,14 @@ export class ResourceParser {
         return new ComponentScript(scriptType, scriptFunc, scriptSrc);
     }
 
+    /**
+     * Extract and parse the <style> section of a component.
+     * If section is external, then it will be loaded via the pipeline.
+     * 
+     * @param resPath Path to component
+     * @param dom Component root document
+     * @returns Returns the parsed ComponentStyle, or undefined if this component does not have a style section
+     */
     private parseComponentStyle(resPath: string, dom: DocumentNode): ComponentStyle | undefined {
         // find style node
         const styleNode = dom.findChildTagByTagName('style', false);
@@ -132,7 +162,7 @@ export class ResourceParser {
             const resPath = sectionNode.getRequiredValueAttribute('src');
 
             // load resource
-            return this.pipeline.getRawResource(resourceType, resPath);
+            return this.pipeline.pipelineInterface.getResource(resourceType, resPath);
         } else {
             const textNode = sectionNode.firstChild;
             if (textNode == null) {

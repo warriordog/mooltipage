@@ -1,5 +1,5 @@
 import test from 'ava';
-import { TextCompiler } from '../../lib/index';
+import { TextCompiler } from '../../lib';
 
 test('[unit] Text compiler recognises template text', t => {
     const textCompiler = new TextCompiler();

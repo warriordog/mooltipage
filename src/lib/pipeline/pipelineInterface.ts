@@ -1,9 +1,29 @@
+/**
+ * Provides file I/O support to the pipeline
+ */
 export interface PipelineInterface {
+    /**
+     * Writes a resource of a specified type to the pipeline output.
+     * This resource must exist in the pipeline source, for incidentally created resources use createResource()
+     * 
+     * @param type Type of resource
+     * @param resPath Relative path to resource (source and destination) 
+     * @param contents File contents as a UTF-8 string
+     */
     writeResource(type: ResourceType, resPath: string, contents: string): void;
+
+    /**
+     * Reads a resource of a specified type from the pipeline input.
+     * 
+     * @param type Type of resource
+     * @param resPath Relative path to resource (source and destination)
+     */
     getResource(type: ResourceType, resPath: string): string;
 
     /**
      * Creates a new output resource and generates a resource path to reference it
+     * This should be used for all incidentally created resources, such as external stylesheets.
+     * 
      * @param type MIME type of the new resource
      * @param contents File contents
      * @param sourceResPath Resource path of the resource that spawned this resource

@@ -1,5 +1,8 @@
 import crypto from 'crypto';
 
+/**
+ * Provides content hashing functionality for the pipeline.
+ */
 export class ContentHasher {
     /**
      * Create a NON-CRYPTOGRAPHIC (INSECURE) hash of some pipeline content.

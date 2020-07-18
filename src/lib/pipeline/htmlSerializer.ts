@@ -1,6 +1,8 @@
-import { DomSerializer } from '../dom/domSerializer';
-import { Page } from "./object/page";
+import { DomSerializer, Page } from "..";
 
+/**
+ * Provides HTML serialization support to the pipeline
+ */
 export class HtmlSerializer {
     private readonly serializer: DomSerializer;
 
@@ -8,6 +10,10 @@ export class HtmlSerializer {
         this.serializer = new DomSerializer();
     }
     
+    /**
+     * Serialize a page into HTML
+     * @param page Page to serialialize
+     */
     serializePage(page: Page): string {
         return this.serializer.serialize(page.dom);
     }

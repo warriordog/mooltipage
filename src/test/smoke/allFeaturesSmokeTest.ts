@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Pipeline, BasicHtmlFormatter, ResourceType } from '../../lib/index';
+import { Pipeline, BasicHtmlFormatter, ResourceType } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 test('[smoke] Build produces a page and does not crash', t => {

@@ -1,4 +1,4 @@
-import { PipelineInterface, ResourceType } from '../../lib/pipeline/pipelineInterface';
+import { PipelineInterface, ResourceType } from '../../lib';
 
 export class MemoryPipelineInterface implements PipelineInterface {
     sourceContent: Map<string, TestResource> = new Map();

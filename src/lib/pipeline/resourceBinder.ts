@@ -1,8 +1,8 @@
-import { UsageContext } from "./usageContext";
-import { TextNode, TagNode } from "../dom/node";
-import { Pipeline } from "./pipeline";
-import { ResourceType } from "./pipelineInterface";
+import { Pipeline, UsageContext, TextNode, TagNode, ResourceType } from "..";
 
+/**
+ * Provides embedded and external resource binding to the pipeline.
+ */
 export class ResourceBinder {
     private readonly pipeline: Pipeline;
 
@@ -10,6 +10,14 @@ export class ResourceBinder {
         this.pipeline = pipeline;
     }
 
+    /**
+     * Binds CSS styles to the current page.
+     * 
+     * @param resPath Path to the style resource
+     * @param styleContent CSS text content
+     * @param bindType Type of binding to use
+     * @param usageContext Current usage context
+     */
     bindStyle(resPath: string, styleContent: string, bindType: StyleBindType, usageContext: UsageContext): void {
         switch (bindType) {
             case StyleBindType.HEAD: {

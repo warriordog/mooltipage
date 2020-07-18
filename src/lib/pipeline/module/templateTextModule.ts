@@ -1,9 +1,9 @@
-import { CompilerModule, CompileData } from "../htmlCompiler";
-import { Node, TagNode, TextNode } from "../../dom/node";
-import { EvalContext } from "../evalEngine";
+import { CompilerModule, CompileData, EvalContext, Node, TextNode, TagNode } from "../..";
 
+/**
+ * Compile module that detects and evalutates embedded JS expressions in attributes and text nodes
+ */
 export class TemplateTextModule implements CompilerModule {
-
     compileFragment(compileData: CompileData): void {
         // create eval context
         const evalContext: EvalContext = compileData.createEvalContext();

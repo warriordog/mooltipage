@@ -1,5 +1,5 @@
 import test from 'ava';
-import { PipelineCache, Fragment, DocumentNode, EvalContentFunction, Component, ComponentTemplate, ComponentScript, ComponentScriptType } from '../../lib/index';
+import { PipelineCache, Fragment, DocumentNode, EvalContentFunction, Component, ComponentTemplate, ComponentScript, ComponentScriptType } from '../../lib';
 
 function createTestComponent(): Component {
     const template = new ComponentTemplate(new DocumentNode());

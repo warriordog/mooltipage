@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Pipeline, ResourceType, UsageContext, Page, DocumentNode, Node, TagNode, EvalContext, Fragment } from '../../lib/index';
+import { Pipeline, ResourceType, UsageContext, Page, DocumentNode, Node, TagNode, EvalContext, Fragment } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 test('[integration] Components should load external templates', t => {

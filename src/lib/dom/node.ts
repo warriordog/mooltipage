@@ -1,5 +1,8 @@
-import * as NodeTools from './nodeTools';
+import { NodeTools } from "..";
 
+/**
+ * Recognized node types
+ */
 export enum NodeType {
     Tag = 'tag',
     Text = 'text',
@@ -9,12 +12,31 @@ export enum NodeType {
     Document = 'document'
 }
 
+/**
+ * A DOM node
+ */
 export abstract class Node {
+    /**
+     * Type of this node
+     */
     readonly nodeType: NodeType;
 
+    /**
+     * Parent of this node, or null if there is none.
+     * Do not modify this directly, use NodeTools or instance methods.
+     */
     parentNode: NodeWithChildren | null = null;
 
+    /**
+     * Previous sibling, or null.
+     * Do not modify this directly, use NodeTools or instance methods.
+     */
     prevSibling: Node | null = null;
+
+    /**
+     * Next sibling, or null.
+     * Do not modify this directly, use NodeTools or instance methods.
+     */
     nextSibling: Node | null = null;
 
     constructor(nodeType: NodeType) {
@@ -35,18 +57,30 @@ export abstract class Node {
         NodeTools.replaceNode(this, nodes);
     }
 
+    /**
+     * Clone this node
+     * @param deep If true, child nodes will be cloned
+     * @param callback Optional callback for each node after cloning
+     */
     abstract clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): Node;
 }
 
+/**
+ * Base type for any type of node that can have children
+ */
 export abstract class NodeWithChildren extends Node {
+    /**
+     * Children of this node.
+     * Do not modify this directly, use NodeTools or instance methods.
+     */
     childNodes: Node[] = [];
 
     get firstChild(): Node | null {
-        return NodeTools.getFirstChild(this.childNodes);
+        return NodeTools.getFirstNode(this.childNodes);
     }
 
     get lastChild(): Node | null {
-        return NodeTools.getLastChild(this.childNodes);
+        return NodeTools.getLastNode(this.childNodes);
     }
 
     getChildTags(): TagNode[] {
@@ -160,12 +194,22 @@ export abstract class NodeWithChildren extends Node {
         NodeTools.swapNode(this, replacement);
     }
 
+    /**
+     * Returns true if a node is an instance of NodeWithChildren
+     * @param node Node to check
+     */
     static isNodeWithChildren(node: Node): node is NodeWithChildren {
         return node.nodeType === NodeType.CDATA || node.nodeType === NodeType.Tag || node.nodeType === NodeType.Document;
     }
 }
 
+/**
+ * Parent type for any node that includes textual data
+ */
 export abstract class NodeWithText extends Node {
+    /**
+     * Text contained by this node
+     */
     text: string;
 
     constructor(nodeType: NodeType, text: string) {
@@ -173,12 +217,22 @@ export abstract class NodeWithText extends Node {
         this.text = text;
     }
 
+    /**
+     * Returns true if a node is an instance of NodeWithText
+     * @param node Node to check
+     */
     static isNodeWithText(node: Node): node is NodeWithText {
         return node.nodeType === NodeType.Text || node.nodeType === NodeType.Comment;
     }
 }
 
+/**
+ * Parent type for any node that includes raw data
+ */
 export abstract class NodeWithData extends Node {
+    /**
+     * Data contained by this node
+     */
     data: string;
 
     constructor(nodeType: NodeType, data: string) {
@@ -186,13 +240,28 @@ export abstract class NodeWithData extends Node {
         this.data = data;
     }
 
+    /**
+     * Returns true if a node is an instance of NodeWithData
+     * @param node Node to check
+     */
     static isNodeWithData(node: Node): node is NodeWithData {
         return node.nodeType === NodeType.ProcessingInstruction;
     }
 }
 
+/**
+ * A tag node
+ */
 export class TagNode extends NodeWithChildren {
+    /**
+     * Name of the tag
+     */
     readonly tagName: string;
+
+    /**
+     * Attributes on this tag node.
+     * Do not modify directly, use attribute API instance methods.
+     */
     protected attributes: Map<string, string | null>;
 
     constructor(tagName: string, attributes?: Map<string, string | null>) {
@@ -201,14 +270,26 @@ export class TagNode extends NodeWithChildren {
         this.attributes = attributes ?? new Map<string, string | null>();
     }
 
+    /**
+     * Checks if this tag has a specified attribute
+     * @param name Name of the attribute
+     */
     hasAttribute(name: string): boolean {
         return this.attributes.has(name);
     }
 
+    /**
+     * Gets the value of an attribute, or undefined the attribute does not exist
+     * @param name Name of the attribute
+     */
     getAttribute(name: string): string | null | undefined {
         return this.attributes.get(name);
     }
 
+    /**
+     * Gets the value of an attribute, or throws an exception if the attribute does not exist
+     * @param name Name of the attribute
+     */
     getRequiredAttribute(name: string): string | null {
         if (!this.hasAttribute(name)) {
             throw new Error(`Missing required attribute '${name}'`);
@@ -218,6 +299,10 @@ export class TagNode extends NodeWithChildren {
         return this.getAttribute(name) as string | null;
     }
 
+    /**
+     * Gets the value of an attribute, or throws an exception if the attribute does not exist or the value is null
+     * @param name Name of the attribute
+     */
     getRequiredValueAttribute(name: string): string {
         const attr: string | null = this.getRequiredAttribute(name);
 
@@ -228,6 +313,12 @@ export class TagNode extends NodeWithChildren {
         return attr;
     }
 
+    /**
+     * Gets the value of an attribute, or returns undefined if the attribute does not exist.
+     * Throws an exception if attribute value is null.
+     * 
+     * @param name Name of the attribute
+     */
     getOptionalValueAttribute(name: string): string | undefined {
         if (this.hasAttribute(name)) {
             return this.getRequiredValueAttribute(name);
@@ -236,10 +327,22 @@ export class TagNode extends NodeWithChildren {
         }
     }
 
+    /**
+     * Sets the value of an attribute
+     * @param name Name of the attribute
+     * @param value Value of the attribute
+     */
     setAttribute(name: string, value: string | null): void {
         this.attributes.set(name, value);
     }
 
+    /**
+     * Sets the value of a boolean attribute.
+     * A boolean attribute has no value, it only exists or does not exist.
+     * 
+     * @param name Name of the attribute
+     * @param value Value of the attribute
+     */
     setBooleanAttribute(name: string, value: boolean): void {
         if (value) {
             this.setAttribute(name, null);
@@ -248,14 +351,26 @@ export class TagNode extends NodeWithChildren {
         }
     }
 
+    /**
+     * Sets the value of an attribute that cannot be null
+     * @param name Name of the attribute
+     * @param value Value of the attribute
+     */
     setRequiredValueAttribute(name: string, value: string): void {
         this.setAttribute(name, value);
     }
 
+    /**
+     * Removes an attribute from this tag
+     * @param name Name of the attribute
+     */
     deleteAttribute(name: string): void {
         this.attributes.delete(name);
     }
 
+    /**
+     * Gets a ReadonlyMap containing all attributes on this tag
+     */
     getAttributes(): ReadonlyMap<string, string | null> {
         return this.attributes;
     }
@@ -264,11 +379,18 @@ export class TagNode extends NodeWithChildren {
         return NodeTools.cloneTagNode(this, deep, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of TagNode
+     * @param node Node to check
+     */
     static isTagNode(node: Node): node is TagNode {
         return node.nodeType === NodeType.Tag;
     }
 }
 
+/**
+ * A text node
+ */
 export class TextNode extends NodeWithText {
     constructor(text = '') {
         super(NodeType.Text, text);
@@ -278,11 +400,18 @@ export class TextNode extends NodeWithText {
         return NodeTools.cloneTextNode(this, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of TextNode
+     * @param node Node to check
+     */
     static isTextNode(node: Node): node is TextNode {
         return node.nodeType === NodeType.Text;
     }
 }
 
+/**
+ * A comment node
+ */
 export class CommentNode extends NodeWithText {
     constructor(text = '') {
         super(NodeType.Comment, text);
@@ -292,11 +421,18 @@ export class CommentNode extends NodeWithText {
         return NodeTools.cloneCommentNode(this, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of CommentNode
+     * @param node Node to check
+     */
     static isCommentNode(node: Node): node is CommentNode {
         return node.nodeType === NodeType.Comment;
     }
 }
 
+/**
+ * A CDATA node
+ */
 export class CDATANode extends NodeWithChildren {
     constructor() {
         super(NodeType.CDATA);
@@ -306,12 +442,22 @@ export class CDATANode extends NodeWithChildren {
         return NodeTools.cloneCDATANode(this, deep, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of CDATANode
+     * @param node Node to check
+     */
     static isCDATANode(node: Node): node is CDATANode {
         return node.nodeType === NodeType.CDATA;
     }
 }
 
+/**
+ * A Processing instruction node
+ */
 export class ProcessingInstructionNode extends NodeWithData {
+    /**
+     * Name of this processing instruction
+     */
     name: string;
 
     constructor(name = '', data = '') {
@@ -323,11 +469,18 @@ export class ProcessingInstructionNode extends NodeWithData {
         return NodeTools.cloneProcessingInstructionNode(this, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of ProcessingInstructionNode
+     * @param node Node to check
+     */
     static isProcessingInstructionNode(node: Node): node is ProcessingInstructionNode {
         return node.nodeType === NodeType.ProcessingInstruction;
     }
 }
 
+/**
+ * A document node
+ */
 export class DocumentNode extends NodeWithChildren {
     constructor() {
         super(NodeType.Document);
@@ -337,11 +490,18 @@ export class DocumentNode extends NodeWithChildren {
         return NodeTools.cloneDocumentNode(this, deep, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of DocumentNode
+     * @param node Node to check
+     */
     static isDocumentNode(node: Node): node is DocumentNode {
         return node.nodeType === NodeType.Document;
     }
 }
 
+/**
+ * Parent type for any custom tag that includes an external reference
+ */
 export abstract class ExternalReferenceNode extends TagNode {
     constructor(tagName: string, src: string, attributes?: Map<string, string | null>) {
         super(tagName, attributes);
@@ -350,6 +510,9 @@ export abstract class ExternalReferenceNode extends TagNode {
     }
 
     // must be dynamic to reflect changes to attributes
+    /**
+     * Parameters to the external reference.
+     */
     get parameters(): ReadonlyMap<string, string> {
         const params: Map<string, string> = new Map();
 
@@ -367,6 +530,9 @@ export abstract class ExternalReferenceNode extends TagNode {
         return params;
     }
 
+    /**
+     * Path to the source of the external reference
+     */
     get src(): string {
         return this.getRequiredValueAttribute('src');
     }
@@ -377,6 +543,9 @@ export abstract class ExternalReferenceNode extends TagNode {
     abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ExternalReferenceNode;
 }
 
+/**
+ * m-fragment tag
+ */
 export class MFragmentNode extends ExternalReferenceNode {
     constructor(src: string, attributes?: Map<string, string | null>) {
         super('m-fragment', src, attributes);
@@ -386,11 +555,18 @@ export class MFragmentNode extends ExternalReferenceNode {
         return NodeTools.cloneMFragmentNode(this, deep, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of MFragmentNode
+     * @param node Node to check
+     */
     static isMFragmentNode(node: Node): node is MFragmentNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-fragment';
     }
 }
 
+/**
+ * m-component tag
+ */
 export class MComponentNode extends ExternalReferenceNode {
     constructor(src: string, attributes?: Map<string, string | null>) {
         super('m-component', src, attributes);
@@ -400,11 +576,18 @@ export class MComponentNode extends ExternalReferenceNode {
         return NodeTools.cloneMComponentNode(this, deep, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of MComponentNode
+     * @param node Node to check
+     */
     static isMComponentNode(node: Node): node is MComponentNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-component';
     }
 }
 
+/**
+ * Parent type for any custom tag that refers to a slot
+ */
 export abstract class SlotReferenceNode extends TagNode {
     constructor(tagName: string, slot?: string | null | undefined, attributes?: Map<string, string | null>) {
         super(tagName, attributes);
@@ -414,6 +597,9 @@ export abstract class SlotReferenceNode extends TagNode {
     }
 
     // must be dynamic to reflect attribute changes
+    /**
+     * Name of the slot
+     */
     get slot(): string {
         return this.getRequiredValueAttribute('slot')
     }
@@ -424,6 +610,9 @@ export abstract class SlotReferenceNode extends TagNode {
     abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): SlotReferenceNode;
 }
 
+/**
+ * m-content tag
+ */
 export class MContentNode extends SlotReferenceNode {
     constructor(slot?: string | null | undefined, attributes?: Map<string, string | null>) {
         super('m-content', slot, attributes);
@@ -433,11 +622,18 @@ export class MContentNode extends SlotReferenceNode {
         return NodeTools.cloneMContentNode(this, deep, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of MContentNode
+     * @param node Node to check
+     */
     static isMContentNode(node: Node): node is MContentNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-content';
     }
 }
 
+/**
+ * m-slot tag
+ */
 export class MSlotNode extends SlotReferenceNode {
     constructor(slot?: string | null | undefined, attributes?: Map<string, string | null>) {
         super('m-slot', slot, attributes);
@@ -447,17 +643,27 @@ export class MSlotNode extends SlotReferenceNode {
         return NodeTools.cloneMSlotNode(this, deep, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of MSlotNode
+     * @param node Node to check
+     */
     static isMSlotNode(node: Node): node is MSlotNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-slot';
     }
 }
 
+/**
+ * m-var tag
+ */
 export class MVarNode extends TagNode {
     constructor(attributes?: Map<string, string | null>) {
         super('m-var', attributes);
     }
 
     // this must be dynamic to reflect changes to attributes
+    /**
+     * Local Variables defined on this <m-var> tag
+     */
     get variables(): ReadonlyMap<string, string> {
         const vars: Map<string, string> = new Map();
 
@@ -478,11 +684,18 @@ export class MVarNode extends TagNode {
         return NodeTools.cloneMVarNode(this, deep, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of MVarNode
+     * @param node Node to check
+     */
     static isMVarNode(node: Node): node is MVarNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-var';
     }
 }
 
+/**
+ * m-import tag
+ */
 export class MImportNode extends TagNode {
     constructor(src: string, as: string, fragment: boolean, component: boolean, attributes?: Map<string, string | null>) {
         super('m-import', attributes);
@@ -493,6 +706,9 @@ export class MImportNode extends TagNode {
         this.setBooleanAttribute('component', component);
     }
 
+    /**
+     * Path to the import source
+     */
     get src(): string {
         return this.getRequiredValueAttribute('src');
     }
@@ -500,6 +716,9 @@ export class MImportNode extends TagNode {
         this.setAttribute('src', newSrc);
     }
 
+    /**
+     * Alias for the import
+     */
     get as(): string {
         return this.getRequiredValueAttribute('as');
     }
@@ -507,6 +726,9 @@ export class MImportNode extends TagNode {
         this.setAttribute('as', newAs);
     }
 
+    /**
+     * If true, this is a fragment import
+     */
     get fragment(): boolean {
         return this.hasAttribute('fragment');
     }
@@ -514,6 +736,9 @@ export class MImportNode extends TagNode {
         this.setBooleanAttribute('fragment', newFragment);
     }
 
+    /**
+     * If true, this is a component import
+     */
     get component(): boolean {
         return this.hasAttribute('component');
     }
@@ -525,6 +750,10 @@ export class MImportNode extends TagNode {
         return NodeTools.cloneMImportNode(this, deep, callback);
     }
 
+    /**
+     * Returns true if a node is an instance of MImportNode
+     * @param node Node to check
+     */
     static isMImportNode(node: Node): node is MImportNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-import';
     }

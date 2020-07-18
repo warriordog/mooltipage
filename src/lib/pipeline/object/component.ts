@@ -1,8 +1,14 @@
-import { DocumentNode } from "../../dom/node";
-import { EvalContext, EvalContent } from "../evalEngine";
-import { StyleBindType } from "../resourceBinder";
+import { DocumentNode, EvalContent, EvalContext, StyleBindType } from "../..";
 
+/**
+ * A resuable page component. Contains a template, script, and optionally CSS stylesheet.
+ * Does not exist post-compilation.
+ * Can be cloned to support caching.
+ */
 export class Component {
+    /**
+     * Path to the component file, relative to source.
+     */
     readonly resPath: string;
 
     /**
@@ -38,6 +44,9 @@ export class Component {
     }
 }
 
+/**
+ * The template section of a component
+ */
 export class ComponentTemplate {
     /**
      * DOM for this component template
@@ -67,6 +76,9 @@ export class ComponentTemplate {
     }
 }
 
+/**
+ * The script section of a component
+ */
 export class ComponentScript {
     /**
      * Type of this script.

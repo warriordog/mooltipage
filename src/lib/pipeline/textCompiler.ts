@@ -1,5 +1,9 @@
-import { EvalContent, EvalEngine } from "./evalEngine";
+import { EvalContent, EvalEngine } from "..";
 
+/**
+ * Compiles DOM text for the pipeline.
+ * Handles recognizition and execution of embedded JS code.
+ */
 export class TextCompiler {
     private readonly evalEngine: EvalEngine;
 
@@ -7,6 +11,10 @@ export class TextCompiler {
         this.evalEngine = new EvalEngine();
     }
 
+    /**
+     * Check if the given string contains embedded JS script(s) that should be executed.
+     * @param value The string to check
+     */
     isScriptText(value: string): boolean {
         // value is template string
         if (templateTextRegex.test(value)) {
@@ -22,6 +30,12 @@ export class TextCompiler {
         return false;
     }
 
+    /**
+     * Compiles JS code embedded within a string, and then returns a callable function that will return the output of that code.
+     * Result object is stateless and can be safely cached and reused.
+     * 
+     * @param value The string to compile.
+     */
     compileScriptText(value: string): EvalContent<unknown> {
         // value is template string
         if (templateTextRegex.test(value)) {
@@ -49,8 +63,12 @@ export class TextCompiler {
     }
 }
 
-// regular expression to detect a JS template string litteral
-export const templateTextRegex = /(?<!\\)\${(([^\\}]|\\}|\\)*)}/;
+/**
+ * regular expression to detect a JS template string litteral
+ */
+const templateTextRegex = /(?<!\\)\${(([^\\}]|\\}|\\)*)}/;
 
-// regular expression to detect handlebars {{ }}
-export const handlebarsRegex = /^\s*(?<!\\){{(.*)}}\s*$/;
+/**
+ * regular expression to detect handlebars {{ }}
+ */
+const handlebarsRegex = /^\s*(?<!\\){{(.*)}}\s*$/;

@@ -1,9 +1,27 @@
-import { TagNode, DocumentNode, NodeWithChildren } from "../../dom/node";
+import { DocumentNode, TagNode, NodeWithChildren } from "../..";
 
+/**
+ * A compiled or compiling page
+ */
 export class Page {
+    /**
+     * Path to page, relative to both source and destination
+     */
     readonly resPath: string;
+
+    /**
+     * Page document
+     */
     readonly dom: DocumentNode;
+
+    /**
+     * Page body tag (created if the page source didn't have one)
+     */
     readonly body: TagNode;
+
+    /**
+     * Page head tag (created if the page source didn't have one)
+     */
     readonly head: TagNode;
 
     constructor(resPath: string, dom: DocumentNode) {

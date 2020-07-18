@@ -1,5 +1,5 @@
 import test, { ExecutionContext } from 'ava';
-import { Pipeline } from '../../lib/index';
+import { Pipeline } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 const PAGE_MIN = `<!DOCTYPE html><html lang="en"><head><title>Page</title></head><body><div class="foo"><p>Hello</p><br /><p>World!</p></div></body></html>`;

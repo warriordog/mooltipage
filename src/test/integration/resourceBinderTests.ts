@@ -1,7 +1,6 @@
 import test from 'ava';
-import { Pipeline, ResourceType, UsageContext, Page, DocumentNode, TextNode, Node } from '../../lib/index';
+import { Pipeline, ResourceType, UsageContext, Page, DocumentNode, TextNode, Node, StyleBindType } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
-import { StyleBindType } from '../../lib/pipeline/resourceBinder';
 
 test('[integration] ResourceBinder can bind stylesheet to head', t => {
     const stylesheet = '.some-class { } .other-class { }';
