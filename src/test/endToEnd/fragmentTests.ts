@@ -92,11 +92,9 @@ test('[endToEnd] Fragment compile to correct DOM', t => {
 
     // compile fragment
     const output = pipeline.compilePage('page.html');
-    const page = output.page;
-    const html = pi.getDestinationValue('page.html');
 
     // validate
-    t.is(html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"></div></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"></div></div></body></html>');
 });
 
 test('[endToEnd] Repeated fragment usages have correct scope', t => {

@@ -1,10 +1,9 @@
-import { PipelineObject } from "./pipelineObject";
 import { DocumentNode } from "../../dom/node";
 import { EvalContext, EvalContent } from "../evalEngine";
 import { StyleBindType } from "../resourceBinder";
 
-export class Component implements PipelineObject {
-    readonly resId: string;
+export class Component {
+    readonly resPath: string;
 
     /**
      * Template section for this component
@@ -17,12 +16,12 @@ export class Component implements PipelineObject {
     readonly script: ComponentScript;
 
     /**
-     * Style section for this component, if preset.  Will be undefined if this component does not have a style section.
+     * Style section for this component, if preset. Will be undefined if this component does not have a style section.
      */
     readonly style?: ComponentStyle;
 
-    constructor(resId: string, template: ComponentTemplate, script: ComponentScript, style?: ComponentStyle) {
-        this.resId = resId;
+    constructor(resPath: string, template: ComponentTemplate, script: ComponentScript, style?: ComponentStyle) {
+        this.resPath = resPath;
         this.template = template;
         this.script = script;
         this.style = style;
@@ -33,7 +32,7 @@ export class Component implements PipelineObject {
         const newScript: ComponentScript = this.script.clone();
         const newStyle: ComponentStyle | undefined = this.style?.clone();
 
-        const newComponent: Component = new Component(this.resId, newTemplate, newScript, newStyle);
+        const newComponent: Component = new Component(this.resPath, newTemplate, newScript, newStyle);
 
         return newComponent;
     }
@@ -46,14 +45,14 @@ export class ComponentTemplate {
     readonly dom: DocumentNode;
 
     /**
-     * Resource ID of the external source for this template, if applicable.
+     * Resource path of the external source for this template, if applicable.
      * Will be undefined for internal (single file) components.
      */
-    readonly srcResId?: string;
+    readonly srcResPath?: string;
 
-    constructor(dom: DocumentNode, srcResId?: string) {
+    constructor(dom: DocumentNode, srcResPath?: string) {
         this.dom = dom;
-        this.srcResId = srcResId;
+        this.srcResPath = srcResPath;
     }
 
     /**
@@ -62,7 +61,7 @@ export class ComponentTemplate {
     clone(): ComponentTemplate {
         const newDom: DocumentNode = this.dom.clone(true);
 
-        const newTemplate: ComponentTemplate = new ComponentTemplate(newDom, this.srcResId);
+        const newTemplate: ComponentTemplate = new ComponentTemplate(newDom, this.srcResPath);
 
         return newTemplate;
     }
@@ -76,24 +75,24 @@ export class ComponentScript {
     readonly type: ComponentScriptType;
     
     /**
-     * Resource ID of the external source for this script, if applicable.
+     * Resource path of the external source for this script, if applicable.
      * Will be undefined for internal (single file) components.
      */
-    readonly srcResId?: string;
+    readonly srcResPath?: string;
 
     readonly scriptFunction: EvalContent<ComponentScriptInstance>;
 
-    constructor(type: ComponentScriptType, scriptFunction: EvalContent<ComponentScriptInstance>, srcResId?: string) {
+    constructor(type: ComponentScriptType, scriptFunction: EvalContent<ComponentScriptInstance>, srcResPath?: string) {
         this.type = type;
         this.scriptFunction = scriptFunction;
-        this.srcResId = srcResId;
+        this.srcResPath = srcResPath;
     }
 
     /**
      * Clones this script
      */
     clone(): ComponentScript {
-        return new ComponentScript(this.type, this.scriptFunction, this.srcResId);
+        return new ComponentScript(this.type, this.scriptFunction, this.srcResPath);
     }
 }
 
@@ -138,21 +137,21 @@ export class ComponentStyle {
     readonly bindType: StyleBindType;
 
     /**
-     * Resource ID of the external source for this stylesheet, if applicable.
+     * Resource path of the external source for this stylesheet, if applicable.
      * Will be undefined for internal (single file) components.
      */
-    readonly srcResId?: string;
+    readonly srcResPath?: string;
 
-    constructor(styleContent: string, bindType: StyleBindType, srcResId?: string) {
+    constructor(styleContent: string, bindType: StyleBindType, srcResPath?: string) {
         this.styleContent = styleContent;
         this.bindType = bindType;
-        this.srcResId = srcResId;
+        this.srcResPath = srcResPath;
     }
 
     /**
      * Clones this component style
      */
     clone(): ComponentStyle {
-        return new ComponentStyle(this.styleContent, this.bindType, this.srcResId);
+        return new ComponentStyle(this.styleContent, this.bindType, this.srcResPath);
     }
 }

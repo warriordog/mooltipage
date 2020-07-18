@@ -23,7 +23,7 @@ test('[integration] DomParser handles void tags with explicit closing and space'
 test('[integration] DomParser handles custom tags used as void', testTags, '<div></div><m-slot /><m-content /><m-var /><div></div>', ['div', 'm-slot', 'm-content', 'm-var', 'div']);
 test('[integration] DomParser handles standard tags used as void', testTags, '<div></div><div /><p /><h1 /><div></div>', ['div', 'div', 'p', 'h1', 'div']);
 
-// This is a limition of htmlparser2.
+// This is a bug in htmlparser2. A PR has been submitted to fix the issue.
 test.failing('[integration] DomParser handles special tags used as void', testTags, '<div></div><script /><style /><title /><div></div>', ['div', 'script', 'style', 'title', 'div']);
 
 test('[integration] DomParser allows non-text in <title>', t => {

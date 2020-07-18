@@ -13,95 +13,95 @@ export class MemoryPipelineInterface implements PipelineInterface {
         this.nextCreatedContentId = 0;
     }
 
-    setSource(resId: string, res: TestResource): void {
-        this.sourceContent.set(resId, res);
+    setSource(resPath: string, res: TestResource): void {
+        this.sourceContent.set(resPath, res);
     }
-    setSourceHtml(resId: string, html: string): void {
-        this.setSource(resId, {
+    setSourceHtml(resPath: string, html: string): void {
+        this.setSource(resPath, {
             content: html,
             type: ResourceType.HTML
         });
     }
-    hasSource(resId: string): boolean {
-        return this.sourceContent.has(resId);
+    hasSource(resPath: string): boolean {
+        return this.sourceContent.has(resPath);
     }
-    getSource(resId: string): TestResource | undefined {
-        return this.sourceContent.get(resId);
+    getSource(resPath: string): TestResource | undefined {
+        return this.sourceContent.get(resPath);
     }
-    getSourceValue(resId: string): string | undefined {
-        return this.getSource(resId)?.content;
+    getSourceValue(resPath: string): string | undefined {
+        return this.getSource(resPath)?.content;
     }
 
 
-    setDestination(resId: string, res: TestResource): void {
-        this.destContent.set(resId, res);
+    setDestination(resPath: string, res: TestResource): void {
+        this.destContent.set(resPath, res);
     }
-    setDestinationHtml(resId: string, html: string): void {
-        this.setDestination(resId, {
+    setDestinationHtml(resPath: string, html: string): void {
+        this.setDestination(resPath, {
             content: html,
             type: ResourceType.HTML
         });
     }
-    hasDestination(resId: string): boolean {
-        return this.destContent.has(resId);
+    hasDestination(resPath: string): boolean {
+        return this.destContent.has(resPath);
     }
-    getDestination(resId: string): TestResource | undefined {
-        return this.destContent.get(resId);
+    getDestination(resPath: string): TestResource | undefined {
+        return this.destContent.get(resPath);
     }
-    getDestinationValue(resId: string): string | undefined {
-        return this.getDestination(resId)?.content;
+    getDestinationValue(resPath: string): string | undefined {
+        return this.getDestination(resPath)?.content;
     }
 
-    setCreated(resId: string, res: TestResource): void {
-        this.createdContent.set(resId, res);
+    setCreated(resPath: string, res: TestResource): void {
+        this.createdContent.set(resPath, res);
     }
-    setCreatedHtml(resId: string, html: string): void {
-        this.setCreated(resId, {
+    setCreatedHtml(resPath: string, html: string): void {
+        this.setCreated(resPath, {
             content: html,
             type: ResourceType.HTML
         });
     }
-    hasCreated(resId: string): boolean {
-        return this.createdContent.has(resId);
+    hasCreated(resPath: string): boolean {
+        return this.createdContent.has(resPath);
     }
-    getCreated(resId: string): TestResource | undefined {
-        return this.createdContent.get(resId);
+    getCreated(resPath: string): TestResource | undefined {
+        return this.createdContent.get(resPath);
     }
-    getCreatedValue(resId: string): string | undefined {
-        return this.getCreated(resId)?.content;
+    getCreatedValue(resPath: string): string | undefined {
+        return this.getCreated(resPath)?.content;
     }
 
-    getResource(type: ResourceType, resId: string): string {
-        if (this.sourceContent.has(resId)) {
-            const resource = this.sourceContent.get(resId);
+    getResource(type: ResourceType, resPath: string): string {
+        if (this.sourceContent.has(resPath)) {
+            const resource = this.sourceContent.get(resPath);
 
             if (resource == undefined) {
-                throw new Error(`Stored HTML for resource ${resId} is undefined`);
+                throw new Error(`Stored HTML for resource ${resPath} is undefined`);
             }
 
             return resource.content;
         } else {
-            throw new Error(`Unable to resolve HTML resource ${resId}`);
+            throw new Error(`Unable to resolve HTML resource ${resPath}`);
         }
     }
 
-    writeResource(type: ResourceType, resId: string, content: string): void {
-       this.destContent.set(resId, {
+    writeResource(type: ResourceType, resPath: string, content: string): void {
+       this.destContent.set(resPath, {
            content: content,
            type: type
        });
     }
 
     createResource(type: ResourceType, contents: string): string {
-        const resId = String(this.nextCreatedContentId);
+        const resPath = String(this.nextCreatedContentId);
         this.nextCreatedContentId++;
 
-        this.createdContent.set(resId, {
+        this.createdContent.set(resPath, {
             content: contents,
             type: type
         });
 
-        return resId;
+        return resPath;
     }
 }
 

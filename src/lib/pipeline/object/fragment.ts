@@ -1,12 +1,11 @@
 import { DocumentNode } from '../../dom/node';
-import { PipelineObject } from './pipelineObject';
 
-export class Fragment implements PipelineObject {
-    readonly resId: string;
+export class Fragment {
+    readonly resPath: string;
     readonly dom: DocumentNode;
 
-    constructor(resId: string, dom: DocumentNode) {
-        this.resId = resId;
+    constructor(resPath: string, dom: DocumentNode) {
+        this.resPath = resPath;
         this.dom = dom;
     }
 
@@ -15,7 +14,7 @@ export class Fragment implements PipelineObject {
         const newDom: DocumentNode = this.dom.clone();
 
         // create new fragment instance
-        const newFragment = new Fragment(this.resId, newDom);
+        const newFragment = new Fragment(this.resPath, newDom);
 
         return newFragment;
     }

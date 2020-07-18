@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Pipeline, ResourceType, UsageContext, Page, DocumentNode, Node, TagNode, EvalContext } from '../../lib/index';
+import { Pipeline, ResourceType, UsageContext, Page, DocumentNode, Node, TagNode, EvalContext, Fragment } from '../../lib/index';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 test('[integration] Components should load external templates', t => {
@@ -12,14 +12,14 @@ test('[integration] Components should load external templates', t => {
     });
     const pipeline = new Pipeline(pi);
 
-    const htmlParser = pipeline.htmlParser;
+    const htmlParser = pipeline.resourceParser;
     const component = htmlParser.parseComponent('component.html', `
         <template src="comp_template.html" />
         <script>return class {}</script>
     `);
 
     t.truthy(component);
-    t.is(component.template.srcResId, 'comp_template.html');
+    t.is(component.template.srcResPath, 'comp_template.html');
 
     const dom = component.template.dom;
     t.truthy(dom.firstChild);
@@ -43,17 +43,18 @@ test('[integration] Components should load external scripts', t => {
     });
     const pipeline = new Pipeline(pi);
 
-    const htmlParser = pipeline.htmlParser;
+    const htmlParser = pipeline.resourceParser;
     const component = htmlParser.parseComponent('component.html', `
         <template>\${ $.test }</template>
         <script src="comp_script.js" />
     `);
-    const testPage = new Page('page.html', new DocumentNode());
+    const testFrag = new Fragment('page.html', new DocumentNode())
+    const testPage = new Page('page.html', testFrag.dom);
     const testContext = new UsageContext(testPage);
-    const evalContext = new EvalContext(pipeline, testPage, testContext, new Map());
+    const evalContext = new EvalContext(pipeline, testFrag, testContext, new Map());
 
     t.truthy(component);
-    t.is(component.script.srcResId, 'comp_script.js');
+    t.is(component.script.srcResPath, 'comp_script.js');
 
     const scriptObj = component.script.scriptFunction.invoke(evalContext);
     t.truthy(scriptObj);
@@ -70,7 +71,7 @@ test('[integration] Components should load external styles', t => {
     });
     const pipeline = new Pipeline(pi);
 
-    const htmlParser = pipeline.htmlParser;
+    const htmlParser = pipeline.resourceParser;
     const component = htmlParser.parseComponent('component.html', `
         <template><div class="component"></div></template>
         <script>return class {}</script>
@@ -108,11 +109,12 @@ test('[integration] Components should load all external section', t => {
         content: styleText
     });
     const pipeline = new Pipeline(pi);
-    const testPage = new Page('page.html', new DocumentNode());
+    const testFrag = new Fragment('page.html', new DocumentNode())
+    const testPage = new Page('page.html', testFrag.dom);
     const testContext = new UsageContext(testPage);
-    const evalContext = new EvalContext(pipeline, testPage, testContext, new Map());
+    const evalContext = new EvalContext(pipeline, testFrag, testContext, new Map());
 
-    const htmlParser = pipeline.htmlParser;
+    const htmlParser = pipeline.resourceParser;
     const component = htmlParser.parseComponent('component.html', `
         <template src="comp_template.html" />
         <script src="comp_script.js"></script>

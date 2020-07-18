@@ -1,55 +1,11 @@
 import test from 'ava';
-import { PipelineCache, Fragment, DocumentNode, EvalContentFunction, Page, Component, ComponentTemplate, ComponentScript, ComponentScriptType } from '../../lib/index';
+import { PipelineCache, Fragment, DocumentNode, EvalContentFunction, Component, ComponentTemplate, ComponentScript, ComponentScriptType } from '../../lib/index';
 
 function createTestComponent(): Component {
     const template = new ComponentTemplate(new DocumentNode());
     const script = new ComponentScript(ComponentScriptType.FUNCTION, new EvalContentFunction(() => { return {} }))
     return new Component('foo', template, script);
 }
-
-/*
- * Page
- */
-
-test('[unit] PipelineCache.hasPage() returns true when object is cached', t => {
-    const cache = new PipelineCache();
-
-    cache.storePage(new Page('foo', new DocumentNode()));
-
-    t.true(cache.hasPage('foo'));
-});
-
-test('[unit] PipelineCache.hasPage() returns false when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.false(cache.hasPage('foo'));
-});
-
-test('[unit] PipelineCache.getPage() returns cached object when present', t => {
-    const cache = new PipelineCache();
-    const page = new Page('foo', new DocumentNode());
-
-    cache.storePage(page);
-
-    t.is(cache.getPage('foo'), page);
-});
-
-test('[unit] PipelineCache.getPage() throws when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.throws(() => cache.getPage('foo'));
-});
-
-test('[unit] PipelineCache.storePage() can overwrite an existing entry', t => {
-    const cache = new PipelineCache();
-    const page1 = new Page('foo', new DocumentNode());
-    const page2 = new Page('foo', new DocumentNode());
-
-    cache.storePage(page1);
-    cache.storePage(page2);
-
-    t.is(cache.getPage('foo'), page2);
-});
 
 /*
  * Fragment
@@ -185,19 +141,63 @@ test('[unit] PipelineCache.storeScriptText() can overwrite an existing entry', t
 
 
 /*
+ * CreatedResource
+ */
+
+test('[unit] PipelineCache.hasCreatedResource() returns true when resource is cached', t => {
+    const cache = new PipelineCache();
+
+    cache.storeCreatedResource('hash', 'path');
+
+    t.true(cache.hasCreatedResource('hash'));
+});
+
+test('[unit] PipelineCache.hasCreatedResource() returns false when resource is not cached', t => {
+    const cache = new PipelineCache();
+
+    t.false(cache.hasCreatedResource('hash'));
+});
+
+test('[unit] PipelineCache.getCreatedResource() returns cached resource when present', t => {
+    const cache = new PipelineCache();
+
+    cache.storeCreatedResource('hash', 'path');
+
+    t.is(cache.getCreatedResource('hash'), 'path');
+});
+
+test('[unit] PipelineCache.getCreatedResource() throws when resource is not cached', t => {
+    const cache = new PipelineCache();
+
+    t.throws(() => cache.getCreatedResource('hash'));
+});
+
+test('[unit] PipelineCache.storeCreatedResource() can overwrite an existing entry', t => {
+    const cache = new PipelineCache();
+
+    cache.storeCreatedResource('hash', 'path1');
+    cache.storeCreatedResource('hash', 'path2');
+
+    t.is(cache.getCreatedResource('hash'), 'path2');
+});
+
+
+
+/*
  * General
  */
 test('[unit] PipelineCache.clear() clears all caches', t => {
     const cache = new PipelineCache();
+
     cache.storeFragment(new Fragment('foo', new DocumentNode()));
-    cache.storePage(new Page('foo', new DocumentNode()));
     cache.storeComponent(createTestComponent());
     cache.storeScriptText('foo', new EvalContentFunction(() => 'foo'));
+    cache.storeCreatedResource('foo', 'foo');
     
     cache.clear();
 
     t.false(cache.hasFragment('foo'));
-    t.false(cache.hasPage('foo'));
     t.false(cache.hasComponent('foo'));
     t.false(cache.hasScriptText('foo'));
+    t.false(cache.hasCreatedResource('foo'));
 });

@@ -10,18 +10,18 @@ export class ResourceBinder {
         this.pipeline = pipeline;
     }
 
-    bindStyle(resId: string, styleContent: string, bindType: StyleBindType, usageContext: UsageContext): void {
+    bindStyle(resPath: string, styleContent: string, bindType: StyleBindType, usageContext: UsageContext): void {
         switch (bindType) {
             case StyleBindType.HEAD: {
                 this.bindStyleHead(styleContent, usageContext);
                 break;
             }
             case StyleBindType.LINK: {
-                this.bindStyleLink(styleContent, usageContext, resId);
+                this.bindStyleLink(styleContent, usageContext, resPath);
                 break;
             }
             default: {
-                throw new Error(`Unable to bind style '${resId}': Unsupported component bind type: '${bindType}'`);
+                throw new Error(`Unable to bind style '${resPath}': Unsupported component bind type: '${bindType}'`);
             }
         }
     }
@@ -40,14 +40,14 @@ export class ResourceBinder {
         usageContext.currentPage.head.appendChild(styleTag);
     }
 
-    private bindStyleLink(styleContent: string, usageContext: UsageContext, sourceResId: string): void {
+    private bindStyleLink(styleContent: string, usageContext: UsageContext, sourceResPath: string): void {
         // link to project
-        const styleResId = this.pipeline.linkResource(ResourceType.CSS, styleContent, sourceResId);
+        const styleResPath = this.pipeline.linkResource(ResourceType.CSS, styleContent, sourceResPath);
 
         // create link tag
         const link = new TagNode('link');
         link.setAttribute('rel', 'stylesheet');
-        link.setAttribute('href', styleResId);
+        link.setAttribute('href', styleResPath);
 
         // append link to page
         usageContext.currentPage.head.appendChild(link);

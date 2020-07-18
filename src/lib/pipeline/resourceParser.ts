@@ -19,46 +19,46 @@ export class ResourceParser {
         this.domParser = new DomParser();
     }
 
-    parseFragment(resId: string, html: string): Fragment {
+    parseFragment(resPath: string, html: string): Fragment {
         // parse HTML
         const dom: DocumentNode = this.domParser.parseDom(html);
 
         // create fragment
-        return new Fragment(resId, dom);
+        return new Fragment(resPath, dom);
     }
 
-    parsePage(resId: string, html: string): Page {
+    parsePage(resPath: string, html: string): Page {
         // parse HTML
         const dom: DocumentNode = this.domParser.parseDom(html);
 
         // create page
-        return new Page(resId, dom);
+        return new Page(resPath, dom);
     }
 
-    parseComponent(resId: string, html: string): Component {
+    parseComponent(resPath: string, html: string): Component {
         // parse HTML
         const dom: DocumentNode = this.domParser.parseDom(html);
 
         // parse <template>
-        const componentTemplate: ComponentTemplate = this.parseComponentTemplate(resId, dom);
+        const componentTemplate: ComponentTemplate = this.parseComponentTemplate(resPath, dom);
 
         // parse <script>
-        const componentScript: ComponentScript = this.parseComponentScript(resId, dom);
+        const componentScript: ComponentScript = this.parseComponentScript(resPath, dom);
 
         // parse <style>
-        const componentStyle: ComponentStyle | undefined = this.parseComponentStyle(resId, dom);
+        const componentStyle: ComponentStyle | undefined = this.parseComponentStyle(resPath, dom);
 
         // create component
-        return new Component(resId, componentTemplate, componentScript, componentStyle);
+        return new Component(resPath, componentTemplate, componentScript, componentStyle);
     }
 
-    private parseComponentTemplate(resId: string, dom: DocumentNode): ComponentTemplate {
+    private parseComponentTemplate(resPath: string, dom: DocumentNode): ComponentTemplate {
         // find template node
         const templateNode = dom.findChildTagByTagName('template', false);
 
         // make sure it exists
         if (templateNode == null) {
-            throw new Error(`Component '${resId}' is missing required section: <template>`);
+            throw new Error(`Component '${resPath}' is missing required section: <template>`);
         }
 
         // get template src
@@ -71,13 +71,13 @@ export class ResourceParser {
         return new ComponentTemplate(templateDom, templateSrc);
     }
 
-    private parseComponentScript(resId: string, dom: DocumentNode): ComponentScript {
+    private parseComponentScript(resPath: string, dom: DocumentNode): ComponentScript {
         // find script node
         const scriptNode = dom.findChildTagByTagName('script', false);
 
         // make sure it exists
         if (scriptNode == null) {
-            throw new Error(`Component '${resId}' is missing required section: <template>`);
+            throw new Error(`Component '${resPath}' is missing required section: <template>`);
         }
 
         // get script src
@@ -100,7 +100,7 @@ export class ResourceParser {
         return new ComponentScript(scriptType, scriptFunc, scriptSrc);
     }
 
-    private parseComponentStyle(resId: string, dom: DocumentNode): ComponentStyle | undefined {
+    private parseComponentStyle(resPath: string, dom: DocumentNode): ComponentStyle | undefined {
         // find style node
         const styleNode = dom.findChildTagByTagName('style', false);
 
@@ -129,10 +129,10 @@ export class ResourceParser {
     private resolveResourceSection(src: string | undefined, sectionNode: TagNode, resourceType: ResourceType): string {
         if (src != undefined) {
             // get ID of external resource
-            const resId = sectionNode.getRequiredValueAttribute('src');
+            const resPath = sectionNode.getRequiredValueAttribute('src');
 
             // load resource
-            return this.pipeline.getRawResource(resourceType, resId);
+            return this.pipeline.getRawResource(resourceType, resPath);
         } else {
             const textNode = sectionNode.firstChild;
             if (textNode == null) {
@@ -148,10 +148,10 @@ export class ResourceParser {
     private resolveDomSection(src: string | undefined, sectionNode: TagNode): DocumentNode {
         if (src != undefined) {
             // get ID of external resource
-            const resId = sectionNode.getRequiredValueAttribute('src');
+            const resPath = sectionNode.getRequiredValueAttribute('src');
 
             // load resource
-            const fragment = this.pipeline.getRawFragment(resId);
+            const fragment = this.pipeline.getRawFragment(resPath);
 
             return fragment.dom;
         } else {

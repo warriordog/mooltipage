@@ -56,7 +56,7 @@ test('[unit] ProcessingInstructionNode constructor populates defaults', t => {
 });
 
 test('[unit] MFragmentNode constructor handles arguments', t => {
-    const src = 'resId';
+    const src = 'resPath';
     const attributes: Map<string, string | null> = new Map([['src', src], ['param', 'value']]);
 
     const node = new MFragmentNode(src, attributes);
@@ -68,7 +68,7 @@ test('[unit] MFragmentNode constructor handles arguments', t => {
 });
 
 test('[unit] MComponentNode constructor handles arguments', t => {
-    const src = 'resId';
+    const src = 'resPath';
     const attributes: Map<string, string | null> = new Map([['src', src], ['param', 'value']]);
 
     const node = new MComponentNode(src, attributes);
@@ -130,7 +130,7 @@ test('[unit] MVarNode constructor handles arguments', t => {
 });
 
 test('[unit] MImportNode constructor handles arguments', t => {
-    const src = 'resId';
+    const src = 'resPath';
     const as = 'foo';
 
     const node = new MImportNode(src, as, true, false, new Map());

@@ -1,25 +1,17 @@
 import { TagNode, DocumentNode, NodeWithChildren } from "../../dom/node";
-import { Fragment } from "./fragment";
 
-export class Page extends Fragment {
+export class Page {
+    readonly resPath: string;
+    readonly dom: DocumentNode;
     readonly body: TagNode;
     readonly head: TagNode;
 
-    constructor(resId: string, dom: DocumentNode) {
-        super(resId, dom);
+    constructor(resPath: string, dom: DocumentNode) {
+        this.resPath = resPath;
+        this.dom = dom;
 
         this.body = getOrCreateTag(dom, 'body');
         this.head = getOrCreateTag(dom, 'head');
-    }
-
-    clone(): Page {
-        // clone the DOM to get a new instance
-        const newDom: DocumentNode = this.dom.clone();
-
-        // create new page
-        const newPage = new Page(this.resId, newDom);
-
-        return newPage;
     }
 }
 

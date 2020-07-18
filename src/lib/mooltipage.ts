@@ -98,45 +98,45 @@ class NodePipelineInterface implements PipelineInterface {
         this.destinationPath = destinationPath;
     }
 
-    getResource(type: ResourceType, resId: string): string {
-        const htmlPath = this.resolveSourceResource(resId);
+    getResource(type: ResourceType, resPath: string): string {
+        const htmlPath = this.resolveSourceResource(resPath);
 
         return FsUtils.readFile(htmlPath);
     }
 
-    writeResource(type: ResourceType, resId: string, content: string): void {
-        const htmlPath = this.resolveDestinationResource(resId);
+    writeResource(type: ResourceType, resPath: string, content: string): void {
+        const htmlPath = this.resolveDestinationResource(resPath);
 
         FsUtils.writeFile(htmlPath, content, true);
     }
 
-    // sourceResId is available as last parameter, if needed
+    // sourceResPath is available as last parameter, if needed
     createResource(type: ResourceType, contents: string): string {
-        const resId = this.createResId(type);
+        const resPath = this.createResPath(type);
 
-        this.writeResource(type, resId, contents);
+        this.writeResource(type, resPath, contents);
 
-        return resId;
+        return resPath;
     }
 
-    private resolveSourceResource(resId: string): string {
-        return this.resolvePath(resId, this.sourcePath);
+    private resolveSourceResource(resPath: string): string {
+        return this.resolvePath(resPath, this.sourcePath);
     }
 
-    private resolveDestinationResource(resId: string): string {
-        return this.resolvePath(resId, this.destinationPath);
+    private resolveDestinationResource(resPath: string): string {
+        return this.resolvePath(resPath, this.destinationPath);
     }
 
-    private resolvePath(resId: string, directory?: string): string {
+    private resolvePath(resPath: string, directory?: string): string {
         if (directory != null) {
-            return Path.resolve(directory, resId);
+            return Path.resolve(directory, resPath);
         } else {
-            return Path.resolve(resId);
+            return Path.resolve(resPath);
         }
     }
 
     // TODO better implementation
-    private createResId(type: ResourceType): string {
+    private createResPath(type: ResourceType): string {
         const index = this.nextResIndex;
         this.nextResIndex++;
 

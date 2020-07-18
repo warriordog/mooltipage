@@ -19,7 +19,7 @@ const PAGE_PRETTY = `
     </html>
 `;
 
-function testHtml(t: ExecutionContext, resId: string, expected: string): void {
+function testHtml(t: ExecutionContext, resPath: string, expected: string): void {
     // set up pipeline
     const pi = new MemoryPipelineInterface();
     pi.setSourceHtml('pageMin.html', PAGE_MIN);
@@ -27,7 +27,7 @@ function testHtml(t: ExecutionContext, resId: string, expected: string): void {
     const pipeline = new Pipeline(pi);
 
     // run build
-    const output = pipeline.compilePage(resId);
+    const output = pipeline.compilePage(resPath);
 
     // check output
     t.is(output.html, expected);

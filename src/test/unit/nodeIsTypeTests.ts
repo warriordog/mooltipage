@@ -22,9 +22,9 @@ test('[unit] CommentNode is correct types', testNode, new CommentNode(), false, 
 test('[unit] ProcessingInstructionNode is correct types', testNode, new ProcessingInstructionNode(), false, false, false, true, false, false, false, false, false, false, false, false);
 test('[unit] DocumentNode is correct types', testNode, new DocumentNode(), false, false, false, false, true, false, false, false, false, false, false, false);
 test('[unit] CDATANode is correct types', testNode, new CDATANode(), false, false, false, false, false, true, false, false, false, false, false, false);
-test('[unit] MFragmentNode is correct types', testNode, new MFragmentNode('resId'), true, false, false, false, false, false, true, false, false, false, false, false);
-test('[unit] MComponentNode is correct types', testNode, new MComponentNode('resId'), true, false, false, false, false, false, false, true, false, false, false, false);
+test('[unit] MFragmentNode is correct types', testNode, new MFragmentNode('resPath'), true, false, false, false, false, false, true, false, false, false, false, false);
+test('[unit] MComponentNode is correct types', testNode, new MComponentNode('resPath'), true, false, false, false, false, false, false, true, false, false, false, false);
 test('[unit] MContentNode is correct types', testNode, new MContentNode(), true, false, false, false, false, false, false, false, true, false, false, false);
 test('[unit] MSlotNode is correct types', testNode, new MSlotNode(), true, false, false, false, false, false, false, false, false, true, false, false);
 test('[unit] MVarNode is correct types', testNode, new MVarNode(), true, false, false, false, false, false, false, false, false, false, true, false);
-test('[unit] MImportNode is correct types', testNode, new MImportNode('resId', 'alias', false, false), true, false, false, false, false, false, false, false, false, false, false, true);
+test('[unit] MImportNode is correct types', testNode, new MImportNode('resPath', 'alias', false, false), true, false, false, false, false, false, false, false, false, false, false, true);

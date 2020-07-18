@@ -1,79 +1,51 @@
 import { Fragment } from './object/fragment';
 import { EvalContent } from './evalEngine';
-import { Page } from './object/page';
 import { Component } from './object/component';
 
 export class PipelineCache {
-    private readonly pageCache: Map<string, Page>;
-    private readonly fragmentCache: Map<string, Fragment>;
-    private readonly componentCache: Map<string, Component>;
-    private readonly scriptTextCache: Map<string, EvalContent<unknown>>;
-
-    constructor() {
-        this.pageCache = new Map();
-        this.fragmentCache = new Map();
-        this.componentCache = new Map();
-        this.scriptTextCache = new Map();
-    }
-
-    // Page
-
-    hasPage(resId: string): boolean {
-        return this.pageCache.has(resId);
-    }
-
-    getPage(resId: string): Page {
-        const page: Page | undefined = this.pageCache.get(resId);
-
-        if (page == undefined) {
-            throw new Error(`Page not found in cache: ${resId}.  Make sure to call hasPage() before getPage().`);
-        }
-
-        return page;
-    }
-
-    storePage(page: Page): void {
-        this.pageCache.set(page.resId, page);
-    }
+    private readonly fragmentCache: Map<string, Fragment> = new Map();
+    private readonly componentCache: Map<string, Component> = new Map();
+    private readonly scriptTextCache: Map<string, EvalContent<unknown>> = new Map();
+    private readonly createdResourceCache: Map<string, string> = new Map();
 
     // Fragment
 
-    hasFragment(resId: string): boolean {
-        return this.fragmentCache.has(resId);
+    hasFragment(resPath: string): boolean {
+        return this.fragmentCache.has(resPath);
     }
 
-    getFragment(resId: string): Fragment {
-        const fragment: Fragment | undefined = this.fragmentCache.get(resId);
+    getFragment(resPath: string): Fragment {
+        const fragment: Fragment | undefined = this.fragmentCache.get(resPath);
 
         if (fragment == undefined) {
-            throw new Error(`Fragment not found in cache: ${resId}.  Make sure to call hasFragment() before getFragment().`);
+            throw new Error(`Fragment not found in cache: ${resPath}.  Make sure to call hasFragment() before getFragment().`);
         }
 
         return fragment;
     }
 
     storeFragment(fragment: Fragment): void {
-        this.fragmentCache.set(fragment.resId, fragment);
+        this.fragmentCache.set(fragment.resPath, fragment);
     }
 
     // Component
 
-    hasComponent(resId: string): boolean {
-        return this.componentCache.has(resId);
+    hasComponent(resPath: string): boolean {
+        return this.componentCache.has(resPath);
     }
 
-    getComponent(resId: string): Component {
-        const component: Component | undefined = this.componentCache.get(resId);
+    getComponent(resPath: string): Component {
+        const component: Component | undefined = this.componentCache.get(resPath);
 
         if (component == undefined) {
-            throw new Error(`Component not found in cache: ${resId}.  Make sure to call hasComponent() before getComponent().`);
+            throw new Error(`Component not found in cache: ${resPath}.  Make sure to call hasComponent() before getComponent().`);
         }
 
         return component;
     }
 
     storeComponent(component: Component): void {
-        this.componentCache.set(component.resId, component);
+        this.componentCache.set(component.resPath, component);
     }
 
     // Script text
@@ -96,12 +68,33 @@ export class PipelineCache {
         this.scriptTextCache.set(signature, templateFunc);
     }
 
+    // TODO test created resource cache
+
+    // created resource
+    hasCreatedResource(hash: string): boolean {
+        return this.createdResourceCache.has(hash);
+    }
+
+    getCreatedResource(hash: string): string {
+        const resPath: string | undefined = this.createdResourceCache.get(hash);
+
+        if (resPath == undefined) {
+            throw new Error(`Created resource not found in cache: ${hash}.  Make sure to call hasCreatedResource() before getCreatedResource().`);
+        }
+
+        return resPath;
+    }
+
+    storeCreatedResource(hash: string, resPath: string): void {
+        this.createdResourceCache.set(hash, resPath);
+    }
+
     // general
 
     clear(): void {
-        this.pageCache.clear();
         this.fragmentCache.clear();
         this.componentCache.clear();
         this.scriptTextCache.clear();
+        this.createdResourceCache.clear();
     }
 }
