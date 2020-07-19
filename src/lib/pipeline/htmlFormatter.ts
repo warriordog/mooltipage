@@ -23,7 +23,7 @@ export interface HtmlFormatter {
     formatPage?(page: Page): void;
 
     /**
-     * Formats serialized HTMl before being exported from the pipeline.
+     * Formats serialized HTML before being exported from the pipeline.
      * Optional.
      * 
      * @param resPath Path to the resource that produced this HTML

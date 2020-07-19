@@ -1,5 +1,4 @@
 import test from 'ava';
-
 import { ContentHasher } from '../../lib';
 
 test('[unit] ContentHasher.fastHashContent() should hash html content', t => {

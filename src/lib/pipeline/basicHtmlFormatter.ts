@@ -31,6 +31,11 @@ export class BasicHtmlFormatter implements HtmlFormatter {
         return page;
     }
 
+    formatHtml(resPath: string, html: string): string {
+        // trim to clean up any leading or trailing whitespace
+        return html.trim();
+    }
+
     protected formatWhitespace(startNode: Node, depth = 0): void {
         let currentNode: Node | null = startNode;
 
@@ -59,10 +64,20 @@ export class BasicHtmlFormatter implements HtmlFormatter {
                 this.formatWhitespace(contentNode.firstChild, depth + 1);
             }
 
-            // continue to next sibling, if found
             if (contentNode != null) {
-                currentNode = contentNode.nextSibling;
+                const nextNode = contentNode.nextSibling;
+
+                if (nextNode != undefined) {
+                    // continue to next sibling, if found
+                    currentNode = nextNode;
+                } else {
+                    // If this is the last node at this level, insert a final text node and iterate one more time to support closing indentation
+                    const newLastNode = new TextNode('');
+                    contentNode.appendSibling(newLastNode);
+                    currentNode = newLastNode;
+                }
             } else {
+                // if this is the last node and it IS a text node, then we are done
                 currentNode = null;
             }
         }
@@ -112,7 +127,8 @@ export class BasicHtmlFormatter implements HtmlFormatter {
     }
 
     private isInlineText(textNode: TextNode): boolean {
-        return textNode.prevSibling == null && textNode.nextSibling == null;
+        // inline text is a text node with no siblings, and no more than one line of non-whitespace content
+        return textNode.prevSibling == null && textNode.nextSibling == null && /^\s*([^\s]| )+\s*$/g.test(textNode.text);
     }
 
     private extractTextContent(node: TextNode): string | null {
@@ -124,7 +140,7 @@ export class BasicHtmlFormatter implements HtmlFormatter {
             text = text.trim();
     
             // compact whitespace in text
-            text = text.replace(/\s{2,}/, ' ');
+            text = text.replace(/\s{2,}/gm, ' ');
 
             return text;
         } else {

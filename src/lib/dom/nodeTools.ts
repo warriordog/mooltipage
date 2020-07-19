@@ -153,7 +153,7 @@ export function prependSibling(node: Node, before: Node): void {
     }
 
     before.prevSibling = node;
-    node.nextSibling = before.prevSibling;
+    node.nextSibling = before;
 }
 
 /**
