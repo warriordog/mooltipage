@@ -1,5 +1,5 @@
 import test from 'ava';
-import { NodeTools, Node, NodeWithChildren, TagNode } from '../../lib';
+import { NodeTools, TagNode } from '../../lib';
 
 test('[unit] NodeTools.detatchNode removes nodes', t => {
     const parent = new TagNode('div');
