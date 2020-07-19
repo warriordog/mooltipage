@@ -48,8 +48,6 @@ export function appendChild(parent: NodeWithChildren, child: Node): void {
 
     parent.childNodes.push(child);
     child.parentNode = parent;
-
-    child.nextSibling = null;
 }
 
 /**
@@ -69,8 +67,6 @@ export function prependChild(parent: NodeWithChildren, child: Node): void {
 
     parent.childNodes.splice(0, 0, child);
     child.parentNode = parent;
-
-    child.nextSibling = null;
 }
 
 /**
