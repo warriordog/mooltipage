@@ -1,4 +1,4 @@
-import { EvalEngine, Pipeline, DomParser, Fragment, DocumentNode, Page, Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ResourceType, EvalContent, ComponentScriptInstance, StyleBindType, TagNode, TextNode } from "..";
+import { EvalEngine, Pipeline, DomParser, Fragment, DocumentNode, Page, Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ResourceType, EvalContent, ComponentScriptInstance, StyleBindType, TagNode, TextNode } from "../..";
 
 /**
  * Provides input parsing functionality to the pipeline

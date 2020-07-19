@@ -1,4 +1,4 @@
-import { CompilerModule, CompileData, DocumentNode, ExternalReferenceNode, Fragment, UsageContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode } from "../..";
+import { CompilerModule, CompileData, DocumentNode, ExternalReferenceNode, Fragment, UsageContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode } from "../../..";
 
 /**
  * Process external references, such as m-fragment and m-component.

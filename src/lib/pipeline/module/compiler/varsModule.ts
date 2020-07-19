@@ -1,4 +1,4 @@
-import { CompilerModule, CompileData, EvalContext, MVarNode, TagNode } from "../..";
+import { CompilerModule, CompileData, EvalContext, MVarNode, TagNode } from "../../..";
 
 /**
  * Compile module that implements <m-var> parsing

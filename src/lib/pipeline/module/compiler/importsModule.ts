@@ -1,4 +1,4 @@
-import { CompilerModule, CompileData, MImportNode, TagNode, MComponentNode, MFragmentNode } from "../..";
+import { CompilerModule, CompileData, MImportNode, TagNode, MComponentNode, MFragmentNode } from "../../..";
 
 /**
  * Process imports / aliases via m-import

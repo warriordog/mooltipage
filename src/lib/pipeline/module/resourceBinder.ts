@@ -1,4 +1,4 @@
-import { Pipeline, UsageContext, TextNode, TagNode, ResourceType } from "..";
+import { Pipeline, UsageContext, TextNode, TagNode, ResourceType } from "../..";
 
 /**
  * Provides embedded and external resource binding to the pipeline.

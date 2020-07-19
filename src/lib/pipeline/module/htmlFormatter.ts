@@ -1,4 +1,4 @@
-import { Fragment, UsageContext, Page } from "..";
+import { Fragment, UsageContext, Page } from "../..";
 
 /**
  * Provides HTML formatting support to the pipeline.

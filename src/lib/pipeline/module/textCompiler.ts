@@ -1,4 +1,4 @@
-import { EvalContent, EvalEngine } from "..";
+import { EvalContent, EvalEngine } from "../..";
 
 /**
  * Compiles DOM text for the pipeline.

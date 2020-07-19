@@ -1,4 +1,4 @@
-import { ComponentScriptInstance, Pipeline, Fragment, UsageContext } from "..";
+import { ComponentScriptInstance, Pipeline, Fragment, UsageContext } from "../..";
 
 /**
  * Evaluates JS expressions
