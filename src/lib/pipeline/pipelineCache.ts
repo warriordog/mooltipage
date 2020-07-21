@@ -69,8 +69,6 @@ export class PipelineCache {
         this.scriptTextCache.set(signature, templateFunc);
     }
 
-    // TODO test created resource cache
-
     // created resource
     hasCreatedResource(hash: string): boolean {
         return this.createdResourceCache.has(hash);

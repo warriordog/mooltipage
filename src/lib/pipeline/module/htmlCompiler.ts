@@ -1,4 +1,5 @@
-import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule } from "../..";
+import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule, EvalScopeObject } from "../..";
+import { DomLogicModule } from "./compiler/domLogicModule";
 
 /**
  * Provides HTML compilation support to the pipeline.
@@ -17,14 +18,20 @@ export class HtmlCompiler {
             // Incomming slot content may not be fully compiled, and should be compiled as if it is part of this compilation unit.
             new SlotModule(),
 
-            // !! New pre-compile DOM manipulation goes here
+            // !! New pre-scope DOM manipulation goes here
 
-            // VarsModule is responsible for initializing the scripting / expression scope.
+            // VarsModule is responsible for initializing the scripting / expression scope(s).
             // All other modules have access to local scope, so vars needs to go next.
             // It runs pre-scope, so it has no dependency on TemplateText
             new VarsModule(),
 
             // !! New scope processing goes here
+
+            // DomLogicModule handles structural logic, like m-if, m-for, etc.
+            // This requires scopes to be initialized, but needs to run before the DOM is finalized.
+            new DomLogicModule(),
+
+            // !! New post-scope DOM manipulation goes here 
 
             // TemplateTextModule is responsible for compiling inline expressions.
             // It needs to go before any modules that use data from attributes, except vars.
@@ -94,10 +101,6 @@ export class CompileData {
      */
     readonly usageContext: UsageContext;
 
-    /**
-     * Local vars declared in this fragment, after JS evaluation
-     */
-    vars: Map<string, unknown> = new Map();
 
     constructor(pipeline: Pipeline, fragment: Fragment, usageContext: UsageContext) {
         this.pipeline = pipeline;
@@ -108,7 +111,8 @@ export class CompileData {
     /**
      * Creates an EvalContext that can be used to execute embedded JS in a context matching the current compilation state.
      */
-    createEvalContext(): EvalContext {
-        return new EvalContext(this.pipeline, this.fragment, this.usageContext, this.vars);
+    createEvalContext(scope?: EvalScopeObject): EvalContext {
+        const evalScope = scope ?? this.usageContext.rootScope;
+        return new EvalContext(this.pipeline, this.fragment, this.usageContext, evalScope);
     }
 }

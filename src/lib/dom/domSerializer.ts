@@ -142,7 +142,7 @@ export class DomSerializer {
         return textContent.replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('&', '&amp;');
     }
 
-    private appendAttributeList(attributeMap: ReadonlyMap<string, string | null>, html: string[]): void {
+    private appendAttributeList(attributeMap: ReadonlyMap<string, unknown>, html: string[]): void {
         for (const entry of attributeMap.entries()) {
             const key = entry[0];
             const value = entry[1];
@@ -152,10 +152,13 @@ export class DomSerializer {
             html.push(key);
             
             if (value != null) {
-                this.validateTagText(value);
+                // convert to string, since it could be any type
+                const valueString = String(value);
+
+                this.validateTagText(valueString);
 
                 html.push('="');
-                html.push(value);
+                html.push(valueString);
                 html.push('"');
             }
         }

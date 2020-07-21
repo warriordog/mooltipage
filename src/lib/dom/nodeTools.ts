@@ -1,4 +1,5 @@
 import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode } from "..";
+import { MScopeNode, MIfNode } from "./node";
 
 /**
  * Detatch a node and its children from the DOM.
@@ -193,7 +194,7 @@ function processClonedParentNode<T extends NodeWithChildren>(oldNode: T, newNode
 }
 
 // not exported
-function cloneAttributes(node: TagNode): Map<string, string | null> {
+function cloneAttributes(node: TagNode): Map<string, unknown> {
     const oldAttrs = node.getAttributes();
 
     const attrEntries = oldAttrs.entries();
@@ -365,6 +366,22 @@ export function cloneMVarNode(node: MVarNode, deep: boolean, callback?: (oldNode
 }
 
 /**
+ * Clones an m-scope node
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMScopeNode(node: MScopeNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MScopeNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MScopeNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
  * Clones an m-import node
  * @param node Node to clone
  * @param deep If true, children will be cloned
@@ -374,6 +391,22 @@ export function cloneMImportNode(node: MImportNode, deep: boolean, callback?: (o
     const newAttrs = cloneAttributes(node);
 
     const newNode = new MImportNode(node.src, node.as, node.fragment, node.component, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones an m-if node
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMIfNode(node: MIfNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MIfNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MIfNode(node.expression, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 

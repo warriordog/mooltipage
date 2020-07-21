@@ -1,4 +1,4 @@
-import { DocumentNode, EvalContent, EvalContext, StyleBindType } from "../..";
+import { DocumentNode, EvalContent, EvalContext, StyleBindType, EvalKey } from "../..";
 
 /**
  * A resuable page component. Contains a template, script, and optionally CSS stylesheet.
@@ -131,7 +131,7 @@ export type ComponentScriptRunner = (context: EvalContext) => ComponentScriptIns
 /**
  * An instance of the backing code for a component
  */
-export type ComponentScriptInstance = Record<string, unknown>;
+export type ComponentScriptInstance = Record<EvalKey, unknown>;
 
 /**
  * The style section of a component

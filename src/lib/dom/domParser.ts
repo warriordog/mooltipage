@@ -1,5 +1,6 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
-import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode } from '..';
+import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode } from '..';
+import { MScopeNode } from './node';
 
 /**
  * Parses HTML into a dom using htmlparser2
@@ -166,8 +167,12 @@ export class DomHandler implements Partial<Handler> {
                 return this.createMContentNode(attributes);
             case 'm-var':
                 return new MVarNode(attributes);
+            case 'm-scope':
+                return new MScopeNode(attributes);
             case 'm-import':
                 return this.createMImportNode(attributes);
+            case 'm-if':
+                return this.createMIfNode(attributes);
             default:
                 return new TagNode(tagName, attributes);
         }
@@ -185,13 +190,18 @@ export class DomHandler implements Partial<Handler> {
         return new MComponentNode(src, attributes);
     }
 
-    private createMSlotNode(attributes: Map<string, string | null>): MSlotNode {
+    private getSlotAttribute(attributes: Map<string, string | null>): string | undefined {
         const slot = attributes.get('slot');
+        return slot != undefined ? String(slot) : undefined;
+    }
+
+    private createMSlotNode(attributes: Map<string, string | null>): MSlotNode {
+        const slot = this.getSlotAttribute(attributes);
         return new MSlotNode(slot, attributes);
     }
 
     private createMContentNode(attributes: Map<string, string | null>): MContentNode {
-        const slot = attributes.get('slot');
+        const slot = this.getSlotAttribute(attributes);
         return new MContentNode(slot, attributes);
     }
 
@@ -203,5 +213,11 @@ export class DomHandler implements Partial<Handler> {
         const fragment = attributes.has('fragment');
         const component = attributes.has('component');
         return new MImportNode(src, as, fragment, component, attributes);
+    }
+
+    private createMIfNode(attributes: Map<string, string | null>): MIfNode {
+        const expression = attributes.get('?');
+        if (expression == undefined) throw new Error('Parse error: <m-if> is missing required attribute: ?');
+        return new MIfNode(expression, attributes);
     }
 }

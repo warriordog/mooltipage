@@ -2,7 +2,7 @@ import test from 'ava';
 import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MImportNode } from '../../lib';
 
 test('[unit] TagNode constructor handles arguments', t => {
-    const attributes: Map<string, string | null> = new Map([['foo', 'bar'], ['attr', null]]);
+    const attributes: Map<string, unknown> = new Map([['foo', 'bar'], ['attr', null]]);
 
     const node = new TagNode('sometag', attributes);
 
@@ -57,7 +57,7 @@ test('[unit] ProcessingInstructionNode constructor populates defaults', t => {
 
 test('[unit] MFragmentNode constructor handles arguments', t => {
     const src = 'resPath';
-    const attributes: Map<string, string | null> = new Map([['src', src], ['param', 'value']]);
+    const attributes: Map<string, unknown> = new Map([['src', src], ['param', 'value']]);
 
     const node = new MFragmentNode(src, attributes);
 
@@ -69,7 +69,7 @@ test('[unit] MFragmentNode constructor handles arguments', t => {
 
 test('[unit] MComponentNode constructor handles arguments', t => {
     const src = 'resPath';
-    const attributes: Map<string, string | null> = new Map([['src', src], ['param', 'value']]);
+    const attributes: Map<string, unknown> = new Map([['src', src], ['param', 'value']]);
 
     const node = new MComponentNode(src, attributes);
 
@@ -81,7 +81,7 @@ test('[unit] MComponentNode constructor handles arguments', t => {
 
 test('[unit] MContentNode constructor handles arguments', t => {
     const slot = 'slotName';
-    const attributes: Map<string, string | null> = new Map([['slot', slot], ['foo', 'bar']]);
+    const attributes: Map<string, unknown> = new Map([['slot', slot], ['foo', 'bar']]);
 
     const node = new MContentNode(slot, attributes);
 
@@ -91,9 +91,9 @@ test('[unit] MContentNode constructor handles arguments', t => {
 });
 
 test('[unit] MContentNode constructor populates defaults', t => {
-    const attributes: Map<string, string | null> = new Map([['param', 'value']]);
+    const attributes: Map<string, unknown> = new Map([['param', 'value']]);
 
-    const node = new MContentNode(null, attributes);
+    const node = new MContentNode(undefined, attributes);
 
     t.is(node.slot, '[default]');
     t.is(node.getAttribute('slot'), '[default]');
@@ -101,7 +101,7 @@ test('[unit] MContentNode constructor populates defaults', t => {
 
 test('[unit] MSlotNode constructor handles arguments', t => {
     const slot = 'slotName';
-    const attributes: Map<string, string | null> = new Map([['slot', slot], ['foo', 'bar']]);
+    const attributes: Map<string, unknown> = new Map([['slot', slot], ['foo', 'bar']]);
 
     const node = new MSlotNode(slot, attributes);
 
@@ -111,16 +111,16 @@ test('[unit] MSlotNode constructor handles arguments', t => {
 });
 
 test('[unit] MSlotNode constructor populates defaults', t => {
-    const attributes: Map<string, string | null> = new Map([['param', 'value']]);
+    const attributes: Map<string, unknown> = new Map([['param', 'value']]);
 
-    const node = new MSlotNode(null, attributes);
+    const node = new MSlotNode(undefined, attributes);
 
     t.is(node.slot, '[default]');
     t.is(node.getAttribute('slot'), '[default]');
 });
 
 test('[unit] MVarNode constructor handles arguments', t => {
-    const attributes: Map<string, string | null> = new Map([['param', 'value'], ['foo', 'bar'], ['attr', null]]);
+    const attributes: Map<string, unknown> = new Map([['param', 'value'], ['foo', 'bar'], ['attr', null]]);
 
     const node = new MVarNode(attributes);
 

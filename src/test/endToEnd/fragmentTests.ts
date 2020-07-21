@@ -1,6 +1,7 @@
 import test from 'ava';
 import { Pipeline, BasicHtmlFormatter } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
+import { compareFragmentMacro } from '../_util/htmlCompare';
 
 
 function createRootPi(): MemoryPipelineInterface {
@@ -291,3 +292,10 @@ test('[endToEnd] Nested fragment slot content is placed correctly', t => {
     // validate
     t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div></div></body></html>');
 });
+
+test('[endToEnd] Fragment params are passed raw, not as strings', compareFragmentMacro,
+`<m-fragment src="child.html" number="{{ 123 }}" boolean="{{ true }}" />`,
+'true,true',
+[[ 'child.html',
+    `\${ $.number === 123 },\${ $.boolean === true }`
+]]);

@@ -6,6 +6,7 @@ export default {
     },
     "files": [
         "src/test/**/*",
-        "!src/test/_mocks/**/*"
+        "!src/test/_mocks/**/*",
+        "!src/test/_util/**/*"
     ]
 }

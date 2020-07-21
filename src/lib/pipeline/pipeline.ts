@@ -128,7 +128,7 @@ export class Pipeline {
         const fragment = new Fragment(fragResPath, fragDom);
 
         // create component script instance
-        const componentInstanceEvalContext = new EvalContext(this, fragment, baseUsageContext, new Map());
+        const componentInstanceEvalContext = new EvalContext(this, fragment, baseUsageContext, baseUsageContext.rootScope);
         const componentInstance: ComponentScriptInstance = component.script.scriptFunction.invoke(componentInstanceEvalContext);
 
         // add component script data to context

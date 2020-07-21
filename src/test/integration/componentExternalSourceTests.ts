@@ -51,7 +51,7 @@ test('[integration] Components should load external scripts', t => {
     const testFrag = new Fragment('page.html', new DocumentNode())
     const testPage = new Page('page.html', testFrag.dom);
     const testContext = new UsageContext(testPage);
-    const evalContext = new EvalContext(pipeline, testFrag, testContext, new Map());
+    const evalContext = new EvalContext(pipeline, testFrag, testContext, testContext.rootScope);
 
     t.truthy(component);
     t.is(component.script.srcResPath, 'comp_script.js');
@@ -112,7 +112,7 @@ test('[integration] Components should load all external section', t => {
     const testFrag = new Fragment('page.html', new DocumentNode())
     const testPage = new Page('page.html', testFrag.dom);
     const testContext = new UsageContext(testPage);
-    const evalContext = new EvalContext(pipeline, testFrag, testContext, new Map());
+    const evalContext = new EvalContext(pipeline, testFrag, testContext, testContext.rootScope);
 
     const htmlParser = pipeline.resourceParser;
     const component = htmlParser.parseComponent('component.html', `

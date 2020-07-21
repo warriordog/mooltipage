@@ -1,4 +1,4 @@
-import { NodeTools } from "..";
+import { NodeTools, EvalScopeObject } from "..";
 
 /**
  * Recognized node types
@@ -22,6 +22,11 @@ export abstract class Node {
     readonly nodeType: NodeType;
 
     /**
+     * If true, then this node should create a new child scope
+     */
+    readonly isScoping: boolean;
+
+    /**
      * Parent of this node, or null if there is none.
      * Do not modify this directly, use NodeTools or instance methods.
      */
@@ -39,8 +44,14 @@ export abstract class Node {
      */
     nextSibling: Node | null = null;
 
-    constructor(nodeType: NodeType) {
+    /**
+     * Eval scope associated with this node
+     */
+    evalScope?: EvalScopeObject;
+
+    constructor(nodeType: NodeType, isScoping = false) {
         this.nodeType = nodeType;
+        this.isScoping = isScoping;
     }
 
     appendSibling(node: Node): void {
@@ -144,7 +155,9 @@ export abstract class NodeWithChildren extends Node {
     findChildTagByTagName(tagName: 'm-content', deep?: boolean): MContentNode | null;
     findChildTagByTagName(tagName: 'm-slot', deep?: boolean): MSlotNode | null;
     findChildTagByTagName(tagName: 'm-var', deep?: boolean): MVarNode | null;
+    findChildTagByTagName(tagName: 'm-scope', deep?: boolean): MScopeNode | null;
     findChildTagByTagName(tagName: 'm-import', deep?: boolean): MImportNode | null;
+    findChildTagByTagName(tagName: 'm-if', deep?: boolean): MIfNode | null;
     findChildTagByTagName(tagName: string, deep?: boolean): TagNode | null;
     findChildTagByTagName(tagName: string, deep = true): TagNode | null {
         return this.findChildTag(tag => tag.tagName === tagName, deep);
@@ -154,7 +167,9 @@ export abstract class NodeWithChildren extends Node {
     findChildTagsByTagName(tagName: 'm-content', deep?: boolean): MContentNode[];
     findChildTagsByTagName(tagName: 'm-slot', deep?: boolean): MSlotNode[];
     findChildTagsByTagName(tagName: 'm-var', deep?: boolean): MVarNode[];
+    findChildTagsByTagName(tagName: 'm-scope', deep?: boolean): MScopeNode[];
     findChildTagsByTagName(tagName: 'm-import', deep?: boolean): MImportNode[];
+    findChildTagsByTagName(tagName: 'm-if', deep?: boolean): MIfNode[];
     findChildTagsByTagName(tagName: string, deep?: boolean): TagNode[];
     findChildTagsByTagName(tagName: string, deep = true): TagNode[] {
         return this.findChildTags(tag => tag.tagName === tagName, deep);
@@ -164,7 +179,9 @@ export abstract class NodeWithChildren extends Node {
     findTopLevelChildTagsByTagName(tagName: 'm-content'): MContentNode[];
     findTopLevelChildTagsByTagName(tagName: 'm-slot'): MSlotNode[];
     findTopLevelChildTagsByTagName(tagName: 'm-var'): MVarNode[];
+    findTopLevelChildTagsByTagName(tagName: 'm-scope'): MScopeNode[];
     findTopLevelChildTagsByTagName(tagName: 'm-import'): MImportNode[];
+    findTopLevelChildTagsByTagName(tagName: 'm-if'): MIfNode[];
     findTopLevelChildTagsByTagName(tagName: string): TagNode[];
     findTopLevelChildTagsByTagName(tagName: string): TagNode[] {
         return this.findTopLevelChildTags(tag => tag.tagName === tagName);
@@ -262,12 +279,12 @@ export class TagNode extends NodeWithChildren {
      * Attributes on this tag node.
      * Do not modify directly, use attribute API instance methods.
      */
-    protected attributes: Map<string, string | null>;
+    protected attributes: Map<string, unknown>;
 
-    constructor(tagName: string, attributes?: Map<string, string | null>) {
-        super(NodeType.Tag);
+    constructor(tagName: string, attributes?: Map<string, unknown>, isScoping = false) {
+        super(NodeType.Tag, isScoping);
         this.tagName = tagName;
-        this.attributes = attributes ?? new Map<string, string | null>();
+        this.attributes = attributes ?? new Map<string, unknown>();
     }
 
     /**
@@ -283,7 +300,10 @@ export class TagNode extends NodeWithChildren {
      * @param name Name of the attribute
      */
     getAttribute(name: string): string | null | undefined {
-        return this.attributes.get(name);
+        const value = this.getRawAttribute(name);
+        if (value === undefined) return undefined;
+        if (value === null) return null;
+        return String(value);
     }
 
     /**
@@ -328,11 +348,28 @@ export class TagNode extends NodeWithChildren {
     }
 
     /**
+     * Gets the raw (non-string) value of an attribute. May be any value.
+     * @param name Name of the attribute
+     */
+    getRawAttribute(name: string): unknown {
+        return this.attributes.get(name);
+    }
+
+    /**
      * Sets the value of an attribute
      * @param name Name of the attribute
      * @param value Value of the attribute
      */
     setAttribute(name: string, value: string | null): void {
+        this.attributes.set(name, value);
+    }
+
+    /**
+     * Sets an attribute to any value, even a non-string
+     * @param name Name of the attribute
+     * @param value Value of the attribute
+     */
+    setRawAttribute(name: string, value: unknown): void {
         this.attributes.set(name, value);
     }
 
@@ -371,7 +408,7 @@ export class TagNode extends NodeWithChildren {
     /**
      * Gets a ReadonlyMap containing all attributes on this tag
      */
-    getAttributes(): ReadonlyMap<string, string | null> {
+    getAttributes(): ReadonlyMap<string, unknown> {
         return this.attributes;
     }
 
@@ -503,23 +540,22 @@ export class DocumentNode extends NodeWithChildren {
  * Parent type for any custom tag that includes an external reference
  */
 export abstract class ExternalReferenceNode extends TagNode {
-    constructor(tagName: string, src: string, attributes?: Map<string, string | null>) {
+    constructor(tagName: string, src: string, attributes?: Map<string, unknown>) {
         super(tagName, attributes);
 
         this.setAttribute('src', src);
     }
 
-    // must be dynamic to reflect changes to attributes
     /**
      * Parameters to the external reference.
      */
-    get parameters(): ReadonlyMap<string, string> {
-        const params: Map<string, string> = new Map();
+    get parameters(): ReadonlyMap<string, unknown> {
+        const params: Map<string, unknown> = new Map();
 
         // extract fragment params
         for (const entry of this.attributes) {
             const key: string = entry[0];
-            const value: string | null = entry[1];
+            const value: unknown = entry[1];
 
             if (key != 'src' && value != null) {
                 params.set(key, value);
@@ -547,7 +583,7 @@ export abstract class ExternalReferenceNode extends TagNode {
  * m-fragment tag
  */
 export class MFragmentNode extends ExternalReferenceNode {
-    constructor(src: string, attributes?: Map<string, string | null>) {
+    constructor(src: string, attributes?: Map<string, unknown>) {
         super('m-fragment', src, attributes);
     }
 
@@ -568,7 +604,7 @@ export class MFragmentNode extends ExternalReferenceNode {
  * m-component tag
  */
 export class MComponentNode extends ExternalReferenceNode {
-    constructor(src: string, attributes?: Map<string, string | null>) {
+    constructor(src: string, attributes?: Map<string, unknown>) {
         super('m-component', src, attributes);
     }
 
@@ -589,7 +625,7 @@ export class MComponentNode extends ExternalReferenceNode {
  * Parent type for any custom tag that refers to a slot
  */
 export abstract class SlotReferenceNode extends TagNode {
-    constructor(tagName: string, slot?: string | null | undefined, attributes?: Map<string, string | null>) {
+    constructor(tagName: string, slot?: string, attributes?: Map<string, unknown>) {
         super(tagName, attributes);
 
         // populate slot name if missing
@@ -614,7 +650,7 @@ export abstract class SlotReferenceNode extends TagNode {
  * m-content tag
  */
 export class MContentNode extends SlotReferenceNode {
-    constructor(slot?: string | null | undefined, attributes?: Map<string, string | null>) {
+    constructor(slot?: string, attributes?: Map<string, unknown>) {
         super('m-content', slot, attributes);
     }
 
@@ -635,7 +671,7 @@ export class MContentNode extends SlotReferenceNode {
  * m-slot tag
  */
 export class MSlotNode extends SlotReferenceNode {
-    constructor(slot?: string | null | undefined, attributes?: Map<string, string | null>) {
+    constructor(slot?: string, attributes?: Map<string, unknown>) {
         super('m-slot', slot, attributes);
     }
 
@@ -653,24 +689,23 @@ export class MSlotNode extends SlotReferenceNode {
 }
 
 /**
- * m-var tag
+ * Parent type for any tag that defines variables
  */
-export class MVarNode extends TagNode {
-    constructor(attributes?: Map<string, string | null>) {
-        super('m-var', attributes);
+export abstract class VariablesNode extends TagNode {
+    constructor(tagName: string, attributes?: Map<string, unknown>, isScoping = false) {
+        super(tagName, attributes, isScoping);
     }
 
-    // this must be dynamic to reflect changes to attributes
     /**
      * Local Variables defined on this <m-var> tag
      */
-    get variables(): ReadonlyMap<string, string> {
-        const vars: Map<string, string> = new Map();
+    get variables(): ReadonlyMap<string, unknown> {
+        const vars: Map<string, unknown> = new Map();
 
         // extract variables
         for (const entry of this.attributes) {
             const key: string = entry[0];
-            const value: string | null = entry[1];
+            const value: unknown = entry[1];
 
             if (value != null) {
                 vars.set(key, value);
@@ -678,6 +713,15 @@ export class MVarNode extends TagNode {
         }
 
         return vars;
+    }
+}
+
+/**
+ * m-var tag
+ */
+export class MVarNode extends VariablesNode {
+    constructor(attributes?: Map<string, unknown>) {
+        super('m-var', attributes);
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MVarNode {
@@ -694,10 +738,31 @@ export class MVarNode extends TagNode {
 }
 
 /**
+ * m-scope tag
+ */
+export class MScopeNode extends VariablesNode {
+    constructor(attributes?: Map<string, unknown>) {
+        super('m-scope', attributes, true);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MScopeNode {
+        return NodeTools.cloneMScopeNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an instance of MScopeNode
+     * @param node Node to check
+     */
+    static isMScopeNode(node: Node): node is MScopeNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-scope';
+    }
+}
+
+/**
  * m-import tag
  */
 export class MImportNode extends TagNode {
-    constructor(src: string, as: string, fragment: boolean, component: boolean, attributes?: Map<string, string | null>) {
+    constructor(src: string, as: string, fragment: boolean, component: boolean, attributes?: Map<string, unknown>) {
         super('m-import', attributes);
 
         this.setAttribute('src', src);
@@ -756,5 +821,41 @@ export class MImportNode extends TagNode {
      */
     static isMImportNode(node: Node): node is MImportNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-import';
+    }
+}
+
+/**
+ * Parent class for any Tag that contains a conditional <m-if>, <m-else-if>, etc.
+ */
+export abstract class ConditionalNode extends TagNode {
+    constructor(tagName: string, expression: string, attributes?: Map<string, unknown>) {
+        super(tagName, attributes, true);
+
+        this.setAttribute('?', expression);
+    }
+
+    get expression(): string {
+        return this.getRequiredValueAttribute('?');
+    }
+    set expression(newExp: string) {
+        this.setAttribute('?', newExp);
+    }
+}
+
+export class MIfNode extends ConditionalNode {
+    constructor(expression: string, attributes?: Map<string, unknown>) {
+        super('m-if', expression, attributes);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MIfNode {
+        return NodeTools.cloneMIfNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an instance of MIfNode
+     * @param node Node to check
+     */
+    static isMIfNode(node: Node): node is MIfNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-if';
     }
 }

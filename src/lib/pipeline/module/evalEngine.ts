@@ -125,7 +125,7 @@ export class EvalContentFunction<T> implements EvalContent<T> {
 
     invoke(evalContext: EvalContext): T {
         // execute the function
-        return this.evalFunction(evalContext.scope, evalContext);
+        return this.evalFunction(evalContext.scope.scopeData, evalContext);
     }
 }
 
@@ -141,7 +141,7 @@ export class EvalContentConstructor<T> implements EvalContent<T> {
 
     invoke(evalContext: EvalContext): T {
         // execute the function
-        return new this.evalConstructor(evalContext.scope, evalContext);
+        return new this.evalConstructor(evalContext.scope.scopeData, evalContext);
     }
 }
 
@@ -165,59 +165,75 @@ export class EvalContext {
     readonly usageContext: UsageContext;
 
     /**
-     * Variables declared in the current scope
+     * Compiled scope instance, with proper shadowing and overloading applied
      */
-    readonly variables: EvalVars;
+    readonly scope: EvalScopeObject;
 
-    /**
-     * Parameters provided to the current scope
-     */
-    readonly parameters: EvalVars;
-
-    /**
-     * Compiled scope instance, with proper shadowing  and overloading applied
-     */
-    readonly scope: EvalScope;
-
-    constructor(pipeline: Pipeline, currentFragment: Fragment, usageContext: UsageContext, variables: EvalVars) {
+    constructor(pipeline: Pipeline, currentFragment: Fragment, usageContext: UsageContext, scope: EvalScopeObject) {
         this.pipeline = pipeline;
         this.currentFragment = currentFragment;
         this.usageContext = usageContext;
-        this.variables = variables;
-        this.parameters = usageContext.fragmentParams;
-        this.scope = new Proxy({}, new EvalScopeProxy(usageContext.fragmentParams, variables, usageContext.componentInstance));
+        this.scope = scope;
     }
 }
 
 /**
+ * Allowable types for property keys for eval scopes
+ */
+export type EvalKey = string | number;
+
+/**
  * A set of variables that can be provided to a script
  */
-export type EvalVars = ReadonlyMap<string, unknown>;
+export type EvalVars = ReadonlyMap<EvalKey, unknown>;
 
 /**
  * Compiled scope instance that can be used to access all available variables with proper shadowing and overloading
  */
-export type EvalScope = Record<string, unknown>;
+export type EvalScope = Record<EvalKey, unknown>;
+
+export class EvalScopeObject {
+    readonly scopeData: EvalScope;
+
+    constructor(scopeObject: EvalScope) {
+        this.scopeData = scopeObject;
+    }
+    
+    createChildScope(): EvalScopeObject {
+        const childScopeData: EvalScope = Object.create(this.scopeData);
+        return new EvalScopeObject(childScopeData);
+    }
+}
+
+export class RootEvalScopeObject extends EvalScopeObject {
+    constructor(parameters: EvalVars, component?: ComponentScriptInstance) {
+        super(createRootEvalScope(parameters, component));
+    }
+}
+
+function createRootEvalScope(parameters: EvalVars, component?: ComponentScriptInstance): EvalScope {
+    const scopeProxyHandler = new EvalScopeProxy(parameters, component);
+    return new Proxy(Object.create(null), scopeProxyHandler);
+}
 
 class EvalScopeProxy implements ProxyHandler<EvalScope> {
     private readonly parameters: EvalVars;
-    private readonly variables: EvalVars;
     private readonly component?: ComponentScriptInstance;
     
-    constructor(parameters: EvalVars, variables: EvalVars, component?: ComponentScriptInstance) {
+    constructor(parameters: EvalVars, component?: ComponentScriptInstance) {
         this.parameters = parameters;
-        this.variables = variables;
         this.component = component;
     }
 
     get (target: EvalScope, key: PropertyKey): unknown {
-        if (typeof(key) === 'string') {
+        // TS does not support symbols
+        if (typeof(key) !== 'symbol') {
+            // get from component, if present
             if (this.component?.hasOwnProperty(key)) {
                 return this.component[key];
             }
-            if (this.variables.has(key)) {
-                return this.variables.get(key);
-            }
+
+            // otherwise fall back to parameters
             if (this.parameters.has(key)) {
                 return this.parameters.get(key);
             }
