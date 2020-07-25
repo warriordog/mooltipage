@@ -1,4 +1,4 @@
-import { MIfNode, Node, MForNode, HtmlCompilerModule, DocumentNode, MScopeNode } from "../../..";
+import { MIfNode, Node, MForNode, HtmlCompilerModule, DocumentNode, MScopeNode, MForOfNode, MForInNode } from "../../..";
 
 /**
  * Process dom logic: m-if, m-for, etc.
@@ -11,7 +11,7 @@ export class DomLogicModule implements HtmlCompilerModule {
         } else if (MForNode.isMForNode(node)) {
             // process m-for nodes
             this.compileMFor(node);
-        } 
+        }
     }
 
     private compileMFor(mFor: MForNode): void {
@@ -33,12 +33,12 @@ export class DomLogicModule implements HtmlCompilerModule {
     }
 
     private evaluateMFor(mFor: MForNode): MForIteration[] {
-        if (mFor.isForOf) {
-            return this.evaluateForOf(mFor.ofValue);
-        } else if (mFor.isForIn) {
-            return this.evaluateForIn(mFor.inValue);
+        if (MForOfNode.isMForOfNode(mFor)) {
+            return this.evaluateForOf(mFor.value);
+        } else if (MForInNode.isMForInNode(mFor)) {
+            return this.evaluateForIn(mFor.value);
         } else {
-            return [];
+            throw new Error('m-for node is neither a for...of nor a for...in loop');
         }
     }
 

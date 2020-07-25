@@ -1,5 +1,4 @@
-import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode } from "..";
-import { MScopeNode, MIfNode, MForNode } from "./node";
+import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode, MScopeNode, MIfNode, MForOfNode, MForInNode } from "..";
 
 /**
  * Detatch a node and its children from the DOM.
@@ -41,6 +40,10 @@ export function hasChild(parent: NodeWithChildren, child: Node): boolean {
  * @param child New child node
  */
 export function appendChild(parent: NodeWithChildren, child: Node): void {
+    if (DocumentNode.isDocumentNode(child)) {
+        throw new Error(`Cannot insert a DocumentNode as child`);
+    }
+
     detatchNode(child);
 
     if (parent.lastChild) {
@@ -61,6 +64,10 @@ export function appendChild(parent: NodeWithChildren, child: Node): void {
  * @param child New child node
  */
 export function prependChild(parent: NodeWithChildren, child: Node): void {
+    if (DocumentNode.isDocumentNode(child)) {
+        throw new Error(`Cannot insert a DocumentNode as child`);
+    }
+
     detatchNode(child);
 
     if (parent.firstChild) {
@@ -104,6 +111,9 @@ export function appendSibling(node: Node, after: Node): void {
     if (DocumentNode.isDocumentNode(after)) {
         throw new Error(`Attempting to append ${node.nodeType} after DocumentNode`);
     }
+    if (DocumentNode.isDocumentNode(node)) {
+        throw new Error(`Cannot insert a DocumentNode as child`);
+    }
 
     detatchNode(node);
 
@@ -135,6 +145,9 @@ export function appendSibling(node: Node, after: Node): void {
 export function prependSibling(node: Node, before: Node): void {
     if (DocumentNode.isDocumentNode(before)) {
         throw new Error(`Attempting to prepend ${node.nodeType} before DocumentNode`);
+    }
+    if (DocumentNode.isDocumentNode(node)) {
+        throw new Error(`Cannot insert a DocumentNode as child`);
     }
 
     detatchNode(node);
@@ -419,15 +432,31 @@ export function cloneMIfNode(node: MIfNode, deep: boolean, callback?: (oldNode: 
 }
 
 /**
- * Clones an m-for node
+ * Clones an MForOf node
  * @param node Node to clone
  * @param deep If true, children will be cloned
  * @param callback Optional callback after node is cloned
  */
-export function cloneMForNode(node: MForNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MForNode {
+export function cloneMForOfNode(node: MForOfNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MForOfNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new MForNode(node.varName, node.indexName, node.ofExpression, node.inExpression, newAttrs);
+    const newNode = new MForOfNode(node.expression, node.varName, node.indexName, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones an MForIn node
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMForInNode(node: MForInNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MForInNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MForInNode(node.expression, node.varName, node.indexName, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -525,75 +554,6 @@ export function replaceNode(remove: Node, replacements: Node[]): void {
  */
 export function getChildTags(parent: NodeWithChildren): TagNode[] {
     return parent.childNodes.filter((node: Node) => TagNode.isTagNode(node)) as TagNode[];
-}
-
-/**
- * Walk through the DOM using a depth-first recursion, and call a callback for each node
- * @param node Node to start with
- * @param callback Callback to call
- */
-export function walkDom(node: Node, callback: (node: Node) => void): void {
-    callback(node);
-
-    if (NodeWithChildren.isNodeWithChildren(node)) {
-        for (const childNode of node.childNodes) {
-            walkDom(childNode, callback);
-        }
-    }
-}
-
-/**
- * Finds all child tags that match a series of matchers.
- * Each matcher will be used in sequence, and children of all matching tags will be passed to the next matcher.
- * When the end of the list is reached, all matching nodes are returned.
- * 
- * @param root Parent node
- * @param matchers List of matchers
- */
-export function findChildTagsByPath(root: NodeWithChildren, matchers: ((tag: TagNode) => boolean)[]): TagNode[] {
-    return findChildTagsByPathAt(root, matchers, 0, []);
-}
-
-// not exported
-function findChildTagsByPathAt(root: NodeWithChildren, matchers: ((tag: TagNode) => boolean)[], offset: number, matches: TagNode[]): TagNode[] {
-    if (offset < matchers.length) {
-        const matcher = matchers[offset];
-
-        for (const childNode of root.childNodes) {
-            // check if this node matches
-            if (TagNode.isTagNode(childNode) && matcher(childNode)) {
-                if (offset === matchers.length - 1) {
-                    // if we are at the last matcher, then this is a result
-                    matches.push(childNode);
-                } else {
-                    // if not at the last matcher, then recurse for child nodes
-                    findChildTagsByPathAt(childNode, matchers, offset + 1, matches);
-                }
-            }
-        }
-    }
-
-    return matches;
-}
-
-/**
- * Finds all tag tags that match a matcher, that are not children of another matching node.
- * Basically, this is findChildTags but recursion stops when a match is found.
- * 
- * @param parent Parent tag
- * @param matcher Matcher to check tags
- * @param matches Existing list of tags to append to, if desired
- */
-export function findTopLevelChildTags(parent: NodeWithChildren, matcher: (tag: TagNode) => boolean, matches: TagNode[] = []): TagNode[] {
-    for (const childNode of parent.childNodes) {
-        if (TagNode.isTagNode(childNode) && matcher(childNode)) {
-            matches.push(childNode);
-        } else if (NodeWithChildren.isNodeWithChildren(childNode)) {
-            findTopLevelChildTags(childNode, matcher, matches);
-        }
-    }
-
-    return matches;
 }
 
 /**

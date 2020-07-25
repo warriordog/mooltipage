@@ -1,5 +1,5 @@
 import test from 'ava';
-import { NodeTools, TagNode } from '../../lib';
+import { NodeTools, TagNode, DocumentNode, Node, TextNode } from '../../lib';
 
 test('[unit] NodeTools.detatchNode removes nodes', t => {
     const parent = new TagNode('div');
@@ -46,6 +46,13 @@ test('[unit] NodeTools.appendChild appends children', t => {
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
 });
 
+test('[unit] NodeTools.appendChild will not append a DocumentNode', t => {
+    const parent = new TagNode('div');
+    const child = new DocumentNode();
+
+    t.throws(() => NodeTools.appendChild(parent, child));
+});
+
 test('[unit] NodeTools.prependChild inserts children', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
@@ -63,6 +70,13 @@ test('[unit] NodeTools.prependChild inserts children', t => {
     t.is(child2.nextSibling, child1);
     t.is(Object.getPrototypeOf(child1.nodeData), parent.nodeData);
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
+});
+
+test('[unit] NodeTools.prependChild will not prepend a DocumentNode', t => {
+    const parent = new TagNode('div');
+    const child = new DocumentNode();
+
+    t.throws(() => NodeTools.prependChild(parent, child));
 });
 
 test('[unit] NodeTools.clear removes all child nodes', t => {
@@ -102,6 +116,13 @@ test('[unit] NodeTools.appendChildNodes appends all child nodes', t => {
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
 });
 
+test('[unit] NodeTools.appendChildNodes will not append a DocumentNode', t => {
+    const parent = new TagNode('div');
+    const child = new DocumentNode();
+
+    t.throws(() => NodeTools.appendChildNodes(parent, [ child ]));
+});
+
 test('[unit] NodeTools.appendSibling appends sibling', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
@@ -121,6 +142,15 @@ test('[unit] NodeTools.appendSibling appends sibling', t => {
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
 });
 
+test('[unit] NodeTools.appendSibling will not append a DocumentNode', t => {
+    const parent = new TagNode('div');
+    const child1 = new TagNode('div');
+    const child2 = new DocumentNode();
+    NodeTools.appendChild(parent, child1);
+
+    t.throws(() => NodeTools.appendSibling(child2, child1));
+});
+
 test('[unit] NodeTools.prependSibling inserts sibling', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
@@ -138,6 +168,15 @@ test('[unit] NodeTools.prependSibling inserts sibling', t => {
     t.is(child2.nextSibling, child1);
     t.is(Object.getPrototypeOf(child1.nodeData), parent.nodeData);
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
+});
+
+test('[unit] NodeTools.prependSibling will not append a DocumentNode', t => {
+    const parent = new TagNode('div');
+    const child1 = new TagNode('div');
+    const child2 = new DocumentNode();
+    NodeTools.appendChild(parent, child1);
+
+    t.throws(() => NodeTools.prependSibling(child2, child1));
 });
 
 test('[unit] NodeTools.replaceNode works with no replacements', t => {
@@ -268,4 +307,101 @@ test('[unit] NodeTools.replaceNode can promote child nodes', t => {
     t.is(child3.nextSibling, child4);
     t.is(child4.prevSibling, child3);
     t.falsy(child4.nextSibling);
+});
+
+test('[unit] NodeTools.replaceNode will not insert a DocumentNode', t => {
+    const parent = new TagNode('div');
+    const child = new TagNode('div');
+    const replace = new DocumentNode();
+    NodeTools.appendChild(parent, child);
+
+    t.throws(() => NodeTools.replaceNode(child, [ replace ]));
+});
+
+test('[unit] NodeTools.cloneDocumentNode deep clones DOM correctly', t => {
+    const root = new DocumentNode();
+    const child1 = new TagNode('div', new Map([['hello', 'world']]));
+    NodeTools.appendChild(child1, new TagNode('div'));
+    NodeTools.appendChild(child1, new TagNode('div'));
+    NodeTools.appendChild(root, child1);
+    const child2 = new TagNode('div', new Map([['child', '2']]));
+    NodeTools.appendChild(child2, new TagNode('div'));
+    NodeTools.appendChild(child2, new TagNode('div'));
+    NodeTools.appendChild(root, child2);
+
+    const clone = NodeTools.cloneDocumentNode(root, true);
+    t.is(clone.childNodes.length, 2);
+    
+    const cloneChild1 = clone.firstChild as TagNode;
+    t.true(TagNode.isTagNode(cloneChild1));
+    t.is(cloneChild1.getAttribute('hello'), 'world');
+    t.is(cloneChild1.childNodes.length, 2);
+    t.true(TagNode.isTagNode(cloneChild1.firstChild as Node));
+    t.true(TagNode.isTagNode(cloneChild1.lastChild as Node));
+
+    const cloneChild2 = clone.lastChild as TagNode;
+    t.true(TagNode.isTagNode(cloneChild2));
+    t.is(cloneChild2.getAttribute('child'), '2');
+    t.is(cloneChild2.childNodes.length, 2);
+    t.true(TagNode.isTagNode(cloneChild2.firstChild as Node));
+    t.true(TagNode.isTagNode(cloneChild2.lastChild as Node));
+});
+
+test('[unit] NodeTools.cloneDocumentNode shallow clones DOM correctly', t => {
+    const root = new DocumentNode();
+    const child1 = new TagNode('div', new Map([['hello', 'world']]));
+    NodeTools.appendChild(root, child1);
+    const child2 = new TagNode('div', new Map([['child', '2']]));
+    NodeTools.appendChild(root, child2);
+
+    const clone = NodeTools.cloneDocumentNode(root, false);
+    t.is(clone.childNodes.length, 0);
+});
+
+test('[unit] NodeTools.cloneDocumentNode fires callbacks', t => {
+    const root = new DocumentNode();
+    const child1 = new TagNode('div', new Map([['hello', 'world']]));
+    NodeTools.appendChild(root, child1);
+    const child1child1 = new TagNode('div');
+    NodeTools.appendChild(child1, child1child1);
+    const child1child2 = new TagNode('div');
+    NodeTools.appendChild(child1, child1child2);
+    const child2 = new TagNode('div', new Map([['child', '2']]));
+    NodeTools.appendChild(root, child2);
+    const child2child1 = new TagNode('div');
+    NodeTools.appendChild(child2, child2child1);
+    const child2child2 = new TagNode('div');
+    NodeTools.appendChild(child2, child2child2);
+
+    const clonedNodes: Node[] = [];
+    NodeTools.cloneDocumentNode(root, true, (oldNode: Node, newNode: Node) => {
+        t.is(newNode.nodeType, oldNode.nodeType);
+        t.not(newNode, oldNode);
+        clonedNodes.push(oldNode);
+    });
+
+    t.is(clonedNodes.length, 7);
+    t.true(clonedNodes.includes(root));
+    t.true(clonedNodes.includes(child1));
+    t.true(clonedNodes.includes(child1child1));
+    t.true(clonedNodes.includes(child1child2));
+    t.true(clonedNodes.includes(child2));
+    t.true(clonedNodes.includes(child2child1));
+    t.true(clonedNodes.includes(child2child2));
+});
+
+test('[unit] NodeTools.getChildTags filters for TagNodes', t => {
+    const root = new DocumentNode();
+    root.appendChild(new TextNode('text'));
+    const child1 = new TagNode('div');
+    root.appendChild(child1);
+    root.appendChild(new TextNode('text'));
+    const child2 = new TagNode('div');
+    root.appendChild(child2);
+    root.appendChild(new TextNode('text'));
+
+    const childTags = NodeTools.getChildTags(root);
+    t.is(childTags.length, 2);
+    t.true(childTags.includes(child1));
+    t.true(childTags.includes(child2));
 });

@@ -1,5 +1,5 @@
 import test from 'ava';
-import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MImportNode, MScopeNode, MIfNode, MForNode } from '../../lib';
+import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MImportNode, MScopeNode, MIfNode, MForOfNode, MForInNode } from '../../lib';
 
 test('[unit] TagNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['foo', 'bar'], ['attr', null]]);
@@ -164,39 +164,30 @@ test('[unit] MIfNode constructor handles arguments', t => {
     t.is(node.expression, expression);
 });
 
-test('[unit] MForNode constructor handles arguments (for...of)', t => {
+test('[unit] MForOfNode constructor handles arguments', t => {
     const varName = 'value';
     const indexName = 'i';
-    const ofExpression = '{{ [] }}';
-    const inExpression = undefined;
+    const expression = '{{ [] }}';
 
-    const node = new MForNode(varName, indexName, ofExpression, inExpression);
+    const node = new MForOfNode(expression, varName, indexName);
 
     t.is(node.tagName, 'm-for');
+    t.is(node.expressionAttrName, 'of');
     t.is(node.varName, varName);
     t.is(node.indexName, indexName);
-    t.is(node.ofExpression, ofExpression);
-    t.is(node.inExpression, inExpression);
+    t.is(node.expression, expression);
 });
 
-test('[unit] MForNode constructor handles arguments (for...in)', t => {
+test('[unit] MForInNode constructor handles arguments', t => {
     const varName = 'key';
     const indexName = 'i';
-    const ofExpression = undefined;
-    const inExpression = '{{ {} }}';
+    const expression = '{{ {} }}';
 
-    const node = new MForNode(varName, indexName, ofExpression, inExpression);
+    const node = new MForInNode(expression, varName, indexName);
 
     t.is(node.tagName, 'm-for');
+    t.is(node.expressionAttrName, 'in');
     t.is(node.varName, varName);
     t.is(node.indexName, indexName);
-    t.is(node.ofExpression, ofExpression);
-    t.is(node.inExpression, inExpression);
-});
-
-test('[unit] MForNode constructor rejects invalid arguments', t => {
-    t.throws(() => new MForNode('foo', undefined, undefined, undefined));
-    t.throws(() => new MForNode('foo', 'foo', undefined, undefined));
-    t.throws(() => new MForNode('foo', undefined, 'foo', 'foo'));
-    t.throws(() => new MForNode('foo', 'foo', 'foo', 'foo'));
+    t.is(node.expression, expression);
 });

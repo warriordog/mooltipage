@@ -1,7 +1,4 @@
-import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule } from "../..";
-import { DomLogicModule } from "./compiler/domLogicModule";
-import { EvalScope } from "./evalEngine";
-import { Node, NodeWithChildren, DocumentNode } from "../../dom/node";
+import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule, DomLogicModule, EvalScope, Node, NodeWithChildren, DocumentNode } from "../..";
 
 /**
  * Provides HTML compilation support to the pipeline.
