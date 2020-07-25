@@ -1,62 +1,112 @@
-import { CompilerModule, CompileData, MIfNode, Node, NodeWithChildren } from "../../..";
+import { MIfNode, Node, MForNode, HtmlCompilerModule, DocumentNode, MScopeNode } from "../../..";
 
 /**
  * Process dom logic: m-if, m-for, etc.
  */
-export class DomLogicModule implements CompilerModule {
-    compileFragment(compileData: CompileData): void {
-        // walk dom
-        this.walkDomAt(compileData.fragment.dom, compileData);
-    }
-
-    private walkDomAt(node: Node, compileData: CompileData): void {
+export class DomLogicModule implements HtmlCompilerModule {
+    enterNode(node: Node): void {
         if (MIfNode.isMIfNode(node)) {
             // process m-if nodes
-            this.compileMIf(node, compileData);
+            node.removeSelf(node.condition);
+        } else if (MForNode.isMForNode(node)) {
+            // process m-for nodes
+            this.compileMFor(node);
+        } 
+    }
+
+    private compileMFor(mFor: MForNode): void {
+        // extract contents
+        const forContents: DocumentNode = mFor.createDomFromChildren();
+
+        // generate iteration data for the loop. This will be in order.
+        const iterations: MForIteration[] = this.evaluateMFor(mFor);
+
+        // append iterations
+        // This has to go in reverse, since we are effecively inserting at the head of a linked list each time
+        for (let i = iterations.length - 1; i >= 0; i--) {
+            const iteration = iterations[i];
+            this.compileIteration(mFor, iteration, forContents);
+        }
+
+        // remove m-for after processing
+        mFor.removeSelf();
+    }
+
+    private evaluateMFor(mFor: MForNode): MForIteration[] {
+        if (mFor.isForOf) {
+            return this.evaluateForOf(mFor.ofValue);
+        } else if (mFor.isForIn) {
+            return this.evaluateForIn(mFor.inValue);
         } else {
-            // process non-logic nodes
-            this.compileGenericNode(node, compileData);
+            return [];
         }
     }
 
-    private compileMIf(mIf: MIfNode, compileData: CompileData): void {
-        // compile expression
-        const evalContext = compileData.createEvalContext(mIf.evalScope);
-        const expressionResult = compileData.pipeline.compileDomText(mIf.expression, evalContext);
-        const isTrue = !!expressionResult;
+    private evaluateForOf(ofValue: unknown): MForIteration[] {
+        const iterations: MForIteration[] = [];
 
-        if (isTrue) {
-            // if the expression is true, then process children
-            this.processChildren(mIf, compileData);
+        // get the compiled of expression as an array
+        const arrayValue = ofValue as unknown[];
+        
+        // make sure that it actually is an array
+        if (arrayValue != undefined && typeof(arrayValue.length) === 'number') {
+            let index = 0;
+            for (const value of arrayValue) {
+                iterations.push({
+                    value: value,
+                    index: index
+                });
 
-            // remove self, but keep children
-            mIf.removeSelf(true);
-        } else {
-            // if the expression is false, then remove self and children
-            mIf.removeSelf(false);
+                index++;
+            }
         }
+
+        return iterations;
     }
+
+    private evaluateForIn(inValue: unknown): MForIteration[] {
+        const iterations: MForIteration[] = [];
+        
+        // make sure that it actually is an object
+        if (inValue != undefined && typeof(inValue) === 'object') {
+            let index = 0;
+            for (const value in inValue) {
+                iterations.push({
+                    value: value,
+                    index: index
+                });
+
+                index++;
+            }
+        }
+
+        return iterations;
+    }
+
+    private compileIteration(mFor: MForNode, iteration: MForIteration, forContents: DocumentNode): void {
+        // create scope
+        const mScope = new MScopeNode();
     
-    private compileGenericNode(node: Node, compileData: CompileData): void {
-        // process children (children and siblings are already updated by this point)
-        if (NodeWithChildren.isNodeWithChildren(node)) {
-            this.processChildren(node, compileData);
+        // bind value var
+        mScope.setRawAttribute(mFor.varName, iteration.value);
+
+        // bind index var, if included
+        if (mFor.indexName != undefined) {
+            mScope.setRawAttribute(mFor.indexName, iteration.index);
         }
+
+        // append copy of children
+        const forContentsClone = forContents.clone(true);
+        mScope.appendChildren(forContentsClone.childNodes);
+
+        // append to m-for node
+        mFor.appendSibling(mScope);
     }
 
-    private processChildren(node: NodeWithChildren, compileData: CompileData): void {
-        // do a linked search instead of array iteration, because the child list can be modified (such as by m-for)
-        let currentChild: Node | null = node.firstChild;
-        while (currentChild != null) {
-            // save the next sibling, in case the child deletes itself (m-if / similar)
-            const nextChild: Node | null = currentChild.nextSibling;
+    
+}
 
-            // process the child
-            this.walkDomAt(currentChild, compileData);
-
-            // move on to next. conditional logic will never modify a previous node, so as long as we only check nextSibling we will get them all.
-            // if the node removes itself, nextSibling will be null so we need to skip to the saved next child.
-            currentChild = currentChild.nextSibling ?? nextChild;
-        }
-    }
+interface MForIteration {
+    value: unknown;
+    index: number;
 }

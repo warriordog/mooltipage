@@ -1,94 +1,66 @@
-import { CompilerModule, CompileData, MVarNode, EvalScopeObject, Node, NodeWithChildren, MScopeNode, VariablesNode } from "../../..";
-import { EvalContext } from "../evalEngine";
+import { HtmlCompileData, MVarNode, MScopeNode, VariablesNode, HtmlCompilerModule, Node, DocumentNode, EvalScope } from "../../..";
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
  */
-export class VarsModule implements CompilerModule {
-    compileFragment(compileData: CompileData): void {
-        // create and assign scopes
-        this.createScopes(compileData);
-
-        // evaluate m-var and m-scope variables
-        this.evalVars(compileData);
-    }
-
-    private createScopes(compileData: CompileData) {
-        // root eval scope
-        const rootScope = compileData.usageContext.rootScope.createChildScope();
-
-        // create and assign scopes for all nodes
-        this.createScopeFor(compileData.fragment.dom, rootScope);
-    }
-
-    private createScopeFor(node: Node, currentScope: EvalScopeObject): void {
-        // if this is a scoping tag, then create a new scope
-        if (node.isScoping) {
-            currentScope = currentScope.createChildScope();
-        }
-
-        // set scope for node
-        node.evalScope = currentScope;
-
-        // process child nodes
-        if (NodeWithChildren.isNodeWithChildren(node)) {
-            for (const childNode of node.childNodes) {
-                this.createScopeFor(childNode, currentScope);
-            }
+export class VarsModule implements HtmlCompilerModule {
+    enterNode(node: Node, compileData: HtmlCompileData): void {
+        if (DocumentNode.isDocumentNode(node)) {
+            // if document, then bind root scope and we are done
+            this.setRootScope(node, compileData);
+        } else if (MVarNode.isMVarNode(node)) {
+            // process m-var, then remove
+            this.evalVar(node, compileData, true);
+            node.removeSelf();
+        } else if (MScopeNode.isMScopeNode(node)) {
+            // process m-scope, but leave until later to cleanup
+            this.evalVar(node, compileData, false);
         }
     }
-    
-    private evalVars(compileData: CompileData) {
-        // find all vars and scopes
-        const varElems: MVarNode[] = compileData.fragment.dom.findChildTagsByTagName('m-var');
-        const scopeElems: MScopeNode[] = compileData.fragment.dom.findChildTagsByTagName('m-scope');
-        
-        // compute values
-        this.getVarValues(compileData, varElems);
-        this.getVarValues(compileData, scopeElems);
 
-        // remove from DOM
-        this.removeVarElems(varElems);
-        this.removeMScopes(scopeElems);
+    exitNode(node: Node): void {
+        // m-scope removal is delayed until now to preserve the scope data
+        if (MScopeNode.isMScopeNode(node)) {
+            // leave children in place
+            node.removeSelf(true);
+        }
     }
 
-    private getVarValues(compileData: CompileData, varNodes: VariablesNode[]): void {
-        for (const mVar of varNodes) {
-            // create eval context
-            const evalContext = compileData.createEvalContext(mVar.evalScope);
+    private setRootScope(dom: DocumentNode, compileData: HtmlCompileData): void {
+        // bind DOM scope to fragment root scope
+        dom.setRootScope(compileData.usageContext.rootScope);
+    }
 
-            for (const variable of mVar.variables.entries()) {
+    private evalVar(node: VariablesNode, compileData: HtmlCompileData, useParentScope: boolean) {
+        // m-var writes into its parent's scope instead of using its own
+        const targetScope = this.getTargetScope(node, compileData, useParentScope);
+
+        // this should not happen, but if there is ever not a parent then this var is a no-op and can be skipped
+        if (targetScope != undefined) {
+
+            // promote variables to scope
+            for (const variable of node.variables.entries()) {
                 const varName: string = variable[0];
                 const srcValue: unknown = variable[1];
 
-                // compute real value
-                const varValue = this.getAttributeValue(srcValue, compileData, evalContext);
-
                 // assign value
-                evalContext.scope.scopeData[varName] = varValue;
+                targetScope[varName] = srcValue;
             }
         }
     }
 
-    private getAttributeValue(srcValue: unknown, compileData: CompileData, evalContext: EvalContext): unknown {
-        if (typeof(srcValue) === 'string') {
-            return compileData.pipeline.compileDomText(srcValue, evalContext);
-        } else {
-            return srcValue;
+    private getTargetScope(node: VariablesNode, compileData: HtmlCompileData, useParentScope: boolean): EvalScope {
+        // if not using the parent scope, then we can take current node's data and use that as scope
+        if (!useParentScope) {
+            return node.nodeData;
         }
-    }
 
-    private removeVarElems(mVars: MVarNode[]): void {
-        for (const mVar of mVars) {
-            // remove each m-var and children
-            mVar.removeSelf();
+        // if we are using the parent scope and there is a parent node, then use that scope
+        if (node.parentNode != null) {
+            return node.parentNode.nodeData;
         }
-    }
 
-    private removeMScopes(mScopes: MScopeNode[]): void {
-        for (const mScope of mScopes) {
-            // remove each m-scope, but keep children
-            mScope.removeSelf(true);
-        }
+        // if we are using the parent scope but there is no parent node, then fall back to root scope
+        return compileData.usageContext.rootScope;
     }
 }

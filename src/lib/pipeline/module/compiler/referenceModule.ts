@@ -1,75 +1,41 @@
-import { CompilerModule, CompileData, DocumentNode, ExternalReferenceNode, Fragment, UsageContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode } from "../../..";
+import { DocumentNode, ExternalReferenceNode, Fragment, UsageContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode, HtmlCompilerModule, HtmlCompileData } from "../../..";
 
 /**
  * Process external references, such as m-fragment and m-component.
  */
-export class ReferenceModule implements CompilerModule {
+export class ReferenceModule implements HtmlCompilerModule {
 
-    compileFragment(compileData: CompileData): void {
-        // extract references to external html
-        const references: ExternalReference[] = this.extractReferences(compileData);
-
-        // replace external references
-        this.replaceReferences(compileData, references);
-    }
-
-    private extractReferences(compileData: CompileData): ExternalReference[] {
-        const dom: DocumentNode = compileData.fragment.dom;
-
-        // get m-fragment references
-        const mFragmentRefs = dom.findTopLevelChildTagsByTagName('m-fragment');
-
-        // get m-component references
-        const mComponentRefs = dom.findTopLevelChildTagsByTagName('m-component');
-
-        // combine all external references
-        const refNodes: ExternalReferenceNode[] = mFragmentRefs.concat(mComponentRefs);
-        
-        // convert
-        return refNodes.map(refNode => {
-            // get slot contents
-            const slotContents: SlotContentsMap = this.extractSlotContentsFromReference(refNode);
-
-            return {
-                refNode: refNode,
-                slotContents: slotContents
-            };
-        })
-    }
-
-    private replaceReferences(compileData: CompileData, references: ExternalReference[]): void {
-        // process each reference
-        for (const ref of references) {
-            // create usage context
-            const usageContext = compileData.usageContext.createSubContext(ref.slotContents, ref.refNode.parameters);
-
-            // call pipeline to load reference
-            const refContents: Fragment = this.compileReference(ref, usageContext, compileData.pipeline);
-
-            // replace with compiled fragment
-            ref.refNode.replaceSelf(...refContents.dom.childNodes)
+    exitNode(node: Node, compileData: HtmlCompileData): void {
+        if (MFragmentNode.isMFragmentNode(node) || MComponentNode.isMComponentNode(node)) {
+            this.replaceReference(node, compileData);
         }
     }
 
-    private compileReference(ref: ExternalReference, usageContext: UsageContext, pipeline: Pipeline): Fragment {
-        const src = ref.refNode.src;
-        const refTagName = ref.refNode.tagName; // avoid TS bug
+    private replaceReference(refNode: ExternalReferenceNode, compileData: HtmlCompileData): void {
+        // get slot contents
+        const slotContents: Map<string, DocumentNode> = this.extractSlotContentsFromReference(refNode);
 
-        // compile m-fragment as fragment
-        if (MFragmentNode.isMFragmentNode(ref.refNode)) {
-            return pipeline.compileFragment(src, usageContext);
-        }
-        
-        // compile m-component as component
-        if (MComponentNode.isMComponentNode(ref.refNode)) {
-            return pipeline.compileComponent(src, usageContext);
-        }
+        // create usage context
+        const usageContext = compileData.usageContext.createSubContext(slotContents, refNode.parameters);
 
-        throw new Error(`Unknown external reference type: '${refTagName}'`);
+        // call pipeline to load reference
+        const refType = MFragmentNode.isMFragmentNode(refNode) ? 'm-fragment' : 'm-component';
+        const refContents: Fragment = this.compileReference(refNode.src, usageContext, compileData.pipeline, refType);
+
+        // replace with compiled fragment
+        refNode.replaceSelf(refContents.dom.childNodes);
     }
 
-    private extractSlotContentsFromReference(refTag: NodeWithChildren): SlotContentsMap {
-        const slotMap: SlotContentsMap = new Map();
+    private compileReference(src: string, usageContext: UsageContext, pipeline: Pipeline, type: 'm-fragment' | 'm-component'): Fragment {
+        switch (type) {
+            case 'm-fragment': return pipeline.compileFragment(src, usageContext);
+            case 'm-component': return pipeline.compileComponent(src, usageContext);
+            default: throw new Error(`Unknown external reference type: '${type}'`); 
+        }
+    }
+    
+    private extractSlotContentsFromReference(refTag: NodeWithChildren): Map<string, DocumentNode> {
+        const slotMap = new Map<string, DocumentNode>();
 
         // loop through all direct children of fragment reference
         for (const node of Array.from(refTag.childNodes)) {
@@ -89,7 +55,7 @@ export class ReferenceModule implements CompilerModule {
         return slotMap;
     }
 
-    private getContentDom(slotMap: SlotContentsMap, slotName: string): DocumentNode {
+    private getContentDom(slotMap: Map<string, DocumentNode>, slotName: string): DocumentNode {
         let slotDom: DocumentNode | undefined = slotMap.get(slotName);
 
         if (slotDom == undefined) {
@@ -116,11 +82,4 @@ export class ReferenceModule implements CompilerModule {
             return '[default]';
         }
     }
-}
-
-type SlotContentsMap = Map<string, DocumentNode>;
-
-interface ExternalReference {
-    readonly slotContents: SlotContentsMap;
-    readonly refNode: ExternalReferenceNode;
 }

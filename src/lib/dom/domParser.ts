@@ -1,6 +1,6 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
 import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode } from '..';
-import { MScopeNode } from './node';
+import { MScopeNode, MForNode } from './node';
 
 /**
  * Parses HTML into a dom using htmlparser2
@@ -173,6 +173,8 @@ export class DomHandler implements Partial<Handler> {
                 return this.createMImportNode(attributes);
             case 'm-if':
                 return this.createMIfNode(attributes);
+            case 'm-for':
+                return this.createMForNode(attributes);
             default:
                 return new TagNode(tagName, attributes);
         }
@@ -219,5 +221,16 @@ export class DomHandler implements Partial<Handler> {
         const expression = attributes.get('?');
         if (expression == undefined) throw new Error('Parse error: <m-if> is missing required attribute: ?');
         return new MIfNode(expression, attributes);
+    }
+
+    private createMForNode(attributes: Map<string, string | null>): MForNode {
+        const varName = attributes.get('var');
+        if (varName == undefined) throw new Error('Parse error: <m-for> is missing required attribute: varName');
+        const indexName = attributes.get('index') ?? undefined;
+        const ofExpression = attributes.get('of') ?? undefined;
+        const inExpression = attributes.get('in') ?? undefined;
+        if (ofExpression == undefined && inExpression == undefined) throw new Error('Parse error: <m-for> must have exactly one "of" or "in" expression');
+        if (ofExpression != undefined && inExpression != undefined) throw new Error('Parse error: <m-for> must have exactly one "of" or "in" expression');
+        return new MForNode(varName, indexName, ofExpression, inExpression, attributes);
     }
 }

@@ -125,7 +125,7 @@ export class EvalContentFunction<T> implements EvalContent<T> {
 
     invoke(evalContext: EvalContext): T {
         // execute the function
-        return this.evalFunction(evalContext.scope.scopeData, evalContext);
+        return this.evalFunction(evalContext.scope, evalContext);
     }
 }
 
@@ -141,7 +141,7 @@ export class EvalContentConstructor<T> implements EvalContent<T> {
 
     invoke(evalContext: EvalContext): T {
         // execute the function
-        return new this.evalConstructor(evalContext.scope.scopeData, evalContext);
+        return new this.evalConstructor(evalContext.scope, evalContext);
     }
 }
 
@@ -167,9 +167,9 @@ export class EvalContext {
     /**
      * Compiled scope instance, with proper shadowing and overloading applied
      */
-    readonly scope: EvalScopeObject;
+    readonly scope: EvalScope;
 
-    constructor(pipeline: Pipeline, currentFragment: Fragment, usageContext: UsageContext, scope: EvalScopeObject) {
+    constructor(pipeline: Pipeline, currentFragment: Fragment, usageContext: UsageContext, scope: EvalScope) {
         this.pipeline = pipeline;
         this.currentFragment = currentFragment;
         this.usageContext = usageContext;
@@ -192,26 +192,7 @@ export type EvalVars = ReadonlyMap<EvalKey, unknown>;
  */
 export type EvalScope = Record<EvalKey, unknown>;
 
-export class EvalScopeObject {
-    readonly scopeData: EvalScope;
-
-    constructor(scopeObject: EvalScope) {
-        this.scopeData = scopeObject;
-    }
-    
-    createChildScope(): EvalScopeObject {
-        const childScopeData: EvalScope = Object.create(this.scopeData);
-        return new EvalScopeObject(childScopeData);
-    }
-}
-
-export class RootEvalScopeObject extends EvalScopeObject {
-    constructor(parameters: EvalVars, component?: ComponentScriptInstance) {
-        super(createRootEvalScope(parameters, component));
-    }
-}
-
-function createRootEvalScope(parameters: EvalVars, component?: ComponentScriptInstance): EvalScope {
+export function createRootEvalScope(parameters: EvalVars, component?: ComponentScriptInstance): EvalScope {
     const scopeProxyHandler = new EvalScopeProxy(parameters, component);
     return new Proxy(Object.create(null), scopeProxyHandler);
 }

@@ -1,40 +1,36 @@
-import { CompilerModule, CompileData, EvalContext, Node, TextNode, TagNode } from "../../..";
+import { HtmlCompileData, EvalContext, Node, TextNode, TagNode, HtmlCompilerModule } from "../../..";
 
 /**
  * Compile module that detects and evalutates embedded JS expressions in attributes and text nodes
  */
-export class TemplateTextModule implements CompilerModule {
-    compileFragment(compileData: CompileData): void {
-        // process all text
-        compileData.fragment.dom.walkDom((node: Node) => {
-            if (TextNode.isTextNode(node)) {
-                this.processTextNode(compileData, node);
-            } else if (TagNode.isTagNode(node)) {
-                this.processTagNode(compileData, node);
-            }
-        });
+export class TemplateTextModule implements HtmlCompilerModule {
+    enterNode(node: Node, compileData: HtmlCompileData): void {
+        if (TextNode.isTextNode(node)) {
+            this.processTextNode(compileData, node);
+        } else if (TagNode.isTagNode(node)) {
+            this.processTagNode(compileData, node);
+        }
     }
 
-    private processTextNode(compileData: CompileData, node: TextNode): void {
+    private processTextNode(compileData: HtmlCompileData, node: TextNode): void {
         // create eval context from the current scope
-        const evalContext: EvalContext = compileData.createEvalContext(node.evalScope);
+        const evalContext: EvalContext = compileData.createEvalContext(node.nodeData);
 
         // compile text
         const newText = this.compileToText(compileData, node.text, evalContext);
-
-        // text nodes require text
-        node.text = newText ?? '';
+        node.text = newText;
     }
 
-    private processTagNode(compileData: CompileData, node: TagNode): void {
+    private processTagNode(compileData: HtmlCompileData, node: TagNode): void {
         // create eval context from the current scope
-        const evalContext: EvalContext = compileData.createEvalContext(node.evalScope);
+        const evalContext: EvalContext = compileData.createEvalContext(node.nodeData);
 
         // loop through each attribute and compile it
-        for (const key of node.getAttributes().keys()) {
-            const value = node.getAttribute(key);
+        for (const entry of Array.from(node.getAttributes().entries())) {
+            const key = entry[0];
+            const value = entry[1];
 
-            if (value != null) {
+            if (typeof(value) === 'string') {
                 // compile the value, preserving the raw output and not converting to a string
                 const result: unknown = compileData.pipeline.compileDomText(value, evalContext);
 
@@ -43,11 +39,11 @@ export class TemplateTextModule implements CompilerModule {
         }
     }
 
-    private compileToText(compileData: CompileData, text: string, evalContext: EvalContext): string | null {
+    private compileToText(compileData: HtmlCompileData, text: string, evalContext: EvalContext): string {
         const result: unknown = compileData.pipeline.compileDomText(text, evalContext);
 
         if (result == null) {
-            return null;
+            return '';
         }
 
         return String(result);

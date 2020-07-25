@@ -227,7 +227,32 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
     t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
 });
 
-test('[endToEnd] Imported fragment compiles correctly', t => {
+test('[endToEnd] Imported basic fragment compiles correctly', t => {
+    // set up pipeline
+    const pi = createRootPi();
+    pi.setSourceHtml('frag1.html', `
+        <div class="frag1">
+            <m-import fragment src="frag2.html" as="imported-fragment" />
+
+            <imported-fragment />
+            <imported-fragment />
+        </div>
+    `);
+    pi.setSourceHtml('frag2.html', `
+        <div class="frag2"></div>
+    `);
+    const pipeline = new Pipeline(pi);
+
+    // compile fragment
+    const output = pipeline.compilePage('page.html');
+    const page = output.page;
+    const frag2s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2');
+
+    // validate
+    t.is(frag2s.length, 2);
+});
+
+test('[endToEnd] Imported fragment w/ params compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
     pi.setSourceHtml('frag1.html', `

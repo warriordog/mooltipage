@@ -235,7 +235,7 @@ test('[endToEnd] Imported component compiles correctly', t => {
     `);
     pi.setSourceHtml('comp2.html', `
         <template>
-            <div class="comp2" id="{{ $.id }}"></div>
+            <div class="comp2" id="\${ $.id }"></div>
         </template>
         <script mode="class">
             return class Comp {

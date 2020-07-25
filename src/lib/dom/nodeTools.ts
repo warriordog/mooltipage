@@ -1,5 +1,5 @@
 import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode } from "..";
-import { MScopeNode, MIfNode } from "./node";
+import { MScopeNode, MIfNode, MForNode } from "./node";
 
 /**
  * Detatch a node and its children from the DOM.
@@ -21,6 +21,7 @@ export function detatchNode(node: Node): void {
     node.prevSibling = null;
     node.nextSibling = null;
     node.parentNode = null;
+    Object.setPrototypeOf(node.nodeData, null);
 }
 
 /**
@@ -49,6 +50,7 @@ export function appendChild(parent: NodeWithChildren, child: Node): void {
 
     parent.childNodes.push(child);
     child.parentNode = parent;
+    Object.setPrototypeOf(child.nodeData, parent.nodeData);
 }
 
 /**
@@ -68,6 +70,7 @@ export function prependChild(parent: NodeWithChildren, child: Node): void {
 
     parent.childNodes.splice(0, 0, child);
     child.parentNode = parent;
+    Object.setPrototypeOf(child.nodeData, parent.nodeData);
 }
 
 /**
@@ -108,6 +111,7 @@ export function appendSibling(node: Node, after: Node): void {
 
     if (parent != null) {
         node.parentNode = parent;
+        Object.setPrototypeOf(node.nodeData, parent.nodeData);
 
         const afterIndex = parent.childNodes.indexOf(after);
         parent.childNodes.splice(afterIndex + 1, 0, node);
@@ -139,6 +143,7 @@ export function prependSibling(node: Node, before: Node): void {
 
     if (parent != null) {
         node.parentNode = parent;
+        Object.setPrototypeOf(node.nodeData, parent.nodeData);
 
         const beforeIndex = parent.childNodes.indexOf(before);
         parent.childNodes.splice(beforeIndex, 0, node);
@@ -414,6 +419,22 @@ export function cloneMIfNode(node: MIfNode, deep: boolean, callback?: (oldNode: 
 }
 
 /**
+ * Clones an m-for node
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMForNode(node: MForNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MForNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MForNode(node.varName, node.indexName, node.ofExpression, node.inExpression, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
  * Finds the first child node that matches a matcher
  * @param parent Parent node
  * @param matcher Matcher to check nodes
@@ -496,20 +517,6 @@ export function replaceNode(remove: Node, replacements: Node[]): void {
     }
 
     detatchNode(remove);
-}
-
-/**
- * Swaps a node in the DOM for another.
- * The first node's children will be attached to the replacment.
- * The replacement's children will be preserved.
- * 
- * @param remove Node to remove
- * @param replacement Node to replace with
- */
-export function swapNode(remove: NodeWithChildren, replacement: NodeWithChildren): void {
-    replacement.appendChildren(remove.childNodes);
-
-    remove.replaceSelf(replacement);
 }
 
 /**

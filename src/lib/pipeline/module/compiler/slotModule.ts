@@ -1,32 +1,23 @@
-import { CompilerModule, CompileData, DocumentNode, MSlotNode, UsageContext } from "../../..";
+import { HtmlCompileData, DocumentNode, MSlotNode, HtmlCompilerModule, Node } from "../../..";
 
 /**
  * Processes <m-slot> tags by replacing them with content extracted from <m-content> tags at the point of reference.
  */
-export class SlotModule implements CompilerModule {
-    compileFragment(compileData: CompileData): void {
-        const dom: DocumentNode = compileData.fragment.dom;
-        
-        // find slots
-        const slots = dom.findChildTagsByTagName('m-slot');
-
-        // process slots
-        this.processSlots(slots, compileData.usageContext);
-    }
-
-    private processSlots(slots: MSlotNode[], usageContext: UsageContext): void {
-        // fill or remove
-        for (const slot of slots) {
+export class SlotModule implements HtmlCompilerModule {
+    enterNode(node: Node, compileData: HtmlCompileData): void {
+        // check if this is a m-slot
+        if (MSlotNode.isMSlotNode(node)) {
             // get contents from context, and clone in case slot is repeated
-            const content: DocumentNode | undefined = usageContext.slotContents.get(slot.slot)?.clone();
+            const content: DocumentNode | undefined = compileData.usageContext.slotContents.get(node.slot)?.clone();
 
             if (content != undefined) {
                 // fill content
-                slot.replaceSelf(...content.childNodes);
+                node.replaceSelf(content.childNodes);
             } else {
                 // remove slot tag
-                slot.removeSelf(true);
+                node.removeSelf(true);
             }
+
         }
     }
 }

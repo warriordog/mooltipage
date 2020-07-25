@@ -1,51 +1,57 @@
-import { CompilerModule, CompileData, MImportNode, TagNode, MComponentNode, MFragmentNode } from "../../..";
+import { ExternalReferenceNode, HtmlCompileData, MImportNode, TagNode, MComponentNode, MFragmentNode, HtmlCompilerModule, Node, ImportDefinition } from "../../..";
 
 /**
  * Process imports / aliases via m-import
  */
-export class ImportsModule implements CompilerModule {
-    compileFragment(compileData: CompileData): void {
-        const dom = compileData.fragment.dom;
+export class ImportsModule implements HtmlCompilerModule {
+    enterNode(node: Node, compileData: HtmlCompileData): void {
+        
+        if (MImportNode.isMImportNode(node)) {
+            // if this is m-import, then process it
+            this.registerImport(node, compileData);
 
-        // find imports
-        const mImports: MImportNode[] = dom.findChildTagsByTagName('m-import');
-
-        for (const mImport of mImports) {
-            // find all usages
-            const usages = dom.findChildTagsByTagName(mImport.as);
-            for (const usage of usages) {
-                // create replacement "basic" reference
-                const replacement = this.createReplacementReference(mImport, usage);
-                
-                if (replacement != null) {
-                    // replace in dom
-                    usage.swapSelf(replacement);
-                } else {
-                    // if this usage cannot create a replacement, then remove the usage
-                    usage.removeSelf();
-                }
-            }
-
-            // remove from DOM
-            mImport.removeSelf();
+        } else if (TagNode.isTagNode(node) && compileData.hasImport(node.tagName)) {
+            // else if this is a replacement node, then replace it
+            this.replaceImport(node, compileData);
         }
     }
 
-    private createReplacementReference(mImport: MImportNode, usage: TagNode): TagNode | null {
-        // copy of attributes to give to replacement
-        const attributes = new Map(usage.getAttributes().entries());
+    private registerImport(mImport: MImportNode, compileData: HtmlCompileData): void {
+        // imports are registered into the parent scope. Fall back to current scope in case this is the root
+        const targetNodeData = compileData.parentData ?? compileData;
 
-        // create replacement m-component
-        if (mImport.component) {
-            return new MComponentNode(mImport.src, attributes);
+        // create import definition and register in compile data
+        targetNodeData.defineImport({
+            alias: mImport.as,
+            source: mImport.src,
+            type: mImport.fragment ? 'm-fragment' : 'm-component'
+        });
+
+        // delete node
+        mImport.removeSelf();
+    }
+
+    private replaceImport(tag: TagNode, nodeCompileData: HtmlCompileData): void {
+        // get import definition
+        const importDefinition = nodeCompileData.getImport(tag.tagName);
+
+        // create replacement
+        const replacementTag = this.createReplacementTag(tag, importDefinition);
+
+        // replace tag
+        replacementTag.appendChildren(tag.childNodes);
+        tag.replaceSelf([ replacementTag ]);
+    }
+
+    private createReplacementTag(tag: TagNode, importDefinition: ImportDefinition): ExternalReferenceNode {
+        // clone attributes to give to replacement
+        const attributes = new Map(tag.getAttributes().entries());
+
+        // clone tag
+        switch (importDefinition.type) {
+            case 'm-fragment': return new MFragmentNode(importDefinition.source, attributes);
+            case 'm-component': return new MComponentNode(importDefinition.source, attributes);
+            default: throw new Error(`Unknown import definition type: ${importDefinition.type}`);
         }
-
-        // create replacement m-fragment
-        if (mImport.fragment) {
-            return new MFragmentNode(mImport.src, attributes);
-        }
-
-        // import cannot be replaced
-        return null;
     }
 }

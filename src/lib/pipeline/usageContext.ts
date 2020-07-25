@@ -1,4 +1,4 @@
-import { DocumentNode, EvalVars, Page, ComponentScriptInstance, RootEvalScopeObject, EvalScopeObject } from '..';
+import { DocumentNode, EvalVars, Page, ComponentScriptInstance, EvalScope, createRootEvalScope } from '..';
 
 /**
  * Contextual data regarding the current unit of compilation within the pipeline
@@ -29,14 +29,14 @@ export class UsageContext {
     /**
      * Root eval scope. Contains fragment params and component instance data, if applicable
      */
-    readonly rootScope: EvalScopeObject;
+    readonly rootScope: EvalScope;
 
     constructor(currentPage: Page, slotContents?: Map<string, DocumentNode>, fragmentParams?: EvalVars, componentInstance?: ComponentScriptInstance) {
         this.currentPage = currentPage;
         this.slotContents = slotContents ?? new Map();
         this.fragmentParams = fragmentParams ?? new Map();
         this.componentInstance = componentInstance;
-        this.rootScope = new RootEvalScopeObject(this.fragmentParams, componentInstance);
+        this.rootScope = createRootEvalScope(this.fragmentParams, componentInstance);
     }
 
     /**

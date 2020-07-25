@@ -53,29 +53,19 @@ function createPipeline(): Pipeline {
 
         <m-fragment src="header.html" title="{{ $.name }}" />
 
-        <br>
-
-        <custom-section title="Section 1">
-            <p>This is the content of section 1.</p>
-        </custom-section>
-
-        <br>
-
-        <custom-section title="Section 2">
-            <p>This is the content of section 2.</p>
-        </custom-section>
-
-        <br>
-
-        <custom-section title="Section 3">
-            <m-content slot="subheader">
-                <m-fragment src="header.html" title="Subtitle" class="subheader" />
-            </m-content>
-
+        <m-for var="sn" of="{{ [1, 2, 3] }}">
             <br>
 
-            <p>This is the content of section 3.</p>
-        </custom-section>
+            <custom-section title="Section \${ $.sn }">
+                <m-if ?="{{ $.sn === 3 }}">
+                    <m-content slot="subheader">
+                        <m-fragment src="header.html" title="Subtitle" class="subheader" />
+                    </m-content>
+                </m-if
+    
+                <p>This is the content of section \${ $.sn }.</p>
+            </custom-section>
+        </m-for>
     `);
     pipelineInterface.setSourceHtml('header.html', `
         <header class="pageTitle \${ $.class || '' }">\${ $.name }</header>

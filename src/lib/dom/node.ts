@@ -1,4 +1,4 @@
-import { NodeTools, EvalScopeObject } from "..";
+import { NodeTools } from "..";
 
 /**
  * Recognized node types
@@ -22,11 +22,6 @@ export abstract class Node {
     readonly nodeType: NodeType;
 
     /**
-     * If true, then this node should create a new child scope
-     */
-    readonly isScoping: boolean;
-
-    /**
      * Parent of this node, or null if there is none.
      * Do not modify this directly, use NodeTools or instance methods.
      */
@@ -45,13 +40,13 @@ export abstract class Node {
     nextSibling: Node | null = null;
 
     /**
-     * Eval scope associated with this node
+     * Extra DOM data associated with this node.
+     * This object prototypically inherits from the parent node's nodeData.
      */
-    evalScope?: EvalScopeObject;
+    readonly nodeData: Record<PropertyKey, unknown> = {};
 
-    constructor(nodeType: NodeType, isScoping = false) {
+    constructor(nodeType: NodeType) {
         this.nodeType = nodeType;
-        this.isScoping = isScoping;
     }
 
     appendSibling(node: Node): void {
@@ -64,7 +59,7 @@ export abstract class Node {
     removeSelf(): void {
         NodeTools.detatchNode(this);
     }
-    replaceSelf(...nodes: Node[]): void {
+    replaceSelf(nodes: Node[]): void {
         NodeTools.replaceNode(this, nodes);
     }
 
@@ -158,6 +153,7 @@ export abstract class NodeWithChildren extends Node {
     findChildTagByTagName(tagName: 'm-scope', deep?: boolean): MScopeNode | null;
     findChildTagByTagName(tagName: 'm-import', deep?: boolean): MImportNode | null;
     findChildTagByTagName(tagName: 'm-if', deep?: boolean): MIfNode | null;
+    findChildTagByTagName(tagName: 'm-for', deep?: boolean): MForNode | null;
     findChildTagByTagName(tagName: string, deep?: boolean): TagNode | null;
     findChildTagByTagName(tagName: string, deep = true): TagNode | null {
         return this.findChildTag(tag => tag.tagName === tagName, deep);
@@ -170,6 +166,7 @@ export abstract class NodeWithChildren extends Node {
     findChildTagsByTagName(tagName: 'm-scope', deep?: boolean): MScopeNode[];
     findChildTagsByTagName(tagName: 'm-import', deep?: boolean): MImportNode[];
     findChildTagsByTagName(tagName: 'm-if', deep?: boolean): MIfNode[];
+    findChildTagsByTagName(tagName: 'm-for', deep?: boolean): MForNode[];
     findChildTagsByTagName(tagName: string, deep?: boolean): TagNode[];
     findChildTagsByTagName(tagName: string, deep = true): TagNode[] {
         return this.findChildTags(tag => tag.tagName === tagName, deep);
@@ -182,6 +179,7 @@ export abstract class NodeWithChildren extends Node {
     findTopLevelChildTagsByTagName(tagName: 'm-scope'): MScopeNode[];
     findTopLevelChildTagsByTagName(tagName: 'm-import'): MImportNode[];
     findTopLevelChildTagsByTagName(tagName: 'm-if'): MIfNode[];
+    findTopLevelChildTagsByTagName(tagName: 'm-for'): MForNode[];
     findTopLevelChildTagsByTagName(tagName: string): TagNode[];
     findTopLevelChildTagsByTagName(tagName: string): TagNode[] {
         return this.findTopLevelChildTags(tag => tag.tagName === tagName);
@@ -205,10 +203,6 @@ export abstract class NodeWithChildren extends Node {
         } else {
             super.removeSelf();
         }
-    }
-
-    swapSelf(replacement: NodeWithChildren): void {
-        NodeTools.swapNode(this, replacement);
     }
 
     /**
@@ -281,8 +275,8 @@ export class TagNode extends NodeWithChildren {
      */
     protected attributes: Map<string, unknown>;
 
-    constructor(tagName: string, attributes?: Map<string, unknown>, isScoping = false) {
-        super(NodeType.Tag, isScoping);
+    constructor(tagName: string, attributes?: Map<string, unknown>) {
+        super(NodeType.Tag);
         this.tagName = tagName;
         this.attributes = attributes ?? new Map<string, unknown>();
     }
@@ -523,6 +517,10 @@ export class DocumentNode extends NodeWithChildren {
         super(NodeType.Document);
     }
 
+    setRootScope(rootScope: Record<PropertyKey, unknown> | null): void {
+        Object.setPrototypeOf(this.nodeData, rootScope);
+    }
+
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): DocumentNode {
         return NodeTools.cloneDocumentNode(this, deep, callback);
     }
@@ -692,8 +690,8 @@ export class MSlotNode extends SlotReferenceNode {
  * Parent type for any tag that defines variables
  */
 export abstract class VariablesNode extends TagNode {
-    constructor(tagName: string, attributes?: Map<string, unknown>, isScoping = false) {
-        super(tagName, attributes, isScoping);
+    constructor(tagName: string, attributes?: Map<string, unknown>) {
+        super(tagName, attributes);
     }
 
     /**
@@ -742,7 +740,7 @@ export class MVarNode extends VariablesNode {
  */
 export class MScopeNode extends VariablesNode {
     constructor(attributes?: Map<string, unknown>) {
-        super('m-scope', attributes, true);
+        super('m-scope', attributes);
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MScopeNode {
@@ -829,11 +827,17 @@ export class MImportNode extends TagNode {
  */
 export abstract class ConditionalNode extends TagNode {
     constructor(tagName: string, expression: string, attributes?: Map<string, unknown>) {
-        super(tagName, attributes, true);
+        super(tagName, attributes);
 
-        this.setAttribute('?', expression);
+        this.setRawAttribute('?', expression);
     }
 
+    get condition(): boolean {
+        return !!this.getRawAttribute('?');
+    }
+    set condition(newCondition: boolean) {
+        this.setRawAttribute('?', newCondition);
+    }
     get expression(): string {
         return this.getRequiredValueAttribute('?');
     }
@@ -857,5 +861,123 @@ export class MIfNode extends ConditionalNode {
      */
     static isMIfNode(node: Node): node is MIfNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-if';
+    }
+}
+
+
+/**
+ * m-for tag
+ */
+export class MForNode extends TagNode {
+    constructor(varName: string, indexName: string | undefined, ofExpression: string | undefined, inExpression: string | undefined, attributes?: Map<string, unknown>) {
+        super('m-for', attributes);
+
+        this.setAttribute('var', varName);
+
+        if (indexName != undefined) {
+            this.setAttribute('index', indexName);
+        } else {
+            this.deleteAttribute('index');
+        }
+
+        if (ofExpression != undefined && inExpression == undefined) {
+            this.setAttribute('of', ofExpression);
+            this.deleteAttribute('in');
+        } else if (ofExpression == undefined && inExpression != undefined) {
+            this.setAttribute('in', inExpression);
+            this.deleteAttribute('of');
+        } else {
+            throw new Error('Exactly one of ofExpression and inExpression must be defined');
+        }
+    }
+
+    /**
+     * Name of the variable binding
+     */
+    get varName(): string {
+        return this.getRequiredValueAttribute('var');
+    }
+    set varName(newVar: string) {
+        this.setAttribute('var', newVar);
+    }
+
+    /**
+     * Name of the index binding
+     */
+    get indexName(): string | undefined {
+        return this.getOptionalValueAttribute('index');
+    }
+    set indexName(newIndexName: string | undefined) {
+        if (newIndexName != undefined) {
+            this.setAttribute('index', newIndexName);
+        } else {
+            this.deleteAttribute('index');
+        }
+    }
+
+    get isForOf(): boolean {
+        return this.hasAttribute('of');
+    }
+
+    get isForIn(): boolean {
+        return this.hasAttribute('in');
+    }
+
+    get ofValue(): unknown {
+        return this.getRawAttribute('of');
+    }
+    set ofValue(newOf: unknown) {
+        this.setRawAttribute('of', newOf);
+        this.deleteAttribute('in');
+    }
+
+    get inValue(): unknown {
+        return this.getRawAttribute('in');
+    }
+    set inValue(newIn: unknown) {
+        this.setRawAttribute('in', newIn);
+        this.deleteAttribute('of');
+    }
+
+    /**
+     * for...of expression
+     */
+    get ofExpression(): string | undefined {
+        return this.getOptionalValueAttribute('of');
+    }
+    set ofExpression(newOfExpression: string | undefined) {
+        if (newOfExpression != undefined) {
+            this.setAttribute('of', newOfExpression);
+            this.deleteAttribute('in');
+        } else {
+            this.deleteAttribute('of');
+        }
+    }
+
+    /**
+     * for...in expression
+     */
+    get inExpression(): string | undefined {
+        return this.getOptionalValueAttribute('in');
+    }
+    set inExpression(newInExpression: string | undefined) {
+        if (newInExpression != undefined) {
+            this.setAttribute('in', newInExpression);
+            this.deleteAttribute('of');
+        } else {
+            this.deleteAttribute('in');
+        }
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MForNode {
+        return NodeTools.cloneMForNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an instance of MForNode
+     * @param node Node to check
+     */
+    static isMForNode(node: Node): node is MForNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-for';
     }
 }
