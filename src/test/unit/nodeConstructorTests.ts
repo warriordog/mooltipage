@@ -1,5 +1,5 @@
 import test from 'ava';
-import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MImportNode, MScopeNode, MIfNode, MForOfNode, MForInNode } from '../../lib';
+import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MImportFragmentNode, MImportComponentNode } from '../../lib';
 
 test('[unit] TagNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['foo', 'bar'], ['attr', null]]);
@@ -129,21 +129,34 @@ test('[unit] MVarNode constructor handles arguments', t => {
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] MImportNode constructor handles arguments', t => {
+test('[unit] MImportFragmentNode constructor handles arguments', t => {
     const src = 'resPath';
     const as = 'foo';
 
-    const node = new MImportNode(src, as, true, false, new Map());
+    const node = new MImportFragmentNode(src, as, new Map());
 
     t.is(node.tagName, 'm-import');
     t.is(node.src, src);
     t.is(node.as, as);
-    t.true(node.fragment);
-    t.false(node.component);
+    t.is(node.type, 'm-fragment');
     t.is(node.getAttribute('src'), src);
     t.is(node.getAttribute('as'), as);
     t.true(node.hasAttribute('fragment'));
-    t.false(node.hasAttribute('component'));
+});
+
+test('[unit] MImportComponentNode constructor handles arguments', t => {
+    const src = 'resPath';
+    const as = 'foo';
+
+    const node = new MImportComponentNode(src, as, new Map());
+
+    t.is(node.tagName, 'm-import');
+    t.is(node.src, src);
+    t.is(node.as, as);
+    t.is(node.type, 'm-component');
+    t.is(node.getAttribute('src'), src);
+    t.is(node.getAttribute('as'), as);
+    t.true(node.hasAttribute('component'));
 });
 
 test('[unit] MScopeNode constructor handles arguments', t => {

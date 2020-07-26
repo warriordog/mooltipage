@@ -24,7 +24,7 @@ export class ImportsModule implements HtmlCompilerModule {
         targetNodeData.defineImport({
             alias: mImport.as,
             source: mImport.src,
-            type: mImport.fragment ? 'm-fragment' : 'm-component'
+            type: mImport.type
         });
 
         // delete node

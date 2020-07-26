@@ -972,6 +972,8 @@ export class MScopeNode extends VariablesNode {
     }
 }
 
+// TODO update <m-import> docs
+
 /**
  * <m-import> tag.
  * Defines a shorthand "alias" to an external reference.
@@ -980,33 +982,18 @@ export class MScopeNode extends VariablesNode {
  * The "src" attribute specifies the path to the external reference.
  * MImportNode registers imports into the parent scope, like MVarNode.
  */
-export class MImportNode extends TagNode {
+export abstract class MImportNode extends TagNode {
     /**
      * Creates a new MImportNode. Exactly one of component or fragment must be true.
      * @param src Path to reference
      * @param as Tag name to use as alias
-     * @param fragment If true, then this is an <m-fragment> import
-     * @param component If true, then this is an <m-component> import
      * @param attributes Optional attributes.
-     * @throws if fragment and component are both true or both false.
      */
-    constructor(src: string, as: string, fragment: boolean, component: boolean, attributes?: Map<string, unknown>) {
+    constructor(src: string, as: string, attributes?: Map<string, unknown>) {
         super('m-import', attributes);
 
         this.setAttribute('src', src);
         this.setAttribute('as', as);
-
-        if (fragment && !component) {
-            // set fragment import
-            this.setBooleanAttribute('fragment', true);
-            this.setBooleanAttribute('component', false);
-        } else if (!fragment && component) {
-            // set component import
-            this.setBooleanAttribute('fragment', false);
-            this.setBooleanAttribute('component', true);
-        } else {
-            throw new Error('Exactly one of fragment or boolean must be true');
-        }
     }
 
     /**
@@ -1029,29 +1016,7 @@ export class MImportNode extends TagNode {
         this.setAttribute('as', newAs);
     }
 
-    /**
-     * If true, this is a fragment import
-     */
-    get fragment(): boolean {
-        return this.hasAttribute('fragment');
-    }
-    set fragment(newFragment: boolean) {
-        this.setBooleanAttribute('fragment', newFragment);
-    }
-
-    /**
-     * If true, this is a component import
-     */
-    get component(): boolean {
-        return this.hasAttribute('component');
-    }
-    set component(newComponent: boolean) {
-        this.setBooleanAttribute('component', newComponent);
-    }
-
-    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MImportNode {
-        return NodeTools.cloneMImportNode(this, deep, callback);
-    }
+    abstract get type(): 'm-fragment' | 'm-component';
 
     /**
      * Returns true if a node is an instance of MImportNode
@@ -1059,6 +1024,64 @@ export class MImportNode extends TagNode {
      */
     static isMImportNode(node: Node): node is MImportNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-import';
+    }
+}
+
+export class MImportFragmentNode extends MImportNode {
+    /**
+     * Creates a new MImportFragmentNode.
+     * @param src Path to reference
+     * @param as Tag name to use as alias
+     * @param attributes Optional attributes.
+     */
+    constructor(src: string, as: string, attributes?: Map<string, unknown>) {
+        super(src, as, attributes);
+        this.setBooleanAttribute('fragment', true);
+    }
+
+    get type(): 'm-fragment' {
+        return 'm-fragment';
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MImportFragmentNode {
+        return NodeTools.cloneMImportFragmentNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an instance of MImportFragmentNode
+     * @param node Node to check
+     */
+    static isMImportFragmentNode(node: Node): node is MImportFragmentNode {
+        return MImportNode.isMImportNode(node) && node.type === 'm-fragment';
+    }
+}
+
+export class MImportComponentNode extends MImportNode {
+    /**
+     * Creates a new MImportComponentNode.
+     * @param src Path to reference
+     * @param as Tag name to use as alias
+     * @param attributes Optional attributes.
+     */
+    constructor(src: string, as: string, attributes?: Map<string, unknown>) {
+        super(src, as, attributes);
+        this.setBooleanAttribute('component', true);
+    }
+
+    get type(): 'm-component' {
+        return 'm-component';
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MImportComponentNode {
+        return NodeTools.cloneMImportComponentNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an instance of MImportComponentNode
+     * @param node Node to check
+     */
+    static isMMImportComponentNode(node: Node): node is MImportComponentNode {
+        return MImportNode.isMImportNode(node) && node.type === 'm-component';
     }
 }
 

@@ -1,4 +1,4 @@
-import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode } from "..";
+import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode } from "..";
 
 /**
  * Detatch a node and its children from the DOM.
@@ -400,15 +400,31 @@ export function cloneMScopeNode(node: MScopeNode, deep: boolean, callback?: (old
 }
 
 /**
- * Clones an m-import node
+ * Clones a fragment-type m-import node
  * @param node Node to clone
  * @param deep If true, children will be cloned
  * @param callback Optional callback after node is cloned
  */
-export function cloneMImportNode(node: MImportNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MImportNode {
+export function cloneMImportFragmentNode(node: MImportFragmentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MImportFragmentNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new MImportNode(node.src, node.as, node.fragment, node.component, newAttrs);
+    const newNode = new MImportFragmentNode(node.src, node.as, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones a component-type m-import node
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMImportComponentNode(node: MImportComponentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MImportComponentNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MImportComponentNode(node.src, node.as, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 

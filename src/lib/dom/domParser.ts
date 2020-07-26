@@ -1,5 +1,5 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
-import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode } from '..';
+import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode } from '..';
 /**
  * Parses HTML into a dom using htmlparser2
  */
@@ -224,7 +224,14 @@ export class DomHandler implements Partial<Handler> {
         if (as == undefined) throw new Error('Parse error: <m-import> is missing required attribute: as');
         const fragment = attributes.has('fragment');
         const component = attributes.has('component');
-        return new MImportNode(src, as, fragment, component, attributes);
+
+        if (fragment && !component) {
+            return new MImportFragmentNode(src, as, attributes);
+        } else if (!fragment && component) {
+            return new MImportComponentNode(src, as, attributes);
+        } else {
+            throw new Error('Parse error: <m-import> must have exactly one of these attributes: [fragment,component]');
+        }
     }
 
     private createMIfNode(attributes: Map<string, string | null>): MIfNode {
@@ -252,7 +259,7 @@ export class DomHandler implements Partial<Handler> {
         } else if (inExpression != undefined && ofExpression == undefined) {
             return new MForInNode(inExpression, varName, indexName, attributes);
         } else {
-            throw new Error('Parse error: <m-for> must have exactly one "of" or "in" expression');
+            throw new Error('Parse error: <m-for> must have exactly one of these attributes: [of,in]');
         }
     }
 }
