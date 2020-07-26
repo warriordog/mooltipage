@@ -885,45 +885,11 @@ export class MSlotNode extends SlotReferenceNode {
 }
 
 /**
- * Parent type for any tag that defines scope variables.
- * All attributes will be exposed as local variables
- */
-export abstract class VariablesNode extends TagNode {
-    /**
-     * Create a new VariablesNode
-     * @param tagName Name of implementing tag
-     * @param attributes Optional attributes
-     */
-    constructor(tagName: string, attributes?: Map<string, unknown>) {
-        super(tagName, attributes);
-    }
-
-    /**
-     * Local Variables defined on this <m-var> tag
-     */
-    get variables(): ReadonlyMap<string, unknown> {
-        const vars: Map<string, unknown> = new Map();
-
-        // extract variables
-        for (const entry of this.attributes) {
-            const key: string = entry[0];
-            const value: unknown = entry[1];
-
-            if (value != null) {
-                vars.set(key, value);
-            }
-        }
-
-        return vars;
-    }
-}
-
-/**
  * <m-var> tag.
  * Defines local variables that are inserted into the parent node's scope instead of this node's scope.
  * Effectively defines variables for its following siblings rather than its children.
  */
-export class MVarNode extends VariablesNode {
+export class MVarNode extends TagNode {
     /**
      * Create a new MVarNode
      * @param attributes Optional attributes to convert to variables
@@ -950,7 +916,7 @@ export class MVarNode extends VariablesNode {
  * Defines variables that are added to this node's scope, and therefore available only to child nodes.
  * Enables the concept of a "local scope".
  */
-export class MScopeNode extends VariablesNode {
+export class MScopeNode extends TagNode {
     /**
      * Create a new MScopeNode
      * @param attributes Optional attributes

@@ -1,4 +1,4 @@
-import { HtmlCompileData, MVarNode, MScopeNode, VariablesNode, HtmlCompilerModule, DocumentNode, EvalScope } from "../../..";
+import { HtmlCompileData, MVarNode, MScopeNode, HtmlCompilerModule, DocumentNode, EvalScope } from "../../..";
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
@@ -8,7 +8,7 @@ export class VarsModule implements HtmlCompilerModule {
         if (DocumentNode.isDocumentNode(compileData.node)) {
             // if document, then bind root scope and we are done
             this.setRootScope(compileData.node, compileData);
-            
+
         } else if (MVarNode.isMVarNode(compileData.node)) {
             // process m-var
             this.evalVar(compileData.node, compileData, true);
@@ -45,7 +45,7 @@ export class VarsModule implements HtmlCompilerModule {
         if (targetScope != undefined) {
 
             // promote variables to scope
-            for (const variable of node.variables.entries()) {
+            for (const variable of node.getAttributes().entries()) {
                 const varName: string = variable[0];
                 const srcValue: unknown = variable[1];
 
@@ -70,3 +70,8 @@ export class VarsModule implements HtmlCompilerModule {
         return compileData.usageContext.rootScope;
     }
 }
+
+/**
+ * Union type for all nodes containing variables
+ */
+type VariablesNode = MVarNode | MScopeNode;

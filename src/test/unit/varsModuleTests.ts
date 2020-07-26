@@ -102,3 +102,25 @@ test('[unit] VarsModule removes m-scope after processing', t => {
     t.falsy(childDivInner.nodeData.test);
     t.falsy(childDivOuter.nodeData.test);
 });
+
+test('[unit] VarsModule handles m-var with null attributes', t => {
+    const parent = new DocumentNode();
+    const mVar = new MVarNode();
+    mVar.setRawAttribute('test', null);
+    parent.appendChild(mVar);
+
+    runVarsModule(mVar);
+
+    t.true(mVar.hasAttribute('test'));
+    t.is(mVar.getRawAttribute('test'), null);
+});
+
+test('[unit] VarsModule handles m-scope with null attributes', t => {
+    const mScope = new MScopeNode();
+    mScope.setRawAttribute('test', null);
+
+    runVarsModule(mScope);
+
+    t.true(mScope.hasAttribute('test'));
+    t.is(mScope.getRawAttribute('test'), null);
+});

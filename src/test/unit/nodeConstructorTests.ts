@@ -125,7 +125,6 @@ test('[unit] MVarNode constructor handles arguments', t => {
     const node = new MVarNode(attributes);
 
     t.is(node.tagName, 'm-var');
-    t.deepEqual(node.variables, new Map([['param', 'value'], ['foo', 'bar']]));
     t.deepEqual(node.getAttributes(), attributes);
 });
 
@@ -165,7 +164,6 @@ test('[unit] MScopeNode constructor handles arguments', t => {
     const node = new MScopeNode(attributes);
 
     t.is(node.tagName, 'm-scope');
-    t.deepEqual(node.variables, new Map([['param', 'value'], ['foo', 'bar']]));
     t.deepEqual(node.getAttributes(), attributes);
 });
 
