@@ -1,6 +1,7 @@
 import test from 'ava';
 import { Pipeline, BasicHtmlFormatter } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
+import { compareComponentMacro, compareFragmentMacro } from '../_util/htmlCompare';
 
 function createRootPi(): MemoryPipelineInterface {
     const pi = new MemoryPipelineInterface();
@@ -257,3 +258,32 @@ test('[endToEnd] Imported component compiles correctly', t => {
     t.truthy(comp2_0);
     t.truthy(comp2_1);
 });
+
+test('[endToEnd] Component with function script compiles', compareComponentMacro,
+`<template>
+    <test test="\${ $.test }" />
+</template>
+<script mode="function">
+    return {
+        test: 'testvalue'
+    };
+</script>`,
+'<test test="testvalue"></test>');
+
+
+test('[endToEnd] Component with function script keeps isolated scopes', compareFragmentMacro,
+`<m-component src="comp.html" param="test1" />
+<m-component src="comp.html" param="test2" />`,
+'<test test1="testvalue" test2="test1"></test><test test1="testvalue" test2="test2"></test>',
+[[
+    'comp.html',
+    `<template>
+        <test test1="\${ $.test1 }" test2="\${ $.test2 }" />
+    </template>
+    <script mode="function">
+        return {
+            test1: 'testvalue',
+            test2: $.param
+        };
+    </script>`
+]]);
