@@ -8,13 +8,13 @@ function runVarsModule(node: Node, cleanup = true, fragmentParams?: EvalVars) {
     const fragment = new Fragment(page.resPath, page.dom);
     const usageContext = new UsageContext(page, undefined, fragmentParams);
 
-    const compileData = new HtmlCompileData(pipeline, fragment, usageContext);
+    const compileData = new HtmlCompileData(pipeline, fragment, usageContext, node);
     const varsModule = new VarsModule();
 
-    varsModule.enterNode(node, compileData);
+    varsModule.enterNode(compileData);
 
-    if (cleanup) {
-        varsModule.exitNode(node);
+    if (cleanup && !compileData.isDeleted) {
+        varsModule.exitNode(compileData);
     }
 }
 

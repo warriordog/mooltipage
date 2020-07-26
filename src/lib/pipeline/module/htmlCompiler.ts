@@ -49,7 +49,7 @@ export class HtmlCompiler {
      */
     compileHtml(fragment: Fragment, usageContext: UsageContext): void {
         // create rootcompile data
-        const rootCompileData = new HtmlCompileData(this.pipeline, fragment, usageContext);
+        const rootCompileData = new HtmlCompileData(this.pipeline, fragment, usageContext, fragment.dom);
 
         // run modules
         this.runModulesAt(fragment.dom, rootCompileData);
@@ -57,12 +57,17 @@ export class HtmlCompiler {
 
     private runModulesAt(node: Node, parentNodeCompileData: HtmlCompileData): void {
         // create node data
-        const compileData = parentNodeCompileData.createChildData();
+        const compileData = parentNodeCompileData.createChildData(node);
 
-        // process node
+        // pre-node callback
         for (const module of this.modules) {
             if (module.enterNode != undefined) {
-                module.enterNode(node, compileData);
+                module.enterNode(compileData);
+
+                // stop processing if node is deleted
+                if (compileData.isDeleted) {
+                    return;
+                }
             }
         }
 
@@ -100,10 +105,15 @@ export class HtmlCompiler {
             }
         }
 
-        // cleanup node
+        // post-node callback
         for (const module of this.modules) {
             if (module.exitNode != undefined) {
-                module.exitNode(node, compileData);
+                module.exitNode(compileData);
+
+                // stop processing if node is deleted
+                if (compileData.isDeleted) {
+                    return;
+                }
             }
         }
     }
@@ -117,19 +127,17 @@ export interface HtmlCompilerModule {
      * Called when the HTML Compiler begins compiling a node.
      * After all modules have finished their enterNode() section, the node's children will be compiled.
      * 
-     * @param node Node being compiled
      * @param compileData Current semi-stateful compilation data
      */
-    enterNode?(node: Node, compileData: HtmlCompileData): void;
+    enterNode?(compileData: HtmlCompileData): void;
 
     /**
      * Called when the HTML Compiler is finished compiling a node and its children.
      * The node can still be modified, however changes will not trickle down to children at this point.
      * 
-     * @param node Node being compiled
      * @param compileData Current semi-stateful compilation data
      */
-    exitNode?(node: Node, compileData: HtmlCompileData): void;
+    exitNode?(compileData: HtmlCompileData): void;
 }
 
 /**
@@ -158,22 +166,37 @@ export class HtmlCompileData {
     readonly parentData?: HtmlCompileData;
 
     /**
+     * Node currently being compiled
+     */
+    readonly node: Node;
+
+    /**
      * Registered m-import definitions within this immediate scope.
      * Do not access directly - use instance methods that will additionally check inherited parent data.
      */
     readonly localReferenceImports = new Map<string, ImportDefinition>();
 
     /**
+     * If true, then the node has been deleted and compilation should stop
+     */
+    get isDeleted(): boolean {
+        return this._isDeleted;
+    }
+    private _isDeleted = false;
+
+    /**
      * Creates a new HTML compile data instance that optionally inherits from a parent
      * @param pipeline Current pipeline instance
      * @param fragment Fragment being processed
      * @param usageContext Current usage context
+     * @param node Node being compiled
      * @param parentData Optional parent HtmlCompileData to inherit from
      */
-    constructor(pipeline: Pipeline, fragment: Fragment, usageContext: UsageContext, parentData?: HtmlCompileData) {
+    constructor(pipeline: Pipeline, fragment: Fragment, usageContext: UsageContext, node: Node, parentData?: HtmlCompileData) {
         this.pipeline = pipeline;
         this.fragment = fragment;
         this.usageContext = usageContext;
+        this.node = node;
         this.parentData = parentData;
     }
 
@@ -226,10 +249,18 @@ export class HtmlCompileData {
 
     /**
      * Create a new HtmlCompileData that inherits from this one
+     * @param node node to compile with the new instance
      * @returns new HtmlCompileData instance
      */
-    createChildData(): HtmlCompileData {
-        return new HtmlCompileData(this.pipeline, this.fragment, this.usageContext, this);
+    createChildData(node: Node): HtmlCompileData {
+        return new HtmlCompileData(this.pipeline, this.fragment, this.usageContext, node, this);
+    }
+
+    /**
+     * Marks the current node as deleted and stops further processing.
+     */
+    setDeleted(): void {
+        this._isDeleted = true;
     }
 }
 

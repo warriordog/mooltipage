@@ -1,28 +1,34 @@
-import { HtmlCompileData, MVarNode, MScopeNode, VariablesNode, HtmlCompilerModule, Node, DocumentNode, EvalScope } from "../../..";
+import { HtmlCompileData, MVarNode, MScopeNode, VariablesNode, HtmlCompilerModule, DocumentNode, EvalScope } from "../../..";
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
  */
 export class VarsModule implements HtmlCompilerModule {
-    enterNode(node: Node, compileData: HtmlCompileData): void {
-        if (DocumentNode.isDocumentNode(node)) {
+    enterNode(compileData: HtmlCompileData): void {
+        if (DocumentNode.isDocumentNode(compileData.node)) {
             // if document, then bind root scope and we are done
-            this.setRootScope(node, compileData);
-        } else if (MVarNode.isMVarNode(node)) {
-            // process m-var, then remove
-            this.evalVar(node, compileData, true);
-            node.removeSelf();
-        } else if (MScopeNode.isMScopeNode(node)) {
+            this.setRootScope(compileData.node, compileData);
+            
+        } else if (MVarNode.isMVarNode(compileData.node)) {
+            // process m-var
+            this.evalVar(compileData.node, compileData, true);
+
+            // delete when done
+            compileData.node.removeSelf();
+            compileData.setDeleted();
+
+        } else if (MScopeNode.isMScopeNode(compileData.node)) {
             // process m-scope, but leave until later to cleanup
-            this.evalVar(node, compileData, false);
+            this.evalVar(compileData.node, compileData, false);
         }
     }
 
-    exitNode(node: Node): void {
+    exitNode(compileData: HtmlCompileData): void {
         // m-scope removal is delayed until now to preserve the scope data
-        if (MScopeNode.isMScopeNode(node)) {
-            // leave children in place
-            node.removeSelf(true);
+        if (MScopeNode.isMScopeNode(compileData.node)) {
+            // delete node, but leave children in place
+            compileData.node.removeSelf(true);
+            compileData.setDeleted();
         }
     }
 

@@ -1,14 +1,14 @@
-import { HtmlCompileData, EvalContext, Node, TextNode, TagNode, HtmlCompilerModule } from "../../..";
+import { HtmlCompileData, EvalContext, TextNode, TagNode, HtmlCompilerModule } from "../../..";
 
 /**
  * Compile module that detects and evalutates embedded JS expressions in attributes and text nodes
  */
 export class TemplateTextModule implements HtmlCompilerModule {
-    enterNode(node: Node, compileData: HtmlCompileData): void {
-        if (TextNode.isTextNode(node)) {
-            this.processTextNode(compileData, node);
-        } else if (TagNode.isTagNode(node)) {
-            this.processTagNode(compileData, node);
+    enterNode(compileData: HtmlCompileData): void {
+        if (TextNode.isTextNode(compileData.node)) {
+            this.processTextNode(compileData, compileData.node);
+        } else if (TagNode.isTagNode(compileData.node)) {
+            this.processTagNode(compileData, compileData.node);
         }
     }
 

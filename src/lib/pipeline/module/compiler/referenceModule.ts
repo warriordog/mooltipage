@@ -5,9 +5,9 @@ import { DocumentNode, ExternalReferenceNode, Fragment, UsageContext, Pipeline, 
  */
 export class ReferenceModule implements HtmlCompilerModule {
 
-    exitNode(node: Node, compileData: HtmlCompileData): void {
-        if (MFragmentNode.isMFragmentNode(node) || MComponentNode.isMComponentNode(node)) {
-            this.replaceReference(node, compileData);
+    exitNode(compileData: HtmlCompileData): void {
+        if (MFragmentNode.isMFragmentNode(compileData.node) || MComponentNode.isMComponentNode(compileData.node)) {
+            this.replaceReference(compileData.node, compileData);
         }
     }
 
@@ -24,6 +24,7 @@ export class ReferenceModule implements HtmlCompilerModule {
 
         // replace with compiled fragment
         refNode.replaceSelf(refContents.dom.childNodes);
+        compileData.setDeleted();
     }
 
     private compileReference(src: string, usageContext: UsageContext, pipeline: Pipeline, type: 'm-fragment' | 'm-component'): Fragment {

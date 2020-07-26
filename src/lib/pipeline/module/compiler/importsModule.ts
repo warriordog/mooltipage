@@ -1,18 +1,18 @@
-import { ExternalReferenceNode, HtmlCompileData, MImportNode, TagNode, MComponentNode, MFragmentNode, HtmlCompilerModule, Node, ImportDefinition } from "../../..";
+import { ExternalReferenceNode, HtmlCompileData, MImportNode, TagNode, MComponentNode, MFragmentNode, HtmlCompilerModule, ImportDefinition } from "../../..";
 
 /**
  * Process imports / aliases via m-import
  */
 export class ImportsModule implements HtmlCompilerModule {
-    enterNode(node: Node, compileData: HtmlCompileData): void {
+    enterNode(compileData: HtmlCompileData): void {
         
-        if (MImportNode.isMImportNode(node)) {
+        if (MImportNode.isMImportNode(compileData.node)) {
             // if this is m-import, then process it
-            this.registerImport(node, compileData);
+            this.registerImport(compileData.node, compileData);
 
-        } else if (TagNode.isTagNode(node) && compileData.hasImport(node.tagName)) {
+        } else if (TagNode.isTagNode(compileData.node) && compileData.hasImport(compileData.node.tagName)) {
             // else if this is a replacement node, then replace it
-            this.replaceImport(node, compileData);
+            this.replaceImport(compileData.node, compileData);
         }
     }
 
@@ -29,11 +29,12 @@ export class ImportsModule implements HtmlCompilerModule {
 
         // delete node
         mImport.removeSelf();
+        compileData.setDeleted();
     }
 
-    private replaceImport(tag: TagNode, nodeCompileData: HtmlCompileData): void {
+    private replaceImport(tag: TagNode, compileData: HtmlCompileData): void {
         // get import definition
-        const importDefinition = nodeCompileData.getImport(tag.tagName);
+        const importDefinition = compileData.getImport(tag.tagName);
 
         // create replacement
         const replacementTag = this.createReplacementTag(tag, importDefinition);
@@ -41,6 +42,7 @@ export class ImportsModule implements HtmlCompilerModule {
         // replace tag
         replacementTag.appendChildren(tag.childNodes);
         tag.replaceSelf([ replacementTag ]);
+        compileData.setDeleted();
     }
 
     private createReplacementTag(tag: TagNode, importDefinition: ImportDefinition): ExternalReferenceNode {
