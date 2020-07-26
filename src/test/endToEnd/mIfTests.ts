@@ -99,3 +99,60 @@ test('[endToEnd] m-if works in a component', compareFragmentMacro,
         }
     </script>
 `]]);
+
+test('[endToEnd] correct conditional branch is taken when there are multiple options', compareFragmentMacro,
+`<m-if ?="{{ true }}">
+    <good />
+</m-if>
+<m-else>
+    <bad />
+</m-else>
+
+<m-if ?="{{ false }}">
+    <bad />
+</m-if>
+<m-else>
+    <good />
+</m-else>
+
+<m-if ?="{{ false }}">
+    <bad1 />
+</m-if>
+<m-else-if ?="{{ true }}">
+    <good />
+</m-else-if>
+<m-else>
+    <bad2 />
+</m-else>
+
+<m-if ?="{{ false }}">
+    <bad1 />
+</m-if>
+<m-else-if ?="{{ false }}">
+    <bad2 />
+</m-else-if>
+
+<m-if ?="{{ false }}">
+    <bad1 />
+</m-if>
+<m-else-if ?="{{ false }}">
+    <bad2 />
+</m-else-if>
+<m-else-if ?="{{ true }}">
+    <good />
+</m-else-if>
+<m-else-if ?="{{ false }}">
+    <bad3 />
+</m-else-if>
+<m-else>
+    <bad4 />
+</m-else>
+`, '<good></good><good></good><good></good><good></good>');
+
+/*
+test.todo('[endToEnd] m-else must follow m-if or m-else-if');
+test.todo('[endToEnd] m-else-if must follow m-if or m-else-if');
+test.todo('[endToEnd] m-else is selected if m-if is false');
+test.todo('[endToEnd] m-else-if is selected if there are multiple conditions');
+test.todo('[endToEnd] nothing is left when all conditionals are false');
+*/

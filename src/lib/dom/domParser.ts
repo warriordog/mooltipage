@@ -1,5 +1,5 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
-import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode } from '..';
+import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode } from '..';
 /**
  * Parses HTML into a dom using htmlparser2
  */
@@ -171,6 +171,10 @@ export class DomHandler implements Partial<Handler> {
                 return this.createMImportNode(attributes);
             case 'm-if':
                 return this.createMIfNode(attributes);
+            case 'm-else-if':
+                return this.createMElseIfNode(attributes);
+            case 'm-else':
+                return new MElseNode(attributes);
             case 'm-for':
                 return this.createMForNode(attributes);
             default:
@@ -219,6 +223,12 @@ export class DomHandler implements Partial<Handler> {
         const expression = attributes.get('?');
         if (expression == undefined) throw new Error('Parse error: <m-if> is missing required attribute: ?');
         return new MIfNode(expression, attributes);
+    }
+
+    private createMElseIfNode(attributes: Map<string, string | null>): MElseIfNode {
+        const expression = attributes.get('?');
+        if (expression == undefined) throw new Error('Parse error: <m-else-if> is missing required attribute: ?');
+        return new MElseIfNode(expression, attributes);
     }
 
     private createMForNode(attributes: Map<string, string | null>): MForNode {

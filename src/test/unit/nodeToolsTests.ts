@@ -405,3 +405,49 @@ test('[unit] NodeTools.getChildTags filters for TagNodes', t => {
     t.true(childTags.includes(child1));
     t.true(childTags.includes(child2));
 });
+
+test('[unit] NodeTools.getPreviousTag finds previous tag', t => {
+    const root = new DocumentNode();
+    const tag1 = new TagNode('div');
+    const text1 = new TextNode('text1');
+    const text2 = new TextNode('text2');
+    const tag2 = new TagNode('div');
+    NodeTools.appendChildNodes(root, [tag1, text1, text2, tag2]);
+
+    const prevTag = NodeTools.getPreviousTag(tag2);
+    t.is(prevTag, tag1);
+});
+
+test('[unit] NodeTools.getPreviousTag returns null if no tags found', t => {
+    const root = new DocumentNode();
+    const text1 = new TextNode('text1');
+    const text2 = new TextNode('text2');
+    const tag = new TagNode('div');
+    NodeTools.appendChildNodes(root, [text1, text2, tag]);
+    
+    const prevTag = NodeTools.getPreviousTag(tag);
+    t.is(prevTag, null);
+});
+
+test('[unit] NodeTools.getNextTag finds next tag', t => {
+    const root = new DocumentNode();
+    const tag1 = new TagNode('div');
+    const text1 = new TextNode('text1');
+    const text2 = new TextNode('text2');
+    const tag2 = new TagNode('div');
+    NodeTools.appendChildNodes(root, [tag1, text1, text2, tag2]);
+
+    const nextTag = NodeTools.getNextTag(tag1);
+    t.is(nextTag, tag2);
+});
+
+test('[unit] NodeTools.getNextTag returns null if no tags found', t => {
+    const root = new DocumentNode();
+    const tag = new TagNode('div');
+    const text1 = new TextNode('text1');
+    const text2 = new TextNode('text2');
+    NodeTools.appendChildNodes(root, [tag, text1, text2]);
+    
+    const nextTag = NodeTools.getNextTag(tag);
+    t.is(nextTag, null);
+});

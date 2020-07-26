@@ -1,4 +1,4 @@
-import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode, MScopeNode, MIfNode, MForOfNode, MForInNode } from "..";
+import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MImportNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode } from "..";
 
 /**
  * Detatch a node and its children from the DOM.
@@ -432,6 +432,37 @@ export function cloneMIfNode(node: MIfNode, deep: boolean, callback?: (oldNode: 
 }
 
 /**
+ * Clones an m-else-if node
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMElseIfNode(node: MElseIfNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MElseIfNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MElseIfNode(node.expression, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones an m-else node
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMElseNode(node: MElseNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MElseNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MElseNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+/**
  * Clones an MForOf node
  * @param node Node to clone
  * @param deep If true, children will be cloned
@@ -577,4 +608,38 @@ function cloneChildNodes(parent: NodeWithChildren, childNodes: Node[], callback?
         const newChildren = childNodes.map(node => node.clone(true, callback));
         appendChildNodes(parent, newChildren);
     }
+}
+
+/**
+ * TODO document
+ * @param node 
+ */
+export function getPreviousTag(node: Node): TagNode | null {
+    let currentNode: Node | null = node.prevSibling;
+    while (currentNode != null) {
+        if (TagNode.isTagNode(currentNode)) {
+            return currentNode;
+        }
+
+        currentNode = currentNode.prevSibling;
+    }
+
+    return null;
+}
+
+/**
+ * TODO document
+ * @param node 
+ */
+export function getNextTag(node: Node): TagNode | null {
+    let currentNode: Node | null = node.nextSibling;
+    while (currentNode != null) {
+        if (TagNode.isTagNode(currentNode)) {
+            return currentNode;
+        }
+
+        currentNode = currentNode.nextSibling;
+    }
+
+    return null;
 }

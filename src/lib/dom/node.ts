@@ -40,6 +40,20 @@ export abstract class Node {
     nextSibling: Node | null = null;
 
     /**
+     * TODO document
+     */
+    get prevSiblingTag(): TagNode | null {
+        return NodeTools.getPreviousTag(this);
+    }
+
+    /**
+     * TODO document
+     */
+    get nextSiblingTag(): TagNode | null {
+        return NodeTools.getNextTag(this);
+    }
+
+    /**
      * Extra DOM data associated with this node.
      * This object prototypically inherits from the parent node's nodeData.
      */
@@ -802,29 +816,56 @@ export class MImportNode extends TagNode {
  * Parent class for any Tag that contains a conditional <m-if>, <m-else-if>, etc.
  */
 export abstract class ConditionalNode extends TagNode {
-    constructor(tagName: string, expression: string, attributes?: Map<string, unknown>) {
+    constructor(tagName: string, expression: unknown, attributes?: Map<string, unknown>) {
         super(tagName, attributes);
 
         this.setRawAttribute('?', expression);
     }
 
+    /**
+     * TODO document
+     */
     get condition(): boolean {
         return !!this.getRawAttribute('?');
     }
     set condition(newCondition: boolean) {
         this.setRawAttribute('?', newCondition);
     }
+
+    
+    /**
+     * TODO document
+     */
     get expression(): string {
         return this.getRequiredValueAttribute('?');
     }
     set expression(newExp: string) {
         this.setAttribute('?', newExp);
     }
+
+    abstract get prevConditional(): ConditionalNode | null;
+    abstract get nextConditional(): ConditionalNode | null;
 }
 
+/**
+ * TODO document
+ */
 export class MIfNode extends ConditionalNode {
-    constructor(expression: string, attributes?: Map<string, unknown>) {
+    constructor(expression: unknown, attributes?: Map<string, unknown>) {
         super('m-if', expression, attributes);
+    }
+
+    get prevConditional(): null {
+        return null;
+    }
+
+    get nextConditional(): ConditionalNode | null {
+        const nextTag = this.nextSiblingTag;
+        if (nextTag != null && (MElseIfNode.isMElseIfNode(nextTag) || MElseNode.isMElseNode(nextTag))) {
+            return nextTag;
+        } else {
+            return null;
+        }
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MIfNode {
@@ -842,19 +883,93 @@ export class MIfNode extends ConditionalNode {
 
 
 /**
- * m-for tag
+ * TODO document
+ */
+export class MElseIfNode extends ConditionalNode {
+    constructor(expression: unknown, attributes?: Map<string, unknown>) {
+        super('m-else-if', expression, attributes);
+    }
+
+    get prevConditional(): ConditionalNode | null {
+        const prevTag = this.prevSiblingTag;
+        if (prevTag != null && (MIfNode.isMIfNode(prevTag) || MElseIfNode.isMElseIfNode(prevTag))) {
+            return prevTag;
+        } else {
+            return null;
+        }
+    }
+
+    get nextConditional(): ConditionalNode | null {
+        const nextTag = this.nextSiblingTag;
+        if (nextTag != null && (MElseIfNode.isMElseIfNode(nextTag) || MElseNode.isMElseNode(nextTag))) {
+            return nextTag;
+        } else {
+            return null;
+        }
+    }
+
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MElseIfNode {
+        return NodeTools.cloneMElseIfNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an instance of MElseIfNode
+     * @param node Node to check
+     */
+    static isMElseIfNode(node: Node): node is MElseIfNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-else-if';
+    }
+}
+
+/**
+ * TODO document
+ */
+export class MElseNode extends ConditionalNode {
+    constructor(attributes?: Map<string, unknown>) {
+        super('m-else', true, attributes);
+    }
+
+    get prevConditional(): ConditionalNode | null {
+        const prevTag = this.prevSiblingTag;
+        if (prevTag != null && (MIfNode.isMIfNode(prevTag) || MElseIfNode.isMElseIfNode(prevTag))) {
+            return prevTag;
+        } else {
+            return null;
+        }
+    }
+
+    get nextConditional(): null {
+        return null;
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MElseNode {
+        return NodeTools.cloneMElseNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an instance of MElseNode
+     * @param node Node to check
+     */
+    static isMElseNode(node: Node): node is MElseNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-else';
+    }
+}
+
+/**
+ * Base class for m-for tags
  */
 export abstract class MForNode extends TagNode {
     /**
-     * TODO document
+     * Name of the attribute that stores the expression for this <m-for>
      */
     readonly expressionAttrName: string;
 
-    constructor(expressionAttrName: string, expression: string, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
+    constructor(expressionAttrName: string, expression: unknown, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
         super('m-for', attributes);
         this.expressionAttrName = expressionAttrName;
 
-        this.setAttribute(expressionAttrName, expression);
+        this.setRawAttribute(expressionAttrName, expression);
 
         this.setAttribute('var', varName);
 
@@ -866,27 +981,15 @@ export abstract class MForNode extends TagNode {
     }
 
     /**
-     * TODO document
+     * The raw value of the expression in this <m-for>.
+     * If this node has been processed by TemplateTextModule, then this will be the array or object to iterate.
+     * Otherwise, it will be the uncompiled string expression.
      */
-    get value(): unknown {
+    get expression(): unknown {
         return this.getRawAttribute(this.expressionAttrName);
     }
-    set value(newOf: unknown) {
+    set expression(newOf: unknown) {
         this.setRawAttribute(this.expressionAttrName, newOf);
-    }
-
-    /**
-     * TODO document
-     */
-    get expression(): string {
-        return this.getRequiredValueAttribute(this.expressionAttrName);
-    }
-    set expression(newOfExpression: string) {
-        if (newOfExpression != undefined) {
-            this.setAttribute(this.expressionAttrName, newOfExpression);
-        } else {
-            this.deleteAttribute(this.expressionAttrName);
-        }
     }
 
     /**
@@ -923,11 +1026,11 @@ export abstract class MForNode extends TagNode {
 }
 
 
-    /**
-     * TODO document
-     */
+/**
+ * Variant of <m-for> that implements a for...of loop
+ */
 export class MForOfNode extends MForNode {
-    constructor(expression: string, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
+    constructor(expression: unknown, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
         super('of', expression, varName, indexName, attributes);
     }
 
@@ -945,11 +1048,11 @@ export class MForOfNode extends MForNode {
 }
 
 
-    /**
-     * TODO document
-     */
+/**
+ * Variant of <m-for> that implements a for...in loop
+ */
 export class MForInNode extends MForNode {
-    constructor(expression: string, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
+    constructor(expression: unknown, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
         super('in', expression, varName, indexName, attributes);
     }
 

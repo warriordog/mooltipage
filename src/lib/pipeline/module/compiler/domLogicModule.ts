@@ -1,16 +1,45 @@
-import { MIfNode, Node, MForNode, HtmlCompilerModule, DocumentNode, MScopeNode, MForOfNode, MForInNode } from "../../..";
+import { MIfNode, MElseIfNode, MElseNode, Node, MForNode, HtmlCompilerModule, DocumentNode, MScopeNode, MForOfNode, MForInNode, ConditionalNode } from "../../..";
 
 /**
  * Process dom logic: m-if, m-for, etc.
  */
 export class DomLogicModule implements HtmlCompilerModule {
     enterNode(node: Node): void {
-        if (MIfNode.isMIfNode(node)) {
-            // process m-if nodes
-            node.removeSelf(node.condition);
+        if (MIfNode.isMIfNode(node) || MElseIfNode.isMElseIfNode(node) || MElseNode.isMElseNode(node)) {
+            // process conditional nodes
+            this.compileConditional(node);
+        
         } else if (MForNode.isMForNode(node)) {
             // process m-for nodes
             this.compileMFor(node);
+        }
+    }
+
+    private compileConditional(conditional: ConditionalNode): void {
+        // if conditional is true, then delete rest of train and promote children
+        if (conditional.condition) {
+            this.removeFollowingConditionals(conditional);
+
+            // delete self, but keep children because this is true
+            conditional.removeSelf(true);
+        } else {
+            // if not true, then delete
+            conditional.removeSelf();
+        }
+    }
+
+    private removeFollowingConditionals(trueConditional: ConditionalNode): void {
+        let currentConditional: ConditionalNode | null = trueConditional.nextConditional;
+
+        while (currentConditional != null) {
+            // save next in case we remove this one
+            const nextConditional: ConditionalNode | null = currentConditional.nextConditional;
+
+            // remove conditional
+            currentConditional.removeSelf();
+
+            // move on to text
+            currentConditional = nextConditional;
         }
     }
 
@@ -34,9 +63,9 @@ export class DomLogicModule implements HtmlCompilerModule {
 
     private evaluateMFor(mFor: MForNode): MForIteration[] {
         if (MForOfNode.isMForOfNode(mFor)) {
-            return this.evaluateForOf(mFor.value);
+            return this.evaluateForOf(mFor.expression);
         } else if (MForInNode.isMForInNode(mFor)) {
-            return this.evaluateForIn(mFor.value);
+            return this.evaluateForIn(mFor.expression);
         } else {
             throw new Error('m-for node is neither a for...of nor a for...in loop');
         }
