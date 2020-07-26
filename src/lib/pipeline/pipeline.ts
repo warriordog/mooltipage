@@ -9,15 +9,49 @@ import { PipelineCache, PipelineInterface, HtmlFormatter, ResourceParser, HtmlCo
  * Any incidental resources (such as stylesheets) will be fed to the pipeline interface via createResource().
  */
 export class Pipeline {
+    /**
+     * Caches reusable data for the pipline
+     */
     private readonly cache: PipelineCache;
 
+    /**
+     * Frontend / Backend for the pipeline
+     */
     readonly pipelineInterface: PipelineInterface;
+    
+    /**
+     * HTML formatter, if provided
+     */
     readonly htmlFormatter?: HtmlFormatter;
+
+    /**
+     * General content parser
+     */
     readonly resourceParser: ResourceParser;
+
+    /**
+     * HTML compilation support
+     */
     readonly htmlCompiler: HtmlCompiler;
+
+    /**
+     * Bind non-HTML resources to a page
+     */
     readonly resourceBinder: ResourceBinder;
+
+    /**
+     * HTML serialization support
+     */
     readonly htmlSerializer: HtmlSerializer;
+
+    /**
+     * Text expression compilation support
+     */
     readonly textCompiler: TextCompiler;
+
+    /**
+     * Content hashing functionality
+     */
     readonly contentHasher: ContentHasher;
 
     /**
@@ -55,6 +89,7 @@ export class Pipeline {
      * This is the only entry point that should be called by user code.
      * 
      * @param resPath Path to the page, relative to both source and destination.
+     * @returns a CompiledPage containing the Page instance and serialized / formatted HTML
      */
     compilePage(resPath: string): CompiledPage {
         // parse page HTML as fragment
@@ -96,6 +131,7 @@ export class Pipeline {
      * 
      * @param resPath Path to fragment source
      * @param usageContext Current usage context
+     * @returns Fragment instance
      */
     compileFragment(resPath: string, usageContext: UsageContext): Fragment {
         // get fragment from cache or htmlSource
@@ -117,6 +153,7 @@ export class Pipeline {
      * 
      * @param resPath Path to component source
      * @param usageContext Current usage context
+     * @returns Fragment instance
      */
     compileComponent(resPath: string, baseUsageContext: UsageContext): Fragment {
         // get or parse component
@@ -157,17 +194,14 @@ export class Pipeline {
     /**
      * Compiles text in a Document.
      * Embedded scripts will be evaluated in the current context.
+     * Plain text will be returned as-is.
      * Internal use only.
      * 
      * @param value Text value
      * @param evalContext Current compilation context
+     * @returns compiled value of the input value
      */
-    compileDomText(value: string | null, evalContext: EvalContext): unknown {
-        // value is null
-        if (value == null) {
-            return null;
-        }
-
+    compileDomText(value: string, evalContext: EvalContext): unknown {
         // check if this text contains JS code to evaluate
         if (this.textCompiler.isScriptText(value)) {
             const scriptText = value.trim();
@@ -190,6 +224,7 @@ export class Pipeline {
      * Internal use only.
      * 
      * @param css CSS text
+     * @returns Compile CSS text
      */
     compileCss(css: string): string {
         return css;
@@ -204,6 +239,7 @@ export class Pipeline {
      * @param type Type of resource
      * @param contents Contents as a UTF-8 string
      * @param sourceResPath Path to the explicit resource that has produced this created resource
+     * @returns path to reference linked resource
      */
     linkResource(type: ResourceType, contents: string, sourceResPath: string): string {
         // hash contents
@@ -238,6 +274,7 @@ export class Pipeline {
      * Internal use only.
      * 
      * @param resPath Path to fragment
+     * @returns Uncompiled fragment
      */
     getRawFragment(resPath: string): Fragment {
         return this.getOrParseFragment(resPath);
@@ -318,6 +355,13 @@ export class Pipeline {
  * Contains compiled HTML and page DOM.
  */
 export interface CompiledPage {
+    /**
+     * Compiled Page instance
+     */
     page: Page;
+
+    /**
+     * Serialized and formatted HTML representation of the page
+     */
     html: string;
 }

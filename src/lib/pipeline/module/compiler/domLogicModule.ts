@@ -16,8 +16,8 @@ export class DomLogicModule implements HtmlCompilerModule {
     }
 
     private compileConditional(conditional: ConditionalNode): void {
-        // if conditional is true, then delete rest of train and promote children
-        if (conditional.condition) {
+        // if conditional is true, then delete rest of conditional train and promote children
+        if (conditional.isTruthy) {
             this.removeFollowingConditionals(conditional);
 
             // delete self, but keep children because this is true

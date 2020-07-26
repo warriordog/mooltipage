@@ -32,7 +32,7 @@ test('[unit] MComponentNode is correct types', testNode, new MComponentNode('res
 test('[unit] MContentNode is correct types', testNode, new MContentNode(), true, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false);
 test('[unit] MSlotNode is correct types', testNode, new MSlotNode(), true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false);
 test('[unit] MVarNode is correct types', testNode, new MVarNode(), true, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false);
-test('[unit] MImportNode is correct types', testNode, new MImportNode('resPath', 'alias', false, false), true, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false);
+test('[unit] MImportNode is correct types', testNode, new MImportNode('resPath', 'alias', true, false), true, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false);
 test('[unit] MScopeNode is correct types', testNode, new MScopeNode(), true, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false);
 test('[unit] MIfNode is correct types', testNode, new MIfNode('{{ true }}'), true, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false);
 test('[unit] MForOfNode is correct types', testNode, new MForOfNode('{{ [] }}', 'var', undefined), true, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false);

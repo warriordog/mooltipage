@@ -17,6 +17,7 @@ export interface PipelineInterface {
      * 
      * @param type Type of resource
      * @param resPath Relative path to resource (source and destination)
+     * @returns text content of resource
      */
     getResource(type: ResourceType, resPath: string): string;
 
@@ -27,6 +28,7 @@ export interface PipelineInterface {
      * @param type MIME type of the new resource
      * @param contents File contents
      * @param sourceResPath Resource path of the resource that spawned this resource
+     * @returns path to resource
      */
     createResource(type: ResourceType, contents: string, sourceResPath: string): string;
 
@@ -42,18 +44,47 @@ export interface PipelineInterface {
      * @param contents File contents
      * @param sourceResPath Resource path of the resource that spawned this resource
      * @param originalResPath The resource path that was produced by the call to createResource()
+     * @returns new path to resource, or original if no changes are needed
      */
     reLinkCreatedResource?(type: ResourceType, contents: string, sourceResPath: string, originalResPath: string): string;
 }
 
+/**
+ * Recognized resource types, mapped by MIME type
+ */
 export enum ResourceType {
+    /**
+     * HTML resource
+     */
     HTML = 'text/html',
+
+    /**
+     * CSS resource
+     */
     CSS = 'text/css',
+
+    /**
+     * JavaScript resource
+     */
     JAVASCRIPT = 'text/javascript',
+
+    /**
+     * JSON resource
+     */
     JSON = 'application/json',
+
+    /**
+     * Plain text resource
+     */
     TEXT = 'text/plain'
 }
 
+/**
+ * Gets the filename extension to use for a specified resource type.
+ * Defaults to "dat" for unknown resource types.
+ * @param resourceType Resource type to get extension for
+ * @returns filename extension, without the dot.
+ */
 export function getResourceTypeExtension(resourceType: ResourceType): string {
     switch(resourceType) {
         case ResourceType.HTML: return 'html'

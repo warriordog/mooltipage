@@ -17,7 +17,8 @@ export class ResourceParser {
     /**
      * Parse HTML text as a fragment
      * @param resPath Source path
-     * @param html HTMl content
+     * @param html HTML content
+     * @returns a Fragment instance parsed from the HTML
      */
     parseFragment(resPath: string, html: string): Fragment {
         // parse HTML
@@ -31,6 +32,7 @@ export class ResourceParser {
      * Parse HTML text as a page
      * @param resPath Source path
      * @param html HTMl content
+     * @returns a Page instance parsed from the HTML
      */
     parsePage(resPath: string, html: string): Page {
         // parse HTML
@@ -44,6 +46,7 @@ export class ResourceParser {
      * Parse HTML text as a component
      * @param resPath Source path
      * @param html HTMl content
+     * @returns a Component definition parsed from the HTML
      */
     parseComponent(resPath: string, html: string): Component {
         // parse HTML
@@ -66,6 +69,8 @@ export class ResourceParser {
      * Extract and parse the <template> section of a component
      * @param resPath Path to component
      * @param dom Component root document
+     * @returns component <template> section definition
+     * @throws if <template> is missing from dom
      */
     private parseComponentTemplate(resPath: string, dom: DocumentNode): ComponentTemplate {
         // find template node
@@ -92,6 +97,9 @@ export class ResourceParser {
      * 
      * @param resPath Path to component
      * @param dom Component root document
+     * @returns component <script> section definition
+     * @throws if <script> is missing from dom
+     * @throws if <script> mode is not recognized
      */
     private parseComponentScript(resPath: string, dom: DocumentNode): ComponentScript {
         // find script node
@@ -129,6 +137,7 @@ export class ResourceParser {
      * @param resPath Path to component
      * @param dom Component root document
      * @returns Returns the parsed ComponentStyle, or undefined if this component does not have a style section
+     * @throws if <style> mode is not recognized
      */
     private parseComponentStyle(resPath: string, dom: DocumentNode): ComponentStyle | undefined {
         // find style node

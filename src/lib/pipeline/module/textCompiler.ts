@@ -14,6 +14,7 @@ export class TextCompiler {
     /**
      * Check if the given string contains embedded JS script(s) that should be executed.
      * @param value The string to check
+     * @returns true if the string contains any recognized expressions
      */
     isScriptText(value: string): boolean {
         // value is template string
@@ -35,6 +36,8 @@ export class TextCompiler {
      * Result object is stateless and can be safely cached and reused.
      * 
      * @param value The string to compile.
+     * @returns an EvalContent that will return the result of the expression
+     * @throws if the provided string contains no expressions
      */
     compileScriptText(value: string): EvalContent<unknown> {
         // value is template string

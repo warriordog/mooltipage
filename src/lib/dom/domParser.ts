@@ -19,8 +19,9 @@ export class DomParser {
     }
 
     /**
-     * Parse a string of HTML into a Document
+     * Parse a string of HTML into a DOM
      * @param html HTML to parse
+     * @returns a DocumentNode containing parsed HTML
      */
     parseDom(html: string): DocumentNode {
         // reset parser
@@ -50,6 +51,9 @@ function createParserOptions(userOptions?: ParserOptions) {
     return options;
 }
 
+/**
+ * Implementation of htmlparser2's Handler interface that generates a DOM from the parsed HTML.
+ */
 export class DomHandler implements Partial<Handler> {
     private dom: DocumentNode;
     private currentParent: NodeWithChildren;
@@ -59,6 +63,10 @@ export class DomHandler implements Partial<Handler> {
         this.currentParent = this.dom;
     }
 
+    /**
+     * Gets the generated DOM in its current state
+     * @returns a DocumentNode containing all parsed HTML
+     */
     getDom(): DocumentNode {
         return this.dom;
     }

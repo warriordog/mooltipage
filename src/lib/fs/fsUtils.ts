@@ -4,6 +4,7 @@ import Path from 'path';
 /**
  * Check if a path exists and is a file
  * @param path Path to check
+ * @returns True if path points to file, false otherwise
  */
 export function pathIsFile(path: string): boolean {
     return fs.existsSync(path) && fs.statSync(path).isFile();
@@ -12,6 +13,7 @@ export function pathIsFile(path: string): boolean {
 /**
  * Check if a directory exists and is a file
  * @param path Path to check
+ * @returns True if path points to directory, false otherwise
  */
 export function pathIsDirectory(path: string): boolean {
     return fs.existsSync(path) && fs.statSync(path).isDirectory();
@@ -22,6 +24,8 @@ export function pathIsDirectory(path: string): boolean {
  * Throws an exception if path is not a directory.
  * 
  * @param path Path to directory
+ * @returns Returns an array of filenames of all files in a directory
+ * @throws if path does not point to a directory
  */
 export function getDirectoryContents(path: string): string[] {
     if (pathIsDirectory(path)) {
@@ -36,6 +40,8 @@ export function getDirectoryContents(path: string): string[] {
  * Throws an exception if path is not a file.
  * 
  * @param path Path to file
+ * @returns Contents of file as a string
+ * @throws if path does not point to a file
  */
 export function readFile(path: string): string {
     if (pathIsFile(path)) {
@@ -69,6 +75,7 @@ export function writeFile(path: string, content: string, createPaths?: boolean):
  * 
  * @param paths List of paths to search
  * @param basePath If specified, all paths will be resolved relative to basePath
+ * @returns Array of paths to all HTML files found in paths and subdirectories
  */
 export function expandPagePaths(paths: string[], basePath?: string): string[] {
     const outPages: string[] = [];

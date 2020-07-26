@@ -31,6 +31,13 @@ export class UsageContext {
      */
     readonly rootScope: EvalScope;
 
+    /**
+     * Creates a new UsageContext
+     * @param currentPage Page being compiled
+     * @param slotContents Optional slot contents for the current fragment
+     * @param fragmentParams Optional parameters to the current fragment
+     * @param componentInstance Optional instance of the current component
+     */
     constructor(currentPage: Page, slotContents?: Map<string, DocumentNode>, fragmentParams?: EvalVars, componentInstance?: ComponentScriptInstance) {
         this.currentPage = currentPage;
         this.slotContents = slotContents ?? new Map();
@@ -46,6 +53,7 @@ export class UsageContext {
      * @param slotContents Slot contents to provide to child context
      * @param fragmentParams Parameters to child context
      * @param componentInstance Component that contains child context, if applicable
+     * @returns new UsageContext
      */
     createSubContext(slotContents?: Map<string, DocumentNode>, fragmentParams?: EvalVars, componentInstance?: ComponentScriptInstance): UsageContext {
         return new UsageContext(this.currentPage, slotContents, fragmentParams, componentInstance);

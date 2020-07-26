@@ -424,7 +424,7 @@ export function cloneMImportNode(node: MImportNode, deep: boolean, callback?: (o
 export function cloneMIfNode(node: MIfNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MIfNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new MIfNode(node.expression, newAttrs);
+    const newNode = new MIfNode(node.condition, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -440,7 +440,7 @@ export function cloneMIfNode(node: MIfNode, deep: boolean, callback?: (oldNode: 
 export function cloneMElseIfNode(node: MElseIfNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MElseIfNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new MElseIfNode(node.expression, newAttrs);
+    const newNode = new MElseIfNode(node.condition, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 

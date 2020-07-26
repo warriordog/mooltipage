@@ -13,6 +13,7 @@ export class HtmlSerializer {
     /**
      * Serialize a page into HTML
      * @param page Page to serialialize
+     * @returns HTML representing the page contents
      */
     serializePage(page: Page): string {
         return this.serializer.serialize(page.dom);

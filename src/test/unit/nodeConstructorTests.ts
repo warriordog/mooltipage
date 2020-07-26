@@ -157,11 +157,11 @@ test('[unit] MScopeNode constructor handles arguments', t => {
 });
 
 test('[unit] MIfNode constructor handles arguments', t => {
-    const expression = '{{ true }}';
-    const node = new MIfNode(expression);
+    const condition = '{{ true }}';
+    const node = new MIfNode(condition);
 
     t.is(node.tagName, 'm-if');
-    t.is(node.expression, expression);
+    t.is(node.condition, condition);
 });
 
 test('[unit] MForOfNode constructor handles arguments', t => {

@@ -8,6 +8,7 @@ export class EvalEngine {
      * Parse an ES6 template literal
      * 
      * @param templateString Contents of the template string, excluding the backticks
+     * @returns EvalContent that will execute the template string and return a standard string
      */
     parseTemplateString(templateString: string): EvalContent<string> {
         // generate function body for template
@@ -23,6 +24,7 @@ export class EvalEngine {
      * Parse a handlebars expression.  Ex. {{ foo() }}
      * 
      * @param jsString Contents of the handlebars expression, excluding the braces
+     * @returns EvalContent that will execute the expression and return the resulting object.
      */
     parseHandlebars(jsString: string): EvalContent<unknown> {
         // generate body for function
@@ -38,6 +40,7 @@ export class EvalEngine {
      * Parse a function-style component script.
      * 
      * @param jsText Text content of the script
+     * @returns EvalContent that will execute the expression and return an instance of the component object.
      */
     parseComponentFunction(jsText: string): EvalContent<ComponentScriptInstance> {
         // generate body for function
@@ -53,6 +56,7 @@ export class EvalEngine {
      * Parse a class-style component script.
      * 
      * @param jsText Text content of the script
+     * @returns EvalContent that will execute the expression and return an instance of the component object.
      */
     parseComponentClass(jsText: string): EvalContent<ComponentScriptInstance> {
         // generate body for function
@@ -99,6 +103,7 @@ export interface EvalContent<T> {
     /**
      * Invoke the expression in the specified content.
      * @param evalContext Context to execute within
+     * @returns The object produced by the expression
      */
     invoke(evalContext: EvalContext): T;
 }
@@ -192,6 +197,13 @@ export type EvalVars = ReadonlyMap<EvalKey, unknown>;
  */
 export type EvalScope = Record<EvalKey, unknown>;
 
+/**
+ * Creates a "root" EvalScope.
+ * A root scope is a read-only view into an EvalVars and optional component instance.
+ * If included, the component instance will shadow the parameters in the case of conflict.
+ * @param parameters EvalVars containing fragment parameters
+ * @param component Optional component instance
+ */
 export function createRootEvalScope(parameters: EvalVars, component?: ComponentScriptInstance): EvalScope {
     const scopeProxyHandler = new EvalScopeProxy(parameters, component);
     return new Proxy(Object.create(null), scopeProxyHandler);

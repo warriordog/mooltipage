@@ -28,26 +28,28 @@ export abstract class Node {
     parentNode: NodeWithChildren | null = null;
 
     /**
-     * Previous sibling, or null.
+     * Previous sibling node, or null if none exists.
      * Do not modify this directly, use NodeTools or instance methods.
      */
     prevSibling: Node | null = null;
 
     /**
-     * Next sibling, or null.
+     * Next sibling node, or null if none exists.
      * Do not modify this directly, use NodeTools or instance methods.
      */
     nextSibling: Node | null = null;
 
     /**
-     * TODO document
+     * The closest previous sibling that is a TagNode, or null if none exists.
+     * Do not modify this directly, use NodeTools or instance methods.
      */
     get prevSiblingTag(): TagNode | null {
         return NodeTools.getPreviousTag(this);
     }
 
     /**
-     * TODO document
+     * The closest following sibling that is a TagNode, or null if none exists.
+     * Do not modify this directly, use NodeTools or instance methods.
      */
     get nextSiblingTag(): TagNode | null {
         return NodeTools.getNextTag(this);
@@ -59,20 +61,41 @@ export abstract class Node {
      */
     readonly nodeData: Record<PropertyKey, unknown> = {};
 
+    /**
+     * Creates a new Node
+     * @param nodeType Type of this node
+     */
     constructor(nodeType: NodeType) {
         this.nodeType = nodeType;
     }
 
+    /**
+     * Inserts a sibling node after this one
+     * @param node Node to insert
+     */
     appendSibling(node: Node): void {
         NodeTools.appendSibling(node, this);
     }
+
+    /**
+     * Inserts a sibling node before this one
+     * @param node Node to insert
+     */
     prependSibling(node: Node): void {
         NodeTools.prependSibling(node, this);
     }
 
+    /**
+     * Remove this node and all children from the DOM
+     */
     removeSelf(): void {
         NodeTools.detatchNode(this);
     }
+    
+    /**
+     * Remove this node and all children from the DOM, and insert one or more nodes in its place
+     * @param nodes Nodes to insert in replacement. Can be empty.
+     */
     replaceSelf(nodes: Node[]): void {
         NodeTools.replaceNode(this, nodes);
     }
@@ -81,6 +104,7 @@ export abstract class Node {
      * Clone this node
      * @param deep If true, child nodes will be cloned
      * @param callback Optional callback for each node after cloning
+     * @returns The generated clone
      */
     abstract clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): Node;
 }
@@ -95,47 +119,110 @@ export abstract class NodeWithChildren extends Node {
      */
     childNodes: Node[] = [];
 
+    /**
+     * The first child node of this parent, or null if there are no children.
+     */
     get firstChild(): Node | null {
         return NodeTools.getFirstNode(this.childNodes);
     }
 
+    /**
+     * The last child node of this parent, or null if there are no children.
+     */
     get lastChild(): Node | null {
         return NodeTools.getLastNode(this.childNodes);
     }
 
+    /**
+     * Gets all child TagNodes from this parent
+     * @returns array of TagNodes containing all child tags
+     */
     getChildTags(): TagNode[] {
         return NodeTools.getChildTags(this);
     }
     
+    /**
+     * Inserts a child at the end of this parent's children
+     * @param child Node to insert
+     */
     appendChild(child: Node): void {
         NodeTools.appendChild(this, child);
     }
+
+    /**
+     * Inserts a child at the start of this parent's children
+     * @param child Node to insert
+     */
     prependChild(child: Node): void {
         NodeTools.prependChild(this, child);
     }
-    removeChild(child: Node): void {
-        NodeTools.detatchNode(child);
-    }
+    
+    /**
+     * Removes all children from this node
+     */
     clear(): void {
         NodeTools.clear(this);
     }
+
+    /**
+     * Append multiple children to the end of this parent's child list
+     * @param children Child nodes to append. Can be empty.
+     */
     appendChildren(children: Node[]): void {
         NodeTools.appendChildNodes(this, children);
     }
 
+    /**
+     * Finds the first child node that matches a condition.
+     * Returns null if no match found.
+     * @param matcher Callback to test condition
+     * @param deep If true, children of child nodes will also be searched.
+     * @returns First matching child, or null
+     */
     findChildNode(matcher: (node: Node) => boolean, deep = true): Node | null {
         return NodeTools.findChildNode(this, matcher, deep);
     }
+
+    /**
+     * Finds all child nodes that match a condition.
+     * Returns an empty array if no matches found.
+     * @param matcher Callback to test condition
+     * @param deep If true, children of child nodes will also be searched.
+     * @returns Array of all Nodes that match condition
+     */
     findChildNodes(matcher: (node: Node) => boolean, deep = true): Node[] {
         return NodeTools.findChildNodes(this, matcher, deep);
     }
+
+    /**
+     * Finds the first child TagNode that matches a condition.
+     * Returns null if no match found.
+     * @param matcher Callback to test condition
+     * @param deep If true, children of child nodes will also be searched.
+     * @returns First TagNode that matches the condition, or null.
+     */
     findChildTag(matcher: (tag: TagNode) => boolean, deep = true): TagNode | null {
         return NodeTools.findChildTag(this, matcher, deep);
     }
+
+    /**
+     * Finds all child TagNodes that match a condition.
+     * Returns an empty array if no matches found.
+     * @param matcher Callback to test condition
+     * @param deep If true, children of child nodes will also be searched.
+     * @returns Array of all TagNodes that match condition
+     */
     findChildTags(matcher: (tag: TagNode) => boolean, deep = true): TagNode[] {
         return NodeTools.findChildTags(this, matcher, deep);
     }
 
+    /**
+     * Finds the first child node of a specified type.
+     * Returns null if none found.
+     * @param nodeType Type of node to match
+     * @param deep If true, children of child nodes will also be searched.
+     * @returns The first node that matches, or null
+     */
     findChildNodeByNodeType(nodeType: NodeType.Document, deep?: boolean): DocumentNode | null;
     findChildNodeByNodeType(nodeType: NodeType.Tag, deep?: boolean): TagNode | null;
     findChildNodeByNodeType(nodeType: NodeType.Text, deep?: boolean): TextNode | null;
@@ -146,6 +233,13 @@ export abstract class NodeWithChildren extends Node {
     findChildNodeByNodeType(nodeType: NodeType, deep = true): Node | null {
         return this.findChildNode(node => node.nodeType === nodeType, deep);
     }
+
+    /**
+     * Finds all child nodes of a specified type.
+     * @param nodeType Type of node to match
+     * @param deep If true, children of child nodes will also be searched.
+     * @returns Array of all matching child nodes
+     */
     findChildNodesByNodeType(nodeType: NodeType.Document, deep?: boolean): DocumentNode[];
     findChildNodesByNodeType(nodeType: NodeType.Tag, deep?: boolean): TagNode[];
     findChildNodesByNodeType(nodeType: NodeType.Text, deep?: boolean): TextNode[];
@@ -156,6 +250,15 @@ export abstract class NodeWithChildren extends Node {
     findChildNodesByNodeType(nodeType: NodeType, deep = true): Node[] {
         return this.findChildNodes(node => node.nodeType === nodeType, deep);
     }
+
+    /**
+     * Finds the first child TagNode with the specified tag name.
+     * Result may be a subclass of TagNode if a custom tag type is specified.
+     * Returns null if none found.
+     * @param tagName Tag name to match
+     * @param deep If true, children of child nodes will also be searched.
+     * @returns First matching TagNode, or null.
+     */
     findChildTagByTagName(tagName: 'm-fragment', deep?: boolean): MFragmentNode | null;
     findChildTagByTagName(tagName: 'm-component', deep?: boolean): MComponentNode | null;
     findChildTagByTagName(tagName: 'm-content', deep?: boolean): MContentNode | null;
@@ -169,6 +272,15 @@ export abstract class NodeWithChildren extends Node {
     findChildTagByTagName(tagName: string, deep = true): TagNode | null {
         return this.findChildTag(tag => tag.tagName === tagName, deep);
     }
+
+    /**
+     * Finds all child TagNodes with the specified tag name.
+     * Results may be a subclass of TagNode if a custom tag type is specified.
+     * Returns null if none found.
+     * @param tagName Tag name to match
+     * @param deep If true, children of child nodes will also be searched.
+     * @returns Array of all matching TagNodes
+     */
     findChildTagsByTagName(tagName: 'm-fragment', deep?: boolean): MFragmentNode[];
     findChildTagsByTagName(tagName: 'm-component', deep?: boolean): MComponentNode[];
     findChildTagsByTagName(tagName: 'm-content', deep?: boolean): MContentNode[];
@@ -183,10 +295,20 @@ export abstract class NodeWithChildren extends Node {
         return this.findChildTags(tag => tag.tagName === tagName, deep);
     }
 
+    /**
+     * Removes all children from this node and creates a new DocumentNode containing them.
+     * @returns the created DocumentNode
+     */
     createDomFromChildren(): DocumentNode {
         return NodeTools.createDomFromChildren(this);
     }
 
+    /**
+     * Removes this node from the DOM, but optionally preserves children.
+     * If keepChildren is true, then child nodes will be reattached to the DOM in place of this node.
+     * Effectively "promotes" child nodes.
+     * @param keepChildren If true, child nodes will be kept.
+     */
     removeSelf(keepChildren = false): void {
         if (keepChildren) {
             NodeTools.replaceNode(this, this.childNodes);
@@ -213,6 +335,11 @@ export abstract class NodeWithText extends Node {
      */
     text: string;
 
+    /**
+     * Creates a new NodeWithText
+     * @param nodeType Type of node, for Node() constructor
+     * @param text Content of this NodeWithText
+     */
     constructor(nodeType: NodeType, text: string) {
         super(nodeType);
         this.text = text;
@@ -236,6 +363,11 @@ export abstract class NodeWithData extends Node {
      */
     data: string;
 
+    /**
+     * Creates a new NodeWithData
+     * @param nodeType Type of node, for Node() constructor
+     * @param data Content of this NodeWithData
+     */
     constructor(nodeType: NodeType, data: string) {
         super(nodeType);
         this.data = data;
@@ -265,6 +397,11 @@ export class TagNode extends NodeWithChildren {
      */
     protected attributes: Map<string, unknown>;
 
+    /**
+     * Creates a new TagNode
+     * @param tagName Type of tag
+     * @param attributes Optional Map of attributes to initialize this tag with
+     */
     constructor(tagName: string, attributes?: Map<string, unknown>) {
         super(NodeType.Tag);
         this.tagName = tagName;
@@ -274,6 +411,7 @@ export class TagNode extends NodeWithChildren {
     /**
      * Checks if this tag has a specified attribute
      * @param name Name of the attribute
+     * @returns True if the attribute exists, false otherwise
      */
     hasAttribute(name: string): boolean {
         return this.attributes.has(name);
@@ -282,6 +420,7 @@ export class TagNode extends NodeWithChildren {
     /**
      * Gets the value of an attribute, or undefined the attribute does not exist
      * @param name Name of the attribute
+     * @returns Value of the attribute, converted to a string if not null or undefined
      */
     getAttribute(name: string): string | null | undefined {
         const value = this.getRawAttribute(name);
@@ -293,6 +432,8 @@ export class TagNode extends NodeWithChildren {
     /**
      * Gets the value of an attribute, or throws an exception if the attribute does not exist
      * @param name Name of the attribute
+     * @returns Value of the attribute, converted to a string if not null
+     * @throws If the attribute does not exist
      */
     getRequiredAttribute(name: string): string | null {
         if (!this.hasAttribute(name)) {
@@ -306,6 +447,9 @@ export class TagNode extends NodeWithChildren {
     /**
      * Gets the value of an attribute, or throws an exception if the attribute does not exist or the value is null
      * @param name Name of the attribute
+     * @returns Value of the attribute, converted to a string
+     * @throws If the attribute does not exist
+     * @throws If the attribute is null
      */
     getRequiredValueAttribute(name: string): string {
         const attr: string | null = this.getRequiredAttribute(name);
@@ -322,6 +466,8 @@ export class TagNode extends NodeWithChildren {
      * Throws an exception if attribute value is null.
      * 
      * @param name Name of the attribute
+     * @returns Value of the attribute (converted to a string) or undefined if it does not exist
+     * @throws If the attribute exists but is null
      */
     getOptionalValueAttribute(name: string): string | undefined {
         if (this.hasAttribute(name)) {
@@ -334,6 +480,7 @@ export class TagNode extends NodeWithChildren {
     /**
      * Gets the raw (non-string) value of an attribute. May be any value.
      * @param name Name of the attribute
+     * @returns Raw value of the attribute
      */
     getRawAttribute(name: string): unknown {
         return this.attributes.get(name);
@@ -390,7 +537,9 @@ export class TagNode extends NodeWithChildren {
     }
 
     /**
-     * Gets a ReadonlyMap containing all attributes on this tag
+     * Gets a ReadonlyMap containing all attributes on this tag.
+     * Attributes are exposed raw - not converted to strings.
+     * @returns a read-only Map containing all attributes
      */
     getAttributes(): ReadonlyMap<string, unknown> {
         return this.attributes;
@@ -413,6 +562,10 @@ export class TagNode extends NodeWithChildren {
  * A text node
  */
 export class TextNode extends NodeWithText {
+    /**
+     * Create a new TextNode
+     * @param text Optional text to initialize with. Defaults to an empty string
+     */
     constructor(text = '') {
         super(NodeType.Text, text);
     }
@@ -431,9 +584,13 @@ export class TextNode extends NodeWithText {
 }
 
 /**
- * A comment node
+ * An HTML comment.
  */
 export class CommentNode extends NodeWithText {
+    /**
+     * Create a new comment node
+     * @param text Optional comment text to initialize with
+     */
     constructor(text = '') {
         super(NodeType.Comment, text);
     }
@@ -481,6 +638,11 @@ export class ProcessingInstructionNode extends NodeWithData {
      */
     name: string;
 
+    /**
+     * Creates a new Processing Instruction
+     * @param name Name value
+     * @param data Data value
+     */
     constructor(name = '', data = '') {
         super(NodeType.ProcessingInstruction, data);
         this.name = name;
@@ -500,13 +662,20 @@ export class ProcessingInstructionNode extends NodeWithData {
 }
 
 /**
- * A document node
+ * A document node.
+ * Is a "root" node, so it cannot have a parent.
+ * DOM trees are not required to have a DocumentNode root, but it exists as a utility to make DOM processing easier.
  */
 export class DocumentNode extends NodeWithChildren {
     constructor() {
         super(NodeType.Document);
     }
 
+    /**
+     * Set the root scope of this DOM.
+     * The root scope is inherited by all nodes, but is read-only.
+     * @param rootScope Scope object to inherit from
+     */
     setRootScope(rootScope: Record<PropertyKey, unknown> | null): void {
         Object.setPrototypeOf(this.nodeData, rootScope);
     }
@@ -525,9 +694,16 @@ export class DocumentNode extends NodeWithChildren {
 }
 
 /**
- * Parent type for any custom tag that includes an external reference
+ * Parent type for any custom tag that includes an external reference.
+ * The path to the reference is stored in the "src" attribute.
  */
 export abstract class ExternalReferenceNode extends TagNode {
+    /**
+     * Create a new ExternalReferenceNode
+     * @param tagName Tag name of the implementation
+     * @param src Path to the external reference
+     * @param attributes Optional attributes
+     */
     constructor(tagName: string, src: string, attributes?: Map<string, unknown>) {
         super(tagName, attributes);
 
@@ -568,9 +744,16 @@ export abstract class ExternalReferenceNode extends TagNode {
 }
 
 /**
- * m-fragment tag
+ * Implements <m-fragment> tag.
+ * MFragmentNode defines a reference to an external HTML fragment.
+ * This node will be replaced with the compiled, plain HTML form of the external fragment.
  */
 export class MFragmentNode extends ExternalReferenceNode {
+    /**
+     * Create a new MFragmentNode
+     * @param src Path to fragment
+     * @param attributes Optional attributes
+     */
     constructor(src: string, attributes?: Map<string, unknown>) {
         super('m-fragment', src, attributes);
     }
@@ -589,9 +772,16 @@ export class MFragmentNode extends ExternalReferenceNode {
 }
 
 /**
- * m-component tag
+ * Implements <m-component> tag.
+ * MFragmentNode defines a reference to an external Mooltipage component.
+ * This node will be replaced with the compiled, plain HTML form of the component.
  */
 export class MComponentNode extends ExternalReferenceNode {
+    /**
+     * Creates a new MComponentNode
+     * @param src Path to component
+     * @param attributes Optional attributes
+     */
     constructor(src: string, attributes?: Map<string, unknown>) {
         super('m-component', src, attributes);
     }
@@ -610,9 +800,16 @@ export class MComponentNode extends ExternalReferenceNode {
 }
 
 /**
- * Parent type for any custom tag that refers to a slot
+ * Parent type for any custom tag that refers to a slot.
+ * Slot name is stored in the "slot" attribute and defaults to "[default]".
  */
 export abstract class SlotReferenceNode extends TagNode {
+    /**
+     * Creates a new SlotReferenceNode
+     * @param tagName Tag name of the implementing node
+     * @param slot Name of the slot
+     * @param attributes Optional attributes
+     */
     constructor(tagName: string, slot?: string, attributes?: Map<string, unknown>) {
         super(tagName, attributes);
 
@@ -620,7 +817,6 @@ export abstract class SlotReferenceNode extends TagNode {
         this.setAttribute('slot', slot ?? '[default]');
     }
 
-    // must be dynamic to reflect attribute changes
     /**
      * Name of the slot
      */
@@ -635,9 +831,15 @@ export abstract class SlotReferenceNode extends TagNode {
 }
 
 /**
- * m-content tag
+ * <m-content> tag.
+ * MContentNode defines content that should be placed into a slot when compiling an external reference.
  */
 export class MContentNode extends SlotReferenceNode {
+    /**
+     * Creates a new MSlotNode
+     * @param slot Optional name of target slot
+     * @param attributes Optional attributes
+     */
     constructor(slot?: string, attributes?: Map<string, unknown>) {
         super('m-content', slot, attributes);
     }
@@ -656,9 +858,15 @@ export class MContentNode extends SlotReferenceNode {
 }
 
 /**
- * m-slot tag
+ * <m-slot> tag.
+ * Defines a slot that can recieve a DOM subtree from <m-content>
  */
 export class MSlotNode extends SlotReferenceNode {
+    /**
+     * Creates a new MSlotNode
+     * @param slot Optional slot name
+     * @param attributes Optional attributes
+     */
     constructor(slot?: string, attributes?: Map<string, unknown>) {
         super('m-slot', slot, attributes);
     }
@@ -677,9 +885,15 @@ export class MSlotNode extends SlotReferenceNode {
 }
 
 /**
- * Parent type for any tag that defines variables
+ * Parent type for any tag that defines scope variables.
+ * All attributes will be exposed as local variables
  */
 export abstract class VariablesNode extends TagNode {
+    /**
+     * Create a new VariablesNode
+     * @param tagName Name of implementing tag
+     * @param attributes Optional attributes
+     */
     constructor(tagName: string, attributes?: Map<string, unknown>) {
         super(tagName, attributes);
     }
@@ -705,9 +919,15 @@ export abstract class VariablesNode extends TagNode {
 }
 
 /**
- * m-var tag
+ * <m-var> tag.
+ * Defines local variables that are inserted into the parent node's scope instead of this node's scope.
+ * Effectively defines variables for its following siblings rather than its children.
  */
 export class MVarNode extends VariablesNode {
+    /**
+     * Create a new MVarNode
+     * @param attributes Optional attributes to convert to variables
+     */
     constructor(attributes?: Map<string, unknown>) {
         super('m-var', attributes);
     }
@@ -726,9 +946,15 @@ export class MVarNode extends VariablesNode {
 }
 
 /**
- * m-scope tag
+ * <m-scope> tag.
+ * Defines variables that are added to this node's scope, and therefore available only to child nodes.
+ * Enables the concept of a "local scope".
  */
 export class MScopeNode extends VariablesNode {
+    /**
+     * Create a new MScopeNode
+     * @param attributes Optional attributes
+     */
     constructor(attributes?: Map<string, unknown>) {
         super('m-scope', attributes);
     }
@@ -747,16 +973,40 @@ export class MScopeNode extends VariablesNode {
 }
 
 /**
- * m-import tag
+ * <m-import> tag.
+ * Defines a shorthand "alias" to an external reference.
+ * Either the "fragment" or "component" attributes can be set (to any value, they just need to exist) to specify the type.
+ * The "as" attribute specifies the tag name that will become an alias for this import.
+ * The "src" attribute specifies the path to the external reference.
+ * MImportNode registers imports into the parent scope, like MVarNode.
  */
 export class MImportNode extends TagNode {
+    /**
+     * Creates a new MImportNode. Exactly one of component or fragment must be true.
+     * @param src Path to reference
+     * @param as Tag name to use as alias
+     * @param fragment If true, then this is an <m-fragment> import
+     * @param component If true, then this is an <m-component> import
+     * @param attributes Optional attributes.
+     * @throws if fragment and component are both true or both false.
+     */
     constructor(src: string, as: string, fragment: boolean, component: boolean, attributes?: Map<string, unknown>) {
         super('m-import', attributes);
 
         this.setAttribute('src', src);
         this.setAttribute('as', as);
-        this.setBooleanAttribute('fragment', fragment);
-        this.setBooleanAttribute('component', component);
+
+        if (fragment && !component) {
+            // set fragment import
+            this.setBooleanAttribute('fragment', true);
+            this.setBooleanAttribute('component', false);
+        } else if (!fragment && component) {
+            // set component import
+            this.setBooleanAttribute('fragment', false);
+            this.setBooleanAttribute('component', true);
+        } else {
+            throw new Error('Exactly one of fragment or boolean must be true');
+        }
     }
 
     /**
@@ -814,45 +1064,66 @@ export class MImportNode extends TagNode {
 
 /**
  * Parent class for any Tag that contains a conditional <m-if>, <m-else-if>, etc.
+ * The conditional value is stored in the ? attribute.
  */
 export abstract class ConditionalNode extends TagNode {
-    constructor(tagName: string, expression: unknown, attributes?: Map<string, unknown>) {
+    /**
+     * Creates a new ConditionalNode
+     * @param tagName Tag name of implementing node
+     * @param condition Conditional value, or a string to be compiled into a conditional value
+     * @param attributes Optional attributes
+     */
+    constructor(tagName: string, condition: unknown, attributes?: Map<string, unknown>) {
         super(tagName, attributes);
 
-        this.setRawAttribute('?', expression);
+        this.setRawAttribute('?', condition);
     }
 
     /**
-     * TODO document
+     * The raw value of the conditional in this conditional.
+     * If this node has been processed by TemplateTextModule, then this can be any value.
+     * Otherwise, it will be the uncompiled string expression.
      */
-    get condition(): boolean {
-        return !!this.getRawAttribute('?');
+    get condition(): unknown {
+        return this.getRawAttribute('?');
     }
-    set condition(newCondition: boolean) {
+    set condition(newCondition: unknown) {
         this.setRawAttribute('?', newCondition);
     }
 
-    
     /**
-     * TODO document
+     * If the conditional has been compiled, then this is the conditional value coerced into a boolean.
+     * If not compiled, then this will true if a conditional expression exists and false if not.
      */
-    get expression(): string {
-        return this.getRequiredValueAttribute('?');
-    }
-    set expression(newExp: string) {
-        this.setAttribute('?', newExp);
+    get isTruthy(): boolean {
+        return !!this.condition;
     }
 
+    /**
+     * Gets the preceding conditional node, if it exists.
+     * This respects the conditional's ordering rules.
+     */
     abstract get prevConditional(): ConditionalNode | null;
+
+    /**
+     * Gets the following conditional node, if it exists.
+     * This respects the conditional's ordering rules.
+     */
     abstract get nextConditional(): ConditionalNode | null;
 }
 
 /**
- * TODO document
+ * <m-if> node. This is a conditional that selectively compiles or deletes it's contents based on a conditional expression.
+ * An <m-if> node can have no preceding conditionals, but may have an <m-else-if> or an <m-else> as a following node.
  */
 export class MIfNode extends ConditionalNode {
-    constructor(expression: unknown, attributes?: Map<string, unknown>) {
-        super('m-if', expression, attributes);
+    /**
+     * Creates a new MIfNode
+     * @param condition Conditional value
+     * @param attributes Optional attributes
+     */
+    constructor(condition: unknown, attributes?: Map<string, unknown>) {
+        super('m-if', condition, attributes);
     }
 
     get prevConditional(): null {
@@ -883,11 +1154,18 @@ export class MIfNode extends ConditionalNode {
 
 
 /**
- * TODO document
+ * <m-else-if> node. Like <m-if>, this conditional will only render its content if its condition is true.
+ * However, there is an additional constraint that an <m-else-if> node will only render if all preceding <m-if> and <m-else-if> nodes evaluate to false.
+ * An <m-else-if> node can be preceded by <m-if> or <m-else-if>, and followed by <m-else> and <m-else-if>.
  */
 export class MElseIfNode extends ConditionalNode {
-    constructor(expression: unknown, attributes?: Map<string, unknown>) {
-        super('m-else-if', expression, attributes);
+    /**
+     * Creates a new MElseIfNode
+     * @param condition Conditional value
+     * @param attributes Optional attributes
+     */
+    constructor(condition: unknown, attributes?: Map<string, unknown>) {
+        super('m-else-if', condition, attributes);
     }
 
     get prevConditional(): ConditionalNode | null {
@@ -923,9 +1201,15 @@ export class MElseIfNode extends ConditionalNode {
 }
 
 /**
- * TODO document
+ * <m-else> node. This is a conditional that always evaluates to true.
+ * However, like <m-else-if> there is an additional constraint that an <m-else> node will only render if all preceding <m-if> and <m-else-if> nodes evaluate to false.
+ * An <m-else> node can have no following conditionals, but may have an <m-else-if> or an <m-if> as a preceding node.
  */
 export class MElseNode extends ConditionalNode {
+    /**
+     * Create a new MElseNode
+     * @param attributes Optional attributes
+     */
     constructor(attributes?: Map<string, unknown>) {
         super('m-else', true, attributes);
     }
@@ -957,7 +1241,12 @@ export class MElseNode extends ConditionalNode {
 }
 
 /**
- * Base class for m-for tags
+ * Base class for <m-for> tags.
+ * MForNode implements a for loop.
+ * An expression is evaluated, and for each resulting value the child nodes are repeated.
+ * Each copy is compiled with the current iteration value and index exposed through specified variables.
+ * The "var" attribute contains the name of the variable containing the iteration value.
+ * The "index" attribute optionally contains the name of the variable to hold the iteration index.
  */
 export abstract class MForNode extends TagNode {
     /**
@@ -965,6 +1254,14 @@ export abstract class MForNode extends TagNode {
      */
     readonly expressionAttrName: string;
 
+    /**
+     * Create a new MForNode
+     * @param expressionAttrName Name of the attribute that contains the expression
+     * @param expression Value of the expression
+     * @param varName Name of the variable to store the current iteration value
+     * @param indexName Optional name of the variable to store the current iteration index.
+     * @param attributes Optional attributes
+     */
     constructor(expressionAttrName: string, expression: unknown, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
         super('m-for', attributes);
         this.expressionAttrName = expressionAttrName;
@@ -1028,8 +1325,16 @@ export abstract class MForNode extends TagNode {
 
 /**
  * Variant of <m-for> that implements a for...of loop
+ * Expression is stored in the "of" attribute.
  */
 export class MForOfNode extends MForNode {
+    /**
+     * Create a new MForOfLoop
+     * @param expression Expression that is or evaluates to an array-like object
+     * @param varName Name of varibale to store the current value
+     * @param indexName Name of variable to store the current index
+     * @param attributes Optional attributes
+     */
     constructor(expression: unknown, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
         super('of', expression, varName, indexName, attributes);
     }
@@ -1049,9 +1354,17 @@ export class MForOfNode extends MForNode {
 
 
 /**
- * Variant of <m-for> that implements a for...in loop
+ * Variant of <m-for> that implements a for...in loop.
+ * Expression is stored in the "in" attribute.
  */
 export class MForInNode extends MForNode {
+    /**
+     * Create a new MForInLoop
+     * @param expression Expression that is or evaluates to an object
+     * @param varName Name of varibale to store the current value
+     * @param indexName Name of variable to store the current index
+     * @param attributes Optional attributes
+     */
     constructor(expression: unknown, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
         super('in', expression, varName, indexName, attributes);
     }

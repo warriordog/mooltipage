@@ -26,8 +26,11 @@ const selfClosingTags: ReadonlyArray<string> = [
  */
 export class DomSerializer {
     /**
-     * Serialize a DOM tree
+     * Serialize a DOM tree into HTML text.
+     * Does not apply any formatting or transformations.
+     * 
      * @param node Root node
+     * @returns a string containing serialized HTML.
      */
     serialize(node: Node): string {
         const html: string[] = [];

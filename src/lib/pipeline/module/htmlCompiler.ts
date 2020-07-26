@@ -7,6 +7,10 @@ export class HtmlCompiler {
     private readonly pipeline: Pipeline;
     private readonly modules: HtmlCompilerModule[];
 
+    /**
+     * Create a new instance of the HTML compiler
+     * @param pipeline Parent Pipeline instance
+     */
     constructor(pipeline: Pipeline) {
         this.pipeline = pipeline;
 
@@ -159,6 +163,13 @@ export class HtmlCompileData {
      */
     readonly localReferenceImports = new Map<string, ImportDefinition>();
 
+    /**
+     * Creates a new HTML compile data instance that optionally inherits from a parent
+     * @param pipeline Current pipeline instance
+     * @param fragment Fragment being processed
+     * @param usageContext Current usage context
+     * @param parentData Optional parent HtmlCompileData to inherit from
+     */
     constructor(pipeline: Pipeline, fragment: Fragment, usageContext: UsageContext, parentData?: HtmlCompileData) {
         this.pipeline = pipeline;
         this.fragment = fragment;
@@ -182,6 +193,7 @@ export class HtmlCompileData {
      * Alias will be lower cased.
      * 
      * @param alias Alias (tag name) to check
+     * @return true if the alias is defined, false otherwise
      */
     hasImport(alias: string): boolean {
         return hasImport(this, alias);
@@ -195,6 +207,7 @@ export class HtmlCompileData {
      * Always check hasImport() before calling getImport().
      * 
      * @param alias Alias (tag name) to access.
+     * @return The ImportDefinition object for the alias.
      * @throws If alias is not defined.
      */
     getImport(alias: string): ImportDefinition {
@@ -203,6 +216,8 @@ export class HtmlCompileData {
 
     /**
      * Creates an EvalContext that can be used to execute embedded JS in a context matching the current compilation state.
+     * @param scope Optional EvalScope to use for script evaluation
+     * @returns an EvalContext bound to the data in this HtmlCompileData and the provided scope
      */
     createEvalContext(scope?: EvalScope): EvalContext {
         const evalScope = scope ?? this.usageContext.rootScope;
@@ -211,6 +226,7 @@ export class HtmlCompileData {
 
     /**
      * Create a new HtmlCompileData that inherits from this one
+     * @returns new HtmlCompileData instance
      */
     createChildData(): HtmlCompileData {
         return new HtmlCompileData(this.pipeline, this.fragment, this.usageContext, this);
