@@ -25,11 +25,16 @@
     "build": "tsc -b",
     "rebuild": "npm run clean && npm run build",
     "test": "npm run build && ava",
+    
     "coverage": "npm run build && nyc ava",
+    "typedoc": "typedoc src/lib",
+    "docs": "npm run coverage && npm run typedoc",
+
     "lint": "eslint . --ext .js,.ts",
     "lint-fix": "npm run lint --fix",
+
     "prepare": "npm run rebuild",
-    "prepublishOnly": "npm run lint-fix && npm run coverage"
+    "prepublishOnly": "npm run lint-fix && npm run docs"
   },
   "bin": {
     "mooltipage": "./dist/bin/main.js"
@@ -45,6 +50,7 @@
     "ava": "^3.10.1",
     "eslint": "^7.5.0",
     "nyc": "^15.1.0",
+    "typedoc": "^0.17.8",
     "typescript": "^3.9.7"
   }
 }

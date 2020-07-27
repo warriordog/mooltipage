@@ -1,5 +1,5 @@
 {
-    "report-dir": "coverage",
+    "report-dir": "docs/coverage",
     "exclude": "src/test/**/*",
     "reporter": [ "html", "text" ]
 }

@@ -1,6 +1,13 @@
 /node_modules/
 /dist/
 
+# Documentation
+/docs/
+
+# Code coverage
+.nyc_output
+
+
 # local env files
 .env.local
 .env.*.local
@@ -16,7 +23,3 @@ npm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-# Code coverage
-.nyc_output
-coverage
