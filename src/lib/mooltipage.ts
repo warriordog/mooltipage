@@ -1,7 +1,7 @@
 import os from 'os';
 import Path from 'path';
 
-import { HtmlFormatter, BasicHtmlFormatter, Pipeline, PipelineInterface, ResourceType, getResourceTypeExtension, Page, FsUtils } from ".";
+import { HtmlFormatter, BasicHtmlFormatter, Pipeline, PipelineInterface, ResourceType, getResourceTypeExtension, Page, FsUtils } from '.';
 
 /**
  * List of built-in HTML formatters

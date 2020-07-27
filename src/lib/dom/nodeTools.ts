@@ -1,4 +1,4 @@
-import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode } from "..";
+import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode } from '..';
 
 /**
  * Detatch a node and its children from the DOM.
@@ -109,7 +109,7 @@ export function appendChildNodes(parent: NodeWithChildren, childNodes: Node[]): 
  */
 export function appendSibling(node: Node, after: Node): void {
     if (DocumentNode.isDocumentNode(after)) {
-        throw new Error(`Attempting to append ${node.nodeType} after DocumentNode`);
+        throw new Error(`Attempting to append ${ node.nodeType } after DocumentNode`);
     }
     if (DocumentNode.isDocumentNode(node)) {
         throw new Error(`Cannot insert a DocumentNode as child`);
@@ -144,7 +144,7 @@ export function appendSibling(node: Node, after: Node): void {
  */
 export function prependSibling(node: Node, before: Node): void {
     if (DocumentNode.isDocumentNode(before)) {
-        throw new Error(`Attempting to prepend ${node.nodeType} before DocumentNode`);
+        throw new Error(`Attempting to prepend ${ node.nodeType } before DocumentNode`);
     }
     if (DocumentNode.isDocumentNode(node)) {
         throw new Error(`Cannot insert a DocumentNode as child`);

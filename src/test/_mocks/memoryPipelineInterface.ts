@@ -76,12 +76,12 @@ export class MemoryPipelineInterface implements PipelineInterface {
             const resource = this.sourceContent.get(resPath);
 
             if (resource == undefined) {
-                throw new Error(`Stored HTML for resource ${resPath} is undefined`);
+                throw new Error(`Stored HTML for resource ${ resPath } is undefined`);
             }
 
             return resource.content;
         } else {
-            throw new Error(`Unable to resolve HTML resource ${resPath}`);
+            throw new Error(`Unable to resolve HTML resource ${ resPath }`);
         }
     }
 

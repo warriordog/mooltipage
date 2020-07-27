@@ -1,4 +1,4 @@
-import { Fragment, Component, EvalContent } from "..";
+import { Fragment, Component, EvalContent } from '..';
 
 /**
  * Caches any data that can be reused by the pipeline
@@ -19,7 +19,7 @@ export class PipelineCache {
         const fragment: Fragment | undefined = this.fragmentCache.get(resPath);
 
         if (fragment == undefined) {
-            throw new Error(`Fragment not found in cache: ${resPath}.  Make sure to call hasFragment() before getFragment().`);
+            throw new Error(`Fragment not found in cache: ${ resPath }.  Make sure to call hasFragment() before getFragment().`);
         }
 
         return fragment;
@@ -39,7 +39,7 @@ export class PipelineCache {
         const component: Component | undefined = this.componentCache.get(resPath);
 
         if (component == undefined) {
-            throw new Error(`Component not found in cache: ${resPath}.  Make sure to call hasComponent() before getComponent().`);
+            throw new Error(`Component not found in cache: ${ resPath }.  Make sure to call hasComponent() before getComponent().`);
         }
 
         return component;
@@ -59,7 +59,7 @@ export class PipelineCache {
         const templateFunc: EvalContent<unknown> | undefined = this.scriptTextCache.get(signature);
 
         if (templateFunc == undefined) {
-            throw new Error(`Script text function not found in cache: ${signature}.  Make sure to call hasScriptText() before getScriptText().`);
+            throw new Error(`Script text function not found in cache: ${ signature }.  Make sure to call hasScriptText() before getScriptText().`);
         }
 
         return templateFunc;
@@ -78,7 +78,7 @@ export class PipelineCache {
         const resPath: string | undefined = this.createdResourceCache.get(hash);
 
         if (resPath == undefined) {
-            throw new Error(`Created resource not found in cache: ${hash}.  Make sure to call hasCreatedResource() before getCreatedResource().`);
+            throw new Error(`Created resource not found in cache: ${ hash }.  Make sure to call hasCreatedResource() before getCreatedResource().`);
         }
 
         return resPath;

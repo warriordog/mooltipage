@@ -1,4 +1,4 @@
-import { DocumentNode } from "../..";
+import { DocumentNode } from '../..';
 
 /**
  * A fragment of HTML that can be processed by the pipeline.

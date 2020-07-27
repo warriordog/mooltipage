@@ -71,7 +71,7 @@ export enum ResourceType {
     /**
      * JSON resource
      */
-    JSON = 'application/json',
+    JSON = 'application/json', // eslint-disable-line no-shadow
 
     /**
      * Plain text resource

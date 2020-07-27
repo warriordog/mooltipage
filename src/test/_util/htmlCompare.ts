@@ -1,6 +1,6 @@
-import { ExecutionContext } from "ava";
-import { MemoryPipelineInterface } from "../_mocks/memoryPipelineInterface";
-import { Pipeline, BasicHtmlFormatter } from "../../lib";
+import { ExecutionContext } from 'ava';
+import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
+import { Pipeline, BasicHtmlFormatter } from '../../lib';
 
 export function comparePageMacro(t: ExecutionContext, page: string, expected: string, sources?: [string, string][]): void {
     // set up pipeline
@@ -32,7 +32,7 @@ export function compareFragmentMacro(t: ExecutionContext, fragment: string, expe
     const output = pipeline.compilePage('page.html');
 
     // check output
-    const computedExpected = `<!DOCTYPE html><html><head></head><body>${expected}</body></html>`
+    const computedExpected = `<!DOCTYPE html><html><head></head><body>${ expected }</body></html>`
     t.is(output.html, computedExpected);
 }
 
@@ -50,6 +50,6 @@ export function compareComponentMacro(t: ExecutionContext, component: string, ex
     const output = pipeline.compilePage('page.html');
 
     // check output
-    const computedExpected = `<!DOCTYPE html><html><head></head><body>${expected}</body></html>`
+    const computedExpected = `<!DOCTYPE html><html><head></head><body>${ expected }</body></html>`
     t.is(output.html, computedExpected);
 }

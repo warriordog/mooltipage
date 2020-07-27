@@ -251,8 +251,8 @@ test('[endToEnd] Imported component compiles correctly', t => {
     // compile component
     const output = pipeline.compilePage('page.html');
     const page = output.page;
-    const comp2_0 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === "0");
-    const comp2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === "1");
+    const comp2_0 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '0');
+    const comp2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '1');
 
     // validate
     t.truthy(comp2_0);

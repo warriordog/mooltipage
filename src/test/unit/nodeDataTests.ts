@@ -4,9 +4,9 @@ import { NodeTools, DocumentNode, TextNode } from '../../lib';
 test('[unit] Node.nodeData can store data', t => {
     const node = new DocumentNode();
 
-    node.nodeData['test'] = 'testvalue';
+    node.nodeData.test = 'testvalue';
 
-    t.is(node.nodeData['test'], 'testvalue');
+    t.is(node.nodeData.test, 'testvalue');
 });
 
 test('[unit] Node.nodeData is inherited', t => {
@@ -14,10 +14,10 @@ test('[unit] Node.nodeData is inherited', t => {
     const child = new TextNode();
     NodeTools.appendChild(parent, child);
 
-    parent.nodeData['test'] = 'testvalue';
+    parent.nodeData.test = 'testvalue';
 
-    t.is(parent.nodeData['test'], 'testvalue');
-    t.is(child.nodeData['test'], 'testvalue');
+    t.is(parent.nodeData.test, 'testvalue');
+    t.is(child.nodeData.test, 'testvalue');
 });
 
 test('[unit] Node.nodeData is isolate from children', t => {
@@ -25,10 +25,10 @@ test('[unit] Node.nodeData is isolate from children', t => {
     const child = new TextNode();
     NodeTools.appendChild(parent, child);
 
-    child.nodeData['test'] = 'testvalue';
+    child.nodeData.test = 'testvalue';
 
-    t.falsy(parent.nodeData['test']);
-    t.is(child.nodeData['test'], 'testvalue');
+    t.falsy(parent.nodeData.test);
+    t.is(child.nodeData.test, 'testvalue');
 });
 
 test('[unit] Node.nodeData is preserved when node is moved', t => {
@@ -37,8 +37,8 @@ test('[unit] Node.nodeData is preserved when node is moved', t => {
     const child = new TextNode();
     NodeTools.appendChild(parent1, child);
 
-    child.nodeData['test'] = 'testvalue';
+    child.nodeData.test = 'testvalue';
     NodeTools.appendChild(parent2, child);
 
-    t.is(child.nodeData['test'], 'testvalue');
+    t.is(child.nodeData.test, 'testvalue');
 });

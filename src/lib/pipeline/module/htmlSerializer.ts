@@ -1,4 +1,4 @@
-import { DomSerializer, Page } from "../..";
+import { DomSerializer, Page } from '../..';
 
 /**
  * Provides HTML serialization support to the pipeline

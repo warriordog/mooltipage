@@ -1,5 +1,6 @@
 # eslint ignored files
 node_modules
 dist
+docs
 configs
 scripts

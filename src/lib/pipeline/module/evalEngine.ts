@@ -1,4 +1,4 @@
-import { ComponentScriptInstance, Pipeline, Fragment, UsageContext } from "../..";
+import { ComponentScriptInstance, Pipeline, Fragment, UsageContext } from '../..';
 
 /**
  * Evaluates JS expressions
@@ -12,7 +12,7 @@ export class EvalEngine {
      */
     parseTemplateString(templateString: string): EvalContent<string> {
         // generate function body for template
-        const functionBody: string = 'return `' + templateString + '`;';
+        const functionBody = `return \`${  templateString  }\`;`;
 
         // create content
         const evalContent: EvalContent<string> = this.createEvalContent(functionBody);
@@ -28,7 +28,7 @@ export class EvalEngine {
      */
     parseHandlebars(jsString: string): EvalContent<unknown> {
         // generate body for function
-        const functionBody: string = 'return ' + jsString + ';';
+        const functionBody = `return ${  jsString  };`;
 
         // create content
         const evalContent: EvalContent<unknown> = this.createEvalContent(functionBody);

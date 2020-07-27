@@ -1,4 +1,4 @@
-import { EvalEngine, Pipeline, DomParser, Fragment, DocumentNode, Page, Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ResourceType, EvalContent, ComponentScriptInstance, StyleBindType, TagNode, TextNode } from "../..";
+import { EvalEngine, Pipeline, DomParser, Fragment, DocumentNode, Page, Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ResourceType, EvalContent, ComponentScriptInstance, StyleBindType, TagNode, TextNode } from '../..';
 
 /**
  * Provides input parsing functionality to the pipeline
@@ -78,7 +78,7 @@ export class ResourceParser {
 
         // make sure it exists
         if (templateNode == null) {
-            throw new Error(`Component '${resPath}' is missing required section: <template>`);
+            throw new Error(`Component '${ resPath }' is missing required section: <template>`);
         }
 
         // get template src
@@ -107,7 +107,7 @@ export class ResourceParser {
 
         // make sure it exists
         if (scriptNode == null) {
-            throw new Error(`Component '${resPath}' is missing required section: <template>`);
+            throw new Error(`Component '${ resPath }' is missing required section: <template>`);
         }
 
         // get script src
@@ -116,7 +116,7 @@ export class ResourceParser {
         // get script type
         const scriptTypeName: string = scriptNode.getOptionalValueAttribute('mode') ?? ComponentScriptType.CLASS;
         if (!Object.values(ComponentScriptType).includes(scriptTypeName as ComponentScriptType)) {
-            throw new Error(`Unknown component <script> mode: '${scriptTypeName}'`);
+            throw new Error(`Unknown component <script> mode: '${ scriptTypeName }'`);
         }
         const scriptType: ComponentScriptType = scriptTypeName as ComponentScriptType;
 
@@ -154,7 +154,7 @@ export class ResourceParser {
         // get style bind
         const styleBindName: string = styleNode.getOptionalValueAttribute('bind') ?? StyleBindType.HEAD;
         if (!Object.values(StyleBindType).includes(styleBindName as StyleBindType)) {
-            throw new Error(`Unknown component <style> bind: '${styleBindName}'`);
+            throw new Error(`Unknown component <style> bind: '${ styleBindName }'`);
         }
         const styleBind: StyleBindType = styleBindName as StyleBindType;
 
@@ -204,7 +204,7 @@ export class ResourceParser {
         } else if (scriptType === ComponentScriptType.FUNCTION) {
             return this.evalEngine.parseComponentFunction(text);
         } else {
-            throw new Error(`Unsupported component <script> type: '${scriptType}'`);
+            throw new Error(`Unsupported component <script> type: '${ scriptType }'`);
         }
     }
 }

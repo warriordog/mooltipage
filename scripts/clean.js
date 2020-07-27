@@ -8,3 +8,4 @@ const rmOptions = {
 
 fs.rmdirSync('dist', rmOptions);
 fs.rmdirSync('docs', rmOptions);
+fs.rmdirSync('.nyc_output', rmOptions);

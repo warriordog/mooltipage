@@ -1,4 +1,4 @@
-import { ExternalReferenceNode, HtmlCompileData, MImportNode, TagNode, MComponentNode, MFragmentNode, HtmlCompilerModule, ImportDefinition } from "../../..";
+import { ExternalReferenceNode, HtmlCompileData, MImportNode, TagNode, MComponentNode, MFragmentNode, HtmlCompilerModule, ImportDefinition } from '../../..';
 
 /**
  * Process imports / aliases via m-import
@@ -53,7 +53,7 @@ export class ImportsModule implements HtmlCompilerModule {
         switch (importDefinition.type) {
             case 'm-fragment': return new MFragmentNode(importDefinition.source, attributes);
             case 'm-component': return new MComponentNode(importDefinition.source, attributes);
-            default: throw new Error(`Unknown import definition type: ${importDefinition.type}`);
+            default: throw new Error(`Unknown import definition type: ${ importDefinition.type }`);
         }
     }
 }

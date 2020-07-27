@@ -1,4 +1,4 @@
-import { HtmlCompileData, MVarNode, MScopeNode, HtmlCompilerModule, DocumentNode, EvalScope } from "../../..";
+import { HtmlCompileData, MVarNode, MScopeNode, HtmlCompilerModule, DocumentNode, EvalScope } from '../../..';
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing

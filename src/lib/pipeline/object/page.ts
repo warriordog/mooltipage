@@ -1,4 +1,4 @@
-import { DocumentNode, TagNode, NodeWithChildren } from "../..";
+import { DocumentNode, TagNode, NodeWithChildren } from '../..';
 
 /**
  * A compiled or compiling page

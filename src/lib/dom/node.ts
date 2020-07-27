@@ -1,4 +1,4 @@
-import { NodeTools } from "..";
+import { NodeTools } from '..';
 
 /**
  * Recognized node types
@@ -437,7 +437,7 @@ export class TagNode extends NodeWithChildren {
      */
     getRequiredAttribute(name: string): string | null {
         if (!this.hasAttribute(name)) {
-            throw new Error(`Missing required attribute '${name}'`);
+            throw new Error(`Missing required attribute '${ name }'`);
         }
 
         // cannot be undefined, because we check above
@@ -455,7 +455,7 @@ export class TagNode extends NodeWithChildren {
         const attr: string | null = this.getRequiredAttribute(name);
 
         if (attr == null) {
-            throw new Error(`Missing value for required value attribute '${name}'`);
+            throw new Error(`Missing value for required value attribute '${ name }'`);
         }
 
         return attr;

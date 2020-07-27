@@ -1,4 +1,4 @@
-import { Node, TagNode, TextNode, CommentNode, DocumentNode, CDATANode, ProcessingInstructionNode, NodeWithChildren } from "..";
+import { Node, TagNode, TextNode, CommentNode, DocumentNode, CDATANode, ProcessingInstructionNode, NodeWithChildren } from '..';
 
 // From https://stackoverflow.com/a/34838936/1857993
 // contextual self-closing tags are not supported
@@ -54,7 +54,7 @@ export class DomSerializer {
         } else if (ProcessingInstructionNode.isProcessingInstructionNode(node)) {
             this.serializeProcessingInstruction(node, html);
         } else {
-            throw new Error(`Unknown nodeType: ${node.nodeType}`);
+            throw new Error(`Unknown nodeType: ${ node.nodeType }`);
         }
     }
 
@@ -117,7 +117,7 @@ export class DomSerializer {
         if (pi.name === '!doctype') {
             this.serializeDoctypePI(pi, html);
         } else {
-            throw new Error(`Unimplemented processing instruction: ${pi.name}`);
+            throw new Error(`Unimplemented processing instruction: ${ pi.name }`);
         }
     }
 
@@ -137,7 +137,7 @@ export class DomSerializer {
 
     private validateTagText(tagName: string): void {
         if (/[<>"&]+/.test(tagName)) {
-            throw new Error(`Invalid tag name: ${tagName}`);
+            throw new Error(`Invalid tag name: ${ tagName }`);
         }
     }
 

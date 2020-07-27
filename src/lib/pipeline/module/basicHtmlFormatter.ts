@@ -1,4 +1,4 @@
-import { HtmlFormatter, Page, DocumentNode, Node, TextNode, NodeWithChildren } from "../..";
+import { HtmlFormatter, Page, DocumentNode, Node, TextNode, NodeWithChildren } from '../..';
 
 /**
  * Basic HTML formatter that can produce a pretty (formatted) or ugly (minimized) dom

@@ -1,4 +1,4 @@
-import { HtmlCompileData, EvalContext, TextNode, TagNode, HtmlCompilerModule } from "../../..";
+import { HtmlCompileData, EvalContext, TextNode, TagNode, HtmlCompilerModule } from '../../..';
 
 /**
  * Compile module that detects and evalutates embedded JS expressions in attributes and text nodes

@@ -1,4 +1,4 @@
-import { HtmlCompileData, DocumentNode, MSlotNode, HtmlCompilerModule } from "../../..";
+import { HtmlCompileData, DocumentNode, MSlotNode, HtmlCompilerModule } from '../../..';
 
 /**
  * Processes <m-slot> tags by replacing them with content extracted from <m-content> tags at the point of reference.

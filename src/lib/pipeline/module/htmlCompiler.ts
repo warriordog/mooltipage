@@ -1,4 +1,4 @@
-import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule, DomLogicModule, EvalScope, Node, NodeWithChildren, DocumentNode } from "../..";
+import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule, DomLogicModule, EvalScope, Node, NodeWithChildren, DocumentNode } from '../..';
 
 /**
  * Provides HTML compilation support to the pipeline.
@@ -313,5 +313,5 @@ function getImport(nodeData: HtmlCompileData | undefined, alias: string): Import
         nodeData = nodeData.parentData;
     }
 
-    throw new Error(`Alias ${key} is not defined. Always call hasImport() before getImport()`);
+    throw new Error(`Alias ${ key } is not defined. Always call hasImport() before getImport()`);
 }

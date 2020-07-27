@@ -1,5 +1,5 @@
-import { Pipeline, HtmlFormatter, Fragment, CompiledPage } from "../../lib";
-import { MemoryPipelineInterface } from "./memoryPipelineInterface";
+import { Pipeline, HtmlFormatter, Fragment, CompiledPage } from '../../lib';
+import { MemoryPipelineInterface } from './memoryPipelineInterface';
 
 export class MockPipeline extends Pipeline {
     readonly mockPi: MemoryPipelineInterface;

@@ -9,5 +9,28 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
+    "quotes": [ "error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+    "no-unreachable-loop": "error",
+    "accessor-pairs": "error",
+    "grouped-accessor-pairs": "warn",
+    "dot-location": [ "error", "property" ],
+    "dot-notation": "error",
+    "no-eval": "error",
+    "no-lone-blocks": "error",
+    "no-return-assign": [ "error", "always" ],
+    "no-self-compare": "error",
+    "no-sequences": "error",
+    "no-throw-literal": "warn",
+    "no-unmodified-loop-condition": "warn",
+    "no-unused-expressions": "error",
+    "no-useless-call": "warn",
+    "no-shadow": [ "error", { "builtinGlobals": true }],
+    "arrow-spacing": [ "warn", { "before": true, "after": true }],
+    "no-duplicate-imports": "warn",
+    "no-useless-rename": "warn",
+    "no-var": "error",
+    "prefer-const": "warn",
+    "prefer-template": "warn",
+    "template-curly-spacing": [ "warn", "always" ]
   }
 }

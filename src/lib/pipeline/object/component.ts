@@ -1,4 +1,4 @@
-import { DocumentNode, EvalContent, EvalContext, StyleBindType, EvalKey } from "../..";
+import { DocumentNode, EvalContent, EvalContext, StyleBindType, EvalKey } from '../..';
 
 /**
  * A resuable page component. Contains a template, script, and optionally CSS stylesheet.

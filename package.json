@@ -30,8 +30,8 @@
     "typedoc": "typedoc src/lib",
     "docs": "npm run coverage && npm run typedoc",
 
-    "lint": "eslint . --ext .js,.ts",
-    "lint-fix": "npm run lint --fix",
+    "lint": "eslint src --ext .js,.ts",
+    "lint-fix": "eslint src --ext .js,.ts --fix",
 
     "prepare": "npm run rebuild",
     "prepublishOnly": "npm run lint-fix && npm run docs"

@@ -1,4 +1,4 @@
-import { DocumentNode, ExternalReferenceNode, Fragment, UsageContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode, HtmlCompilerModule, HtmlCompileData } from "../../..";
+import { DocumentNode, ExternalReferenceNode, Fragment, UsageContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode, HtmlCompilerModule, HtmlCompileData } from '../../..';
 
 /**
  * Process external references, such as m-fragment and m-component.
@@ -31,7 +31,7 @@ export class ReferenceModule implements HtmlCompilerModule {
         switch (type) {
             case 'm-fragment': return pipeline.compileFragment(src, usageContext);
             case 'm-component': return pipeline.compileComponent(src, usageContext);
-            default: throw new Error(`Unknown external reference type: '${type}'`); 
+            default: throw new Error(`Unknown external reference type: '${ type }'`); 
         }
     }
     

@@ -1,4 +1,4 @@
-import { Pipeline, UsageContext, TextNode, TagNode, ResourceType } from "../..";
+import { Pipeline, UsageContext, TextNode, TagNode, ResourceType } from '../..';
 
 /**
  * Provides embedded and external resource binding to the pipeline.
@@ -29,7 +29,7 @@ export class ResourceBinder {
                 break;
             }
             default: {
-                throw new Error(`Unable to bind style '${resPath}': Unsupported component bind type: '${bindType}'`);
+                throw new Error(`Unable to bind style '${ resPath }': Unsupported component bind type: '${ bindType }'`);
             }
         }
     }
