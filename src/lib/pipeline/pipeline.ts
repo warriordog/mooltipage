@@ -1,4 +1,5 @@
 import { PipelineCache, PipelineInterface, HtmlFormatter, ResourceParser, HtmlCompiler, ResourceBinder, HtmlSerializer, TextCompiler, ContentHasher, Page, UsageContext, ResourceType, Fragment, Component, DocumentNode, EvalContext, ComponentScriptInstance, EvalContent } from '..';
+import { EvalEngine } from './module/evalEngine';
 
 /**
  * Primary compilation pipeline.
@@ -55,6 +56,11 @@ export class Pipeline {
     readonly contentHasher: ContentHasher;
 
     /**
+     * Parse and execute javascript and expressions
+     */
+    readonly evalEngine: EvalEngine;
+
+    /**
      * Create a new instance of the pipeline
      * @param pipelineInterface Pipeline interface instance
      * @param htmlFormatter Optional HTML formatter to use
@@ -64,8 +70,9 @@ export class Pipeline {
      * @param htmlSerializer Optional override for standard HtmlSerializer
      * @param textCompiler Optional override for standard TextCompiler
      * @param contentHasher Optional override for standard ContentHasher
+     * @param evalEngine Optional override for standard EvalEngine
      */
-    constructor(pipelineInterface: PipelineInterface, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler, resourceBinder?: ResourceBinder, htmlSerializer?: HtmlSerializer, textCompiler?: TextCompiler, contentHasher?: ContentHasher) {
+    constructor(pipelineInterface: PipelineInterface, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler, resourceBinder?: ResourceBinder, htmlSerializer?: HtmlSerializer, textCompiler?: TextCompiler, contentHasher?: ContentHasher, evalEngine?: EvalEngine) {
         // internal
         this.cache = new PipelineCache();
 
@@ -82,6 +89,7 @@ export class Pipeline {
         this.htmlSerializer = htmlSerializer ?? new HtmlSerializer();
         this.textCompiler = textCompiler ?? new TextCompiler();
         this.contentHasher = contentHasher ?? new ContentHasher();
+        this.evalEngine = evalEngine ?? new EvalEngine();
     }
 
     /**
@@ -127,8 +135,9 @@ export class Pipeline {
     }
 
     /**
-     * Compiles a fragment. Internal use only.
+     * Compiles a fragment.
      * 
+     * @internal
      * @param resPath Path to fragment source
      * @param usageContext Current usage context
      * @returns Fragment instance
@@ -149,8 +158,9 @@ export class Pipeline {
     }
 
     /**
-     * Compiles a component. Internal use only.
+     * Compiles a component.
      * 
+     * @internal
      * @param resPath Path to component source
      * @param usageContext Current usage context
      * @returns Fragment instance
@@ -195,24 +205,22 @@ export class Pipeline {
      * Compiles text in a Document.
      * Embedded scripts will be evaluated in the current context.
      * Plain text will be returned as-is.
-     * Internal use only.
      * 
+     * @internal
      * @param value Text value
      * @param evalContext Current compilation context
      * @returns compiled value of the input value
      */
     compileDomText(value: string, evalContext: EvalContext): unknown {
         // check if this text contains JS code to evaluate
-        if (this.textCompiler.isScriptText(value)) {
-            const scriptText = value.trim();
-
+        if (this.textCompiler.isExpression(value)) {
+            const expression = value.trim();
+    
             // get function for script
-            const scriptTextFunc = this.getOrParseScriptText(scriptText);
+            const expressionFunc = this.getOrParseExpression(expression);
             
             // execute it
-            const scriptTextOutput: unknown = scriptTextFunc.invoke(evalContext);
-
-            return scriptTextOutput;
+            return expressionFunc.invoke(evalContext);
         }
 
         // value is plain string
@@ -220,9 +228,48 @@ export class Pipeline {
     }
 
     /**
-     * Compiles CSS. Currently a no-op.
-     * Internal use only.
+     * Compiles and executes javascript.
+     * The script can be multiple lines, and use any JS feature that is available within a function body.
+     * Script will execute with the provided eval context.
      * 
+     * @internal
+     * @param script Javascript code
+     * @param evalContext Context to execute in
+     * @returns The return value of the script, if any.
+     */
+    compileScript(script: string, evalContext: EvalContext): unknown {
+        const scriptText = script.trim();
+
+        // get function for script
+        const scriptFunc = this.getOrParseScript(scriptText);
+        
+        // execute it
+        return scriptFunc.invoke(evalContext);
+    }
+
+
+    /**
+     * Compiles and executes javascript from an external file.
+     * The script can be multiple lines, and use any JS feature that is available within a function body.
+     * Script will execute with the provided eval context.
+     * 
+     * @internal
+     * @param resPath Path to script file
+     * @param evalContext Context to execute in
+     * @returns The return value of the script, if any.
+     */
+    compileExternalScript(resPath: string, evalContext: EvalContext): unknown {
+        // get function for script
+        const scriptFunc = this.getOrParseExternalScript(resPath);
+        
+        // execute it
+        return scriptFunc.invoke(evalContext);
+    }
+
+    /**
+     * Compiles CSS. Currently a no-op.
+     * 
+     * @internal
      * @param css CSS text
      * @returns Compile CSS text
      */
@@ -234,8 +281,8 @@ export class Pipeline {
      * Links a created resource to the compilation output.
      * This method ONLY handles saving the contents, it does not compile them or link them to the page context.
      * This method is ONLY for created (incidental) resources.
-     * Internal use only.
      * 
+     * @internal
      * @param type Type of resource
      * @param contents Contents as a UTF-8 string
      * @param sourceResPath Path to the explicit resource that has produced this created resource
@@ -271,8 +318,8 @@ export class Pipeline {
 
     /**
      * Gets a raw (parsed but uncompiled) fragment.
-     * Internal use only.
      * 
+     * @internal
      * @param resPath Path to fragment
      * @returns Uncompiled fragment
      */
@@ -332,21 +379,59 @@ export class Pipeline {
         return component.clone();
     }
 
-    private getOrParseScriptText(scriptText: string): EvalContent<unknown> {
-        let scriptTextFunc: EvalContent<unknown>;
+    private getOrParseExpression(expression: string): EvalContent<unknown> {
+        let expressionFunc: EvalContent<unknown>;
 
         // get from cache, if present
-        if (this.cache.hasScriptText(scriptText)) {
-            scriptTextFunc = this.cache.getScriptText(scriptText);
+        if (this.cache.hasExpression(expression)) {
+            expressionFunc = this.cache.getExpression(expression);
         } else {
             // compile text
-            scriptTextFunc = this.textCompiler.compileScriptText(scriptText);
+            expressionFunc = this.textCompiler.compileExpression(expression);
 
             // store in cache
-            this.cache.storeScriptText(scriptText, scriptTextFunc);
+            this.cache.storeExpression(expression, expressionFunc);
         }
 
-        return scriptTextFunc;
+        return expressionFunc;
+    }
+
+    private getOrParseScript(script: string): EvalContent<unknown> {
+        let scriptFunc: EvalContent<unknown>;
+
+        // get from cache, if present
+        if (this.cache.hasScript(script)) {
+            scriptFunc = this.cache.getScript(script);
+        } else {
+            // compile script
+            scriptFunc = this.evalEngine.parseScript(script);
+
+            // store in cache
+            this.cache.storeScript(script, scriptFunc);
+        }
+
+        return scriptFunc;
+    }
+
+    private getOrParseExternalScript(resPath: string): EvalContent<unknown> {
+        let scriptFunc: EvalContent<unknown>;
+
+        // get from cache, if present
+        if (this.cache.hasExternalScript(resPath)) {
+            scriptFunc = this.cache.getExternalScript(resPath);
+        } else {
+            // load resource
+            const scriptResource = this.pipelineInterface.getResource(ResourceType.JAVASCRIPT, resPath);
+
+            // compile script
+            const script = scriptResource.trim();
+            scriptFunc = this.getOrParseScript(script);
+
+            // store in cache
+            this.cache.storeExternalScript(resPath, scriptFunc);
+        }
+
+        return scriptFunc;
     }
 }
 

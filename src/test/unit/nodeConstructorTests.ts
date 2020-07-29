@@ -1,5 +1,5 @@
 import test from 'ava';
-import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MImportFragmentNode, MImportComponentNode } from '../../lib';
+import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from '../../lib';
 
 test('[unit] TagNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['foo', 'bar'], ['attr', null]]);
@@ -201,4 +201,14 @@ test('[unit] MForInNode constructor handles arguments', t => {
     t.is(node.varName, varName);
     t.is(node.indexName, indexName);
     t.is(node.expression, expression);
+});
+
+test('[unit] MScriptNode constructor handles src', t => {
+    const src = 'script.js';
+
+    const node = new MScriptNode(src);
+
+    t.is(node.tagName, 'm-script');
+    t.is(node.src, src);
+    t.is(node.getRawAttribute('src'), src);
 });

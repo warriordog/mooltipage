@@ -45,16 +45,16 @@ function runApp(): void {
 
 function printHelp(): void {
     console.log(
-        `Usage: mooltipage [options] <page1> [page2 [page3...]]${  os.EOL }
-        Pages can be individual files or entire directories.${  os.EOL }
-        Directories will be recursively searched, and all HTML contents will be treated as pages.${  os.EOL }
-        If inPath and outPath are not specified, then they will default to the current working directory.${  os.EOL }
-        If no outPath is specified, then source pages will be overwritten when compiled.${  os.EOL }
+        `Usage: mooltipage [options] <page1> [page2 [page3...]]${ os.EOL }
+        Pages can be individual files or entire directories.${ os.EOL }
+        Directories will be recursively searched, and all HTML contents will be treated as pages.${ os.EOL }
+        If inPath and outPath are not specified, then they will default to the current working directory.${ os.EOL }
+        If no outPath is specified, then source pages will be overwritten when compiled.${ os.EOL }
         ${ os.EOL }
-        Options:${  os.EOL }
-            --help                               Print this help and exit.${  os.EOL }
-            --inPath=<input_path>                Specify a folder to read inputs from${  os.EOL }
-            --outPath=<output_path>              Specify a folder to write outputs to${  os.EOL }
+        Options:${ os.EOL }
+            --help                               Print this help and exit.${ os.EOL }
+            --inPath=<input_path>                Specify a folder to read inputs from${ os.EOL }
+            --outPath=<output_path>              Specify a folder to write outputs to${ os.EOL }
             --formatter=<formatter_name>         Use an HTML formatter (default "pretty")`
     );
 }

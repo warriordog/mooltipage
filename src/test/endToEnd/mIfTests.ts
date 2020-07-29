@@ -148,11 +148,3 @@ test('[endToEnd] correct conditional branch is taken when there are multiple opt
     <bad4 />
 </m-else>
 `, '<good></good><good></good><good></good><good></good>');
-
-/*
-test.todo('[endToEnd] m-else must follow m-if or m-else-if');
-test.todo('[endToEnd] m-else-if must follow m-if or m-else-if');
-test.todo('[endToEnd] m-else is selected if m-if is false');
-test.todo('[endToEnd] m-else-if is selected if there are multiple conditions');
-test.todo('[endToEnd] nothing is left when all conditionals are false');
-*/

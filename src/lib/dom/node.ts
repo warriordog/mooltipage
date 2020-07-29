@@ -938,12 +938,9 @@ export class MScopeNode extends TagNode {
     }
 }
 
-// TODO update <m-import> docs
-
 /**
  * <m-import> tag.
  * Defines a shorthand "alias" to an external reference.
- * Either the "fragment" or "component" attributes can be set (to any value, they just need to exist) to specify the type.
  * The "as" attribute specifies the tag name that will become an alias for this import.
  * The "src" attribute specifies the path to the external reference.
  * MImportNode registers imports into the parent scope, like MVarNode.
@@ -982,6 +979,9 @@ export abstract class MImportNode extends TagNode {
         this.setAttribute('as', newAs);
     }
 
+    /**
+     * Type of external reference to use when resolving import
+     */
     abstract get type(): 'm-fragment' | 'm-component';
 
     /**
@@ -993,6 +993,9 @@ export abstract class MImportNode extends TagNode {
     }
 }
 
+/**
+ * Variant of MImportNode that imports an <m-fragment>
+ */
 export class MImportFragmentNode extends MImportNode {
     /**
      * Creates a new MImportFragmentNode.
@@ -1022,6 +1025,9 @@ export class MImportFragmentNode extends MImportNode {
     }
 }
 
+/**
+ * Variant of MImportNode that imports an <m-component>S
+ */
 export class MImportComponentNode extends MImportNode {
     /**
      * Creates a new MImportComponentNode.
@@ -1368,5 +1374,44 @@ export class MForInNode extends MForNode {
      */
     static isMForInNode(node: Node): node is MForInNode {
         return MForNode.isMForNode(node) && node.expressionAttrName === 'in';
+    }
+}
+
+/**
+ * <m-script> node.
+ * Executes a javascript file in the parent scope
+ */
+export class MScriptNode extends TagNode {
+    /**
+     * Create a new MScriptNode
+     * @param src Path to script file
+     * @param attributes Optional attributes
+     */
+    constructor(src: string, attributes?: Map<string, unknown>) {
+        super('m-script', attributes);
+
+        this.src = src;
+    }
+
+    /**
+     * Path to the external source of this <m-script>
+     */
+    get src(): string {
+        return this.getRequiredValueAttribute('src');
+    }
+    set src(newSrc: string) {
+        this.setAttribute('src', newSrc);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MScriptNode {
+        return NodeTools.cloneMScriptNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an MScriptNode
+     * @param node Node to check
+     */
+    static isMScriptNode(node: Node): node is MScriptNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-script';
     }
 }

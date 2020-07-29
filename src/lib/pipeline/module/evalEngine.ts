@@ -9,13 +9,14 @@ export class EvalEngine {
      * 
      * @param templateString Contents of the template string, excluding the backticks
      * @returns EvalContent that will execute the template string and return a standard string
+     * @throws If the template literal cannot be parsed
      */
     parseTemplateString(templateString: string): EvalContent<string> {
         // generate function body for template
         const functionBody = `return \`${  templateString  }\`;`;
 
         // create content
-        const evalContent: EvalContent<string> = this.createEvalContent(functionBody);
+        const evalContent: EvalContent<string> = this.parseScript(functionBody);
 
         return evalContent;
     }
@@ -25,13 +26,14 @@ export class EvalEngine {
      * 
      * @param jsString Contents of the handlebars expression, excluding the braces
      * @returns EvalContent that will execute the expression and return the resulting object.
+     * @throws If the script code cannot be parsed
      */
     parseHandlebars(jsString: string): EvalContent<unknown> {
         // generate body for function
         const functionBody = `return ${  jsString  };`;
 
         // create content
-        const evalContent: EvalContent<unknown> = this.createEvalContent(functionBody);
+        const evalContent: EvalContent<unknown> = this.parseScript(functionBody);
 
         return evalContent;
     }
@@ -41,13 +43,14 @@ export class EvalEngine {
      * 
      * @param jsText Text content of the script
      * @returns EvalContent that will execute the expression and return an instance of the component object.
+     * @throws If the script code cannot be parsed
      */
     parseComponentFunction(jsText: string): EvalContent<ComponentScriptInstance> {
         // generate body for function
         const functionBody = jsText.trim();
 
         // create content
-        const evalContent: EvalContent<ComponentScriptInstance> = this.createEvalContent(functionBody);
+        const evalContent: EvalContent<ComponentScriptInstance> = this.parseScript(functionBody);
 
         return evalContent;
     }
@@ -57,6 +60,7 @@ export class EvalEngine {
      * 
      * @param jsText Text content of the script
      * @returns EvalContent that will execute the expression and return an instance of the component object.
+     * @throws If the script cannot be parsed
      */
     parseComponentClass(jsText: string): EvalContent<ComponentScriptInstance> {
         // generate body for function
@@ -74,7 +78,16 @@ export class EvalEngine {
         return evalContent;
     }
 
-    private createEvalContent<T>(functionBody: string): EvalContent<T> {
+    /**
+     * Parse arbitrarty JS code in a function context.
+     * All JS features are available, provided that they are valid for use within a function body.
+     * The function can optionally return a value, but return values are not type checked.
+     * 
+     * @param functionBody JS code to execute
+     * @returns EvalContent that will execute the expression and return the result of the function, if any.
+     * @throws If the JS code cannot be parsed
+     */
+    parseScript<T>(functionBody: string): EvalContent<T> {
         try {
             // Parse function body into callable function.
             // This is inherently not type-safe, as the purpose is to run unknown JS code.
@@ -82,7 +95,7 @@ export class EvalEngine {
 
             return new EvalContentFunction(functionObj);
         } catch (error) {
-            throw new Error(`Parse error in function: ${ error }.  Function body: ${ functionBody }`);
+            throw new Error(`Parse error in function: ${ error }. Function body: ${ functionBody }`);
         }
     }
 
@@ -102,6 +115,7 @@ export class EvalEngine {
 export interface EvalContent<T> {
     /**
      * Invoke the expression in the specified content.
+     * 
      * @param evalContext Context to execute within
      * @returns The object produced by the expression
      */

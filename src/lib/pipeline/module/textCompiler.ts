@@ -16,7 +16,7 @@ export class TextCompiler {
      * @param value The string to check
      * @returns true if the string contains any recognized expressions
      */
-    isScriptText(value: string): boolean {
+    isExpression(value: string): boolean {
         // value is template string
         if (templateTextRegex.test(value)) {
             return true;
@@ -39,7 +39,7 @@ export class TextCompiler {
      * @returns an EvalContent that will return the result of the expression
      * @throws if the provided string contains no expressions
      */
-    compileScriptText(value: string): EvalContent<unknown> {
+    compileExpression(value: string): EvalContent<unknown> {
         // value is template string
         if (templateTextRegex.test(value)) {
             // parse into function

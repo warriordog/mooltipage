@@ -1,4 +1,4 @@
-import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule, DomLogicModule, EvalScope, Node, NodeWithChildren, DocumentNode } from '../..';
+import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule, DomLogicModule, Node, NodeWithChildren, DocumentNode, ScriptsModule } from '../..';
 
 /**
  * Provides HTML compilation support to the pipeline.
@@ -22,6 +22,9 @@ export class HtmlCompiler {
             // VarsModule is responsible for initializing the scripting / expression scope(s).
             // All other modules have access to local scope, so vars needs to go immediated after template text
             new VarsModule(),
+
+            // ScriptsModule executes external or embedded JS scripts
+            new ScriptsModule(),
 
             // SlotModule is responsible for pre-processing the uncompiled DOM to ensure that it contains the final version of the uncompiled input.
             // Incoming slot content may not be fully compiled, and should be compiled as if it is part of this compilation unit.
@@ -239,12 +242,11 @@ export class HtmlCompileData {
 
     /**
      * Creates an EvalContext that can be used to execute embedded JS in a context matching the current compilation state.
-     * @param scope Optional EvalScope to use for script evaluation
+     * Scope will be initialized from current node data
      * @returns an EvalContext bound to the data in this HtmlCompileData and the provided scope
      */
-    createEvalContext(scope?: EvalScope): EvalContext {
-        const evalScope = scope ?? this.usageContext.rootScope;
-        return new EvalContext(this.pipeline, this.fragment, this.usageContext, evalScope);
+    createEvalContext(): EvalContext {
+        return new EvalContext(this.pipeline, this.fragment, this.usageContext, this.node.nodeData);
     }
 
     /**

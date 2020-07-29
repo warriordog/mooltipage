@@ -1,4 +1,4 @@
-import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode } from '..';
+import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from '..';
 
 /**
  * Detatch a node and its children from the DOM.
@@ -511,6 +511,22 @@ export function cloneMForInNode(node: MForInNode, deep: boolean, callback?: (old
 }
 
 /**
+ * Clones an MScriptNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMScriptNode(node: MScriptNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MScriptNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MScriptNode(node.src, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
  * Finds the first child node that matches a matcher
  * @param parent Parent node
  * @param matcher Matcher to check nodes
@@ -627,8 +643,8 @@ function cloneChildNodes(parent: NodeWithChildren, childNodes: Node[], callback?
 }
 
 /**
- * TODO document
- * @param node 
+ * Gets the closest previous sibling that is a TagNode
+ * @param node Node to search from
  */
 export function getPreviousTag(node: Node): TagNode | null {
     let currentNode: Node | null = node.prevSibling;
@@ -644,8 +660,8 @@ export function getPreviousTag(node: Node): TagNode | null {
 }
 
 /**
- * TODO document
- * @param node 
+ * Gets the closest following sibling that is a TagNode
+ * @param node Node to search from
  */
 export function getNextTag(node: Node): TagNode | null {
     let currentNode: Node | null = node.nextSibling;

@@ -14,7 +14,7 @@ export class TemplateTextModule implements HtmlCompilerModule {
 
     private processTextNode(compileData: HtmlCompileData, node: TextNode): void {
         // create eval context from the current scope
-        const evalContext: EvalContext = compileData.createEvalContext(node.nodeData);
+        const evalContext: EvalContext = compileData.createEvalContext();
 
         // compile text
         const newText = this.compileToText(compileData, node.text, evalContext);
@@ -23,7 +23,7 @@ export class TemplateTextModule implements HtmlCompilerModule {
 
     private processTagNode(compileData: HtmlCompileData, node: TagNode): void {
         // create eval context from the current scope
-        const evalContext: EvalContext = compileData.createEvalContext(node.nodeData);
+        const evalContext: EvalContext = compileData.createEvalContext();
 
         // loop through each attribute and compile it
         for (const entry of Array.from(node.getAttributes().entries())) {

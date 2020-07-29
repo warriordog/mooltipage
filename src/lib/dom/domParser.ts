@@ -1,5 +1,5 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
-import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode } from '..';
+import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from '..';
 /**
  * Parses HTML into a dom using htmlparser2
  */
@@ -185,6 +185,8 @@ export class DomHandler implements Partial<Handler> {
                 return new MElseNode(attributes);
             case 'm-for':
                 return this.createMForNode(attributes);
+            case 'm-script':
+                return this.createMScriptNode(attributes);
             default:
                 return new TagNode(tagName, attributes);
         }
@@ -261,5 +263,11 @@ export class DomHandler implements Partial<Handler> {
         } else {
             throw new Error('Parse error: <m-for> must have exactly one of these attributes: [of,in]');
         }
+    }
+
+    private createMScriptNode(attributes: Map<string, string | null>): MScriptNode {
+        const src = attributes.get('src');
+        if (src == undefined || src == null) throw new Error('Parse error: <m-script> is missing required attribute: src');
+        return new MScriptNode(src, attributes);
     }
 }

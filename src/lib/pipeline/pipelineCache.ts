@@ -6,7 +6,9 @@ import { Fragment, Component, EvalContent } from '..';
 export class PipelineCache {
     private readonly fragmentCache: Map<string, Fragment> = new Map();
     private readonly componentCache: Map<string, Component> = new Map();
-    private readonly scriptTextCache: Map<string, EvalContent<unknown>> = new Map();
+    private readonly expressionCache: Map<string, EvalContent<unknown>> = new Map();
+    private readonly scriptCache: Map<string, EvalContent<unknown>> = new Map();
+    private readonly externalScriptCache: Map<string, EvalContent<unknown>> = new Map();
     private readonly createdResourceCache: Map<string, string> = new Map();
 
     // Fragment
@@ -49,24 +51,64 @@ export class PipelineCache {
         this.componentCache.set(component.resPath, component);
     }
 
-    // Script text
+    // Expression
 
-    hasScriptText(signature: string): boolean {
-        return this.scriptTextCache.has(signature);
+    hasExpression(expression: string): boolean {
+        return this.expressionCache.has(expression);
     }
 
-    getScriptText(signature: string): EvalContent<unknown> {
-        const templateFunc: EvalContent<unknown> | undefined = this.scriptTextCache.get(signature);
+    getExpression(expression: string): EvalContent<unknown> {
+        const templateFunc: EvalContent<unknown> | undefined = this.expressionCache.get(expression);
 
         if (templateFunc == undefined) {
-            throw new Error(`Script text function not found in cache: ${ signature }.  Make sure to call hasScriptText() before getScriptText().`);
+            throw new Error(`Expression not found in cache: ${ expression }.  Make sure to call hasExpression() before getExpression().`);
         }
 
         return templateFunc;
     }
 
-    storeScriptText(signature: string, templateFunc: EvalContent<unknown>): void {
-        this.scriptTextCache.set(signature, templateFunc);
+    storeExpression(expression: string, func: EvalContent<unknown>): void {
+        this.expressionCache.set(expression, func);
+    }
+    
+    // Script
+
+    hasScript(script: string): boolean {
+        return this.scriptCache.has(script);
+    }
+
+    getScript(script: string): EvalContent<unknown> {
+        const templateFunc: EvalContent<unknown> | undefined = this.scriptCache.get(script);
+
+        if (templateFunc == undefined) {
+            throw new Error(`Script not found in cache: ${ script }.  Make sure to call hasScript() before getScript().`);
+        }
+
+        return templateFunc;
+    }
+
+    storeScript(script: string, func: EvalContent<unknown>): void {
+        this.scriptCache.set(script, func);
+    }   
+     
+    // ExternalScript
+
+    hasExternalScript(resPath: string): boolean {
+        return this.externalScriptCache.has(resPath);
+    }
+
+    getExternalScript(resPath: string): EvalContent<unknown> {
+        const templateFunc: EvalContent<unknown> | undefined = this.externalScriptCache.get(resPath);
+
+        if (templateFunc == undefined) {
+            throw new Error(`ExternalScript not found in cache: ${ resPath }.  Make sure to call hasExternalScript() before getExternalScript().`);
+        }
+
+        return templateFunc;
+    }
+
+    storeExternalScript(resPath: string, func: EvalContent<unknown>): void {
+        this.externalScriptCache.set(resPath, func);
     }
 
     // created resource
@@ -93,7 +135,9 @@ export class PipelineCache {
     clear(): void {
         this.fragmentCache.clear();
         this.componentCache.clear();
-        this.scriptTextCache.clear();
+        this.expressionCache.clear();
+        this.scriptCache.clear();
+        this.externalScriptCache.clear();
         this.createdResourceCache.clear();
     }
 }

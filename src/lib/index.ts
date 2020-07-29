@@ -8,6 +8,7 @@ export * from './pipeline/module/compiler/slotModule';
 export * from './pipeline/module/compiler/templateTextModule';
 export * from './pipeline/module/compiler/varsModule';
 export * from './pipeline/module/compiler/domLogicModule';
+export * from './pipeline/module/compiler/scriptsModule';
 export * from './pipeline/module/evalEngine';
 export * from './pipeline/module/basicHtmlFormatter';
 export * from './pipeline/module/contentHasher';
