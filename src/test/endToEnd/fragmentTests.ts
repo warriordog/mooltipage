@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Pipeline, BasicHtmlFormatter } from '../../lib';
+import { Pipeline, HtmlFormatter, HtmlFormatterMode } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { compareFragmentMacro } from '../_util/htmlCompare';
 
@@ -18,8 +18,7 @@ test('[endToEnd] Basic fragment compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const div = page.dom.findChildTagByTagName('div');
 
     // validate
@@ -41,8 +40,7 @@ test('[endToEnd] Nested fragments compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const frag1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag1');
     const frag2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2');
 
@@ -66,8 +64,7 @@ test('[endToEnd] Fragment params compile correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const frag2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2');
 
     // validate
@@ -88,7 +85,7 @@ test('[endToEnd] Fragment compile to correct DOM', t => {
     pi.setSourceHtml('frag2.html', `
         <div class="frag2"></div>
     `);
-    const htmlFormatter = new BasicHtmlFormatter(false);
+    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
     const pipeline = new Pipeline(pi, htmlFormatter);
 
     // compile fragment
@@ -115,8 +112,7 @@ test('[endToEnd] Repeated fragment usages have correct scope', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const frag2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '1');
     const frag2_2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '2');
     const frag2_3 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '3');
@@ -182,7 +178,7 @@ test('[endToEnd] Fragment slots are filled correctly', t => {
             </div>
         </div>
     `);
-    const htmlFormatter = new BasicHtmlFormatter(false);
+    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
     const pipeline = new Pipeline(pi, htmlFormatter);
 
     // compile fragment
@@ -217,7 +213,7 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
             </div>
         </div>
     `);
-    const htmlFormatter = new BasicHtmlFormatter(false);
+    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
     const pipeline = new Pipeline(pi, htmlFormatter);
 
     // compile fragment
@@ -244,8 +240,7 @@ test('[endToEnd] Imported basic fragment compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const frag2s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2');
 
     // validate
@@ -273,8 +268,7 @@ test('[endToEnd] Imported fragment w/ params compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile fragment
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const frag2count1s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '1');
     const frag2count2s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '2');
     const frag2count3s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '3');
@@ -308,7 +302,7 @@ test('[endToEnd] Nested fragment slot content is placed correctly', t => {
             <test-div expected="frag2" actual="{{ $.localval }}" />
         </div>
     `);
-    const htmlFormatter = new BasicHtmlFormatter(false);
+    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
     const pipeline = new Pipeline(pi, htmlFormatter);
 
     // compile fragment

@@ -675,3 +675,170 @@ export function getNextTag(node: Node): TagNode | null {
 
     return null;
 }
+
+/**
+ * Serialize a DOM tree into HTML text.
+ * Does not apply any formatting or transformations.
+ * 
+ * @param node Root node
+ * @returns a string containing serialized HTML.
+ */
+export function serializeNode(node: Node): string {
+    const html: string[] = [];
+
+    serializeNodeAt(node, html);
+
+    return html.join('');
+}
+
+function serializeNodeAt(node: Node, html: string[]): void {
+    if (TagNode.isTagNode(node)) {
+        serializeTag(node, html);
+    } else if (TextNode.isTextNode(node)) {
+        serializeText(node, html);
+    } else if (CommentNode.isCommentNode(node)) {
+        serializeComment(node, html);
+    } else if (DocumentNode.isDocumentNode(node)) {
+        serializeDocument(node, html);
+    } else if (CDATANode.isCDATANode(node)) {
+        serializeCDATA(node, html);
+    } else if (ProcessingInstructionNode.isProcessingInstructionNode(node)) {
+        serializeProcessingInstruction(node, html);
+    } else {
+        throw new Error(`Unknown nodeType: ${ node.nodeType }`);
+    }
+}
+
+function serializeDocument(dom: DocumentNode, html: string[]): void {
+    serializeChildNodes(dom, html);
+}
+
+function serializeTag(tag: TagNode, html: string[]): void {
+    const tagName = tag.tagName.toLowerCase();
+    validateTagText(tagName);
+
+    html.push('<');
+    html.push(tagName);
+    
+    if (tag.getAttributes().size > 0) {
+        appendAttributeList(tag.getAttributes(), html);
+    }
+
+    if (isSelfClosingTag(tagName)) {
+        html.push(' />');
+    } else {
+        html.push('>');
+
+        serializeChildNodes(tag, html);
+
+        html.push('</');
+        html.push(tagName);
+        html.push('>');
+    }
+}
+
+function serializeText(text: TextNode, html: string[]): void {
+    const textContent: string = escapeTextContent(text.text);
+
+    if (textContent.length > 0) {
+        html.push(textContent);
+    }
+}
+
+function serializeComment(comment: CommentNode, html: string[]): void {
+    html.push('<!--');
+    const textContent: string = escapeTextContent(comment.text);
+
+    if (textContent.length > 0) {
+        html.push(textContent);
+    }
+    html.push('-->');
+}
+
+function serializeCDATA(cdata: CDATANode, html: string[]): void {
+    html.push('<![CDATA[');
+
+    serializeChildNodes(cdata, html);
+
+    html.push(']]>');
+}
+
+// this implementation is probably not accurate, but its good enough for <!DOCTYPE html>
+function serializeProcessingInstruction(pi: ProcessingInstructionNode, html: string[]): void {
+    if (pi.name === '!doctype') {
+        serializeDoctypePI(pi, html);
+    } else {
+        throw new Error(`Unimplemented processing instruction: ${ pi.name }`);
+    }
+}
+
+function serializeDoctypePI(pi: ProcessingInstructionNode, html: string[]): void {
+    validateTagText(pi.data);
+
+    html.push('<');
+    html.push(pi.data);
+    html.push('>');
+}
+
+function serializeChildNodes(parent: NodeWithChildren, html: string[]): void {
+    for (const childNode of parent.childNodes) {
+        serializeNodeAt(childNode, html);
+    }
+}
+
+function validateTagText(tagName: string): void {
+    if (/[<>"&]+/.test(tagName)) {
+        throw new Error(`Invalid tag name: ${ tagName }`);
+    }
+}
+
+function escapeTextContent(textContent: string): string {
+    return textContent.replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('&', '&amp;');
+}
+
+function appendAttributeList(attributeMap: ReadonlyMap<string, unknown>, html: string[]): void {
+    for (const entry of attributeMap.entries()) {
+        const key = entry[0];
+        const value = entry[1];
+
+        html.push(' ');
+
+        html.push(key);
+        
+        if (value != null) {
+            // convert to string, since it could be any type
+            const valueString = String(value);
+
+            validateTagText(valueString);
+
+            html.push('="');
+            html.push(valueString);
+            html.push('"');
+        }
+    }
+}
+
+function isSelfClosingTag(tagName: string): boolean {
+    return selfClosingTags.includes(tagName);
+}
+
+// From https://stackoverflow.com/a/34838936/1857993
+// contextual self-closing tags are not supported
+const selfClosingTags: ReadonlyArray<string> = [
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'keygen',
+    'link',
+    'menuitem',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr'
+];

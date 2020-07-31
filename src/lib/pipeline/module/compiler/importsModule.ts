@@ -1,24 +1,24 @@
-import { ExternalReferenceNode, HtmlCompileData, MImportNode, TagNode, MComponentNode, MFragmentNode, HtmlCompilerModule, ImportDefinition } from '../../..';
+import { ExternalReferenceNode, HtmlCompilerContext, MImportNode, TagNode, MComponentNode, MFragmentNode, HtmlCompilerModule, ImportDefinition } from '../../..';
 
 /**
  * Process imports / aliases via m-import
  */
 export class ImportsModule implements HtmlCompilerModule {
-    enterNode(compileData: HtmlCompileData): void {
+    enterNode(htmlContext: HtmlCompilerContext): void {
         
-        if (MImportNode.isMImportNode(compileData.node)) {
+        if (MImportNode.isMImportNode(htmlContext.node)) {
             // if this is m-import, then process it
-            this.registerImport(compileData.node, compileData);
+            this.registerImport(htmlContext.node, htmlContext);
 
-        } else if (TagNode.isTagNode(compileData.node) && compileData.hasImport(compileData.node.tagName)) {
+        } else if (TagNode.isTagNode(htmlContext.node) && htmlContext.hasImport(htmlContext.node.tagName)) {
             // else if this is a replacement node, then replace it
-            this.replaceImport(compileData.node, compileData);
+            this.replaceImport(htmlContext.node, htmlContext);
         }
     }
 
-    private registerImport(mImport: MImportNode, compileData: HtmlCompileData): void {
+    private registerImport(mImport: MImportNode, htmlContext: HtmlCompilerContext): void {
         // imports are registered into the parent scope. Fall back to current scope in case this is the root
-        const targetNodeData = compileData.parentData ?? compileData;
+        const targetNodeData = htmlContext.parentContext ?? htmlContext;
 
         // create import definition and register in compile data
         targetNodeData.defineImport({
@@ -29,12 +29,12 @@ export class ImportsModule implements HtmlCompilerModule {
 
         // delete node
         mImport.removeSelf();
-        compileData.setDeleted();
+        htmlContext.setDeleted();
     }
 
-    private replaceImport(tag: TagNode, compileData: HtmlCompileData): void {
+    private replaceImport(tag: TagNode, htmlContext: HtmlCompilerContext): void {
         // get import definition
-        const importDefinition = compileData.getImport(tag.tagName);
+        const importDefinition = htmlContext.getImport(tag.tagName);
 
         // create replacement
         const replacementTag = this.createReplacementTag(tag, importDefinition);
@@ -42,7 +42,7 @@ export class ImportsModule implements HtmlCompilerModule {
         // replace tag
         replacementTag.appendChildren(tag.childNodes);
         tag.replaceSelf([ replacementTag ]);
-        compileData.setDeleted();
+        htmlContext.setDeleted();
     }
 
     private createReplacementTag(tag: TagNode, importDefinition: ImportDefinition): ExternalReferenceNode {

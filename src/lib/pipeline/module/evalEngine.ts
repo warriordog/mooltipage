@@ -1,110 +1,167 @@
-import { ComponentScriptInstance, Pipeline, Fragment, UsageContext } from '../..';
+import { Pipeline, Fragment, PipelineContext } from '../..';
 
 /**
- * Evaluates JS expressions
+ * regular expression to detect a JS template string litteral
  */
-export class EvalEngine {
-    /**
-     * Parse an ES6 template literal
-     * 
-     * @param templateString Contents of the template string, excluding the backticks
-     * @returns EvalContent that will execute the template string and return a standard string
-     * @throws If the template literal cannot be parsed
-     */
-    parseTemplateString(templateString: string): EvalContent<string> {
-        // generate function body for template
-        const functionBody = `return \`${  templateString  }\`;`;
+const templateTextRegex = /(?<!\\)\${(([^\\}]|\\}|\\)*)}/;
 
-        // create content
-        const evalContent: EvalContent<string> = this.parseScript(functionBody);
+/**
+ * regular expression to detect handlebars {{ }}
+ */
+const handlebarsRegex = /^\s*(?<!\\){{(.*)}}\s*$/;
 
-        return evalContent;
+/**
+ * Check if the given string contains embedded JS script(s) that should be executed.
+ * @param expression The string to check
+ * @returns true if the string contains any recognized expressions
+ */
+export function isExpressionString(expression: string): boolean {
+    // value is template string
+    if (templateTextRegex.test(expression)) {
+        return true;
     }
 
-    /**
-     * Parse a handlebars expression.  Ex. {{ foo() }}
-     * 
-     * @param jsString Contents of the handlebars expression, excluding the braces
-     * @returns EvalContent that will execute the expression and return the resulting object.
-     * @throws If the script code cannot be parsed
-     */
-    parseHandlebars(jsString: string): EvalContent<unknown> {
-        // generate body for function
-        const functionBody = `return ${  jsString  };`;
-
-        // create content
-        const evalContent: EvalContent<unknown> = this.parseScript(functionBody);
-
-        return evalContent;
+    // value is handlebars
+    if (handlebarsRegex.test(expression)) {
+        return true;
     }
 
-    /**
-     * Parse a function-style component script.
-     * 
-     * @param jsText Text content of the script
-     * @returns EvalContent that will execute the expression and return an instance of the component object.
-     * @throws If the script code cannot be parsed
-     */
-    parseComponentFunction(jsText: string): EvalContent<ComponentScriptInstance> {
-        // generate body for function
-        const functionBody = jsText.trim();
+    // value is plain text
+    return false;
+}
 
-        // create content
-        const evalContent: EvalContent<ComponentScriptInstance> = this.parseScript(functionBody);
+/**
+ * Compiles JS code embedded within a string, and then returns a callable function that will return the output of that code.
+ * Result object is stateless and can be safely cached and reused.
+ * 
+ * @param expression The string to compile.
+ * @returns an EvalContent that will return the result of the expression
+ * @throws if the provided string contains no expressions
+ */
+export function parseExpression(expression: string): EvalContent<unknown> {
+    // value is template string
+    if (templateTextRegex.test(expression)) {
+        // parse into function
+        const templateFunc: EvalContent<string> = parseTemplateString(expression);
 
-        return evalContent;
+        // return it
+        return templateFunc;
     }
 
-    /**
-     * Parse a class-style component script.
-     * 
-     * @param jsText Text content of the script
-     * @returns EvalContent that will execute the expression and return an instance of the component object.
-     * @throws If the script cannot be parsed
-     */
-    parseComponentClass(jsText: string): EvalContent<ComponentScriptInstance> {
-        // generate body for function
-        const functionBody = jsText.trim();
+    // value is handlebars
+    const handlebarsMatches: RegExpMatchArray | null = expression.match(handlebarsRegex);
+    if (handlebarsMatches != null && handlebarsMatches.length === 2) {
+        // get JS code from handlebars text
+        const handlebarCode: string = handlebarsMatches[1];
 
-        // parse class declaration
-        const classDeclarationFunc = this.parseNoArgsFunction<EvalConstructor<ComponentScriptInstance>>(functionBody);
+        // parse into function
+        const handlebarsFunc: EvalContent<unknown> = parseHandlebars(handlebarCode);
 
-        // execute class declaration
-        const classConstructor: EvalConstructor<ComponentScriptInstance> = classDeclarationFunc();
-
-        // create eval content
-        const evalContent = new EvalContentConstructor(classConstructor);
-
-        return evalContent;
+        // return it
+        return handlebarsFunc;
     }
 
-    /**
-     * Parse arbitrarty JS code in a function context.
-     * All JS features are available, provided that they are valid for use within a function body.
-     * The function can optionally return a value, but return values are not type checked.
-     * 
-     * @param functionBody JS code to execute
-     * @returns EvalContent that will execute the expression and return the result of the function, if any.
-     * @throws If the JS code cannot be parsed
-     */
-    parseScript<T>(functionBody: string): EvalContent<T> {
-        try {
-            // Parse function body into callable function.
-            // This is inherently not type-safe, as the purpose is to run unknown JS code.
-            const functionObj = new Function('$', '$$', functionBody) as EvalFunction<T>;
+    throw new Error('Attempting to compile plain text as JavaScript');
+}
 
-            return new EvalContentFunction(functionObj);
-        } catch (error) {
-            throw new Error(`Parse error in function: ${ error }. Function body: ${ functionBody }`);
-        }
+/**
+ * Parse an ES6 template literal
+ * 
+ * @param templateString Contents of the template string, excluding the backticks
+ * @returns EvalContent that will execute the template string and return a standard string
+ * @throws If the template literal cannot be parsed
+ */
+export function parseTemplateString(templateString: string): EvalContent<string> {
+    // generate function body for template
+    const functionBody = `return \`${  templateString  }\`;`;
+
+    // create content
+    const evalContent: EvalContent<string> = parseScript(functionBody);
+
+    return evalContent;
+}
+
+/**
+ * Parse a handlebars expression.  Ex. {{ foo() }}
+ * 
+ * @param jsString Contents of the handlebars expression, excluding the braces
+ * @returns EvalContent that will execute the expression and return the resulting object.
+ * @throws If the script code cannot be parsed
+ */
+export function parseHandlebars(jsString: string): EvalContent<unknown> {
+    // generate body for function
+    const functionBody = `return ${  jsString  };`;
+
+    // create content
+    const evalContent: EvalContent<unknown> = parseScript(functionBody);
+
+    return evalContent;
+}
+
+/**
+ * Parse a function-style component script.
+ * 
+ * @param jsText Text content of the script
+ * @returns EvalContent that will execute the expression and return an instance of the component object.
+ * @throws If the script code cannot be parsed
+ */
+export function parseComponentFunction(jsText: string): EvalContent<EvalScope> {
+    // generate body for function
+    const functionBody = jsText.trim();
+
+    // create content
+    return parseScript(functionBody);
+}
+
+/**
+ * Parse a class-style component script.
+ * 
+ * @param jsText Text content of the script
+ * @returns EvalContent that will execute the expression and return an instance of the component object.
+ * @throws If the script cannot be parsed
+ */
+export function parseComponentClass(jsText: string): EvalContent<EvalScope> {
+    // generate body for function
+    const functionBody = jsText.trim();
+
+    // parse class declaration
+    const classDeclarationFunc = parseNoArgsFunction<EvalConstructor<EvalScope>>(functionBody);
+
+    // execute class declaration
+    const classConstructor: EvalConstructor<EvalScope> = classDeclarationFunc();
+
+    // create eval content
+    const evalContent = new EvalContentConstructor(classConstructor);
+
+    return evalContent;
+}
+
+/**
+ * Parse arbitrarty JS code in a function context.
+ * All JS features are available, provided that they are valid for use within a function body.
+ * The function can optionally return a value, but return values are not type checked.
+ * 
+ * @param functionBody JS code to execute
+ * @returns EvalContent that will execute the expression and return the result of the function, if any.
+ * @throws If the JS code cannot be parsed
+ */
+export function parseScript<T>(functionBody: string): EvalContent<T> {
+    try {
+        // Parse function body into callable function.
+        // This is inherently not type-safe, as the purpose is to run unknown JS code.
+        const functionObj = new Function('$', '$$', functionBody) as EvalFunction<T>;
+
+        return new EvalContentFunction(functionObj);
+    } catch (error) {
+        throw new Error(`Parse error in function: ${ error }. Function body: ${ functionBody }`);
     }
+}
 
-    private parseNoArgsFunction<T>(functionBody: string): () => T  {
-        try {
-            return new Function(functionBody) as () => T;
-        } catch (error) {
-            throw new Error(`Parse error in function: ${ error }.  Function body: ${ functionBody }`);
-        }
+function parseNoArgsFunction<T>(functionBody: string): () => T  {
+    try {
+        return new Function(functionBody) as () => T;
+    } catch (error) {
+        throw new Error(`Parse error in function: ${ error }.  Function body: ${ functionBody }`);
     }
 }
 
@@ -179,19 +236,19 @@ export class EvalContext {
     readonly currentFragment: Fragment;
 
     /**
-     * Current usage context
+     * Current pipeline compilation context
      */
-    readonly usageContext: UsageContext;
+    readonly pipelineContext: PipelineContext;
 
     /**
      * Compiled scope instance, with proper shadowing and overloading applied
      */
     readonly scope: EvalScope;
 
-    constructor(pipeline: Pipeline, currentFragment: Fragment, usageContext: UsageContext, scope: EvalScope) {
-        this.pipeline = pipeline;
+    constructor(currentFragment: Fragment, pipelineContext: PipelineContext, scope: EvalScope) {
+        this.pipeline = pipelineContext.pipeline;
         this.currentFragment = currentFragment;
-        this.usageContext = usageContext;
+        this.pipelineContext = pipelineContext;
         this.scope = scope;
     }
 }
@@ -216,28 +273,28 @@ export type EvalScope = Record<EvalKey, unknown>;
  * A root scope is a read-only view into an EvalVars and optional component instance.
  * If included, the component instance will shadow the parameters in the case of conflict.
  * @param parameters EvalVars containing fragment parameters
- * @param component Optional component instance
+ * @param componentScope Optional component instance
  */
-export function createRootEvalScope(parameters: EvalVars, component?: ComponentScriptInstance): EvalScope {
-    const scopeProxyHandler = new EvalScopeProxy(parameters, component);
+export function createRootEvalScope(parameters: EvalVars, componentScope?: EvalScope): EvalScope {
+    const scopeProxyHandler = new EvalScopeProxy(parameters, componentScope);
     return new Proxy(Object.create(null), scopeProxyHandler);
 }
 
 class EvalScopeProxy implements ProxyHandler<EvalScope> {
     private readonly parameters: EvalVars;
-    private readonly component?: ComponentScriptInstance;
+    private readonly componentScope?: EvalScope;
     
-    constructor(parameters: EvalVars, component?: ComponentScriptInstance) {
+    constructor(parameters: EvalVars, componentScope?: EvalScope) {
         this.parameters = parameters;
-        this.component = component;
+        this.componentScope = componentScope;
     }
 
     get (target: EvalScope, key: PropertyKey): unknown {
         // TS does not support symbols
         if (typeof(key) !== 'symbol') {
             // get from component, if present
-            if (this.component?.hasOwnProperty(key)) {
-                return this.component[key];
+            if (this.componentScope?.hasOwnProperty(key)) {
+                return this.componentScope[key];
             }
 
             // otherwise fall back to parameters

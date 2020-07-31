@@ -1,36 +1,36 @@
-import { DocumentNode, ExternalReferenceNode, Fragment, UsageContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode, HtmlCompilerModule, HtmlCompileData } from '../../..';
+import { DocumentNode, ExternalReferenceNode, Fragment, PipelineContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode, HtmlCompilerModule, HtmlCompilerContext } from '../../..';
 
 /**
  * Process external references, such as m-fragment and m-component.
  */
 export class ReferenceModule implements HtmlCompilerModule {
 
-    exitNode(compileData: HtmlCompileData): void {
-        if (MFragmentNode.isMFragmentNode(compileData.node) || MComponentNode.isMComponentNode(compileData.node)) {
-            this.replaceReference(compileData.node, compileData);
+    exitNode(htmlContext: HtmlCompilerContext): void {
+        if (MFragmentNode.isMFragmentNode(htmlContext.node) || MComponentNode.isMComponentNode(htmlContext.node)) {
+            this.replaceReference(htmlContext.node, htmlContext);
         }
     }
 
-    private replaceReference(refNode: ExternalReferenceNode, compileData: HtmlCompileData): void {
+    private replaceReference(refNode: ExternalReferenceNode, htmlContext: HtmlCompilerContext): void {
         // get slot contents
         const slotContents: Map<string, DocumentNode> = this.extractSlotContentsFromReference(refNode);
 
         // create usage context
-        const usageContext = compileData.usageContext.createSubContext(slotContents, refNode.parameters);
+        const usageContext = htmlContext.pipelineContext.createSubContext(slotContents, refNode.parameters);
 
         // call pipeline to load reference
         const refType = MFragmentNode.isMFragmentNode(refNode) ? 'm-fragment' : 'm-component';
-        const refContents: Fragment = this.compileReference(refNode.src, usageContext, compileData.pipeline, refType);
+        const refContents: Fragment = this.compileReference(refNode.src, usageContext, htmlContext.pipeline, refType);
 
         // replace with compiled fragment
         refNode.replaceSelf(refContents.dom.childNodes);
-        compileData.setDeleted();
+        htmlContext.setDeleted();
     }
 
-    private compileReference(src: string, usageContext: UsageContext, pipeline: Pipeline, type: 'm-fragment' | 'm-component'): Fragment {
+    private compileReference(src: string, context: PipelineContext, pipeline: Pipeline, type: 'm-fragment' | 'm-component'): Fragment {
         switch (type) {
-            case 'm-fragment': return pipeline.compileFragment(src, usageContext);
-            case 'm-component': return pipeline.compileComponent(src, usageContext);
+            case 'm-fragment': return pipeline.compileFragment(src, context);
+            case 'm-component': return pipeline.compileComponent(src, context);
             default: throw new Error(`Unknown external reference type: '${ type }'`); 
         }
     }

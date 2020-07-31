@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Pipeline, BasicHtmlFormatter } from '../../lib';
+import { Pipeline, HtmlFormatter, HtmlFormatterMode } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { compareComponentMacro, compareFragmentMacro } from '../_util/htmlCompare';
 
@@ -29,8 +29,7 @@ test('[endToEnd] Basic component compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const div = page.dom.findChildTagByTagName('div');
     const style = page.dom.findChildTagByTagName('style');
 
@@ -59,8 +58,7 @@ test('[endToEnd] Component with scope compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const div = page.dom.findChildTagByTagName('div');
 
     // validate
@@ -99,8 +97,7 @@ test('[endToEnd] Nested components compile correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const comp = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp1');
     const comp2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2');
 
@@ -150,7 +147,7 @@ test('[endToEnd] Components compile to correct DOM', t => {
             .comp2 {}
         </style>
     `);
-    const htmlFormatter = new BasicHtmlFormatter(false);
+    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
     const pipeline = new Pipeline(pi, htmlFormatter);
 
     // compile component
@@ -195,8 +192,7 @@ test('[endToEnd] Repeated component usages have correct scope', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const comp2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '1');
     const comp2_2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '2');
     const comp2_3 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '3');
@@ -249,8 +245,7 @@ test('[endToEnd] Imported component compiles correctly', t => {
     const pipeline = new Pipeline(pi);
 
     // compile component
-    const output = pipeline.compilePage('page.html');
-    const page = output.page;
+    const page = pipeline.compilePage('page.html');
     const comp2_0 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '0');
     const comp2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'comp2' && tag.getAttribute('id') === '1');
 

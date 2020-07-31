@@ -1,4 +1,4 @@
-import { DocumentNode, EvalContent, EvalContext, StyleBindType, EvalKey } from '../..';
+import { DocumentNode, EvalContent, StyleBindType, EvalScope } from '../..';
 
 /**
  * A resuable page component. Contains a template, script, and optionally CSS stylesheet.
@@ -92,9 +92,12 @@ export class ComponentScript {
      */
     readonly srcResPath?: string;
 
-    readonly scriptFunction: EvalContent<ComponentScriptInstance>;
+    /**
+     * EvalContent that will execute this ComponentScript
+     */
+    readonly scriptFunction: EvalContent<EvalScope>;
 
-    constructor(type: ComponentScriptType, scriptFunction: EvalContent<ComponentScriptInstance>, srcResPath?: string) {
+    constructor(type: ComponentScriptType, scriptFunction: EvalContent<EvalScope>, srcResPath?: string) {
         this.type = type;
         this.scriptFunction = scriptFunction;
         this.srcResPath = srcResPath;
@@ -122,16 +125,6 @@ export enum ComponentScriptType {
      */
     FUNCTION = 'function'
 }
-
-/**
- * A function that will execute the backing script of a component, and return the resulting object to use for compilation
- */
-export type ComponentScriptRunner = (context: EvalContext) => ComponentScriptInstance;
-
-/**
- * An instance of the backing code for a component
- */
-export type ComponentScriptInstance = Record<EvalKey, unknown>;
 
 /**
  * The style section of a component

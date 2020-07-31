@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Pipeline, BasicHtmlFormatter, ResourceType } from '../../lib';
+import { Pipeline, HtmlFormatter, ResourceType, HtmlFormatterMode } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 test('[smoke] Build produces a page and does not crash', t => {
@@ -11,11 +11,9 @@ test('[smoke] Build produces a page and does not crash', t => {
 
     // check output
     t.truthy(result);
-    t.truthy(result.page);
-    t.truthy(result.html);
-    t.truthy(result.page.dom, 'Generated page should have a DOM');
-    t.truthy(result.page.head, 'Generated page should have a HEAD');
-    t.truthy(result.page.body, 'Generated page should have a BODY');
+    t.truthy(result.resPath, 'Generated page should include resource path');
+    t.truthy(result.html, 'Generated page should include HTML');
+    t.truthy(result.dom, 'Generated page should have a DOM');
 });
 
 function createPipeline(): Pipeline {
@@ -53,7 +51,9 @@ function createPipeline(): Pipeline {
 
         <m-fragment src="header.html" title="{{ $.name }}" />
 
-        <m-for var="sn" of="{{ [1, 2, 3] }}">
+        <m-script src="sectionLoader.js" />
+
+        <m-for var="sn" of="{{ $.sectionids }}">
             <br>
 
             <custom-section title="Section \${ $.sn }">
@@ -106,9 +106,20 @@ function createPipeline(): Pipeline {
             }
         `
     });
+    pipelineInterface.setSource('sectionLoader.js', {
+        type: ResourceType.JAVASCRIPT,
+        content: `
+            const sectionIds = [];
+            for (let i = 0; i < 3; i++) {
+                const sectionId = i + 1;
+                sectionIds.push(sectionId);
+            }
+            $.sectionids = sectionIds;
+        `
+    });
 
     // enable pretty formatting
-    const htmlFormatter = new BasicHtmlFormatter(true);
+    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.PRETTY);
 
     return new Pipeline(pipelineInterface, htmlFormatter);
 }

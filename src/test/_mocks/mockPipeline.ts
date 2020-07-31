@@ -1,4 +1,4 @@
-import { Pipeline, HtmlFormatter, Fragment, CompiledPage } from '../../lib';
+import { Pipeline, HtmlFormatter, Fragment, Page } from '../../lib';
 import { MemoryPipelineInterface } from './memoryPipelineInterface';
 
 export class MockPipeline extends Pipeline {
@@ -9,7 +9,7 @@ export class MockPipeline extends Pipeline {
         this.mockPi = pi;
     }
 
-    compilePage(): CompiledPage {
+    compilePage(): Page {
         throw new Error('Not implemented');
     }
 
@@ -21,7 +21,7 @@ export class MockPipeline extends Pipeline {
         throw new Error('Not implemented');
     }
 
-    compileDomText(): unknown {
+    compileExpression(): unknown {
         throw new Error('Not implemented');
     }
 

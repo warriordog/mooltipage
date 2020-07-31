@@ -1,25 +1,25 @@
-import { HtmlCompilerModule, HtmlCompileData, MScriptNode } from '../../..';
+import { HtmlCompilerModule, HtmlCompilerContext, MScriptNode } from '../../..';
 
 export class ScriptsModule implements HtmlCompilerModule {
-    enterNode(compileData: HtmlCompileData): void {
+    enterNode(htmlContext: HtmlCompilerContext): void {
         // compile <m-script>
-        if (MScriptNode.isMScriptNode(compileData.node)) {
-            this.compileMScript(compileData.node, compileData);
+        if (MScriptNode.isMScriptNode(htmlContext.node)) {
+            this.compileMScript(htmlContext.node, htmlContext);
         }
     }
 
-    private compileMScript(mScript: MScriptNode, compileData: HtmlCompileData): void {
+    private compileMScript(mScript: MScriptNode, htmlContext: HtmlCompilerContext): void {
         // execute in parent scope, if it exists. Otherwise use local scope
-        const targetCompileData = compileData.parentData ?? compileData;
+        const targetCompileData = htmlContext.parentContext ?? htmlContext;
 
         // create eval context
         const evalContext = targetCompileData.createEvalContext();
 
         // compile
-        compileData.pipeline.compileExternalScript(mScript.src, evalContext);
+        htmlContext.pipeline.compileExternalScript(mScript.src, evalContext);
 
         // remove when done
         mScript.removeSelf();
-        compileData.setDeleted();
+        htmlContext.setDeleted();
     }
 }

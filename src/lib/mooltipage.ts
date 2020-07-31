@@ -1,7 +1,7 @@
 import os from 'os';
 import Path from 'path';
 
-import { HtmlFormatter, BasicHtmlFormatter, Pipeline, PipelineInterface, ResourceType, getResourceTypeExtension, Page, FsUtils } from '.';
+import { HtmlFormatter, HtmlFormatterMode, Pipeline, PipelineInterface, ResourceType, getResourceTypeExtension, Page, FsUtils } from '.';
 
 /**
  * List of built-in HTML formatters
@@ -29,7 +29,7 @@ export enum StandardFormatters {
  * @param html HTML content of the page
  * @param page Compiled page object
  */
-export type PageCompiledCallback = (pagePath: string, html: string, page: Page) => void;
+export type PageCompiledCallback = (page: Page) => void;
 
 /**
  * Options recognized by MooltiPage
@@ -103,34 +103,35 @@ export class Mooltipage {
      */
     processPage(pagePath: string): void {
         // compile page
-        const output = this.pipeline.compilePage(pagePath);
+        const page = this.pipeline.compilePage(pagePath);
 
         // callback
         if (this.options.onPageCompiled) {
-            this.options.onPageCompiled(pagePath, output.html, output.page);
+            this.options.onPageCompiled(page);
         }
     }
 }
 
 function createPipeline(options: MpOptions): Pipeline {
     // create the HTML formatter, if specified
-    const formatter: HtmlFormatter | undefined = createFormatter(options);
+    const formatter: HtmlFormatter = createFormatter(options);
 
     // create interface
     const pi = new NodePipelineInterface(options.inPath, options.outPath);
+
     // create pipeline
     return new Pipeline(pi, formatter);
 }
 
-function createFormatter(options: MpOptions): HtmlFormatter | undefined {
+function createFormatter(options: MpOptions): HtmlFormatter {
     switch (options.formatter) {
         case 'pretty':
-            return new BasicHtmlFormatter(true, os.EOL);
+            return new HtmlFormatter(HtmlFormatterMode.PRETTY, os.EOL);
         case 'minimized':
-            return new BasicHtmlFormatter(false);
+            return new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
         case 'none':
         case undefined:
-            return undefined;
+            return new HtmlFormatter(HtmlFormatterMode.NONE);
         default: {
             throw new Error(`Unknown HTML formatter: ${ options.formatter }`);
         }

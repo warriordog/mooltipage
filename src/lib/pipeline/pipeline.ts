@@ -1,5 +1,6 @@
-import { PipelineCache, PipelineInterface, HtmlFormatter, ResourceParser, HtmlCompiler, ResourceBinder, HtmlSerializer, TextCompiler, ContentHasher, Page, UsageContext, ResourceType, Fragment, Component, DocumentNode, EvalContext, ComponentScriptInstance, EvalContent } from '..';
-import { EvalEngine } from './module/evalEngine';
+import { PipelineCache, PipelineInterface, HtmlFormatter, ResourceParser, HtmlCompiler, Page, ResourceType, Fragment, Component, DocumentNode, EvalContext, EvalVars, EvalScope, createRootEvalScope, EvalContent, bindStyle, isExpressionString, parseExpression, parseScript } from '..';
+import crypto from 'crypto';
+import { buildPage } from './module/pageBuilder';
 
 /**
  * Primary compilation pipeline.
@@ -23,7 +24,7 @@ export class Pipeline {
     /**
      * HTML formatter, if provided
      */
-    readonly htmlFormatter?: HtmlFormatter;
+    readonly htmlFormatter: HtmlFormatter;
 
     /**
      * General content parser
@@ -36,60 +37,24 @@ export class Pipeline {
     readonly htmlCompiler: HtmlCompiler;
 
     /**
-     * Bind non-HTML resources to a page
-     */
-    readonly resourceBinder: ResourceBinder;
-
-    /**
-     * HTML serialization support
-     */
-    readonly htmlSerializer: HtmlSerializer;
-
-    /**
-     * Text expression compilation support
-     */
-    readonly textCompiler: TextCompiler;
-
-    /**
-     * Content hashing functionality
-     */
-    readonly contentHasher: ContentHasher;
-
-    /**
-     * Parse and execute javascript and expressions
-     */
-    readonly evalEngine: EvalEngine;
-
-    /**
      * Create a new instance of the pipeline
      * @param pipelineInterface Pipeline interface instance
      * @param htmlFormatter Optional HTML formatter to use
      * @param resourceParser Optional override for standard ResourceParser
      * @param htmlCompiler Optional override for standard HtmlCompiler
      * @param resourceBinder Optional override for standard ResourceBinder
-     * @param htmlSerializer Optional override for standard HtmlSerializer
-     * @param textCompiler Optional override for standard TextCompiler
-     * @param contentHasher Optional override for standard ContentHasher
-     * @param evalEngine Optional override for standard EvalEngine
      */
-    constructor(pipelineInterface: PipelineInterface, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler, resourceBinder?: ResourceBinder, htmlSerializer?: HtmlSerializer, textCompiler?: TextCompiler, contentHasher?: ContentHasher, evalEngine?: EvalEngine) {
+    constructor(pipelineInterface: PipelineInterface, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
         // internal
         this.cache = new PipelineCache();
 
         // required
         this.pipelineInterface = pipelineInterface;
 
-        // optional
-        this.htmlFormatter = htmlFormatter;
-
         // overribable
+        this.htmlFormatter = htmlFormatter ?? new HtmlFormatter();
         this.resourceParser = resourceParser ?? new ResourceParser(this);
-        this.htmlCompiler = htmlCompiler ?? new HtmlCompiler(this);
-        this.resourceBinder = resourceBinder ?? new ResourceBinder(this);
-        this.htmlSerializer = htmlSerializer ?? new HtmlSerializer();
-        this.textCompiler = textCompiler ?? new TextCompiler();
-        this.contentHasher = contentHasher ?? new ContentHasher();
-        this.evalEngine = evalEngine ?? new EvalEngine();
+        this.htmlCompiler = htmlCompiler ?? new HtmlCompiler();
     }
 
     /**
@@ -99,60 +64,48 @@ export class Pipeline {
      * @param resPath Path to the page, relative to both source and destination.
      * @returns a CompiledPage containing the Page instance and serialized / formatted HTML
      */
-    compilePage(resPath: string): CompiledPage {
-        // parse page HTML as fragment
-        const pageFragment = this.getOrParseFragment(resPath);
-        const pageDom = pageFragment.dom;
+    compilePage(resPath: string): Page {
+        // compile fragment
+        const pageFragment: Fragment = this.compileFragment(resPath);
+        const pageDom: DocumentNode = pageFragment.dom;
 
-        // create page context
-        const page = new Page(resPath, pageDom);
-        const pageContext = new UsageContext(page);
-
-        // compile page fragment
-        this.htmlCompiler.compileHtml(pageFragment, pageContext);
+        // compile as page
+        buildPage(pageDom);
 
         // format page
-        if (this.htmlFormatter?.formatPage != undefined) {
-            this.htmlFormatter.formatPage(page);
-        }
+        this.htmlFormatter.formatDom(pageDom);
 
         // serialize to html
-        let pageHtml: string = this.htmlSerializer.serializePage(page);
+        const rawHtml: string = pageDom.toHtml();
 
         // format html
-        if (this.htmlFormatter?.formatHtml != undefined) {
-            pageHtml = this.htmlFormatter.formatHtml(resPath, pageHtml);
-        }
+        const formattedHtml: string = this.htmlFormatter.formatHtml(rawHtml);
 
         // write HTML
-        this.pipelineInterface.writeResource(ResourceType.HTML, resPath, pageHtml);
+        this.pipelineInterface.writeResource(ResourceType.HTML, resPath, formattedHtml);
 
-        // return CompiledPage
-        return {
-            page: page,
-            html: pageHtml
-        };
+        // create and return page
+        return new Page(resPath, pageDom, formattedHtml);
     }
 
     /**
      * Compiles a fragment.
      * 
-     * @internal
      * @param resPath Path to fragment source
-     * @param usageContext Current usage context
+     * @param context Current usage context, if applicable
      * @returns Fragment instance
      */
-    compileFragment(resPath: string, usageContext: UsageContext): Fragment {
+    compileFragment(resPath: string, context?: PipelineContext): Fragment {
         // get fragment from cache or htmlSource
         const fragment: Fragment = this.getOrParseFragment(resPath);
 
-        // compile under current context
-        this.htmlCompiler.compileHtml(fragment, usageContext);
-
-        // format fragment
-        if (this.htmlFormatter?.formatFragment != undefined) {
-            this.htmlFormatter.formatFragment(fragment, usageContext);
+        // create usage context if not provided
+        if (context == undefined) {
+            context = new PipelineContext(this, fragment);
         }
+
+        // compile under current context
+        this.htmlCompiler.compileHtml(fragment, context);
 
         return fragment;
     }
@@ -160,12 +113,11 @@ export class Pipeline {
     /**
      * Compiles a component.
      * 
-     * @internal
      * @param resPath Path to component source
      * @param usageContext Current usage context
      * @returns Fragment instance
      */
-    compileComponent(resPath: string, baseUsageContext: UsageContext): Fragment {
+    compileComponent(resPath: string, baseContext: PipelineContext): Fragment {
         // get or parse component
         const component: Component = this.getOrParseComponent(resPath);
 
@@ -175,14 +127,14 @@ export class Pipeline {
         const fragment = new Fragment(fragResPath, fragDom);
 
         // create component script instance
-        const componentInstanceEvalContext = new EvalContext(this, fragment, baseUsageContext, baseUsageContext.rootScope);
-        const componentInstance: ComponentScriptInstance = component.script.scriptFunction.invoke(componentInstanceEvalContext);
+        const componentInstanceEvalContext = new EvalContext(fragment, baseContext, baseContext.rootScope);
+        const componentInstance: EvalScope = component.script.scriptFunction.invoke(componentInstanceEvalContext);
 
         // add component script data to context
-        const componentUsageContext: UsageContext = baseUsageContext.createSubContext(baseUsageContext.slotContents, baseUsageContext.fragmentParams, componentInstance);
+        const componentContext: PipelineContext = baseContext.createSubContext(baseContext.slotContents, baseContext.fragmentParams, componentInstance);
 
         // compile HTML
-        this.htmlCompiler.compileHtml(fragment, componentUsageContext);
+        this.htmlCompiler.compileHtml(fragment, componentContext);
 
         // compile styles
         if (component.style != undefined) {
@@ -190,30 +142,24 @@ export class Pipeline {
             const compiledStyle = this.compileCss(component.style.styleContent);
 
             // bind to page
-            this.resourceBinder.bindStyle(component.resPath, compiledStyle, component.style.bindType, componentUsageContext);
-        }
-
-        // format fragment
-        if (this.htmlFormatter?.formatFragment != undefined) {
-            this.htmlFormatter.formatFragment(fragment, componentUsageContext);
+            bindStyle(component.resPath, compiledStyle, component.style.bindType, componentContext);
         }
 
         return fragment;
     }
 
     /**
-     * Compiles text in a Document.
+     * Compiles a JS expression
      * Embedded scripts will be evaluated in the current context.
      * Plain text will be returned as-is.
      * 
-     * @internal
      * @param value Text value
      * @param evalContext Current compilation context
      * @returns compiled value of the input value
      */
-    compileDomText(value: string, evalContext: EvalContext): unknown {
+    compileExpression(value: string, evalContext: EvalContext): unknown {
         // check if this text contains JS code to evaluate
-        if (this.textCompiler.isExpression(value)) {
+        if (isExpressionString(value)) {
             const expression = value.trim();
     
             // get function for script
@@ -232,7 +178,6 @@ export class Pipeline {
      * The script can be multiple lines, and use any JS feature that is available within a function body.
      * Script will execute with the provided eval context.
      * 
-     * @internal
      * @param script Javascript code
      * @param evalContext Context to execute in
      * @returns The return value of the script, if any.
@@ -253,7 +198,6 @@ export class Pipeline {
      * The script can be multiple lines, and use any JS feature that is available within a function body.
      * Script will execute with the provided eval context.
      * 
-     * @internal
      * @param resPath Path to script file
      * @param evalContext Context to execute in
      * @returns The return value of the script, if any.
@@ -269,7 +213,6 @@ export class Pipeline {
     /**
      * Compiles CSS. Currently a no-op.
      * 
-     * @internal
      * @param css CSS text
      * @returns Compile CSS text
      */
@@ -290,7 +233,7 @@ export class Pipeline {
      */
     linkResource(type: ResourceType, contents: string, sourceResPath: string): string {
         // hash contents
-        const contentsHash = this.contentHasher.fastHashContent(contents);
+        const contentsHash = this.fastHashContent(contents);
 
         // get from cache, if present
         if (this.cache.hasCreatedResource(contentsHash)) {
@@ -333,6 +276,28 @@ export class Pipeline {
     reset(): void {
         // clear cache to reset state
         this.cache.clear();
+    }
+
+    /**
+     * Create a NON-CRYPTOGRAPHIC (INSECURE) hash of some pipeline content.
+     * Hash algorithm should be strong enough to use for caching, but does not need to be cryptographically secure.
+     * This may be called many times by the pipeline, so the algorithm used should be reasonably fast as well.
+     * 
+     * Standard implementation uses MD5 as provided by the Node.JS Crypto module.
+     * Override to change implementation
+     * 
+     * @param content Content to hash. Should be a UTF-8 string.
+     * @returns Returns a hash of content as a Base64 string
+     */
+    protected fastHashContent(content: string): string {
+        // create hash instance
+        const md5 = crypto.createHash('md5');
+        
+        // load the content
+        md5.update(content, 'utf8');
+
+        // calculate the hash
+        return md5.digest('base64');
     }
 
     private getOrParseFragment(resPath: string): Fragment {
@@ -387,7 +352,7 @@ export class Pipeline {
             expressionFunc = this.cache.getExpression(expression);
         } else {
             // compile text
-            expressionFunc = this.textCompiler.compileExpression(expression);
+            expressionFunc = parseExpression(expression);
 
             // store in cache
             this.cache.storeExpression(expression, expressionFunc);
@@ -404,7 +369,7 @@ export class Pipeline {
             scriptFunc = this.cache.getScript(script);
         } else {
             // compile script
-            scriptFunc = this.evalEngine.parseScript(script);
+            scriptFunc = parseScript(script);
 
             // store in cache
             this.cache.storeScript(script, scriptFunc);
@@ -436,17 +401,78 @@ export class Pipeline {
 }
 
 /**
- * The ouput of page compilation.
- * Contains compiled HTML and page DOM.
+ * Contextual data regarding the current unit of compilation within the pipeline
  */
-export interface CompiledPage {
+export class PipelineContext {
     /**
-     * Compiled Page instance
+     * Current pipeline instance
      */
-    page: Page;
+    readonly pipeline: Pipeline;
 
     /**
-     * Serialized and formatted HTML representation of the page
+     * Current fragment that is being compiled
      */
-    html: string;
+    readonly fragment: Fragment;
+
+    /**
+     * Slot contents for the current fragment
+     */
+    readonly slotContents: Map<string, DocumentNode>;
+
+    /**
+     * Parameters to the current fragment
+     */
+    readonly fragmentParams: EvalVars;
+
+    /**
+     * Root eval scope. Contains fragment params and component instance data, if applicable
+     */
+    readonly rootScope: EvalScope;
+
+    /**
+     * Creates a new UsageContext
+     * @param pipeline Current pipeline instance
+     * @param fragment Page being compiled
+     * @param slotContents Optional slot contents for the current fragment
+     * @param fragmentParams Optional parameters to the current fragment
+     * @param componentScope Optional instance of the current component
+     */
+    constructor(pipeline: Pipeline, fragment: Fragment, slotContents?: Map<string, DocumentNode>, fragmentParams?: EvalVars, componentScope?: EvalScope) {
+        this.pipeline = pipeline;
+        this.fragment = fragment;
+        this.slotContents = slotContents ?? new Map();
+        this.fragmentParams = fragmentParams ?? new Map();
+        this.rootScope = createRootEvalScope(this.fragmentParams, componentScope);
+    }
+
+    /**
+     * Creates a child context to be used for compiling a referenced resource.
+     * Current page and other fixed information will be preserved, but per-fragment data will be replaced.
+     * 
+     * @param slotContents Slot contents to provide to child context
+     * @param fragmentParams Parameters to child context
+     * @param componentScope Component that contains child context, if applicable
+     * @returns new UsageContext
+     */
+    createSubContext(slotContents?: Map<string, DocumentNode>, fragmentParams?: EvalVars, componentScope?: EvalScope): PipelineContext {
+        return new PipelineContext(this.pipeline, this.fragment, slotContents, fragmentParams, componentScope);
+    }
+}
+
+/**
+ * Calculates the MD5 hash of a UTF8 string using Node.JS crypto APIs.
+ * MD5 is an INSECURE hash so this should ONLY be used for non-security-sensitive tasks like caching.
+ * 
+ * @param content Content to hash. Should be a UTF-8 string.
+ * @returns Returns a hash of content as a Base64 string
+ */
+export function hashMD5(content: string): string {
+    // create hash instance
+    const md5 = crypto.createHash('md5');
+    
+    // load the content
+    md5.update(content, 'utf8');
+
+    // calculate the hash
+    return md5.digest('base64');
 }

@@ -1,5 +1,5 @@
 import test from 'ava';
-import { Pipeline, ResourceType, UsageContext, Page, DocumentNode, Node, TagNode, EvalContext, Fragment } from '../../lib';
+import { Pipeline, ResourceType, PipelineContext, DocumentNode, Node, TagNode, EvalContext, Fragment } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 test('[integration] Components should load external templates', t => {
@@ -49,9 +49,8 @@ test('[integration] Components should load external scripts', t => {
         <script src="comp_script.js" />
     `);
     const testFrag = new Fragment('page.html', new DocumentNode())
-    const testPage = new Page('page.html', testFrag.dom);
-    const testContext = new UsageContext(testPage);
-    const evalContext = new EvalContext(pipeline, testFrag, testContext, testContext.rootScope);
+    const testContext = new PipelineContext(pipeline, testFrag);
+    const evalContext = new EvalContext(testFrag, testContext, testContext.rootScope);
 
     t.truthy(component);
     t.is(component.script.srcResPath, 'comp_script.js');
@@ -110,9 +109,8 @@ test('[integration] Components should load all external section', t => {
     });
     const pipeline = new Pipeline(pi);
     const testFrag = new Fragment('page.html', new DocumentNode())
-    const testPage = new Page('page.html', testFrag.dom);
-    const testContext = new UsageContext(testPage);
-    const evalContext = new EvalContext(pipeline, testFrag, testContext, testContext.rootScope);
+    const testContext = new PipelineContext(pipeline, testFrag);
+    const evalContext = new EvalContext(testFrag, testContext, testContext.rootScope);
 
     const htmlParser = pipeline.resourceParser;
     const component = htmlParser.parseComponent('component.html', `

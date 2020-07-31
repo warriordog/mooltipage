@@ -3,7 +3,7 @@ import { compareFragmentMacro } from '../_util/htmlCompare';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { ResourceType, Pipeline } from '../../lib';
 
-test('[unit] <m-script> executes scripts in correct scope', compareFragmentMacro,
+test('[endToEnd] <m-script> executes scripts in correct scope', compareFragmentMacro,
 `<m-script src="script.js" />
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
@@ -11,7 +11,7 @@ test('[unit] <m-script> executes scripts in correct scope', compareFragmentMacro
     `$.test = "good";`
 ]]);
 
-test('[unit] <m-script> can override existing vars', compareFragmentMacro,
+test('[endToEnd] <m-script> can override existing vars', compareFragmentMacro,
 `<m-var test="bad" />
 <m-script src="script.js" />
 <test value="\${ $.test }" />`,
@@ -20,7 +20,7 @@ test('[unit] <m-script> can override existing vars', compareFragmentMacro,
     `$.test = "good";`
 ]]);
 
-test('[unit] <m-script> supports multiple lines', compareFragmentMacro,
+test('[endToEnd] <m-script> supports multiple lines', compareFragmentMacro,
 `<m-script src="script.js" />
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
@@ -33,7 +33,7 @@ test('[unit] <m-script> supports multiple lines', compareFragmentMacro,
     $.test = foo.join('');`
 ]]);
 
-test('[unit] <m-script> supports embedded functions', compareFragmentMacro,
+test('[endToEnd] <m-script> supports embedded functions', compareFragmentMacro,
 `<m-script src="script.js" />
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
@@ -59,3 +59,28 @@ test('[endToEnd] <m-script> allows script exceptions to bubble', t => {
         message: errorMessage
     });
 });
+
+test('[endToEnd] <m-script> scripts can access pipeline APIs', compareFragmentMacro,
+`<m-script src="script.js" />
+<test value="\${ $.test }" />`,
+`<test value="true"></test>`,
+[[  'script.js',
+    `$.test = $$.pipeline !== undefined;`
+]]);
+
+test.failing('[endToEnd] <m-script> scripts can access NodeJS APIs', compareFragmentMacro,
+`<m-script src="script.js" />
+<test value="\${ $.test }" />`,
+`<test value="true"></test>`,
+[[  'script.js',
+    `const fs = require('fs');
+    $.test = fs !== undefined;`
+]]);
+
+test.failing('[endToEnd] <m-script> scripts can access DOM APIs', compareFragmentMacro,
+`<m-script src="script.js" />
+<test value="\${ $.test }" />`,
+`<test value="true"></test>`,
+[[  'script.js',
+    ``
+]]);

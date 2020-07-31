@@ -1,5 +1,5 @@
 import test from 'ava';
-import { NodeTools, DocumentNode, TextNode } from '../../lib';
+import { NodeLogic, DocumentNode, TextNode } from '../../lib';
 
 test('[unit] Node.nodeData can store data', t => {
     const node = new DocumentNode();
@@ -12,7 +12,7 @@ test('[unit] Node.nodeData can store data', t => {
 test('[unit] Node.nodeData is inherited', t => {
     const parent = new DocumentNode();
     const child = new TextNode();
-    NodeTools.appendChild(parent, child);
+    NodeLogic.appendChild(parent, child);
 
     parent.nodeData.test = 'testvalue';
 
@@ -23,7 +23,7 @@ test('[unit] Node.nodeData is inherited', t => {
 test('[unit] Node.nodeData is isolate from children', t => {
     const parent = new DocumentNode();
     const child = new TextNode();
-    NodeTools.appendChild(parent, child);
+    NodeLogic.appendChild(parent, child);
 
     child.nodeData.test = 'testvalue';
 
@@ -35,10 +35,10 @@ test('[unit] Node.nodeData is preserved when node is moved', t => {
     const parent1 = new DocumentNode();
     const parent2 = new DocumentNode();
     const child = new TextNode();
-    NodeTools.appendChild(parent1, child);
+    NodeLogic.appendChild(parent1, child);
 
     child.nodeData.test = 'testvalue';
-    NodeTools.appendChild(parent2, child);
+    NodeLogic.appendChild(parent2, child);
 
     t.is(child.nodeData.test, 'testvalue');
 });

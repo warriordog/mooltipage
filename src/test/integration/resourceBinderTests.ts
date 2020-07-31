@@ -1,18 +1,19 @@
 import test from 'ava';
-import { Pipeline, ResourceType, UsageContext, Page, DocumentNode, TextNode, Node, StyleBindType } from '../../lib';
+import { Pipeline, ResourceType, PipelineContext, DocumentNode, TextNode, Node, StyleBindType, Fragment, TagNode, bindStyle } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 
 test('[integration] ResourceBinder can bind stylesheet to head', t => {
     const stylesheet = '.some-class { } .other-class { }';
 
     const pipeline = new Pipeline(new MemoryPipelineInterface());
-    const testPage = new Page('page.html', new DocumentNode());
-    const testContext = new UsageContext(testPage);
+    const testFrag = new Fragment('page.html', new DocumentNode());
+    const testContext = new PipelineContext(pipeline, testFrag);
     
-    const resourceBinder = pipeline.resourceBinder;
-    resourceBinder.bindStyle('component.html', stylesheet, StyleBindType.HEAD, testContext);
+    bindStyle('component.html', stylesheet, StyleBindType.HEAD, testContext);
 
-    const styleTag = testPage.head.findChildTagByTagName('style');
+    const head = testFrag.dom.findChildTagByTagName('head') as TagNode;
+    t.truthy(head);
+    const styleTag = head.findChildTagByTagName('style');
     t.truthy(styleTag);
 
     const styleTagText = styleTag?.firstChild;
@@ -26,14 +27,16 @@ test('[integration] ResourceBinder can bind stylesheet to link', t => {
 
     const pi = new MemoryPipelineInterface();
     const pipeline = new Pipeline(pi);
-    const testPage = new Page('page.html', new DocumentNode());
-    const testContext = new UsageContext(testPage);
-    
-    const resourceBinder = pipeline.resourceBinder;
-    resourceBinder.bindStyle('component.html', stylesheet, StyleBindType.LINK, testContext);
+    const testFrag = new Fragment('page.html', new DocumentNode());
+    const testContext = new PipelineContext(pipeline, testFrag);
+
+    bindStyle('component.html', stylesheet, StyleBindType.LINK, testContext);
 
     // verify link
-    const linkTag = testPage.head.findChildTagByTagName('link');
+    
+    const head = testFrag.dom.findChildTagByTagName('head') as TagNode;
+    t.truthy(head);
+    const linkTag = head.findChildTagByTagName('link');
     t.truthy(linkTag);
     t.is(linkTag?.getAttribute('rel'), 'stylesheet');
 

@@ -1,27 +1,26 @@
 import test from 'ava';
-import { NodeTools, DocumentNode, VarsModule, TagNode, HtmlCompileData, Fragment, UsageContext, Page, Node, EvalVars, EvalKey, MVarNode, MScopeNode } from '../../lib';
+import { NodeLogic, DocumentNode, VarsModule, TagNode, HtmlCompilerContext, Fragment, PipelineContext, Node, EvalVars, EvalKey, MVarNode, MScopeNode } from '../../lib';
 import { MockPipeline } from '../_mocks/mockPipeline';
 
 function runVarsModule(node: Node, cleanup = true, fragmentParams?: EvalVars) {
     const pipeline = new MockPipeline();
-    const page = new Page('page.html', new DocumentNode());
-    const fragment = new Fragment(page.resPath, page.dom);
-    const usageContext = new UsageContext(page, undefined, fragmentParams);
+    const fragment = new Fragment('page.html', new DocumentNode());
+    const pipelineContext = new PipelineContext(pipeline, fragment, undefined, fragmentParams);
 
-    const compileData = new HtmlCompileData(pipeline, fragment, usageContext, node);
+    const htmlContext = new HtmlCompilerContext(fragment, pipelineContext, node);
     const varsModule = new VarsModule();
 
-    varsModule.enterNode(compileData);
+    varsModule.enterNode(htmlContext);
 
-    if (cleanup && !compileData.isDeleted) {
-        varsModule.exitNode(compileData);
+    if (cleanup && !htmlContext.isDeleted) {
+        varsModule.exitNode(htmlContext);
     }
 }
 
 test('[unit] VarsModule does not affect standard elements', t => {
     const parent = new TagNode('div');
     const child = new TagNode('div');
-    NodeTools.appendChild(parent, child);
+    NodeLogic.appendChild(parent, child);
 
     runVarsModule(child);
 
@@ -43,8 +42,8 @@ test('[unit] VarsModule loads m-var into the parent scope', t => {
     const parent = new TagNode('div');
     const childVar = new MVarNode(new Map([['test', 123]]));
     const childDiv = new TagNode('div');
-    NodeTools.appendChild(parent, childVar);
-    NodeTools.appendChild(parent, childDiv);
+    NodeLogic.appendChild(parent, childVar);
+    NodeLogic.appendChild(parent, childDiv);
 
     runVarsModule(childVar);
 
@@ -56,8 +55,8 @@ test('[unit] VarsModule removes m-var after processing', t => {
     const parent = new TagNode('div');
     const childVar = new MVarNode(new Map([['test', 123]]));
     const childDiv = new TagNode('div');
-    NodeTools.appendChild(parent, childVar);
-    NodeTools.appendChild(parent, childDiv);
+    NodeLogic.appendChild(parent, childVar);
+    NodeLogic.appendChild(parent, childDiv);
 
     runVarsModule(childVar);
 
@@ -70,9 +69,9 @@ test('[unit] VarsModule loads m-scope into its own scope', t => {
     const childScope = new MScopeNode(new Map([['test', 123]]));
     const childDivOuter = new TagNode('div');
     const childDivInner = new TagNode('div');
-    NodeTools.appendChild(parent, childScope);
-    NodeTools.appendChild(parent, childDivOuter);
-    NodeTools.appendChild(childScope, childDivInner);
+    NodeLogic.appendChild(parent, childScope);
+    NodeLogic.appendChild(parent, childDivOuter);
+    NodeLogic.appendChild(childScope, childDivInner);
 
     runVarsModule(childScope, false);
 
@@ -86,9 +85,9 @@ test('[unit] VarsModule removes m-scope after processing', t => {
     const childScope = new MScopeNode(new Map([['test', 123]]));
     const childDivOuter = new TagNode('div');
     const childDivInner = new TagNode('div');
-    NodeTools.appendChild(parent, childScope);
-    NodeTools.appendChild(parent, childDivOuter);
-    NodeTools.appendChild(childScope, childDivInner);
+    NodeLogic.appendChild(parent, childScope);
+    NodeLogic.appendChild(parent, childDivOuter);
+    NodeLogic.appendChild(childScope, childDivInner);
 
     runVarsModule(childScope);
 

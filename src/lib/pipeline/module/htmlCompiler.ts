@@ -1,23 +1,19 @@
-import { Pipeline, Fragment, UsageContext, EvalContext, SlotModule, TemplateTextModule, ImportsModule, ReferenceModule, VarsModule, DomLogicModule, Node, NodeWithChildren, DocumentNode, ScriptsModule } from '../..';
+import { Pipeline, Fragment, PipelineContext, EvalContext, SlotModule, ExpressionsModule, ImportsModule, ReferenceModule, VarsModule, DomLogicModule, Node, NodeWithChildren, DocumentNode, ScriptsModule } from '../..';
 
 /**
  * Provides HTML compilation support to the pipeline.
  */
 export class HtmlCompiler {
-    private readonly pipeline: Pipeline;
     private readonly modules: HtmlCompilerModule[];
 
     /**
      * Create a new instance of the HTML compiler
-     * @param pipeline Parent Pipeline instance
      */
-    constructor(pipeline: Pipeline) {
-        this.pipeline = pipeline;
-
+    constructor() {
         this.modules = [
-            // TemplateTextModule is responsible for compiling inline expressions.
+            // ExpressionsModule is responsible for compiling inline expressions.
             // It needs to go before any modules that use attribute or text values
-            new TemplateTextModule(),
+            new ExpressionsModule(),
 
             // VarsModule is responsible for initializing the scripting / expression scope(s).
             // All other modules have access to local scope, so vars needs to go immediated after template text
@@ -48,27 +44,27 @@ export class HtmlCompiler {
      * Compiles a fragment into pure HTML
      * 
      * @param fragment Fragment to compile
-     * @param usageContext Current usage context
+     * @param context Current usage context
      */
-    compileHtml(fragment: Fragment, usageContext: UsageContext): void {
-        // create rootcompile data
-        const rootCompileData = new HtmlCompileData(this.pipeline, fragment, usageContext, fragment.dom);
+    compileHtml(fragment: Fragment, context: PipelineContext): void {
+        // create root context
+        const htmlContext = new HtmlCompilerContext(fragment, context, fragment.dom);
 
         // run modules
-        this.runModulesAt(fragment.dom, rootCompileData);
+        this.runModulesAt(fragment.dom, htmlContext);
     }
 
-    private runModulesAt(node: Node, parentNodeCompileData: HtmlCompileData): void {
+    private runModulesAt(node: Node, parentHtmlContext: HtmlCompilerContext): void {
         // create node data
-        const compileData = parentNodeCompileData.createChildData(node);
+        const htmlContext = parentHtmlContext.createChildData(node);
 
         // pre-node callback
         for (const module of this.modules) {
             if (module.enterNode != undefined) {
-                module.enterNode(compileData);
+                module.enterNode(htmlContext);
 
                 // stop processing if node is deleted
-                if (compileData.isDeleted) {
+                if (htmlContext.isDeleted) {
                     return;
                 }
             }
@@ -86,7 +82,7 @@ export class HtmlCompiler {
                 const savedPrevSibling: Node | null = currentChild.prevSibling;
     
                 // process the child
-                this.runModulesAt(currentChild, compileData);
+                this.runModulesAt(currentChild, htmlContext);
     
                 // Move on to the next node.
                 // To do this correctly, we need to detect if the current node was removed or replaced.
@@ -111,10 +107,10 @@ export class HtmlCompiler {
         // post-node callback
         for (const module of this.modules) {
             if (module.exitNode != undefined) {
-                module.exitNode(compileData);
+                module.exitNode(htmlContext);
 
                 // stop processing if node is deleted
-                if (compileData.isDeleted) {
+                if (htmlContext.isDeleted) {
                     return;
                 }
             }
@@ -130,24 +126,24 @@ export interface HtmlCompilerModule {
      * Called when the HTML Compiler begins compiling a node.
      * After all modules have finished their enterNode() section, the node's children will be compiled.
      * 
-     * @param compileData Current semi-stateful compilation data
+     * @param htmlContext Current semi-stateful compilation data
      */
-    enterNode?(compileData: HtmlCompileData): void;
+    enterNode?(htmlContext: HtmlCompilerContext): void;
 
     /**
      * Called when the HTML Compiler is finished compiling a node and its children.
      * The node can still be modified, however changes will not trickle down to children at this point.
      * 
-     * @param compileData Current semi-stateful compilation data
+     * @param htmlContext Current semi-stateful compilation data
      */
-    exitNode?(compileData: HtmlCompileData): void;
+    exitNode?(htmlContext: HtmlCompilerContext): void;
 }
 
 /**
  * Stateful compilation context that is shared between all compiler modules.
  * Forms a tree structure that runs parallel to the DOM
  */
-export class HtmlCompileData {
+export class HtmlCompilerContext {
     /**
      * Pipeline instance
      */
@@ -161,12 +157,12 @@ export class HtmlCompileData {
     /**
      * Current usage context
      */
-    readonly usageContext: UsageContext;
+    readonly pipelineContext: PipelineContext;
 
     /**
      * HTML Compile data for the parent node, if this node has a parent.
      */
-    readonly parentData?: HtmlCompileData;
+    readonly parentContext?: HtmlCompilerContext;
 
     /**
      * Node currently being compiled
@@ -189,18 +185,17 @@ export class HtmlCompileData {
 
     /**
      * Creates a new HTML compile data instance that optionally inherits from a parent
-     * @param pipeline Current pipeline instance
      * @param fragment Fragment being processed
-     * @param usageContext Current usage context
+     * @param pipelineContext Current usage context
      * @param node Node being compiled
-     * @param parentData Optional parent HtmlCompileData to inherit from
+     * @param parentContext Optional parent HtmlCompileData to inherit from
      */
-    constructor(pipeline: Pipeline, fragment: Fragment, usageContext: UsageContext, node: Node, parentData?: HtmlCompileData) {
-        this.pipeline = pipeline;
+    constructor(fragment: Fragment, pipelineContext: PipelineContext, node: Node, parentContext?: HtmlCompilerContext) {
+        this.pipeline = pipelineContext.pipeline;
         this.fragment = fragment;
-        this.usageContext = usageContext;
+        this.pipelineContext = pipelineContext;
         this.node = node;
-        this.parentData = parentData;
+        this.parentContext = parentContext;
     }
 
     /**
@@ -246,7 +241,7 @@ export class HtmlCompileData {
      * @returns an EvalContext bound to the data in this HtmlCompileData and the provided scope
      */
     createEvalContext(): EvalContext {
-        return new EvalContext(this.pipeline, this.fragment, this.usageContext, this.node.nodeData);
+        return new EvalContext(this.fragment, this.pipelineContext, this.node.nodeData);
     }
 
     /**
@@ -254,8 +249,8 @@ export class HtmlCompileData {
      * @param node node to compile with the new instance
      * @returns new HtmlCompileData instance
      */
-    createChildData(node: Node): HtmlCompileData {
-        return new HtmlCompileData(this.pipeline, this.fragment, this.usageContext, node, this);
+    createChildData(node: Node): HtmlCompilerContext {
+        return new HtmlCompilerContext(this.fragment, this.pipelineContext, node, this);
     }
 
     /**
@@ -289,30 +284,30 @@ export interface ImportDefinition {
     type: 'm-fragment' | 'm-component';
 }
 
-function hasImport(nodeData: HtmlCompileData | undefined, alias: string): boolean {
+function hasImport(htmlContext: HtmlCompilerContext | undefined, alias: string): boolean {
     const key = alias.toLowerCase();
 
-    while (nodeData != undefined) {
-        if (nodeData.localReferenceImports.has(key)) {
+    while (htmlContext != undefined) {
+        if (htmlContext.localReferenceImports.has(key)) {
             return true;
         }
 
-        nodeData = nodeData.parentData;
+        htmlContext = htmlContext.parentContext;
     }
 
     return false;
 }
 
-function getImport(nodeData: HtmlCompileData | undefined, alias: string): ImportDefinition {
+function getImport(htmlContext: HtmlCompilerContext | undefined, alias: string): ImportDefinition {
     const key = alias.toLowerCase();
 
-    while (nodeData != undefined) {
+    while (htmlContext != undefined) {
 
-        if (nodeData.localReferenceImports.has(key)) {
-            return nodeData.localReferenceImports.get(key) as ImportDefinition;
+        if (htmlContext.localReferenceImports.has(key)) {
+            return htmlContext.localReferenceImports.get(key) as ImportDefinition;
         }
 
-        nodeData = nodeData.parentData;
+        htmlContext = htmlContext.parentContext;
     }
 
     throw new Error(`Alias ${ key } is not defined. Always call hasImport() before getImport()`);

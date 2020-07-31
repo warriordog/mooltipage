@@ -4,7 +4,7 @@ import { comparePageMacro, compareFragmentMacro } from '../_util/htmlCompare';
 test('[endToEnd] m-if works at the root context', comparePageMacro,
 `<!DOCTYPE html>
 <html>
-    <head></head>
+    <head><title>m-if tests</title></head>
     <body>
         <m-if ?="{{ true }}">
             <div class="good"></div>
@@ -14,12 +14,12 @@ test('[endToEnd] m-if works at the root context', comparePageMacro,
         </m-if>
     </body>
 </html>`,
-'<!DOCTYPE html><html><head></head><body><div class="good"></div></body></html>');
+'<!DOCTYPE html><html><head><title>m-if tests</title></head><body><div class="good"></div></body></html>');
 
 test('[endToEnd] m-if works with truthy and falsy values', comparePageMacro,
 `<!DOCTYPE html>
 <html>
-    <head></head>
+    <head><title>m-if tests</title></head>
     <body>
         <m-if ?="{{ 1 }}">
             <div class="good"></div>
@@ -29,12 +29,12 @@ test('[endToEnd] m-if works with truthy and falsy values', comparePageMacro,
         </m-if>
     </body>
 </html>`,
-'<!DOCTYPE html><html><head></head><body><div class="good"></div></body></html>');
+'<!DOCTYPE html><html><head><title>m-if tests</title></head><body><div class="good"></div></body></html>');
 
 test('[endToEnd] m-if works with vars', comparePageMacro,
 `<!DOCTYPE html>
 <html>
-    <head></head>
+    <head><title>m-if tests</title></head>
     <body>
         <m-var test="{{ true }}" />
         <m-if ?="{{ $.test }}">
@@ -45,12 +45,12 @@ test('[endToEnd] m-if works with vars', comparePageMacro,
         </m-if>
     </body>
 </html>`,
-'<!DOCTYPE html><html><head></head><body><div class="good"></div></body></html>');
+'<!DOCTYPE html><html><head><title>m-if tests</title></head><body><div class="good"></div></body></html>');
 
 test('[endToEnd] m-if works when nested', comparePageMacro,
 `<!DOCTYPE html>
 <html>
-    <head></head>
+    <head><title>m-if tests</title></head>
     <body>
         <m-if ?="{{ true }}">
             <m-if ?="{{ true }}">
@@ -65,7 +65,7 @@ test('[endToEnd] m-if works when nested', comparePageMacro,
         </m-if>
     </body>
 </html>`,
-'<!DOCTYPE html><html><head></head><body><div class="good"></div></body></html>');
+'<!DOCTYPE html><html><head><title>m-if tests</title></head><body><div class="good"></div></body></html>');
 
 test('[endToEnd] m-if respects scopes', compareFragmentMacro,
 `<m-var test="{{ true }}" />

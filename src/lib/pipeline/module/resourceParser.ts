@@ -1,16 +1,14 @@
-import { EvalEngine, Pipeline, DomParser, Fragment, DocumentNode, Page, Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ResourceType, EvalContent, ComponentScriptInstance, StyleBindType, TagNode, TextNode } from '../..';
+import {  Pipeline, DomParser, Fragment, DocumentNode, Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ResourceType, EvalContent, StyleBindType, TagNode, TextNode, EvalScope, parseComponentClass, parseComponentFunction } from '../..';
 
 /**
  * Provides input parsing functionality to the pipeline
  */
 export class ResourceParser {
-    private readonly evalEngine: EvalEngine;
     private readonly pipeline: Pipeline;
     private readonly domParser: DomParser;
 
     constructor(pipeline: Pipeline) {
         this.pipeline = pipeline;
-        this.evalEngine = new EvalEngine();
         this.domParser = new DomParser();
     }
 
@@ -26,20 +24,6 @@ export class ResourceParser {
 
         // create fragment
         return new Fragment(resPath, dom);
-    }
-
-    /**
-     * Parse HTML text as a page
-     * @param resPath Source path
-     * @param html HTMl content
-     * @returns a Page instance parsed from the HTML
-     */
-    parsePage(resPath: string, html: string): Page {
-        // parse HTML
-        const dom: DocumentNode = this.domParser.parseDom(html);
-
-        // create page
-        return new Page(resPath, dom);
     }
 
     /**
@@ -124,7 +108,7 @@ export class ResourceParser {
         const scriptText = this.resolveResourceSection(scriptSrc, scriptNode, ResourceType.JAVASCRIPT);
 
         // parse JS
-        const scriptFunc: EvalContent<ComponentScriptInstance> = this.parseComponentScriptJs(scriptType, scriptText);
+        const scriptFunc: EvalContent<EvalScope> = parseComponentScriptJs(scriptType, scriptText);
 
         // create component template
         return new ComponentScript(scriptType, scriptFunc, scriptSrc);
@@ -197,14 +181,14 @@ export class ResourceParser {
             return sectionNode.createDomFromChildren();
         }
     }
+}
 
-    private parseComponentScriptJs(scriptType: ComponentScriptType, text: string): EvalContent<Record<string, unknown>> {
-        if (scriptType === ComponentScriptType.CLASS) {
-            return this.evalEngine.parseComponentClass(text);
-        } else if (scriptType === ComponentScriptType.FUNCTION) {
-            return this.evalEngine.parseComponentFunction(text);
-        } else {
-            throw new Error(`Unsupported component <script> type: '${ scriptType }'`);
-        }
+function parseComponentScriptJs(scriptType: ComponentScriptType, text: string): EvalContent<EvalScope> {
+    if (scriptType === ComponentScriptType.CLASS) {
+        return parseComponentClass(text);
+    } else if (scriptType === ComponentScriptType.FUNCTION) {
+        return parseComponentFunction(text);
+    } else {
+        throw new Error(`Unsupported component <script> type: '${ scriptType }'`);
     }
 }

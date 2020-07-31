@@ -1,21 +1,21 @@
-import { MIfNode, MElseIfNode, MElseNode, HtmlCompileData, MForNode, HtmlCompilerModule, DocumentNode, MScopeNode, MForOfNode, MForInNode, ConditionalNode } from '../../..';
+import { MIfNode, MElseIfNode, MElseNode, HtmlCompilerContext, MForNode, HtmlCompilerModule, DocumentNode, MScopeNode, MForOfNode, MForInNode, ConditionalNode } from '../../..';
 
 /**
  * Process dom logic: m-if, m-for, etc.
  */
 export class DomLogicModule implements HtmlCompilerModule {
-    enterNode(compileData: HtmlCompileData): void {
-        if (MIfNode.isMIfNode(compileData.node) || MElseIfNode.isMElseIfNode(compileData.node) || MElseNode.isMElseNode(compileData.node)) {
+    enterNode(htmlContext: HtmlCompilerContext): void {
+        if (MIfNode.isMIfNode(htmlContext.node) || MElseIfNode.isMElseIfNode(htmlContext.node) || MElseNode.isMElseNode(htmlContext.node)) {
             // process conditional nodes
-            this.compileConditional(compileData.node, compileData);
+            this.compileConditional(htmlContext.node, htmlContext);
         
-        } else if (MForNode.isMForNode(compileData.node)) {
+        } else if (MForNode.isMForNode(htmlContext.node)) {
             // process m-for nodes
-            this.compileMFor(compileData.node, compileData);
+            this.compileMFor(htmlContext.node, htmlContext);
         }
     }
 
-    private compileConditional(conditional: ConditionalNode, compileData: HtmlCompileData): void {
+    private compileConditional(conditional: ConditionalNode, htmlContext: HtmlCompilerContext): void {
         // if conditional is true, then delete rest of conditional train and promote children
         if (conditional.isTruthy) {
             this.removeFollowingConditionals(conditional);
@@ -28,7 +28,7 @@ export class DomLogicModule implements HtmlCompilerModule {
         }
 
         // mark as deleted
-        compileData.setDeleted();
+        htmlContext.setDeleted();
     }
 
     private removeFollowingConditionals(trueConditional: ConditionalNode): void {
@@ -46,7 +46,7 @@ export class DomLogicModule implements HtmlCompilerModule {
         }
     }
 
-    private compileMFor(mFor: MForNode, compileData: HtmlCompileData): void {
+    private compileMFor(mFor: MForNode, htmlContext: HtmlCompilerContext): void {
         // extract contents
         const forContents: DocumentNode = mFor.createDomFromChildren();
 
@@ -62,7 +62,7 @@ export class DomLogicModule implements HtmlCompilerModule {
 
         // remove m-for after processing
         mFor.removeSelf();
-        compileData.setDeleted();
+        htmlContext.setDeleted();
     }
 
     private evaluateMFor(mFor: MForNode): MForIteration[] {

@@ -1,4 +1,4 @@
-import { NodeTools } from '..';
+import { NodeLogic } from '..';
 
 /**
  * Recognized node types
@@ -23,36 +23,36 @@ export abstract class Node {
 
     /**
      * Parent of this node, or null if there is none.
-     * Do not modify this directly, use NodeTools or instance methods.
+     * Do not modify this directly, use NodeLogic or instance methods.
      */
     parentNode: NodeWithChildren | null = null;
 
     /**
      * Previous sibling node, or null if none exists.
-     * Do not modify this directly, use NodeTools or instance methods.
+     * Do not modify this directly, use NodeLogic or instance methods.
      */
     prevSibling: Node | null = null;
 
     /**
      * Next sibling node, or null if none exists.
-     * Do not modify this directly, use NodeTools or instance methods.
+     * Do not modify this directly, use NodeLogic or instance methods.
      */
     nextSibling: Node | null = null;
 
     /**
      * The closest previous sibling that is a TagNode, or null if none exists.
-     * Do not modify this directly, use NodeTools or instance methods.
+     * Do not modify this directly, use NodeLogic or instance methods.
      */
     get prevSiblingTag(): TagNode | null {
-        return NodeTools.getPreviousTag(this);
+        return NodeLogic.getPreviousTag(this);
     }
 
     /**
      * The closest following sibling that is a TagNode, or null if none exists.
-     * Do not modify this directly, use NodeTools or instance methods.
+     * Do not modify this directly, use NodeLogic or instance methods.
      */
     get nextSiblingTag(): TagNode | null {
-        return NodeTools.getNextTag(this);
+        return NodeLogic.getNextTag(this);
     }
 
     /**
@@ -74,7 +74,7 @@ export abstract class Node {
      * @param node Node to insert
      */
     appendSibling(node: Node): void {
-        NodeTools.appendSibling(node, this);
+        NodeLogic.appendSibling(node, this);
     }
 
     /**
@@ -82,14 +82,14 @@ export abstract class Node {
      * @param node Node to insert
      */
     prependSibling(node: Node): void {
-        NodeTools.prependSibling(node, this);
+        NodeLogic.prependSibling(node, this);
     }
 
     /**
      * Remove this node and all children from the DOM
      */
     removeSelf(): void {
-        NodeTools.detatchNode(this);
+        NodeLogic.detatchNode(this);
     }
     
     /**
@@ -97,7 +97,7 @@ export abstract class Node {
      * @param nodes Nodes to insert in replacement. Can be empty.
      */
     replaceSelf(nodes: Node[]): void {
-        NodeTools.replaceNode(this, nodes);
+        NodeLogic.replaceNode(this, nodes);
     }
 
     /**
@@ -107,6 +107,16 @@ export abstract class Node {
      * @returns The generated clone
      */
     abstract clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): Node;
+
+    /**
+     * Serializes this node into HTML.
+     * Child nodes will be automatically serialize.
+     * 
+     * @returns HTML text representation of this node
+     */
+    toHtml(): string {
+        return NodeLogic.serializeNode(this);
+    }
 }
 
 /**
@@ -115,7 +125,7 @@ export abstract class Node {
 export abstract class NodeWithChildren extends Node {
     /**
      * Children of this node.
-     * Do not modify this directly, use NodeTools or instance methods.
+     * Do not modify this directly, use NodeLogic or instance methods.
      */
     childNodes: Node[] = [];
 
@@ -123,14 +133,14 @@ export abstract class NodeWithChildren extends Node {
      * The first child node of this parent, or null if there are no children.
      */
     get firstChild(): Node | null {
-        return NodeTools.getFirstNode(this.childNodes);
+        return NodeLogic.getFirstNode(this.childNodes);
     }
 
     /**
      * The last child node of this parent, or null if there are no children.
      */
     get lastChild(): Node | null {
-        return NodeTools.getLastNode(this.childNodes);
+        return NodeLogic.getLastNode(this.childNodes);
     }
 
     /**
@@ -138,7 +148,7 @@ export abstract class NodeWithChildren extends Node {
      * @returns array of TagNodes containing all child tags
      */
     getChildTags(): TagNode[] {
-        return NodeTools.getChildTags(this);
+        return NodeLogic.getChildTags(this);
     }
     
     /**
@@ -146,7 +156,7 @@ export abstract class NodeWithChildren extends Node {
      * @param child Node to insert
      */
     appendChild(child: Node): void {
-        NodeTools.appendChild(this, child);
+        NodeLogic.appendChild(this, child);
     }
 
     /**
@@ -154,14 +164,14 @@ export abstract class NodeWithChildren extends Node {
      * @param child Node to insert
      */
     prependChild(child: Node): void {
-        NodeTools.prependChild(this, child);
+        NodeLogic.prependChild(this, child);
     }
     
     /**
      * Removes all children from this node
      */
     clear(): void {
-        NodeTools.clear(this);
+        NodeLogic.clear(this);
     }
 
     /**
@@ -169,7 +179,7 @@ export abstract class NodeWithChildren extends Node {
      * @param children Child nodes to append. Can be empty.
      */
     appendChildren(children: Node[]): void {
-        NodeTools.appendChildNodes(this, children);
+        NodeLogic.appendChildNodes(this, children);
     }
 
     /**
@@ -180,7 +190,7 @@ export abstract class NodeWithChildren extends Node {
      * @returns First matching child, or null
      */
     findChildNode(matcher: (node: Node) => boolean, deep = true): Node | null {
-        return NodeTools.findChildNode(this, matcher, deep);
+        return NodeLogic.findChildNode(this, matcher, deep);
     }
 
     /**
@@ -191,7 +201,7 @@ export abstract class NodeWithChildren extends Node {
      * @returns Array of all Nodes that match condition
      */
     findChildNodes(matcher: (node: Node) => boolean, deep = true): Node[] {
-        return NodeTools.findChildNodes(this, matcher, deep);
+        return NodeLogic.findChildNodes(this, matcher, deep);
     }
 
     /**
@@ -202,7 +212,7 @@ export abstract class NodeWithChildren extends Node {
      * @returns First TagNode that matches the condition, or null.
      */
     findChildTag(matcher: (tag: TagNode) => boolean, deep = true): TagNode | null {
-        return NodeTools.findChildTag(this, matcher, deep);
+        return NodeLogic.findChildTag(this, matcher, deep);
     }
 
     /**
@@ -213,7 +223,7 @@ export abstract class NodeWithChildren extends Node {
      * @returns Array of all TagNodes that match condition
      */
     findChildTags(matcher: (tag: TagNode) => boolean, deep = true): TagNode[] {
-        return NodeTools.findChildTags(this, matcher, deep);
+        return NodeLogic.findChildTags(this, matcher, deep);
     }
 
     /**
@@ -300,7 +310,7 @@ export abstract class NodeWithChildren extends Node {
      * @returns the created DocumentNode
      */
     createDomFromChildren(): DocumentNode {
-        return NodeTools.createDomFromChildren(this);
+        return NodeLogic.createDomFromChildren(this);
     }
 
     /**
@@ -311,7 +321,7 @@ export abstract class NodeWithChildren extends Node {
      */
     removeSelf(keepChildren = false): void {
         if (keepChildren) {
-            NodeTools.replaceNode(this, this.childNodes);
+            NodeLogic.replaceNode(this, this.childNodes);
         } else {
             super.removeSelf();
         }
@@ -546,7 +556,7 @@ export class TagNode extends NodeWithChildren {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): TagNode {
-        return NodeTools.cloneTagNode(this, deep, callback);
+        return NodeLogic.cloneTagNode(this, deep, callback);
     }
 
     /**
@@ -571,7 +581,7 @@ export class TextNode extends NodeWithText {
     }
 
     clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): TextNode {
-        return NodeTools.cloneTextNode(this, callback);
+        return NodeLogic.cloneTextNode(this, callback);
     }
 
     /**
@@ -596,7 +606,7 @@ export class CommentNode extends NodeWithText {
     }
 
     clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): CommentNode {
-        return NodeTools.cloneCommentNode(this, callback);
+        return NodeLogic.cloneCommentNode(this, callback);
     }
 
     /**
@@ -617,7 +627,7 @@ export class CDATANode extends NodeWithChildren {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): CDATANode {
-        return NodeTools.cloneCDATANode(this, deep, callback);
+        return NodeLogic.cloneCDATANode(this, deep, callback);
     }
 
     /**
@@ -649,7 +659,7 @@ export class ProcessingInstructionNode extends NodeWithData {
     }
 
     clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): ProcessingInstructionNode {
-        return NodeTools.cloneProcessingInstructionNode(this, callback);
+        return NodeLogic.cloneProcessingInstructionNode(this, callback);
     }
 
     /**
@@ -681,7 +691,7 @@ export class DocumentNode extends NodeWithChildren {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): DocumentNode {
-        return NodeTools.cloneDocumentNode(this, deep, callback);
+        return NodeLogic.cloneDocumentNode(this, deep, callback);
     }
 
     /**
@@ -759,7 +769,7 @@ export class MFragmentNode extends ExternalReferenceNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MFragmentNode {
-        return NodeTools.cloneMFragmentNode(this, deep, callback);
+        return NodeLogic.cloneMFragmentNode(this, deep, callback);
     }
 
     /**
@@ -787,7 +797,7 @@ export class MComponentNode extends ExternalReferenceNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MComponentNode {
-        return NodeTools.cloneMComponentNode(this, deep, callback);
+        return NodeLogic.cloneMComponentNode(this, deep, callback);
     }
 
     /**
@@ -845,7 +855,7 @@ export class MContentNode extends SlotReferenceNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MContentNode {
-        return NodeTools.cloneMContentNode(this, deep, callback);
+        return NodeLogic.cloneMContentNode(this, deep, callback);
     }
 
     /**
@@ -872,7 +882,7 @@ export class MSlotNode extends SlotReferenceNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MSlotNode {
-        return NodeTools.cloneMSlotNode(this, deep, callback);
+        return NodeLogic.cloneMSlotNode(this, deep, callback);
     }
 
     /**
@@ -899,7 +909,7 @@ export class MVarNode extends TagNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MVarNode {
-        return NodeTools.cloneMVarNode(this, deep, callback);
+        return NodeLogic.cloneMVarNode(this, deep, callback);
     }
 
     /**
@@ -926,7 +936,7 @@ export class MScopeNode extends TagNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MScopeNode {
-        return NodeTools.cloneMScopeNode(this, deep, callback);
+        return NodeLogic.cloneMScopeNode(this, deep, callback);
     }
 
     /**
@@ -1013,7 +1023,7 @@ export class MImportFragmentNode extends MImportNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MImportFragmentNode {
-        return NodeTools.cloneMImportFragmentNode(this, deep, callback);
+        return NodeLogic.cloneMImportFragmentNode(this, deep, callback);
     }
 
     /**
@@ -1045,7 +1055,7 @@ export class MImportComponentNode extends MImportNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MImportComponentNode {
-        return NodeTools.cloneMImportComponentNode(this, deep, callback);
+        return NodeLogic.cloneMImportComponentNode(this, deep, callback);
     }
 
     /**
@@ -1135,7 +1145,7 @@ export class MIfNode extends ConditionalNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MIfNode {
-        return NodeTools.cloneMIfNode(this, deep, callback);
+        return NodeLogic.cloneMIfNode(this, deep, callback);
     }
 
     /**
@@ -1183,7 +1193,7 @@ export class MElseIfNode extends ConditionalNode {
 
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MElseIfNode {
-        return NodeTools.cloneMElseIfNode(this, deep, callback);
+        return NodeLogic.cloneMElseIfNode(this, deep, callback);
     }
 
     /**
@@ -1223,7 +1233,7 @@ export class MElseNode extends ConditionalNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MElseNode {
-        return NodeTools.cloneMElseNode(this, deep, callback);
+        return NodeLogic.cloneMElseNode(this, deep, callback);
     }
 
     /**
@@ -1335,7 +1345,7 @@ export class MForOfNode extends MForNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MForOfNode {
-        return NodeTools.cloneMForOfNode(this, deep, callback);
+        return NodeLogic.cloneMForOfNode(this, deep, callback);
     }
 
     /**
@@ -1365,7 +1375,7 @@ export class MForInNode extends MForNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MForInNode {
-        return NodeTools.cloneMForInNode(this, deep, callback);
+        return NodeLogic.cloneMForInNode(this, deep, callback);
     }
 
     /**
@@ -1404,7 +1414,7 @@ export class MScriptNode extends TagNode {
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MScriptNode {
-        return NodeTools.cloneMScriptNode(this, deep, callback);
+        return NodeLogic.cloneMScriptNode(this, deep, callback);
     }
 
     /**
