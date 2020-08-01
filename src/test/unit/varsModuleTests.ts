@@ -1,14 +1,13 @@
 import test from 'ava';
 import { MockPipeline } from '../_mocks/mockPipeline';
-import { Node, DocumentNode, TagNode, MVarNode, MScopeNode, ScopeKey, Fragment } from '../../lib';
+import { Node, DocumentNode, TagNode, MVarNode, MScopeNode, ScopeKey, Fragment, MDataNode, MimeType } from '../../lib';
 import { HtmlCompilerContext } from '../../lib/pipeline/module/htmlCompiler';
 import { VarsModule } from '../../lib/pipeline/module/compiler/varsModule';
 import * as NodeLogic from '../../lib/dom/nodeLogic';
 import { PipelineContext } from '../../lib/pipeline/standardPipeline';
 import { createFragmentScope } from '../../lib/pipeline/module/evalEngine';
 
-function runVarsModule(node: Node, cleanup = true, fragmentParams: ReadonlyMap<ScopeKey, unknown> = new Map()) {
-    const pipeline = new MockPipeline();
+function runVarsModule(node: Node, cleanup = true, fragmentParams: ReadonlyMap<ScopeKey, unknown> = new Map(), pipeline = new MockPipeline()) {
     const testFrag: Fragment = {
         path: 'page.html',
         dom: new DocumentNode()
@@ -138,4 +137,80 @@ test('[unit] VarsModule handles m-scope with null attributes', t => {
 
     t.true(mScope.hasAttribute('test'));
     t.is(mScope.getRawAttribute('test'), null);
+});
+
+test('[unit] VarsModule removes <m-data>', t => {
+    const mData = new MDataNode(MimeType.TEXT);
+
+    const root = new DocumentNode();
+    root.appendChild(mData);
+    
+    runVarsModule(mData);
+
+    t.falsy(mData.parentNode);
+});
+
+test('[unit] VarsModule compiles text', t => {
+    const dataSrc = 'text.txt';
+    const dataType = MimeType.TEXT;
+    const dataValue = 'Test text';
+    const dataVar = 'test';
+
+    const mData = new MDataNode(dataType);
+    mData.setAttribute(dataVar, dataSrc);
+
+    const root = new DocumentNode();
+    root.appendChild(mData);
+
+    const pipe = new MockPipeline();
+    pipe.mockRawTexts.push([dataSrc, dataType, dataValue]);
+    
+    runVarsModule(mData, undefined, undefined, pipe);
+
+    t.is(root.nodeData[dataVar], dataValue);
+});
+
+test('[unit] VarsModule compiles json', t => {
+    const dataSrc = 'json.json';
+    const dataType = MimeType.JSON;
+    const dataValue = '{ "testvalue": "value" }';
+    const dataVar = 'test';
+
+    const mData = new MDataNode(dataType);
+    mData.setAttribute(dataVar, dataSrc);
+
+    const root = new DocumentNode();
+    root.appendChild(mData);
+
+    const pipe = new MockPipeline();
+    pipe.mockRawTexts.push([dataSrc, dataType, dataValue]);
+    
+    runVarsModule(mData, undefined, undefined, pipe);
+
+    const outValue = root.nodeData[dataVar] as Record<string, unknown>;
+    t.truthy(outValue);
+    t.is(outValue.testvalue, 'value');
+});
+
+test('[unit] VarsModule compiles multiple data', t => {
+    const mData = new MDataNode(MimeType.JSON);
+    mData.setAttribute('test1', 'test1.json');
+    mData.setAttribute('test2', 'test2.json');
+
+    const root = new DocumentNode();
+    root.appendChild(mData);
+
+    const pipe = new MockPipeline();
+    pipe.mockRawTexts.push(['test1.json', MimeType.JSON, '{ "testvalue": "value1" }']);
+    pipe.mockRawTexts.push(['test2.json', MimeType.JSON, '{ "testvalue": "value2" }']);
+    
+    runVarsModule(mData, undefined, undefined, pipe);
+
+    const test1 = root.nodeData.test1 as Record<string, unknown>;
+    t.truthy(test1);
+    t.is(test1.testvalue, 'value1');
+
+    const test2 = root.nodeData.test2 as Record<string, unknown>;
+    t.truthy(test2);
+    t.is(test2.testvalue, 'value2');
 });

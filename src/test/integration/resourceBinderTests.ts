@@ -1,7 +1,7 @@
 import test from 'ava';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { StandardPipeline, PipelineContext } from '../../lib/pipeline/standardPipeline';
-import { DocumentNode, TagNode, TextNode, Node, ResourceType, Fragment } from '../../lib';
+import { DocumentNode, TagNode, TextNode, Node, MimeType, Fragment } from '../../lib';
 import { bindStyle, StyleBindType } from '../../lib/pipeline/module/resourceBinder';
 
 test('[integration] ResourceBinder can bind stylesheet to head', t => {
@@ -71,6 +71,6 @@ test('[integration] ResourceBinder can bind stylesheet to link', t => {
 
     // verify file contents
     const createdStylesheet = pi.getCreated(href as string);
-    t.is(createdStylesheet?.type, ResourceType.CSS);
+    t.is(createdStylesheet?.type, MimeType.CSS);
     t.is(createdStylesheet?.content, stylesheet);
 });

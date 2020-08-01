@@ -3,7 +3,7 @@ import Path from 'path';
 
 import { StandardPipeline } from '../pipeline/standardPipeline';
 import * as FsUtils from '../fs/fsUtils';
-import { Page, Pipeline, HtmlFormatter, PipelineInterface, ResourceType } from '..';
+import { Page, Pipeline, HtmlFormatter, PipelineInterface, MimeType } from '..';
 import { StandardHtmlFormatterMode, StandardHtmlFormatter } from '../pipeline/module/standardHtmlFormatter';
 
 /**
@@ -133,20 +133,20 @@ class NodePipelineInterface implements PipelineInterface {
         this.destinationPath = destinationPath;
     }
 
-    getResource(type: ResourceType, resPath: string): string {
+    getResource(type: MimeType, resPath: string): string {
         const htmlPath = this.resolveSourceResource(resPath);
 
         return FsUtils.readFile(htmlPath);
     }
 
-    writeResource(type: ResourceType, resPath: string, content: string): void {
+    writeResource(type: MimeType, resPath: string, content: string): void {
         const htmlPath = this.resolveDestinationResource(resPath);
 
         FsUtils.writeFile(htmlPath, content, true);
     }
 
     // sourceResPath is available as last parameter, if needed
-    createResource(type: ResourceType, contents: string): string {
+    createResource(type: MimeType, contents: string): string {
         const resPath = this.createResPath(type);
 
         this.writeResource(type, resPath, contents);
@@ -171,7 +171,7 @@ class NodePipelineInterface implements PipelineInterface {
     }
 
     // TODO better implementation
-    private createResPath(type: ResourceType): string {
+    private createResPath(type: MimeType): string {
         const index = this.nextResIndex;
         this.nextResIndex++;
 
@@ -188,13 +188,13 @@ class NodePipelineInterface implements PipelineInterface {
  * @param resourceType Resource type to get extension for
  * @returns filename extension, without the dot.
  */
-export function getResourceTypeExtension(resourceType: ResourceType): string {
+export function getResourceTypeExtension(resourceType: MimeType): string {
     switch(resourceType) {
-        case ResourceType.HTML: return 'html'
-        case ResourceType.CSS: return 'css'
-        case ResourceType.JAVASCRIPT: return 'js'
-        case ResourceType.JSON: return 'json'
-        case ResourceType.TEXT: return 'txt'
+        case MimeType.HTML: return 'html'
+        case MimeType.CSS: return 'css'
+        case MimeType.JAVASCRIPT: return 'js'
+        case MimeType.JSON: return 'json'
+        case MimeType.TEXT: return 'txt'
         default: return 'dat'
     }
 }

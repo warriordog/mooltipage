@@ -1,7 +1,7 @@
 import test from 'ava';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
-import { ResourceType } from '../../lib';
+import { MimeType } from '../../lib';
 import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
 test('[smoke] Build produces a page and does not crash', t => {
@@ -53,6 +53,7 @@ function createPipeline(): StandardPipeline {
 
         <m-fragment src="header.html" title="{{ $.name }}" />
 
+        <m-data type="application/json" sections="sectiondata.json" />
         <m-script src="sectionLoader.js" />
 
         <m-for var="sn" of="{{ $.sectionids }}">
@@ -101,7 +102,7 @@ function createPipeline(): StandardPipeline {
         <style bind="head" src="section.style.css"></style>
     `);
     pipelineInterface.setSource('section.style.css', {
-        type: ResourceType.CSS,
+        type: MimeType.CSS,
         content: `
             section.defaultSection {
                 background-color: white;
@@ -109,14 +110,19 @@ function createPipeline(): StandardPipeline {
         `
     });
     pipelineInterface.setSource('sectionLoader.js', {
-        type: ResourceType.JAVASCRIPT,
+        type: MimeType.JAVASCRIPT,
         content: `
-            const sectionIds = [];
-            for (let i = 0; i < 3; i++) {
-                const sectionId = i + 1;
-                sectionIds.push(sectionId);
-            }
-            $.sectionids = sectionIds;
+            $.sectionids = $.sections.map(s => s.id);
+        `
+    });
+    pipelineInterface.setSource('sectiondata.json', {
+        type: MimeType.JSON,
+        content: `
+        [
+            { "id": 1 },
+            { "id": 2 },
+            { "id": 3 }
+        ]
         `
     });
 

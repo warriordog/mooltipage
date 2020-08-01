@@ -1,8 +1,10 @@
 import { MemoryPipelineInterface } from './memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
-import { Page, Fragment, HtmlFormatter } from '../../lib';
+import { Page, Fragment, HtmlFormatter, MimeType } from '../../lib';
 
 export class MockPipeline extends StandardPipeline {
+    readonly mockRawTexts: [string, MimeType, string][] = [];
+
     readonly mockPi: MemoryPipelineInterface;
 
     constructor(pi?: MemoryPipelineInterface, htmlFormatter?: HtmlFormatter) {
@@ -36,5 +38,18 @@ export class MockPipeline extends StandardPipeline {
 
     getRawFragment(): Fragment {
         throw new Error('Not implemented');
+    }
+    
+    getRawText(resPath: string, mimeType: MimeType): string {
+        const rawText = this.mockRawTexts.find(text => text[0] === resPath && text[1] === mimeType);
+        if (rawText != undefined) {
+            return rawText[2];
+        } else {
+            throw new Error(`No mock defined for getRawText(resPath='${ resPath }', resourceType='${ mimeType }')`)
+        }
+    }
+
+    reset(): void {
+        // do nothing
     }
 }

@@ -1,4 +1,4 @@
-import { DocumentNode, TextNode, TagNode, ResourceType } from '../..';
+import { DocumentNode, TextNode, TagNode, MimeType } from '../..';
 import { StandardPipeline, PipelineContext } from '../standardPipeline';
 
 /**
@@ -42,7 +42,7 @@ function bindStyleHead(styleContent: string, dom: DocumentNode): void {
 
 function bindStyleLink(styleContent: string, dom: DocumentNode, pipeline: StandardPipeline, sourceResPath: string): void {
     // link to project
-    const styleResPath = pipeline.linkResource(ResourceType.CSS, styleContent, sourceResPath);
+    const styleResPath = pipeline.linkResource(MimeType.CSS, styleContent, sourceResPath);
 
     // create link tag
     const link = new TagNode('link');

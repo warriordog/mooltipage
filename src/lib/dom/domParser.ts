@@ -1,5 +1,6 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
-import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from './node';
+import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode, MDataNode } from './node';
+import { MimeType } from '../util/mimeType';
 /**
  * Parses HTML into a dom using htmlparser2
  */
@@ -187,6 +188,8 @@ export class DomHandler implements Partial<Handler> {
                 return this.createMForNode(attributes);
             case 'm-script':
                 return this.createMScriptNode(attributes);
+            case 'm-data':
+                return this.createMDataNode(attributes);
             default:
                 return new TagNode(tagName, attributes);
         }
@@ -269,5 +272,12 @@ export class DomHandler implements Partial<Handler> {
         const src = attributes.get('src');
         if (src == undefined || src == null) throw new Error('Parse error: <m-script> is missing required attribute: src');
         return new MScriptNode(src, attributes);
+    }
+
+    private createMDataNode(attributes: Map<string, string | null>): MDataNode {
+        const type = attributes.get('type');
+        if (type == undefined || type == null) throw new Error('Parse error: <m-data> is missing required attribute: type');
+        if (type !== MimeType.JSON && type !== MimeType.TEXT) throw new Error(`Parse error: <m-data> has invalid value for attribute 'type': '${ type }'`)
+        return new MDataNode(type, attributes);
     }
 }

@@ -1,4 +1,4 @@
-import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from './node';
+import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode, MDataNode } from './node';
 
 /**
  * Detatch a node and its children from the DOM.
@@ -520,6 +520,21 @@ export function cloneMScriptNode(node: MScriptNode, deep: boolean, callback?: (o
     const newAttrs = cloneAttributes(node);
 
     const newNode = new MScriptNode(node.src, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+/**
+ * Clones an MDataNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMDataNode(node: MDataNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MDataNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MDataNode(node.type, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 

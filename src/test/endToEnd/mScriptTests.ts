@@ -2,7 +2,7 @@ import test from 'ava';
 import { compareFragmentMacro } from '../_util/htmlCompare';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
-import { ResourceType } from '../../lib';
+import { MimeType } from '../../lib';
 
 test('[endToEnd] <m-script> executes scripts in correct scope', compareFragmentMacro,
 `<m-script src="script.js" />
@@ -51,7 +51,7 @@ test('[endToEnd] <m-script> allows script exceptions to bubble', t => {
     const pi = new MemoryPipelineInterface();
     pi.setSourceHtml('page.html', `<!DOCTYPE html><html><head><title>MScript Tests</title></head><body><m-script src="script.js" /></body></html>`);
     pi.setSource('script.js', {
-        type: ResourceType.JAVASCRIPT,
+        type: MimeType.JAVASCRIPT,
         content: `throw new Error('${ errorMessage }');`
     });
     const pipeline = new StandardPipeline(pi);

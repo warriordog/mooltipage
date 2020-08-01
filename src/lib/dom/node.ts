@@ -1,4 +1,5 @@
 import * as NodeLogic from './nodeLogic';
+import { MimeType } from '../util/mimeType';
 
 /**
  * Recognized node types
@@ -1423,5 +1424,79 @@ export class MScriptNode extends TagNode {
      */
     static isMScriptNode(node: Node): node is MScriptNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-script';
+    }
+}
+
+/**
+ * Supported MIME types of data contents
+ */
+export type MDataNodeType = MimeType.JSON | MimeType.TEXT
+
+/**
+ * A data reference defined in an <m-data> node
+ */
+export interface MDataNodeRef {
+    /**
+     * Path to the data file
+     */
+    resPath: string,
+
+    /**
+     * Name of the scope variable to bind to
+     */
+    varName: string
+}
+
+/**
+ * <m-data> node.
+ * Loads data files into the containing scope.
+ * Once loaded, content is standard mutable scope data.
+ * Multiple data files can be defined on the same tag.
+ */
+export class MDataNode extends TagNode {
+    constructor(type: MDataNodeType, attributes?: Map<string, unknown>) {
+        super('m-data', attributes);
+
+        this.type = type;
+    }
+
+    /**
+     * MIME type of data loaded by this MDataNode
+     */
+    get type(): MDataNodeType {
+        return this.getRequiredValueAttribute('type') as MDataNodeType;
+    }
+    set type(newType: MDataNodeType) {
+        this.setRequiredValueAttribute('type', newType);
+    }
+    
+    /**
+     * Data references defined by this MDataNode.
+     * This is recomputed at each access, so cache into a local var if repeated access is needed.
+     */
+    get references(): MDataNodeRef[] {
+        return Array.from(this.attributes.entries())
+            // skip the "type" attribute as it is reserved
+            .filter(entry => entry[0] != 'type')
+            
+            // convert remaining attributes into MDataNodeRef objects
+            .map(entry => {
+                return {
+                    resPath: String(entry[1]),
+                    varName: entry[0]
+                } as MDataNodeRef;
+            });
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MDataNode {
+        return NodeLogic.cloneMDataNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an MDataNode
+     * @param node Node to check
+     */
+    static isMDataNode(node: Node): node is MDataNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-data';
     }
 }

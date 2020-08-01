@@ -1,5 +1,5 @@
 import test from 'ava';
-import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from '../../lib';
+import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MImportFragmentNode, MImportComponentNode, MScriptNode, MDataNode, MimeType } from '../../lib';
 
 test('[unit] TagNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['foo', 'bar'], ['attr', null]]);
@@ -211,4 +211,53 @@ test('[unit] MScriptNode constructor handles src', t => {
     t.is(node.tagName, 'm-script');
     t.is(node.src, src);
     t.is(node.getRawAttribute('src'), src);
+});
+
+
+test('[unit] MDataNode constructor accepts JSON type', t => {
+    const node = new MDataNode(MimeType.JSON);
+
+    t.is(node.tagName, 'm-data');
+    t.is(node.type, MimeType.JSON);
+    t.is(node.getRawAttribute('type'), MimeType.JSON);
+});
+
+test('[unit] MDataNode constructor accepts TEXT type', t => {
+    const node = new MDataNode(MimeType.TEXT);
+
+    t.is(node.tagName, 'm-data');
+    t.is(node.type, MimeType.TEXT);
+    t.is(node.getRawAttribute('type'), MimeType.TEXT);
+});
+
+test('[unit] MDataNode parses no references', t => {
+    const node = new MDataNode(MimeType.TEXT);
+
+    t.is(node.references.length, 0);
+});
+
+test('[unit] MDataNode parses single reference', t => {
+    const node = new MDataNode(MimeType.TEXT, new Map([['foo', 'source.txt']]));
+
+    t.is(node.references.length, 1);
+    t.is(node.references[0].resPath, 'source.txt');
+    t.is(node.references[0].varName, 'foo');
+});
+
+test('[unit] MDataNode parses multiple references', t => {
+    const references: [string, string][] = [
+        ['foo1', 'source1.txt'],
+        ['foo2', 'source2.txt'],
+        ['foo3', 'source3.txt']
+    ]
+    const node = new MDataNode(MimeType.TEXT, new Map(references));
+
+    t.is(node.references.length, references.length);
+    for (let i = 0; i < references.length; i++) {
+        const expectedRef = references[i];
+        const actualRef = node.references[i];
+
+        t.is(actualRef.resPath, expectedRef[1]);
+        t.is(actualRef.varName, expectedRef[0]);
+    }
 });

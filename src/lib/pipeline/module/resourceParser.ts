@@ -1,6 +1,6 @@
 import { StandardPipeline } from '../standardPipeline';
 import { DomParser } from '../../dom/domParser';
-import { Fragment, DocumentNode, ResourceType, TagNode, TextNode, ScopeData } from '../..';
+import { Fragment, DocumentNode, MimeType, TagNode, TextNode, ScopeData } from '../..';
 import { Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType } from '../object/component';
 import { EvalContent, parseComponentClass, parseComponentFunction } from './evalEngine';
 import { StyleBindType } from './resourceBinder';
@@ -113,7 +113,7 @@ export class ResourceParser {
         const scriptType: ComponentScriptType = scriptTypeName as ComponentScriptType;
 
         // get JS content
-        const scriptText = this.resolveResourceSection(scriptSrc, scriptNode, ResourceType.JAVASCRIPT);
+        const scriptText = this.resolveResourceSection(scriptSrc, scriptNode, MimeType.JAVASCRIPT);
 
         // parse JS
         const scriptFunc: EvalContent<ScopeData> = parseComponentScriptJs(scriptType, scriptText);
@@ -151,19 +151,19 @@ export class ResourceParser {
         const styleBind: StyleBindType = styleBindName as StyleBindType;
 
         // get style content
-        const styleText = this.resolveResourceSection(styleSrc, styleNode, ResourceType.CSS);
+        const styleText = this.resolveResourceSection(styleSrc, styleNode, MimeType.CSS);
 
         // create component template
         return new ComponentStyle(styleText, styleBind, styleSrc);
     }
 
-    private resolveResourceSection(src: string | undefined, sectionNode: TagNode, resourceType: ResourceType): string {
+    private resolveResourceSection(src: string | undefined, sectionNode: TagNode, mimeType: MimeType): string {
         if (src != undefined) {
             // get ID of external resource
             const resPath = sectionNode.getRequiredValueAttribute('src');
 
             // load resource
-            return this.pipeline.pipelineInterface.getResource(resourceType, resPath);
+            return this.pipeline.getRawText(resPath, mimeType);
         } else {
             const textNode = sectionNode.firstChild;
             if (textNode == null) {

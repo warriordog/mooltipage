@@ -1,6 +1,6 @@
 import test from 'ava';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
-import { ResourceType, TagNode, Node, DocumentNode, Fragment } from '../../lib';
+import { MimeType, TagNode, Node, DocumentNode, Fragment } from '../../lib';
 import { StandardPipeline, PipelineContext } from '../../lib/pipeline/standardPipeline';
 import { EvalContext } from '../../lib/pipeline/module/evalEngine';
 
@@ -9,7 +9,7 @@ test('[integration] Components should load external templates', t => {
 
     const pi = new MemoryPipelineInterface();
     pi.setSource('comp_template.html', {
-        type: ResourceType.HTML,
+        type: MimeType.HTML,
         content: templateText
     });
     const pipeline = new StandardPipeline(pi);
@@ -40,7 +40,7 @@ test('[integration] Components should load external scripts', t => {
 
     const pi = new MemoryPipelineInterface();
     pi.setSource('comp_script.js', {
-        type: ResourceType.JAVASCRIPT,
+        type: MimeType.JAVASCRIPT,
         content: scriptText
     });
     const pipeline = new StandardPipeline(pi);
@@ -78,7 +78,7 @@ test('[integration] Components should load external styles', t => {
 
     const pi = new MemoryPipelineInterface();
     pi.setSource('comp_style.css', {
-        type: ResourceType.CSS,
+        type: MimeType.CSS,
         content: styleText
     });
     const pipeline = new StandardPipeline(pi);
@@ -109,15 +109,15 @@ test('[integration] Components should load all external section', t => {
     
     const pi = new MemoryPipelineInterface();
     pi.setSource('comp_template.html', {
-        type: ResourceType.HTML,
+        type: MimeType.HTML,
         content: templateText
     });
     pi.setSource('comp_script.js', {
-        type: ResourceType.JAVASCRIPT,
+        type: MimeType.JAVASCRIPT,
         content: scriptText
     });
     pi.setSource('comp_style.css', {
-        type: ResourceType.CSS,
+        type: MimeType.CSS,
         content: styleText
     });
     const pipeline = new StandardPipeline(pi);

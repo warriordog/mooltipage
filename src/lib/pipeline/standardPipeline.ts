@@ -3,7 +3,7 @@ import { buildPage } from './module/pageBuilder';
 import { PipelineCache } from './pipelineCache';
 import { ResourceParser } from './module/resourceParser';
 import { HtmlCompiler } from './module/htmlCompiler';
-import { DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, ResourceType, FragmentContext, ScopeData } from '..';
+import { DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType, FragmentContext, ScopeData } from '..';
 import { Component } from './object/component';
 import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript, createFragmentScope } from './module/evalEngine';
 import { bindStyle } from './module/resourceBinder';
@@ -89,7 +89,7 @@ export class StandardPipeline {
         const formattedHtml: string = this.htmlFormatter.formatHtml(rawHtml);
 
         // write HTML
-        this.pipelineInterface.writeResource(ResourceType.HTML, resPath, formattedHtml);
+        this.pipelineInterface.writeResource(MimeType.HTML, resPath, formattedHtml);
 
         // create and return page
         return {
@@ -270,7 +270,7 @@ export class StandardPipeline {
      * @param sourceResPath Path to the explicit resource that has produced this created resource
      * @returns path to reference linked resource
      */
-    linkResource(type: ResourceType, contents: string, sourceResPath: string): string {
+    linkResource(type: MimeType, contents: string, sourceResPath: string): string {
         // hash contents
         const contentsHash = this.fastHashContent(contents);
 
@@ -301,12 +301,22 @@ export class StandardPipeline {
     /**
      * Gets a raw (parsed but uncompiled) fragment.
      * 
-     * @internal
      * @param resPath Path to fragment
      * @returns Uncompiled fragment
      */
     getRawFragment(resPath: string): Fragment {
         return this.getOrParseFragment(resPath);
+    }
+
+    /**
+     * Gets a raw (uncompiled) text resource
+     * 
+     * @param resPath Path to resource
+     * @param mimeType Type of resource. Defaults to TEXT
+     */
+    getRawText(resPath: string, mimeType = MimeType.TEXT): string {
+        // TODO maybe cache?
+        return this.pipelineInterface.getResource(mimeType, resPath);
     }
 
     /**
@@ -347,7 +357,7 @@ export class StandardPipeline {
             fragment = this.cache.getFragment(resPath);
         } else {
             // read HTML
-            const html: string = this.pipelineInterface.getResource(ResourceType.HTML, resPath);
+            const html: string = this.pipelineInterface.getResource(MimeType.HTML, resPath);
 
             // parse fragment
             const parsedFragment: Fragment = this.resourceParser.parseFragment(resPath, html);
@@ -373,7 +383,7 @@ export class StandardPipeline {
             component = this.cache.getComponent(resPath);
         } else {
             // read HTML
-            const html: string = this.pipelineInterface.getResource(ResourceType.HTML, resPath);
+            const html: string = this.pipelineInterface.getResource(MimeType.HTML, resPath);
 
             // parse component
             const parsedComponent: Component = this.resourceParser.parseComponent(resPath, html);
@@ -429,7 +439,7 @@ export class StandardPipeline {
             script = this.cache.getExternalScript(resPath);
         } else {
             // load resource
-            const scriptResource = this.pipelineInterface.getResource(ResourceType.JAVASCRIPT, resPath);
+            const scriptResource = this.pipelineInterface.getResource(MimeType.JAVASCRIPT, resPath);
 
             // store in cache
             script = scriptResource.trim();

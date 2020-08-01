@@ -1,4 +1,4 @@
-import { PipelineInterface, ResourceType } from '../../lib';
+import { PipelineInterface, MimeType } from '../../lib';
 
 export class MemoryPipelineInterface implements PipelineInterface {
     sourceContent: Map<string, TestResource> = new Map();
@@ -19,7 +19,7 @@ export class MemoryPipelineInterface implements PipelineInterface {
     setSourceHtml(resPath: string, html: string): void {
         this.setSource(resPath, {
             content: html,
-            type: ResourceType.HTML
+            type: MimeType.HTML
         });
     }
     hasSource(resPath: string): boolean {
@@ -39,7 +39,7 @@ export class MemoryPipelineInterface implements PipelineInterface {
     setDestinationHtml(resPath: string, html: string): void {
         this.setDestination(resPath, {
             content: html,
-            type: ResourceType.HTML
+            type: MimeType.HTML
         });
     }
     hasDestination(resPath: string): boolean {
@@ -58,7 +58,7 @@ export class MemoryPipelineInterface implements PipelineInterface {
     setCreatedHtml(resPath: string, html: string): void {
         this.setCreated(resPath, {
             content: html,
-            type: ResourceType.HTML
+            type: MimeType.HTML
         });
     }
     hasCreated(resPath: string): boolean {
@@ -71,7 +71,7 @@ export class MemoryPipelineInterface implements PipelineInterface {
         return this.getCreated(resPath)?.content;
     }
 
-    getResource(type: ResourceType, resPath: string): string {
+    getResource(type: MimeType, resPath: string): string {
         if (this.sourceContent.has(resPath)) {
             const resource = this.sourceContent.get(resPath);
 
@@ -85,14 +85,14 @@ export class MemoryPipelineInterface implements PipelineInterface {
         }
     }
 
-    writeResource(type: ResourceType, resPath: string, content: string): void {
+    writeResource(type: MimeType, resPath: string, content: string): void {
        this.destContent.set(resPath, {
            content: content,
            type: type
        });
     }
 
-    createResource(type: ResourceType, contents: string): string {
+    createResource(type: MimeType, contents: string): string {
         const resPath = String(this.nextCreatedContentId);
         this.nextCreatedContentId++;
 
@@ -107,5 +107,5 @@ export class MemoryPipelineInterface implements PipelineInterface {
 
 export interface TestResource {
     content: string,
-    type: ResourceType
+    type: MimeType
 }
