@@ -54,12 +54,13 @@ function createHtml(dom: DocumentNode): TagNode {
     }
 }
 
-// TODO get full list
+// Tags that are only allowed (or should only be used) in the <head> section
 const headTags: string[] = [
     'style',
     'link',
     'meta',
-    'head'
+    'head',
+    'base'
 ];
 
 function createHead(root: NodeWithChildren): TagNode {
@@ -83,6 +84,8 @@ function createHead(root: NodeWithChildren): TagNode {
     return headTag;
 }
 
+// Tags that should be "promoted" in the <body> section.
+// Promoting a tag means removing it but preserving its children.
 const bodyPromoteTags: string[] = [
     'html',
     'body'

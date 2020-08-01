@@ -458,7 +458,9 @@ export function hashMD5(content: string): string {
     return md5.digest('base64');
 }
 
-// TODO docs
+/**
+ * State data for the current unit of compilation in the pipeline
+ */
 export interface PipelineContext {
     /**
      * Current pipeline instance
@@ -466,9 +468,12 @@ export interface PipelineContext {
     readonly pipeline: StandardPipeline;
 
     /**
-     * Current fragment that is being compiled
+     * Fragment that is currently being compiled
      */
     readonly fragment: Fragment;
 
+    /**
+     * Fragment usage context
+     */
     readonly fragmentContext: FragmentContext;
 }

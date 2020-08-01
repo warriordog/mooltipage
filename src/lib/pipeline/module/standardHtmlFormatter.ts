@@ -1,13 +1,16 @@
 import { HtmlFormatter, DocumentNode, Node, TextNode, NodeWithChildren } from '../..';
 
-// TODO document
+/**
+ * Standard HTML formatter.
+ * Implements minification, basic pretty formatting, and bypass modes.
+ */
 export class StandardHtmlFormatter implements HtmlFormatter {
     private readonly formatMode: StandardHtmlFormatterMode;
     private readonly eol: string;
     private readonly indentString: string;
 
     /**
-     * Create a new HtmlFormatter.
+     * Create a new StandardHtmlFormatter.
      * 
      * @param formatMode HTML formatting mode. Defaults to NONE.
      * @param eol Set the line ending for pretty mode (default \n)
@@ -21,12 +24,6 @@ export class StandardHtmlFormatter implements HtmlFormatter {
         this.indentString = indentString ?? (isPretty ? '    ' : '');
     }
 
-    /**
-     * Formats a DOM tree before serialization.
-     * Optional.
-     * 
-     * @param dom DOM tree to format
-     */
     formatDom(dom: DocumentNode): void {
         // bypass if formatting is disabled
         if (this.formatMode !== StandardHtmlFormatterMode.NONE) {
@@ -35,12 +32,6 @@ export class StandardHtmlFormatter implements HtmlFormatter {
         }
     }
 
-    /**
-     * Formats serialized HTML before being exported from the pipeline.
-     * Optional.
-     * 
-     * @param html HTML to format.
-     */
     formatHtml(html: string): string {
         // bypass if no formatting enabled
         if (this.formatMode === StandardHtmlFormatterMode.NONE) {

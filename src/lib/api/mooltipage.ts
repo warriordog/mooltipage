@@ -8,38 +8,35 @@ import { StandardHtmlFormatterMode, StandardHtmlFormatter } from '../pipeline/mo
 
 /**
  * Called whenever a page is compiled.
- * @param pagePath Path to the page
- * @param html HTML content of the page
  * @param page Compiled page object
  */
 export type PageCompiledCallback = (page: Page) => void;
-
-// TODO FragmentCompiledCallback
 
 /**
  * Options recognized by MooltiPage
  */
 export interface MpOptions {
     /**
-     * Path to look for input files.
-     * Optional, defaults to current working directory.
+     * Optional path to look for input files.
+     * Defaults to current working directory.
      */
     readonly inPath?: string;
 
     /**
-     * Path to place output files
-     * Optional, defaults to current working directory.
+     * Optional path to place output files
+     * Defaults to current working directory.
      */
     readonly outPath?: string;
 
     /**
-     * Name of the HTML formatter to use.
-     * Optional, defaults to "pretty" formatter.
+     * Optional name of the HTML formatter to use.
+     * Defaults to standard formatter in "pretty" mode.
+     * Recommended to switch to "minimized" mode for production builds.
      */
     readonly formatter?: string;
 
     /**
-     * Callback for page compilation. Optional.
+     * Optional callback for page compilation.
      */
     readonly onPageCompiled?: PageCompiledCallback;
 }

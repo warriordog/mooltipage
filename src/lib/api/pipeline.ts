@@ -30,7 +30,7 @@ export interface Pipeline {
 }
 
 /**
- * Stores the current context of the current unit of work within the pipeline
+ * Usage data for the current fragment
  */
 export interface FragmentContext {
     /**
@@ -39,12 +39,14 @@ export interface FragmentContext {
     readonly slotContents: ReadonlyMap<string, DocumentNode>;
 
     /**
-     * Parameters to the current fragment
+     * Parameters provided to the current fragment
      */
     readonly parameters: ReadonlyMap<ScopeKey, unknown>;
 
     /**
-     * Root eval scope. Contains fragment params and component instance data, if applicable
+     * Fragment-global scope.
+     * Is read-only.
+     * Contains fragment params and component instance data, if applicable.
      */
     readonly scope: ScopeData;
 }
@@ -74,10 +76,14 @@ export interface Page extends Fragment {
     readonly html: string;
 }
 
-// TODO document
+/**
+ * Type of key for scope data
+ */
 export type ScopeKey = string | number;
 
-// TODO document
+/**
+ * Local scope data
+ */
 export type ScopeData = Record<ScopeKey, unknown>;
 
 /**
@@ -163,7 +169,6 @@ export enum ResourceType {
 
 /**
  * Provides HTML formatting support to the pipeline.
- * TODO update docs
  */
 export interface HtmlFormatter {
     /**
