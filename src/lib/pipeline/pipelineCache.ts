@@ -10,7 +10,7 @@ export class PipelineCache {
     private readonly componentCache: Map<string, Component> = new Map();
     private readonly expressionCache: Map<string, EvalContent<unknown>> = new Map();
     private readonly scriptCache: Map<string, EvalContent<unknown>> = new Map();
-    private readonly externalScriptCache: Map<string, EvalContent<unknown>> = new Map();
+    private readonly externalScriptCache: Map<string, string> = new Map();
     private readonly createdResourceCache: Map<string, string> = new Map();
 
     // Fragment
@@ -80,13 +80,13 @@ export class PipelineCache {
     }
 
     getScript(script: string): EvalContent<unknown> {
-        const templateFunc: EvalContent<unknown> | undefined = this.scriptCache.get(script);
+        const scriptFunc: EvalContent<unknown> | undefined = this.scriptCache.get(script);
 
-        if (templateFunc == undefined) {
+        if (scriptFunc == undefined) {
             throw new Error(`Script not found in cache: ${ script }.  Make sure to call hasScript() before getScript().`);
         }
 
-        return templateFunc;
+        return scriptFunc;
     }
 
     storeScript(script: string, func: EvalContent<unknown>): void {
@@ -99,21 +99,22 @@ export class PipelineCache {
         return this.externalScriptCache.has(resPath);
     }
 
-    getExternalScript(resPath: string): EvalContent<unknown> {
-        const templateFunc: EvalContent<unknown> | undefined = this.externalScriptCache.get(resPath);
+    getExternalScript(resPath: string): string {
+        const scriptContent: string | undefined = this.externalScriptCache.get(resPath);
 
-        if (templateFunc == undefined) {
+        if (scriptContent == undefined) {
             throw new Error(`ExternalScript not found in cache: ${ resPath }.  Make sure to call hasExternalScript() before getExternalScript().`);
         }
 
-        return templateFunc;
+        return scriptContent;
     }
 
-    storeExternalScript(resPath: string, func: EvalContent<unknown>): void {
-        this.externalScriptCache.set(resPath, func);
+    storeExternalScript(resPath: string, script: string): void {
+        this.externalScriptCache.set(resPath, script);
     }
 
     // created resource
+    
     hasCreatedResource(hash: string): boolean {
         return this.createdResourceCache.has(hash);
     }

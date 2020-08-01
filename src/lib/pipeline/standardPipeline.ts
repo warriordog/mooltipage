@@ -244,10 +244,10 @@ export class StandardPipeline {
      */
     compileExternalScript(resPath: string, evalContext: EvalContext): unknown {
         // get function for script
-        const scriptFunc = this.getOrParseExternalScript(resPath);
+        const script: string = this.getOrParseExternalScript(resPath);
         
         // execute it
-        return scriptFunc.invoke(evalContext);
+        return this.compileScript(script, evalContext);
     }
 
     /**
@@ -421,25 +421,22 @@ export class StandardPipeline {
         return scriptFunc;
     }
 
-    private getOrParseExternalScript(resPath: string): EvalContent<unknown> {
-        let scriptFunc: EvalContent<unknown>;
+    private getOrParseExternalScript(resPath: string): string {
+        let script: string;
 
         // get from cache, if present
         if (this.cache.hasExternalScript(resPath)) {
-            scriptFunc = this.cache.getExternalScript(resPath);
+            script = this.cache.getExternalScript(resPath);
         } else {
             // load resource
             const scriptResource = this.pipelineInterface.getResource(ResourceType.JAVASCRIPT, resPath);
 
-            // compile script
-            const script = scriptResource.trim();
-            scriptFunc = this.getOrParseScript(script);
-
             // store in cache
-            this.cache.storeExternalScript(resPath, scriptFunc);
+            script = scriptResource.trim();
+            this.cache.storeExternalScript(resPath, script);
         }
 
-        return scriptFunc;
+        return script;
     }
 }
 

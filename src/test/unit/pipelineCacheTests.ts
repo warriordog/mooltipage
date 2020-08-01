@@ -202,7 +202,7 @@ test('[unit] PipelineCache.storeScript() can overwrite an existing entry', t => 
 test('[unit] PipelineCache.hasExternalScript() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
-    cache.storeExternalScript('foo', new EvalContentFunction(() => 'foo'));
+    cache.storeExternalScript('foo', 'bar');
 
     t.true(cache.hasExternalScript('foo'));
 });
@@ -215,11 +215,10 @@ test('[unit] PipelineCache.hasExternalScript() returns false when object is not 
 
 test('[unit] PipelineCache.getExternalScript() returns cached object when present', t => {
     const cache = new PipelineCache();
-    const externalScript = new EvalContentFunction(() => 'foo');
 
-    cache.storeExternalScript('foo', externalScript);
+    cache.storeExternalScript('foo', 'bar');
 
-    t.is(cache.getExternalScript('foo'), externalScript);
+    t.is(cache.getExternalScript('foo'), 'bar');
 });
 
 test('[unit] PipelineCache.getExternalScript() throws when object is not cached', t => {
@@ -230,13 +229,11 @@ test('[unit] PipelineCache.getExternalScript() throws when object is not cached'
 
 test('[unit] PipelineCache.storeExternalScript() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
-    const externalScript1 = new EvalContentFunction(() => 'foo');
-    const externalScript2 = new EvalContentFunction(() => 'foo');
 
-    cache.storeExternalScript('foo', externalScript1);
-    cache.storeExternalScript('foo', externalScript2);
+    cache.storeExternalScript('foo', 'bar1');
+    cache.storeExternalScript('foo', 'bar2');
 
-    t.is(cache.getExternalScript('foo'), externalScript2);
+    t.is(cache.getExternalScript('foo'), 'bar2');
 });
 
 /*
