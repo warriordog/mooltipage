@@ -1,27 +1,10 @@
 import os from 'os';
 import Path from 'path';
 
-import { HtmlFormatter, HtmlFormatterMode, Pipeline, PipelineInterface, ResourceType, getResourceTypeExtension, Page, FsUtils } from '.';
-
-/**
- * List of built-in HTML formatters
- */
-export enum StandardFormatters {
-    /**
-     * No formatter
-     */
-    NONE = 'none',
-
-    /**
-     * BasicHtmlFormatter in "pretty" mode
-     */
-    PRETTY = 'pretty',
-
-    /**
-     * BasicHtmlFormatter in "ugly" / minimization mode
-     */
-    MINIMIZED = 'minimized'
-}
+import { StandardPipeline } from '../pipeline/standardPipeline';
+import * as FsUtils from '../fs/fsUtils';
+import { Page, Pipeline, HtmlFormatter, PipelineInterface, ResourceType } from '..';
+import { StandardHtmlFormatterMode, StandardHtmlFormatter } from '../pipeline/module/standardHtmlFormatter';
 
 /**
  * Called whenever a page is compiled.
@@ -30,6 +13,8 @@ export enum StandardFormatters {
  * @param page Compiled page object
  */
 export type PageCompiledCallback = (page: Page) => void;
+
+// TODO FragmentCompiledCallback
 
 /**
  * Options recognized by MooltiPage
@@ -63,7 +48,7 @@ export interface MpOptions {
  * Default Mooltipage options
  */
 export class DefaultMpOptions implements MpOptions {
-    formatter?: StandardFormatters.PRETTY;
+    formatter?: StandardHtmlFormatterMode.PRETTY;
 }
 
 /**
@@ -120,18 +105,18 @@ function createPipeline(options: MpOptions): Pipeline {
     const pi = new NodePipelineInterface(options.inPath, options.outPath);
 
     // create pipeline
-    return new Pipeline(pi, formatter);
+    return new StandardPipeline(pi, formatter);
 }
 
 function createFormatter(options: MpOptions): HtmlFormatter {
     switch (options.formatter) {
-        case 'pretty':
-            return new HtmlFormatter(HtmlFormatterMode.PRETTY, os.EOL);
-        case 'minimized':
-            return new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
-        case 'none':
+        case StandardHtmlFormatterMode.PRETTY:
+            return new StandardHtmlFormatter(StandardHtmlFormatterMode.PRETTY, os.EOL);
+        case StandardHtmlFormatterMode.MINIMIZED:
+            return new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
+        case StandardHtmlFormatterMode.NONE:
         case undefined:
-            return new HtmlFormatter(HtmlFormatterMode.NONE);
+            return new StandardHtmlFormatter(StandardHtmlFormatterMode.NONE);
         default: {
             throw new Error(`Unknown HTML formatter: ${ options.formatter }`);
         }
@@ -197,5 +182,22 @@ class NodePipelineInterface implements PipelineInterface {
         const fileName = `${ index }.${ extension }`;
 
         return Path.join('resources', fileName);
+    }
+}
+
+/**
+ * Gets the filename extension to use for a specified resource type.
+ * Defaults to "dat" for unknown resource types.
+ * @param resourceType Resource type to get extension for
+ * @returns filename extension, without the dot.
+ */
+export function getResourceTypeExtension(resourceType: ResourceType): string {
+    switch(resourceType) {
+        case ResourceType.HTML: return 'html'
+        case ResourceType.CSS: return 'css'
+        case ResourceType.JAVASCRIPT: return 'js'
+        case ResourceType.JSON: return 'json'
+        case ResourceType.TEXT: return 'txt'
+        default: return 'dat'
     }
 }

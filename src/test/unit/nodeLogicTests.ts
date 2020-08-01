@@ -1,5 +1,6 @@
 import test from 'ava';
-import { NodeLogic, TagNode, DocumentNode, Node, TextNode } from '../../lib';
+import { TagNode, DocumentNode, Node, TextNode } from '../../lib';
+import * as NodeLogic from '../../lib/dom/nodeLogic';
 
 test('[unit] NodeLogic.detatchNode removes nodes', t => {
     const parent = new TagNode('div');

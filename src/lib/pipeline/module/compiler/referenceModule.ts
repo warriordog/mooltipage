@@ -1,4 +1,7 @@
-import { DocumentNode, ExternalReferenceNode, Fragment, PipelineContext, Pipeline, MFragmentNode, MComponentNode, NodeWithChildren, Node, MContentNode, HtmlCompilerModule, HtmlCompilerContext } from '../../..';
+import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
+import { MFragmentNode, MComponentNode, ExternalReferenceNode, DocumentNode, Fragment, FragmentContext, NodeWithChildren, Node, MContentNode } from '../../..';
+import { StandardPipeline } from '../../standardPipeline';
+import { createFragmentScope } from '../evalEngine';
 
 /**
  * Process external references, such as m-fragment and m-component.
@@ -16,18 +19,22 @@ export class ReferenceModule implements HtmlCompilerModule {
         const slotContents: Map<string, DocumentNode> = this.extractSlotContentsFromReference(refNode);
 
         // create usage context
-        const usageContext = htmlContext.pipelineContext.createSubContext(slotContents, refNode.parameters);
+        const fragmentContext: FragmentContext = {
+            slotContents: slotContents,
+            parameters: refNode.parameters,
+            scope: createFragmentScope(refNode.parameters)
+        };
 
         // call pipeline to load reference
         const refType = MFragmentNode.isMFragmentNode(refNode) ? 'm-fragment' : 'm-component';
-        const refContents: Fragment = this.compileReference(refNode.src, usageContext, htmlContext.pipeline, refType);
+        const refContents: Fragment = this.compileReference(refNode.src, fragmentContext, htmlContext.pipelineContext.pipeline, refType);
 
         // replace with compiled fragment
         refNode.replaceSelf(refContents.dom.childNodes);
         htmlContext.setDeleted();
     }
 
-    private compileReference(src: string, context: PipelineContext, pipeline: Pipeline, type: 'm-fragment' | 'm-component'): Fragment {
+    private compileReference(src: string, context: FragmentContext, pipeline: StandardPipeline, type: 'm-fragment' | 'm-component'): Fragment {
         switch (type) {
             case 'm-fragment': return pipeline.compileFragment(src, context);
             case 'm-component': return pipeline.compileComponent(src, context);

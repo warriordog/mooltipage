@@ -1,5 +1,5 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
-import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from '..';
+import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from './node';
 /**
  * Parses HTML into a dom using htmlparser2
  */

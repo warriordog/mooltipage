@@ -1,6 +1,8 @@
 import test from 'ava';
-import { Pipeline, HtmlFormatter, ResourceType, HtmlFormatterMode } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
+import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
+import { ResourceType } from '../../lib';
+import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
 test('[smoke] Build produces a page and does not crash', t => {
     // set up pipeline
@@ -11,12 +13,12 @@ test('[smoke] Build produces a page and does not crash', t => {
 
     // check output
     t.truthy(result);
-    t.truthy(result.resPath, 'Generated page should include resource path');
+    t.truthy(result.path, 'Generated page should include resource path');
     t.truthy(result.html, 'Generated page should include HTML');
     t.truthy(result.dom, 'Generated page should have a DOM');
 });
 
-function createPipeline(): Pipeline {
+function createPipeline(): StandardPipeline {
     const pipelineInterface = new MemoryPipelineInterface();
     pipelineInterface.setSourceHtml('page.html', `
         <!DOCTYPE html>
@@ -119,7 +121,7 @@ function createPipeline(): Pipeline {
     });
 
     // enable pretty formatting
-    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.PRETTY);
+    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.PRETTY);
 
-    return new Pipeline(pipelineInterface, htmlFormatter);
+    return new StandardPipeline(pipelineInterface, htmlFormatter);
 }

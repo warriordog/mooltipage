@@ -1,5 +1,8 @@
 import test from 'ava';
-import { PipelineCache, Fragment, DocumentNode, EvalContentFunction, Component, ComponentTemplate, ComponentScript, ComponentScriptType } from '../../lib';
+import { Component, ComponentTemplate, ComponentScript, ComponentScriptType } from '../../lib/pipeline/object/component';
+import { DocumentNode, Fragment } from '../../lib';
+import { EvalContentFunction } from '../../lib/pipeline/module/evalEngine';
+import { PipelineCache } from '../../lib/pipeline/pipelineCache';
 
 function createTestComponent(): Component {
     const template = new ComponentTemplate(new DocumentNode());
@@ -14,7 +17,10 @@ function createTestComponent(): Component {
 test('[unit] PipelineCache.hasFragment() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
-    cache.storeFragment(new Fragment('foo', new DocumentNode()));
+    cache.storeFragment({
+        path: 'foo',
+        dom: new DocumentNode()
+    });
 
     t.true(cache.hasFragment('foo'));
 });
@@ -27,7 +33,10 @@ test('[unit] PipelineCache.hasFragment() returns false when object is not cached
 
 test('[unit] PipelineCache.getFragment() returns cached object when present', t => {
     const cache = new PipelineCache();
-    const fragment = new Fragment('foo', new DocumentNode());
+    const fragment: Fragment = {
+        path: 'foo',
+        dom: new DocumentNode()
+    };
 
     cache.storeFragment(fragment);
 
@@ -42,8 +51,14 @@ test('[unit] PipelineCache.getFragment() throws when object is not cached', t =>
 
 test('[unit] PipelineCache.storeFragment() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
-    const fragment1 = new Fragment('foo', new DocumentNode());
-    const fragment2 = new Fragment('foo', new DocumentNode());
+    const fragment1: Fragment = {
+        path: 'foo',
+        dom: new DocumentNode()
+    };
+    const fragment2: Fragment = {
+        path: 'foo',
+        dom: new DocumentNode()
+    };
 
     cache.storeFragment(fragment1);
     cache.storeFragment(fragment2);
@@ -265,15 +280,18 @@ test('[unit] PipelineCache.storeCreatedResource() can overwrite an existing entr
     t.is(cache.getCreatedResource('hash'), 'path2');
 });
 
-
-
 /*
  * General
+ * Tests for other script stuff
  */
+
 test('[unit] PipelineCache.clear() clears all caches', t => {
     const cache = new PipelineCache();
 
-    cache.storeFragment(new Fragment('foo', new DocumentNode()));
+    cache.storeFragment({
+        path: 'foo',
+        dom: new DocumentNode()
+    });
     cache.storeComponent(createTestComponent());
     cache.storeExpression('foo', new EvalContentFunction(() => 'foo'));
     cache.storeCreatedResource('foo', 'foo');

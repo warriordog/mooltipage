@@ -1,4 +1,5 @@
-import { HtmlCompilerContext, MVarNode, MScopeNode, HtmlCompilerModule, DocumentNode, EvalScope } from '../../..';
+import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
+import { DocumentNode, MVarNode, MScopeNode, ScopeData } from '../../..';
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
@@ -7,7 +8,7 @@ export class VarsModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
         if (DocumentNode.isDocumentNode(htmlContext.node)) {
             // if document, then bind root scope and we are done
-            htmlContext.node.setRootScope(htmlContext.pipelineContext.rootScope);
+            htmlContext.node.setRootScope(htmlContext.pipelineContext.fragmentContext.scope);
 
         } else if (MVarNode.isMVarNode(htmlContext.node)) {
             // process m-var
@@ -50,7 +51,7 @@ export class VarsModule implements HtmlCompilerModule {
         }
     }
 
-    private getTargetScope(node: VariablesNode, htmlContext: HtmlCompilerContext, useParentScope: boolean): EvalScope {
+    private getTargetScope(node: VariablesNode, htmlContext: HtmlCompilerContext, useParentScope: boolean): ScopeData {
         // if not using the parent scope, then we can take current node's data and use that as scope
         if (!useParentScope) {
             return node.nodeData;
@@ -62,7 +63,7 @@ export class VarsModule implements HtmlCompilerModule {
         }
 
         // if we are using the parent scope but there is no parent node, then fall back to root scope
-        return htmlContext.pipelineContext.rootScope;
+        return htmlContext.pipelineContext.fragmentContext.scope;
     }
 }
 

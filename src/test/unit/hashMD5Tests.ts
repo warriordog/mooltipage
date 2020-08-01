@@ -1,5 +1,5 @@
 import test from 'ava';
-import { hashMD5 } from '../../lib';
+import { hashMD5 } from '../../lib/pipeline/standardPipeline';
 
 test('[unit] hashMD5() should hash html content', t => {
     const testContent = '<html><head><style> .cls {}</style><script> function() {} </script></head><body><div class="cls"></div></html>';

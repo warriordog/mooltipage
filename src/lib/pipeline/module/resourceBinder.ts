@@ -1,4 +1,5 @@
-import { PipelineContext, TextNode, TagNode, ResourceType, DocumentNode } from '../..';
+import { DocumentNode, TextNode, TagNode, ResourceType } from '../..';
+import { StandardPipeline, PipelineContext } from '../standardPipeline';
 
 /**
  * Binds CSS styles to the current page.
@@ -6,16 +7,16 @@ import { PipelineContext, TextNode, TagNode, ResourceType, DocumentNode } from '
  * @param resPath Path to the style resource
  * @param styleContent CSS text content
  * @param bindType Type of binding to use
- * @param context current pipeline context
+ * @param pipelineContext current pipeline context
  */
-export function bindStyle(resPath: string, styleContent: string, bindType: StyleBindType, context: PipelineContext): void {
+export function bindStyle(resPath: string, styleContent: string, bindType: StyleBindType, pipelineContext: PipelineContext): void {
     switch (bindType) {
         case StyleBindType.HEAD: {
-            bindStyleHead(styleContent, context.fragment.dom);
+            bindStyleHead(styleContent, pipelineContext.fragment.dom);
             break;
         }
         case StyleBindType.LINK: {
-            bindStyleLink(styleContent, context, resPath);
+            bindStyleLink(styleContent, pipelineContext.fragment.dom, pipelineContext.pipeline, resPath);
             break;
         }
         default: {
@@ -39,9 +40,9 @@ function bindStyleHead(styleContent: string, dom: DocumentNode): void {
     head.appendChild(styleTag);
 }
 
-function bindStyleLink(styleContent: string, context: PipelineContext, sourceResPath: string): void {
+function bindStyleLink(styleContent: string, dom: DocumentNode, pipeline: StandardPipeline, sourceResPath: string): void {
     // link to project
-    const styleResPath = context.pipeline.linkResource(ResourceType.CSS, styleContent, sourceResPath);
+    const styleResPath = pipeline.linkResource(ResourceType.CSS, styleContent, sourceResPath);
 
     // create link tag
     const link = new TagNode('link');
@@ -49,7 +50,7 @@ function bindStyleLink(styleContent: string, context: PipelineContext, sourceRes
     link.setAttribute('href', styleResPath);
 
     // append link to page
-    const head = getOrCreateHead(context.fragment.dom);
+    const head = getOrCreateHead(dom);
     head.appendChild(link);
 }
 

@@ -1,4 +1,6 @@
-import { Fragment, Component, EvalContent } from '..';
+import { Fragment } from '..';
+import { Component } from './object/component';
+import { EvalContent } from './module/evalEngine';
 
 /**
  * Caches any data that can be reused by the pipeline
@@ -28,7 +30,7 @@ export class PipelineCache {
     }
 
     storeFragment(fragment: Fragment): void {
-        this.fragmentCache.set(fragment.resPath, fragment);
+        this.fragmentCache.set(fragment.path, fragment);
     }
 
     // Component

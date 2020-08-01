@@ -1,4 +1,4 @@
-import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from '..';
+import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode } from './node';
 
 /**
  * Detatch a node and its children from the DOM.

@@ -1,7 +1,8 @@
 import test from 'ava';
-import { Pipeline, HtmlFormatter, HtmlFormatterMode } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { compareComponentMacro, compareFragmentMacro } from '../_util/htmlCompare';
+import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
+import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
 function createRootPi(): MemoryPipelineInterface {
     const pi = new MemoryPipelineInterface();
@@ -26,7 +27,7 @@ test('[endToEnd] Basic component compiles correctly', t => {
             .comp {}
         </style>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile component
     const page = pipeline.compilePage('page.html');
@@ -55,7 +56,7 @@ test('[endToEnd] Component with scope compiles correctly', t => {
             }
         </script>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile component
     const page = pipeline.compilePage('page.html');
@@ -94,7 +95,7 @@ test('[endToEnd] Nested components compile correctly', t => {
             }
         </script>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile component
     const page = pipeline.compilePage('page.html');
@@ -147,8 +148,8 @@ test('[endToEnd] Components compile to correct DOM', t => {
             .comp2 {}
         </style>
     `);
-    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
-    const pipeline = new Pipeline(pi, htmlFormatter);
+    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
+    const pipeline = new StandardPipeline(pi, htmlFormatter);
 
     // compile component
     const output = pipeline.compilePage('page.html');
@@ -189,7 +190,7 @@ test('[endToEnd] Repeated component usages have correct scope', t => {
             }
         </script>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile component
     const page = pipeline.compilePage('page.html');
@@ -242,7 +243,7 @@ test('[endToEnd] Imported component compiles correctly', t => {
             }
         </script>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile component
     const page = pipeline.compilePage('page.html');

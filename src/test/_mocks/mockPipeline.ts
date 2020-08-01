@@ -1,7 +1,8 @@
-import { Pipeline, HtmlFormatter, Fragment, Page } from '../../lib';
 import { MemoryPipelineInterface } from './memoryPipelineInterface';
+import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
+import { Page, Fragment, HtmlFormatter } from '../../lib';
 
-export class MockPipeline extends Pipeline {
+export class MockPipeline extends StandardPipeline {
     readonly mockPi: MemoryPipelineInterface;
 
     constructor(pi?: MemoryPipelineInterface, htmlFormatter?: HtmlFormatter) {

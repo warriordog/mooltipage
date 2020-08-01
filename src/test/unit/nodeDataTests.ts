@@ -1,5 +1,6 @@
 import test from 'ava';
-import { NodeLogic, DocumentNode, TextNode } from '../../lib';
+import { DocumentNode, TextNode } from '../../lib';
+import * as NodeLogic from '../../lib/dom/nodeLogic';
 
 test('[unit] Node.nodeData can store data', t => {
     const node = new DocumentNode();

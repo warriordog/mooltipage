@@ -1,3 +1,85 @@
+import { DocumentNode } from '../dom/node';
+
+/**
+ * Mooltipage compilation pipeline
+ */
+export interface Pipeline {
+    /**
+     * Compiles a page from start to finish.
+     * This entry point should be used with the source HTML is intended to be used as a full HTML page.
+     * 
+     * @param resPath Path to the page, relative to both source and destination.
+     * @returns a Page containing the DOM and serialized / formatted HTML
+     */
+    compilePage(resPath: string): Page;
+
+    /**
+     * Compiles a fragment.
+     * This entry point should be used if the source HTML does not represent a complete page, or if further processing is to be done.
+     * 
+     * @param resPath Path to fragment source
+     * @param fragmentContext Data related to the specific usage context of this fragment
+     * @returns Fragment instance
+     */
+    compileFragment(resPath: string, fragmentContext?: FragmentContext): Fragment;
+
+    /**
+     * Resets the pipeline to its initial state.
+     */
+    reset(): void;
+}
+
+/**
+ * Stores the current context of the current unit of work within the pipeline
+ */
+export interface FragmentContext {
+    /**
+     * Slot contents for the current fragment
+     */
+    readonly slotContents: ReadonlyMap<string, DocumentNode>;
+
+    /**
+     * Parameters to the current fragment
+     */
+    readonly parameters: ReadonlyMap<ScopeKey, unknown>;
+
+    /**
+     * Root eval scope. Contains fragment params and component instance data, if applicable
+     */
+    readonly scope: ScopeData;
+}
+
+/**
+ * Base unit of work for HTML compilation
+ */
+export interface Fragment {
+    /**
+     * Path to fragment, relative to source
+     */
+    readonly path: string;
+
+    /**
+     * Fragment Document Object Model
+     */
+    readonly dom: DocumentNode;
+}
+
+/**
+ * Special type of fragment that represents a fully compiled HTML page
+ */
+export interface Page extends Fragment {
+    /**
+     * Serialized and formatted HTML representation of the page
+     */
+    readonly html: string;
+}
+
+// TODO document
+export type ScopeKey = string | number;
+
+// TODO document
+export type ScopeData = Record<ScopeKey, unknown>;
+
 /**
  * Provides file I/O support to the pipeline
  */
@@ -80,18 +162,23 @@ export enum ResourceType {
 }
 
 /**
- * Gets the filename extension to use for a specified resource type.
- * Defaults to "dat" for unknown resource types.
- * @param resourceType Resource type to get extension for
- * @returns filename extension, without the dot.
+ * Provides HTML formatting support to the pipeline.
+ * TODO update docs
  */
-export function getResourceTypeExtension(resourceType: ResourceType): string {
-    switch(resourceType) {
-        case ResourceType.HTML: return 'html'
-        case ResourceType.CSS: return 'css'
-        case ResourceType.JAVASCRIPT: return 'js'
-        case ResourceType.JSON: return 'json'
-        case ResourceType.TEXT: return 'txt'
-        default: return 'dat'
-    }
+export interface HtmlFormatter {
+    /**
+     * Formats a DOM tree before serialization.
+     * Optional.
+     * 
+     * @param dom DOM tree to format
+     */
+    formatDom(dom: DocumentNode): void;
+
+    /**
+     * Formats serialized HTML before being exported from the pipeline.
+     * Optional.
+     * 
+     * @param html HTML to format.
+     */
+    formatHtml(html: string): string;
 }

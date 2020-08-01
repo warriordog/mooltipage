@@ -1,7 +1,8 @@
 import test from 'ava';
 import { compareFragmentMacro } from '../_util/htmlCompare';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
-import { ResourceType, Pipeline } from '../../lib';
+import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
+import { ResourceType } from '../../lib';
 
 test('[endToEnd] <m-script> executes scripts in correct scope', compareFragmentMacro,
 `<m-script src="script.js" />
@@ -53,7 +54,7 @@ test('[endToEnd] <m-script> allows script exceptions to bubble', t => {
         type: ResourceType.JAVASCRIPT,
         content: `throw new Error('${ errorMessage }');`
     });
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     t.throws(() => pipeline.compilePage('page.html'), {
         message: errorMessage
@@ -65,7 +66,7 @@ test('[endToEnd] <m-script> scripts can access pipeline APIs', compareFragmentMa
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
 [[  'script.js',
-    `$.test = $$.pipeline !== undefined;`
+    `$.test = $$.pipelineContext.pipeline !== undefined;`
 ]]);
 
 test.failing('[endToEnd] <m-script> scripts can access NodeJS APIs', compareFragmentMacro,

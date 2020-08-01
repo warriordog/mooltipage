@@ -1,4 +1,6 @@
-import { DocumentNode, EvalContent, StyleBindType, EvalScope } from '../..';
+import { DocumentNode, ScopeData } from '../..';
+import { EvalContent } from '../module/evalEngine';
+import { StyleBindType } from '../module/resourceBinder';
 
 /**
  * A resuable page component. Contains a template, script, and optionally CSS stylesheet.
@@ -95,9 +97,9 @@ export class ComponentScript {
     /**
      * EvalContent that will execute this ComponentScript
      */
-    readonly scriptFunction: EvalContent<EvalScope>;
+    readonly scriptFunction: EvalContent<ScopeData>;
 
-    constructor(type: ComponentScriptType, scriptFunction: EvalContent<EvalScope>, srcResPath?: string) {
+    constructor(type: ComponentScriptType, scriptFunction: EvalContent<ScopeData>, srcResPath?: string) {
         this.type = type;
         this.scriptFunction = scriptFunction;
         this.srcResPath = srcResPath;

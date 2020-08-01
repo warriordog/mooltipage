@@ -1,6 +1,13 @@
-import { PipelineCache, PipelineInterface, HtmlFormatter, ResourceParser, HtmlCompiler, Page, ResourceType, Fragment, Component, DocumentNode, EvalContext, EvalVars, EvalScope, createRootEvalScope, EvalContent, bindStyle, isExpressionString, parseExpression, parseScript } from '..';
 import crypto from 'crypto';
 import { buildPage } from './module/pageBuilder';
+import { PipelineCache } from './pipelineCache';
+import { ResourceParser } from './module/resourceParser';
+import { HtmlCompiler } from './module/htmlCompiler';
+import { DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, ResourceType, FragmentContext, ScopeData } from '..';
+import { Component } from './object/component';
+import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript, createFragmentScope } from './module/evalEngine';
+import { bindStyle } from './module/resourceBinder';
+import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
 
 /**
  * Primary compilation pipeline.
@@ -10,7 +17,7 @@ import { buildPage } from './module/pageBuilder';
  * 
  * Any incidental resources (such as stylesheets) will be fed to the pipeline interface via createResource().
  */
-export class Pipeline {
+export class StandardPipeline {
     /**
      * Caches reusable data for the pipline
      */
@@ -52,7 +59,7 @@ export class Pipeline {
         this.pipelineInterface = pipelineInterface;
 
         // overribable
-        this.htmlFormatter = htmlFormatter ?? new HtmlFormatter();
+        this.htmlFormatter = htmlFormatter ?? new StandardHtmlFormatter();
         this.resourceParser = resourceParser ?? new ResourceParser(this);
         this.htmlCompiler = htmlCompiler ?? new HtmlCompiler();
     }
@@ -85,27 +92,42 @@ export class Pipeline {
         this.pipelineInterface.writeResource(ResourceType.HTML, resPath, formattedHtml);
 
         // create and return page
-        return new Page(resPath, pageDom, formattedHtml);
+        return {
+            path: resPath,
+            dom: pageDom,
+            html: formattedHtml
+        };
     }
 
     /**
      * Compiles a fragment.
      * 
      * @param resPath Path to fragment source
-     * @param context Current usage context, if applicable
+     * @param fragmentContext Current usage context, if applicable
      * @returns Fragment instance
      */
-    compileFragment(resPath: string, context?: PipelineContext): Fragment {
+    compileFragment(resPath: string, fragmentContext?: FragmentContext): Fragment {
         // get fragment from cache or htmlSource
         const fragment: Fragment = this.getOrParseFragment(resPath);
 
         // create usage context if not provided
-        if (context == undefined) {
-            context = new PipelineContext(this, fragment);
+        if (fragmentContext == undefined) {
+            fragmentContext = {
+                slotContents: new Map(),
+                parameters: new Map(),
+                scope: {}
+            };
         }
 
+        // create module context
+        const pipelineContext: PipelineContext = {
+            pipeline: this,
+            fragment: fragment,
+            fragmentContext: fragmentContext
+        };
+
         // compile under current context
-        this.htmlCompiler.compileHtml(fragment, context);
+        this.htmlCompiler.compileHtml(fragment, pipelineContext);
 
         return fragment;
     }
@@ -117,24 +139,42 @@ export class Pipeline {
      * @param usageContext Current usage context
      * @returns Fragment instance
      */
-    compileComponent(resPath: string, baseContext: PipelineContext): Fragment {
+    compileComponent(resPath: string, fragmentContext: FragmentContext): Fragment {
         // get or parse component
         const component: Component = this.getOrParseComponent(resPath);
 
         // create fragment
         const fragDom: DocumentNode = component.template.dom;
         const fragResPath = component.template.srcResPath ?? resPath;
-        const fragment = new Fragment(fragResPath, fragDom);
+        const fragment: Fragment = {
+            path: fragResPath,
+            dom: fragDom
+        };
+
+        // create module context for outer (component file) scope
+        const fragmentPipelineContext: PipelineContext = {
+            pipeline: this,
+            fragment: fragment,
+            fragmentContext: fragmentContext
+        };
 
         // create component script instance
-        const componentInstanceEvalContext = new EvalContext(fragment, baseContext, baseContext.rootScope);
-        const componentInstance: EvalScope = component.script.scriptFunction.invoke(componentInstanceEvalContext);
+        const componentInstanceEvalContext = new EvalContext(fragmentPipelineContext, fragmentContext.scope);
+        const componentInstance: ScopeData = component.script.scriptFunction.invoke(componentInstanceEvalContext);
 
         // add component script data to context
-        const componentContext: PipelineContext = baseContext.createSubContext(baseContext.slotContents, baseContext.fragmentParams, componentInstance);
+        const componentPipelineContext: PipelineContext = {
+            pipeline: this,
+            fragment: fragment,
+            fragmentContext: {
+                slotContents: fragmentContext.slotContents,
+                parameters: fragmentContext.parameters,
+                scope: createFragmentScope(fragmentContext.parameters, componentInstance)
+            }
+        };
 
         // compile HTML
-        this.htmlCompiler.compileHtml(fragment, componentContext);
+        this.htmlCompiler.compileHtml(fragment, componentPipelineContext);
 
         // compile styles
         if (component.style != undefined) {
@@ -142,7 +182,7 @@ export class Pipeline {
             const compiledStyle = this.compileCss(component.style.styleContent);
 
             // bind to page
-            bindStyle(component.resPath, compiledStyle, component.style.bindType, componentContext);
+            bindStyle(component.resPath, compiledStyle, component.style.bindType, componentPipelineContext);
         }
 
         return fragment;
@@ -222,10 +262,9 @@ export class Pipeline {
 
     /**
      * Links a created resource to the compilation output.
-     * This method ONLY handles saving the contents, it does not compile them or link them to the page context.
+     * This method ONLY handles saving the contents, it does not compile them or attach them to the actual HTML.
      * This method is ONLY for created (incidental) resources.
      * 
-     * @internal
      * @param type Type of resource
      * @param contents Contents as a UTF-8 string
      * @param sourceResPath Path to the explicit resource that has produced this created resource
@@ -319,7 +358,11 @@ export class Pipeline {
             fragment = parsedFragment;
         }
 
-        return fragment.clone();
+        // return a clone
+        return {
+            path: fragment.path,
+            dom: fragment.dom.clone()
+        };
     }
 
     private getOrParseComponent(resPath: string): Component {
@@ -401,65 +444,6 @@ export class Pipeline {
 }
 
 /**
- * Contextual data regarding the current unit of compilation within the pipeline
- */
-export class PipelineContext {
-    /**
-     * Current pipeline instance
-     */
-    readonly pipeline: Pipeline;
-
-    /**
-     * Current fragment that is being compiled
-     */
-    readonly fragment: Fragment;
-
-    /**
-     * Slot contents for the current fragment
-     */
-    readonly slotContents: Map<string, DocumentNode>;
-
-    /**
-     * Parameters to the current fragment
-     */
-    readonly fragmentParams: EvalVars;
-
-    /**
-     * Root eval scope. Contains fragment params and component instance data, if applicable
-     */
-    readonly rootScope: EvalScope;
-
-    /**
-     * Creates a new UsageContext
-     * @param pipeline Current pipeline instance
-     * @param fragment Page being compiled
-     * @param slotContents Optional slot contents for the current fragment
-     * @param fragmentParams Optional parameters to the current fragment
-     * @param componentScope Optional instance of the current component
-     */
-    constructor(pipeline: Pipeline, fragment: Fragment, slotContents?: Map<string, DocumentNode>, fragmentParams?: EvalVars, componentScope?: EvalScope) {
-        this.pipeline = pipeline;
-        this.fragment = fragment;
-        this.slotContents = slotContents ?? new Map();
-        this.fragmentParams = fragmentParams ?? new Map();
-        this.rootScope = createRootEvalScope(this.fragmentParams, componentScope);
-    }
-
-    /**
-     * Creates a child context to be used for compiling a referenced resource.
-     * Current page and other fixed information will be preserved, but per-fragment data will be replaced.
-     * 
-     * @param slotContents Slot contents to provide to child context
-     * @param fragmentParams Parameters to child context
-     * @param componentScope Component that contains child context, if applicable
-     * @returns new UsageContext
-     */
-    createSubContext(slotContents?: Map<string, DocumentNode>, fragmentParams?: EvalVars, componentScope?: EvalScope): PipelineContext {
-        return new PipelineContext(this.pipeline, this.fragment, slotContents, fragmentParams, componentScope);
-    }
-}
-
-/**
  * Calculates the MD5 hash of a UTF8 string using Node.JS crypto APIs.
  * MD5 is an INSECURE hash so this should ONLY be used for non-security-sensitive tasks like caching.
  * 
@@ -475,4 +459,19 @@ export function hashMD5(content: string): string {
 
     // calculate the hash
     return md5.digest('base64');
+}
+
+// TODO docs
+export interface PipelineContext {
+    /**
+     * Current pipeline instance
+     */
+    readonly pipeline: StandardPipeline;
+
+    /**
+     * Current fragment that is being compiled
+     */
+    readonly fragment: Fragment;
+
+    readonly fragmentContext: FragmentContext;
 }

@@ -1,5 +1,6 @@
 import test, { ExecutionContext } from 'ava';
-import { DomParser, TagNode, Node } from '../../lib';
+import { DomParser } from '../../lib/dom/domParser';
+import { Node, TagNode } from '../../lib';
 
 function testTags(t: ExecutionContext, html: string, tags: string[]) {
     const domParser = new DomParser();

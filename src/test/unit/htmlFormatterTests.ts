@@ -1,12 +1,13 @@
 import test, { ExecutionContext } from 'ava';
-import { HtmlFormatter, HtmlFormatterMode, DomParser } from '../../lib';
+import { DomParser } from '../../lib/dom/domParser';
+import { StandardHtmlFormatterMode, StandardHtmlFormatter } from '../../lib/pipeline/module/standardHtmlFormatter';
 
-function testFormat(t: ExecutionContext, input: string, expected: string, mode: HtmlFormatterMode = HtmlFormatterMode.NONE) {
+function testFormat(t: ExecutionContext, input: string, expected: string, mode: StandardHtmlFormatterMode = StandardHtmlFormatterMode.NONE) {
     const parser = new DomParser();
 
     const dom = parser.parseDom(input);
 
-    const formatter = new HtmlFormatter(mode, '\n', '    ');
+    const formatter = new StandardHtmlFormatter(mode, '\n', '    ');
     formatter.formatDom(dom);
 
     const output1 = dom.toHtml();
@@ -38,7 +39,7 @@ test('[unit] HtmlFormatter PRETTY mode cleans whitespace', testFormat,
         <div></div>
     </body>
 </html>`,
-HtmlFormatterMode.PRETTY);
+StandardHtmlFormatterMode.PRETTY);
 
 test('[unit] HtmlFormatter PRETTY mode breaks up appended elements', testFormat,
 `<!DOCTYPE HTML><html><head><title></title></head><body><div></div></body></html>`,
@@ -51,7 +52,7 @@ test('[unit] HtmlFormatter PRETTY mode breaks up appended elements', testFormat,
         <div></div>
     </body>
 </html>`,
-HtmlFormatterMode.PRETTY);
+StandardHtmlFormatterMode.PRETTY);
 
 test('[unit] HtmlFormatter PRETTY mode inlines single-line text', testFormat,
 `<!DOCTYPE HTML><html><head><title>
@@ -67,7 +68,7 @@ There is only one line of text, so this should be inlined.
         <div></div>
     </body>
 </html>`,
-HtmlFormatterMode.PRETTY);
+StandardHtmlFormatterMode.PRETTY);
 
 
 test('[unit] HtmlFormatter PRETTY mode does not inline multi-line text', testFormat,
@@ -86,7 +87,7 @@ test('[unit] HtmlFormatter PRETTY mode does not inline multi-line text', testFor
         </div>
     </body>
 </html>`,
-HtmlFormatterMode.PRETTY);
+StandardHtmlFormatterMode.PRETTY);
 
 test('[unit] HtmlFormatter MINIMIZED mode compacts whitespace', testFormat,
 `<!DOCTYPE HTML>
@@ -99,7 +100,7 @@ test('[unit] HtmlFormatter MINIMIZED mode compacts whitespace', testFormat,
     </body>
 </html>`,
 '<!DOCTYPE HTML><html><head><title></title></head><body><div></div></body></html>',
-HtmlFormatterMode.MINIMIZED);
+StandardHtmlFormatterMode.MINIMIZED);
 
 test('[unit] HtmlFormatter NONE mode does not change HTML', testFormat,
 `<!DOCTYPE HTML>
@@ -122,7 +123,7 @@ test('[unit] HtmlFormatter NONE mode does not change HTML', testFormat,
 </div>
     </body>
 </html>`,
-HtmlFormatterMode.NONE);
+StandardHtmlFormatterMode.NONE);
 
 test('[unit] HtmlFormatter PRETTY mode trims trailing space', testFormat,
 `   
@@ -137,7 +138,7 @@ test('[unit] HtmlFormatter PRETTY mode trims trailing space', testFormat,
         <div></div>
     </body>
 </html>`,
-HtmlFormatterMode.PRETTY);
+StandardHtmlFormatterMode.PRETTY);
 
 test('[unit] HtmlFormatter MINIMIZED mode trims trailing space', testFormat,
 `   
@@ -152,7 +153,7 @@ test('[unit] HtmlFormatter MINIMIZED mode trims trailing space', testFormat,
 </html>  
     `,
 '<!DOCTYPE HTML><html><head><title></title></head><body><div></div></body></html>',
-HtmlFormatterMode.MINIMIZED);
+StandardHtmlFormatterMode.MINIMIZED);
 
 test('[unit] HtmlFormatter NONE mode does not trim trailing space', testFormat,
 `   
@@ -179,4 +180,4 @@ test('[unit] HtmlFormatter NONE mode does not trim trailing space', testFormat,
     </body>
 </html>
    `,
-HtmlFormatterMode.NONE);
+StandardHtmlFormatterMode.NONE);

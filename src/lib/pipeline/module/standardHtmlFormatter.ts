@@ -1,11 +1,8 @@
-import { DocumentNode, Node, TextNode, NodeWithChildren } from '../..';
+import { HtmlFormatter, DocumentNode, Node, TextNode, NodeWithChildren } from '../..';
 
-/**
- * Provides HTML formatting support to the pipeline.
- * All methods are optional.
- */
-export class HtmlFormatter {
-    private readonly formatMode: HtmlFormatterMode;
+// TODO document
+export class StandardHtmlFormatter implements HtmlFormatter {
+    private readonly formatMode: StandardHtmlFormatterMode;
     private readonly eol: string;
     private readonly indentString: string;
 
@@ -16,10 +13,10 @@ export class HtmlFormatter {
      * @param eol Set the line ending for pretty mode (default \n)
      * @param indentString Set the indentation string for pretty mode (default 4 spaces)
      */
-    constructor(formatMode: HtmlFormatterMode = HtmlFormatterMode.NONE, eol?: string, indentString?: string) {
+    constructor(formatMode: StandardHtmlFormatterMode = StandardHtmlFormatterMode.NONE, eol?: string, indentString?: string) {
         this.formatMode = formatMode;
 
-        const isPretty = formatMode === HtmlFormatterMode.PRETTY;
+        const isPretty = formatMode === StandardHtmlFormatterMode.PRETTY;
         this.eol = eol ?? (isPretty ? '\n' : '');
         this.indentString = indentString ?? (isPretty ? '    ' : '');
     }
@@ -32,7 +29,7 @@ export class HtmlFormatter {
      */
     formatDom(dom: DocumentNode): void {
         // bypass if formatting is disabled
-        if (this.formatMode !== HtmlFormatterMode.NONE) {
+        if (this.formatMode !== StandardHtmlFormatterMode.NONE) {
             // format whitespace
             this.formatWhitespace(dom);
         }
@@ -46,7 +43,7 @@ export class HtmlFormatter {
      */
     formatHtml(html: string): string {
         // bypass if no formatting enabled
-        if (this.formatMode === HtmlFormatterMode.NONE) {
+        if (this.formatMode === StandardHtmlFormatterMode.NONE) {
             return html;
         }
 
@@ -106,7 +103,7 @@ export class HtmlFormatter {
         const textContent: string | null = this.extractTextContent(textNode);
 
         // if this is inline text (or we are in ugly mode), then dont format
-        if (this.isInlineText(textNode) || this.formatMode === HtmlFormatterMode.MINIMIZED) {
+        if (this.isInlineText(textNode) || this.formatMode === StandardHtmlFormatterMode.MINIMIZED) {
             if (textContent != null) {
                 textNode.text = textContent;
             } else {
@@ -214,7 +211,7 @@ export class HtmlFormatter {
  * Formatting styles for the standard HtmlFormatter.
  * These do not have to be respected by subclasses
  */
-export enum HtmlFormatterMode {
+export enum StandardHtmlFormatterMode {
     /**
      * Pretty mode - will format HTML for human readability
      */

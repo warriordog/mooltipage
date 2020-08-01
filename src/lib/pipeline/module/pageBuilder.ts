@@ -1,5 +1,4 @@
-import { Node, TagNode, DocumentNode } from '../..';
-import { NodeType, NodeWithChildren } from '../../dom/node';
+import { DocumentNode, NodeType, TagNode, NodeWithChildren, Node } from '../..';
 
 /**
  * Transform an arbitrary fragment DOM into a valid HTML page.

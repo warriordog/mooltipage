@@ -1,5 +1,6 @@
 import test from 'ava';
-import { DomHandler, ProcessingInstructionNode, TagNode, TextNode, CommentNode, CDATANode } from '../../lib';
+import { ProcessingInstructionNode, TagNode, TextNode, CommentNode, CDATANode } from '../../lib';
+import { DomHandler } from '../../lib/dom/domParser';
 
 test('[integration] DomHandler can parse standard HTML', t => {
     const domHandler = new DomHandler();

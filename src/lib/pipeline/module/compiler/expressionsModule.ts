@@ -1,4 +1,7 @@
-import { HtmlCompilerContext, EvalContext, TextNode, TagNode, HtmlCompilerModule, Pipeline } from '../../..';
+import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
+import { TextNode, TagNode } from '../../..';
+import { EvalContext } from '../evalEngine';
+import { StandardPipeline } from '../../standardPipeline';
 
 /**
  * Compile module that detects and evalutates embedded JS expressions in attributes and text nodes
@@ -17,7 +20,7 @@ export class ExpressionsModule implements HtmlCompilerModule {
         const evalContext: EvalContext = htmlContext.createEvalContext();
 
         // compile text
-        const textValue: unknown = htmlContext.pipeline.compileExpression(node.text, evalContext);
+        const textValue: unknown = htmlContext.pipelineContext.pipeline.compileExpression(node.text, evalContext);
         const textString: string = textValue != null ? String(textValue) : '';
 
         // save back to node
@@ -35,14 +38,14 @@ export class ExpressionsModule implements HtmlCompilerModule {
 
             if (typeof(value) === 'string') {
                 // compile the value, preserving the raw output and not converting to a string
-                const result: unknown = htmlContext.pipeline.compileExpression(value, evalContext);
+                const result: unknown = htmlContext.pipelineContext.pipeline.compileExpression(value, evalContext);
 
                 node.setRawAttribute(key, result);
             }
         }
     }
 
-    private compileToText(pipeline: Pipeline, text: string, evalContext: EvalContext): string {
+    private compileToText(pipeline: StandardPipeline, text: string, evalContext: EvalContext): string {
         const result: unknown = pipeline.compileExpression(text, evalContext);
 
         if (result == null) {

@@ -1,13 +1,18 @@
-import {  Pipeline, DomParser, Fragment, DocumentNode, Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType, ResourceType, EvalContent, StyleBindType, TagNode, TextNode, EvalScope, parseComponentClass, parseComponentFunction } from '../..';
+import { StandardPipeline } from '../standardPipeline';
+import { DomParser } from '../../dom/domParser';
+import { Fragment, DocumentNode, ResourceType, TagNode, TextNode, ScopeData } from '../..';
+import { Component, ComponentTemplate, ComponentScript, ComponentStyle, ComponentScriptType } from '../object/component';
+import { EvalContent, parseComponentClass, parseComponentFunction } from './evalEngine';
+import { StyleBindType } from './resourceBinder';
 
 /**
  * Provides input parsing functionality to the pipeline
  */
 export class ResourceParser {
-    private readonly pipeline: Pipeline;
+    private readonly pipeline: StandardPipeline;
     private readonly domParser: DomParser;
 
-    constructor(pipeline: Pipeline) {
+    constructor(pipeline: StandardPipeline) {
         this.pipeline = pipeline;
         this.domParser = new DomParser();
     }
@@ -23,7 +28,10 @@ export class ResourceParser {
         const dom: DocumentNode = this.domParser.parseDom(html);
 
         // create fragment
-        return new Fragment(resPath, dom);
+        return {
+            path: resPath,
+            dom: dom
+        };
     }
 
     /**
@@ -108,7 +116,7 @@ export class ResourceParser {
         const scriptText = this.resolveResourceSection(scriptSrc, scriptNode, ResourceType.JAVASCRIPT);
 
         // parse JS
-        const scriptFunc: EvalContent<EvalScope> = parseComponentScriptJs(scriptType, scriptText);
+        const scriptFunc: EvalContent<ScopeData> = parseComponentScriptJs(scriptType, scriptText);
 
         // create component template
         return new ComponentScript(scriptType, scriptFunc, scriptSrc);
@@ -183,7 +191,7 @@ export class ResourceParser {
     }
 }
 
-function parseComponentScriptJs(scriptType: ComponentScriptType, text: string): EvalContent<EvalScope> {
+function parseComponentScriptJs(scriptType: ComponentScriptType, text: string): EvalContent<ScopeData> {
     if (scriptType === ComponentScriptType.CLASS) {
         return parseComponentClass(text);
     } else if (scriptType === ComponentScriptType.FUNCTION) {

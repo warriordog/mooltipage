@@ -1,13 +1,26 @@
 import test from 'ava';
-import { Pipeline, ResourceType, PipelineContext, DocumentNode, TextNode, Node, StyleBindType, Fragment, TagNode, bindStyle } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
+import { StandardPipeline, PipelineContext } from '../../lib/pipeline/standardPipeline';
+import { DocumentNode, TagNode, TextNode, Node, ResourceType, Fragment } from '../../lib';
+import { bindStyle, StyleBindType } from '../../lib/pipeline/module/resourceBinder';
 
 test('[integration] ResourceBinder can bind stylesheet to head', t => {
     const stylesheet = '.some-class { } .other-class { }';
 
-    const pipeline = new Pipeline(new MemoryPipelineInterface());
-    const testFrag = new Fragment('page.html', new DocumentNode());
-    const testContext = new PipelineContext(pipeline, testFrag);
+    const pipeline = new StandardPipeline(new MemoryPipelineInterface());
+    const testFrag: Fragment = {
+        path: 'page.html',
+        dom: new DocumentNode()
+    };
+    const testContext: PipelineContext = {
+        pipeline: pipeline,
+        fragment: testFrag,
+        fragmentContext: {
+            parameters: new Map(),
+            slotContents: new Map(),
+            scope: {}
+        }
+    };
     
     bindStyle('component.html', stylesheet, StyleBindType.HEAD, testContext);
 
@@ -26,9 +39,20 @@ test('[integration] ResourceBinder can bind stylesheet to link', t => {
     const stylesheet = '.some-class { } .other-class { }';
 
     const pi = new MemoryPipelineInterface();
-    const pipeline = new Pipeline(pi);
-    const testFrag = new Fragment('page.html', new DocumentNode());
-    const testContext = new PipelineContext(pipeline, testFrag);
+    const pipeline = new StandardPipeline(pi);
+    const testFrag: Fragment = {
+        path: 'page.html',
+        dom: new DocumentNode()
+    };
+    const testContext: PipelineContext = {
+        pipeline: pipeline,
+        fragment: testFrag,
+        fragmentContext: {
+            parameters: new Map(),
+            slotContents: new Map(),
+            scope: {}
+        }
+    };
 
     bindStyle('component.html', stylesheet, StyleBindType.LINK, testContext);
 

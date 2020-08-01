@@ -1,4 +1,4 @@
-import { NodeLogic } from '..';
+import * as NodeLogic from './nodeLogic';
 
 /**
  * Recognized node types

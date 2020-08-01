@@ -1,4 +1,13 @@
-import { Pipeline, Fragment, PipelineContext, EvalContext, SlotModule, ExpressionsModule, ImportsModule, ReferenceModule, VarsModule, DomLogicModule, Node, NodeWithChildren, DocumentNode, ScriptsModule } from '../..';
+import { ExpressionsModule } from './compiler/expressionsModule';
+import { VarsModule } from './compiler/varsModule';
+import { ScriptsModule } from './compiler/scriptsModule';
+import { SlotModule } from './compiler/slotModule';
+import { DomLogicModule } from './compiler/domLogicModule';
+import { ImportsModule } from './compiler/importsModule';
+import { ReferenceModule } from './compiler/referenceModule';
+import { Fragment, Node, DocumentNode, NodeWithChildren } from '../..';
+import { EvalContext } from './evalEngine';
+import { PipelineContext } from '../standardPipeline';
 
 /**
  * Provides HTML compilation support to the pipeline.
@@ -44,11 +53,11 @@ export class HtmlCompiler {
      * Compiles a fragment into pure HTML
      * 
      * @param fragment Fragment to compile
-     * @param context Current usage context
+     * @param pipelineContext Current usage context
      */
-    compileHtml(fragment: Fragment, context: PipelineContext): void {
+    compileHtml(fragment: Fragment, pipelineContext: PipelineContext): void {
         // create root context
-        const htmlContext = new HtmlCompilerContext(fragment, context, fragment.dom);
+        const htmlContext = new HtmlCompilerContext(pipelineContext, fragment.dom);
 
         // run modules
         this.runModulesAt(fragment.dom, htmlContext);
@@ -145,16 +154,6 @@ export interface HtmlCompilerModule {
  */
 export class HtmlCompilerContext {
     /**
-     * Pipeline instance
-     */
-    readonly pipeline: Pipeline;
-
-    /**
-     * Current fragmnet
-     */
-    readonly fragment: Fragment;
-
-    /**
      * Current usage context
      */
     readonly pipelineContext: PipelineContext;
@@ -190,9 +189,7 @@ export class HtmlCompilerContext {
      * @param node Node being compiled
      * @param parentContext Optional parent HtmlCompileData to inherit from
      */
-    constructor(fragment: Fragment, pipelineContext: PipelineContext, node: Node, parentContext?: HtmlCompilerContext) {
-        this.pipeline = pipelineContext.pipeline;
-        this.fragment = fragment;
+    constructor(pipelineContext: PipelineContext, node: Node, parentContext?: HtmlCompilerContext) {
         this.pipelineContext = pipelineContext;
         this.node = node;
         this.parentContext = parentContext;
@@ -241,7 +238,7 @@ export class HtmlCompilerContext {
      * @returns an EvalContext bound to the data in this HtmlCompileData and the provided scope
      */
     createEvalContext(): EvalContext {
-        return new EvalContext(this.fragment, this.pipelineContext, this.node.nodeData);
+        return new EvalContext(this.pipelineContext, this.node.nodeData);
     }
 
     /**
@@ -250,7 +247,7 @@ export class HtmlCompilerContext {
      * @returns new HtmlCompileData instance
      */
     createChildData(node: Node): HtmlCompilerContext {
-        return new HtmlCompilerContext(this.fragment, this.pipelineContext, node, this);
+        return new HtmlCompilerContext(this.pipelineContext, node, this);
     }
 
     /**

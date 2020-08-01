@@ -1,4 +1,5 @@
-import { ExternalReferenceNode, HtmlCompilerContext, MImportNode, TagNode, MComponentNode, MFragmentNode, HtmlCompilerModule, ImportDefinition } from '../../..';
+import { HtmlCompilerModule, HtmlCompilerContext, ImportDefinition } from '../htmlCompiler';
+import { MImportNode, TagNode, ExternalReferenceNode, MFragmentNode, MComponentNode } from '../../..';
 
 /**
  * Process imports / aliases via m-import

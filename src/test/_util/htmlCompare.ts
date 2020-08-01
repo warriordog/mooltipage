@@ -1,6 +1,7 @@
 import { ExecutionContext } from 'ava';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
-import { Pipeline, HtmlFormatter, HtmlFormatterMode } from '../../lib';
+import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
+import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
 export function comparePageMacro(t: ExecutionContext, page: string, expected: string, sources?: [string, string][]): void {
     // set up pipeline
@@ -9,7 +10,7 @@ export function comparePageMacro(t: ExecutionContext, page: string, expected: st
     if (sources != undefined) {
         sources.forEach(source => pi.setSourceHtml(source[0], source[1]));
     }
-    const pipeline = new Pipeline(pi, new HtmlFormatter(HtmlFormatterMode.MINIMIZED));
+    const pipeline = new StandardPipeline(pi, new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED));
 
     // run build
     const output = pipeline.compilePage('page.html');
@@ -26,7 +27,7 @@ export function compareFragmentMacro(t: ExecutionContext, fragment: string, expe
     if (sources != undefined) {
         sources.forEach(source => pi.setSourceHtml(source[0], source[1]));
     }
-    const pipeline = new Pipeline(pi, new HtmlFormatter(HtmlFormatterMode.MINIMIZED));
+    const pipeline = new StandardPipeline(pi, new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED));
 
     // run build
     const output = pipeline.compilePage('page.html');
@@ -44,7 +45,7 @@ export function compareComponentMacro(t: ExecutionContext, component: string, ex
     if (sources != undefined) {
         sources.forEach(source => pi.setSourceHtml(source[0], source[1]));
     }
-    const pipeline = new Pipeline(pi, new HtmlFormatter(HtmlFormatterMode.MINIMIZED));
+    const pipeline = new StandardPipeline(pi, new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED));
 
     // run build
     const output = pipeline.compilePage('page.html');

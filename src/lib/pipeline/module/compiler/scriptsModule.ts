@@ -1,4 +1,5 @@
-import { HtmlCompilerModule, HtmlCompilerContext, MScriptNode } from '../../..';
+import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
+import { MScriptNode } from '../../..';
 
 export class ScriptsModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
@@ -16,7 +17,7 @@ export class ScriptsModule implements HtmlCompilerModule {
         const evalContext = targetCompileData.createEvalContext();
 
         // compile
-        htmlContext.pipeline.compileExternalScript(mScript.src, evalContext);
+        htmlContext.pipelineContext.pipeline.compileExternalScript(mScript.src, evalContext);
 
         // remove when done
         mScript.removeSelf();

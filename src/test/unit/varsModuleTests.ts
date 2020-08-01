@@ -1,13 +1,29 @@
 import test from 'ava';
-import { NodeLogic, DocumentNode, VarsModule, TagNode, HtmlCompilerContext, Fragment, PipelineContext, Node, EvalVars, EvalKey, MVarNode, MScopeNode } from '../../lib';
 import { MockPipeline } from '../_mocks/mockPipeline';
+import { Node, DocumentNode, TagNode, MVarNode, MScopeNode, ScopeKey, Fragment } from '../../lib';
+import { HtmlCompilerContext } from '../../lib/pipeline/module/htmlCompiler';
+import { VarsModule } from '../../lib/pipeline/module/compiler/varsModule';
+import * as NodeLogic from '../../lib/dom/nodeLogic';
+import { PipelineContext } from '../../lib/pipeline/standardPipeline';
+import { createFragmentScope } from '../../lib/pipeline/module/evalEngine';
 
-function runVarsModule(node: Node, cleanup = true, fragmentParams?: EvalVars) {
+function runVarsModule(node: Node, cleanup = true, fragmentParams: ReadonlyMap<ScopeKey, unknown> = new Map()) {
     const pipeline = new MockPipeline();
-    const fragment = new Fragment('page.html', new DocumentNode());
-    const pipelineContext = new PipelineContext(pipeline, fragment, undefined, fragmentParams);
+    const testFrag: Fragment = {
+        path: 'page.html',
+        dom: new DocumentNode()
+    };
+    const testContext: PipelineContext = {
+        pipeline: pipeline,
+        fragment: testFrag,
+        fragmentContext: {
+            parameters: fragmentParams,
+            slotContents: new Map(),
+            scope: createFragmentScope(fragmentParams)
+        }
+    };
 
-    const htmlContext = new HtmlCompilerContext(fragment, pipelineContext, node);
+    const htmlContext = new HtmlCompilerContext(testContext, node);
     const varsModule = new VarsModule();
 
     varsModule.enterNode(htmlContext);
@@ -28,7 +44,7 @@ test('[unit] VarsModule does not affect standard elements', t => {
 });
 
 test('[unit] VarsModule loads root scope into document', t => {
-    const params = new Map<EvalKey, unknown>();
+    const params = new Map<ScopeKey, unknown>();
     params.set('test', 123);
 
     const dom = new DocumentNode();

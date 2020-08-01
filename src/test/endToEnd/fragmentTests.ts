@@ -1,7 +1,8 @@
 import test from 'ava';
-import { Pipeline, HtmlFormatter, HtmlFormatterMode } from '../../lib';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { compareFragmentMacro } from '../_util/htmlCompare';
+import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
+import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
 
 function createRootPi(): MemoryPipelineInterface {
@@ -15,7 +16,7 @@ test('[endToEnd] Basic fragment compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
     pi.setSourceHtml('frag1.html', '<div class="frag1"></div>');
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile fragment
     const page = pipeline.compilePage('page.html');
@@ -37,7 +38,7 @@ test('[endToEnd] Nested fragments compiles correctly', t => {
     pi.setSourceHtml('frag2.html', `
         <div class="frag2"></div>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile fragment
     const page = pipeline.compilePage('page.html');
@@ -61,7 +62,7 @@ test('[endToEnd] Fragment params compile correctly', t => {
         <div class="frag2" param1="{{ $.param1 }}" param2="{{ $.param2 }}" param3="{{ $.param3 }}">
         </div>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile fragment
     const page = pipeline.compilePage('page.html');
@@ -85,8 +86,8 @@ test('[endToEnd] Fragment compile to correct DOM', t => {
     pi.setSourceHtml('frag2.html', `
         <div class="frag2"></div>
     `);
-    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
-    const pipeline = new Pipeline(pi, htmlFormatter);
+    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
+    const pipeline = new StandardPipeline(pi, htmlFormatter);
 
     // compile fragment
     const output = pipeline.compilePage('page.html');
@@ -109,7 +110,7 @@ test('[endToEnd] Repeated fragment usages have correct scope', t => {
     pi.setSourceHtml('frag2.html', `
         <div class="frag2" id="{{ $.id }}" param="{{ $.param }}" value="{{ $.value }}"></div>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile fragment
     const page = pipeline.compilePage('page.html');
@@ -178,8 +179,8 @@ test('[endToEnd] Fragment slots are filled correctly', t => {
             </div>
         </div>
     `);
-    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
-    const pipeline = new Pipeline(pi, htmlFormatter);
+    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
+    const pipeline = new StandardPipeline(pi, htmlFormatter);
 
     // compile fragment
     const output = pipeline.compilePage('page.html');
@@ -213,8 +214,8 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
             </div>
         </div>
     `);
-    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
-    const pipeline = new Pipeline(pi, htmlFormatter);
+    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
+    const pipeline = new StandardPipeline(pi, htmlFormatter);
 
     // compile fragment
     const output = pipeline.compilePage('page.html');
@@ -237,7 +238,7 @@ test('[endToEnd] Imported basic fragment compiles correctly', t => {
     pi.setSourceHtml('frag2.html', `
         <div class="frag2"></div>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile fragment
     const page = pipeline.compilePage('page.html');
@@ -265,7 +266,7 @@ test('[endToEnd] Imported fragment w/ params compiles correctly', t => {
     pi.setSourceHtml('frag2.html', `
         <div class="frag2" count="\${ $.count }"></div>
     `);
-    const pipeline = new Pipeline(pi);
+    const pipeline = new StandardPipeline(pi);
 
     // compile fragment
     const page = pipeline.compilePage('page.html');
@@ -302,8 +303,8 @@ test('[endToEnd] Nested fragment slot content is placed correctly', t => {
             <test-div expected="frag2" actual="{{ $.localval }}" />
         </div>
     `);
-    const htmlFormatter = new HtmlFormatter(HtmlFormatterMode.MINIMIZED);
-    const pipeline = new Pipeline(pi, htmlFormatter);
+    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
+    const pipeline = new StandardPipeline(pi, htmlFormatter);
 
     // compile fragment
     const output = pipeline.compilePage('page.html');

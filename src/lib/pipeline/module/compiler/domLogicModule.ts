@@ -1,4 +1,5 @@
-import { MIfNode, MElseIfNode, MElseNode, HtmlCompilerContext, MForNode, HtmlCompilerModule, DocumentNode, MScopeNode, MForOfNode, MForInNode, ConditionalNode } from '../../..';
+import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
+import { MIfNode, MElseIfNode, MElseNode, MForNode, ConditionalNode, DocumentNode, MForOfNode, MForInNode, MScopeNode } from '../../..';
 
 /**
  * Process dom logic: m-if, m-for, etc.

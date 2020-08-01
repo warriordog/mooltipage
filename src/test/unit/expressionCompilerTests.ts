@@ -1,5 +1,5 @@
 import test from 'ava';
-import { isExpressionString, parseExpression } from '../../lib';
+import { isExpressionString, parseExpression } from '../../lib/pipeline/module/evalEngine';
 
 test('[unit] ExpressionCompiler recognises template text', t => {
     t.true(isExpressionString('${ "foo" }'));

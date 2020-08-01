@@ -1,4 +1,5 @@
-import { Pipeline, Fragment, PipelineContext } from '../..';
+import { ScopeData, ScopeKey } from '../..';
+import { PipelineContext } from '../standardPipeline';
 
 /**
  * regular expression to detect a JS template string litteral
@@ -105,7 +106,7 @@ export function parseHandlebars(jsString: string): EvalContent<unknown> {
  * @returns EvalContent that will execute the expression and return an instance of the component object.
  * @throws If the script code cannot be parsed
  */
-export function parseComponentFunction(jsText: string): EvalContent<EvalScope> {
+export function parseComponentFunction(jsText: string): EvalContent<ScopeData> {
     // generate body for function
     const functionBody = jsText.trim();
 
@@ -120,15 +121,15 @@ export function parseComponentFunction(jsText: string): EvalContent<EvalScope> {
  * @returns EvalContent that will execute the expression and return an instance of the component object.
  * @throws If the script cannot be parsed
  */
-export function parseComponentClass(jsText: string): EvalContent<EvalScope> {
+export function parseComponentClass(jsText: string): EvalContent<ScopeData> {
     // generate body for function
     const functionBody = jsText.trim();
 
     // parse class declaration
-    const classDeclarationFunc = parseNoArgsFunction<EvalConstructor<EvalScope>>(functionBody);
+    const classDeclarationFunc = parseNoArgsFunction<EvalConstructor<ScopeData>>(functionBody);
 
     // execute class declaration
-    const classConstructor: EvalConstructor<EvalScope> = classDeclarationFunc();
+    const classConstructor: EvalConstructor<ScopeData> = classDeclarationFunc();
 
     // create eval content
     const evalContent = new EvalContentConstructor(classConstructor);
@@ -182,12 +183,12 @@ export interface EvalContent<T> {
 /**
  * A function-based expression
  */
-export type EvalFunction<T> = ($: EvalScope, $$: EvalContext) => T;
+export type EvalFunction<T> = ($: ScopeData, $$: EvalContext) => T;
 
 /**
  * A constructor (class) based expression
  */
-export type EvalConstructor<T> = new ($: EvalScope, $$: EvalContext) => T;
+export type EvalConstructor<T> = new ($: ScopeData, $$: EvalContext) => T;
 
 /**
  * Implementation of EvalContext that can execute a function
@@ -226,16 +227,6 @@ export class EvalContentConstructor<T> implements EvalContent<T> {
  */
 export class EvalContext {
     /**
-     * Pipeline instance
-     */
-    readonly pipeline: Pipeline;
-
-    /**
-     * Current fragment being processed
-     */
-    readonly currentFragment: Fragment;
-
-    /**
      * Current pipeline compilation context
      */
     readonly pipelineContext: PipelineContext;
@@ -243,53 +234,36 @@ export class EvalContext {
     /**
      * Compiled scope instance, with proper shadowing and overloading applied
      */
-    readonly scope: EvalScope;
+    readonly scope: ScopeData;
 
-    constructor(currentFragment: Fragment, pipelineContext: PipelineContext, scope: EvalScope) {
-        this.pipeline = pipelineContext.pipeline;
-        this.currentFragment = currentFragment;
+    constructor(pipelineContext: PipelineContext, scope: ScopeData) {
         this.pipelineContext = pipelineContext;
         this.scope = scope;
     }
 }
 
 /**
- * Allowable types for property keys for eval scopes
- */
-export type EvalKey = string | number;
-
-/**
- * A set of variables that can be provided to a script
- */
-export type EvalVars = ReadonlyMap<EvalKey, unknown>;
-
-/**
- * Compiled scope instance that can be used to access all available variables with proper shadowing and overloading
- */
-export type EvalScope = Record<EvalKey, unknown>;
-
-/**
- * Creates a "root" EvalScope.
+ * Creates a "root" ScopeData.
  * A root scope is a read-only view into an EvalVars and optional component instance.
  * If included, the component instance will shadow the parameters in the case of conflict.
  * @param parameters EvalVars containing fragment parameters
  * @param componentScope Optional component instance
  */
-export function createRootEvalScope(parameters: EvalVars, componentScope?: EvalScope): EvalScope {
-    const scopeProxyHandler = new EvalScopeProxy(parameters, componentScope);
+export function createFragmentScope(parameters: ReadonlyMap<ScopeKey, unknown>, componentScope?: ScopeData): ScopeData {
+    const scopeProxyHandler = new ScopeDataProxy(parameters, componentScope);
     return new Proxy(Object.create(null), scopeProxyHandler);
 }
 
-class EvalScopeProxy implements ProxyHandler<EvalScope> {
-    private readonly parameters: EvalVars;
-    private readonly componentScope?: EvalScope;
+class ScopeDataProxy implements ProxyHandler<ScopeData> {
+    private readonly parameters: ReadonlyMap<ScopeKey, unknown>;
+    private readonly componentScope?: ScopeData;
     
-    constructor(parameters: EvalVars, componentScope?: EvalScope) {
+    constructor(parameters: ReadonlyMap<ScopeKey, unknown>, componentScope?: ScopeData) {
         this.parameters = parameters;
         this.componentScope = componentScope;
     }
 
-    get (target: EvalScope, key: PropertyKey): unknown {
+    get (target: ScopeData, key: PropertyKey): unknown {
         // TS does not support symbols
         if (typeof(key) !== 'symbol') {
             // get from component, if present
