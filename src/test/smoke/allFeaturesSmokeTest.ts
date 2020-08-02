@@ -44,6 +44,10 @@ function createPipeline(): StandardPipeline {
 
                     <button onclick="foo">Click me!</button>
                 </article>
+
+                <![CDATA[
+                    This is ignored CDATA content
+                ]]>
             </body>
         </html>
     `);
