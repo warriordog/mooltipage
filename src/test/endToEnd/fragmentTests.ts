@@ -224,6 +224,32 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
     t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
 });
 
+test('Vars work inside fragment slot contents', compareFragmentMacro,
+`<m-fragment src="child.html">
+    <m-var test="testvalue" />
+    <m-scope test2="another">
+        <div test="\${ $.test }" test2="\${ $.test2 }"></div>
+    </m-scope>
+</m-fragment>`,
+'<div test="testvalue" test2="another"></div>',
+[['child.html', `
+    <m-var test="bad" test2="bad" />
+    <m-slot />
+`]]);
+
+test('Vars work inside fragment default slot contents', compareFragmentMacro,
+`<m-var test="bad" test2="bad" />
+<m-fragment src="child.html" />`,
+'<div test="testvalue" test2="another"></div>',
+[['child.html', `
+    <m-slot>
+        <m-var test="testvalue" />
+        <m-scope test2="another">
+            <div test="\${ $.test }" test2="\${ $.test2 }"></div>
+        </m-scope>
+    </m-slot>
+`]]);
+
 test('[endToEnd] Imported basic fragment compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
