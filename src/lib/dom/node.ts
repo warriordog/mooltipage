@@ -503,7 +503,7 @@ export class TagNode extends NodeWithChildren {
      * @param value Value of the attribute
      */
     setAttribute(name: string, value: string | null): void {
-        this.attributes.set(name, value);
+        this.setRawAttribute(name, value);
     }
 
     /**
