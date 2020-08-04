@@ -143,18 +143,23 @@ export class EvalContent<T> {
     }
 }
 
-// TODO docs
-export function requireFromRoot(id: string): unknown {
-    if (id.startsWith('./')) {
-        id = `../../${ id }`;
-    } else if (id.startsWith('.\\')) {
-        id = `..\\..\\${ id }`;
+/**
+ * Calls node.js require() relatively from the Mooltipage root
+ * @param path Path to require
+ */
+export function requireFromRoot(path: string): unknown {
+    if (path.startsWith('./')) {
+        path = `../../${ path }`;
+    } else if (path.startsWith('.\\')) {
+        path = `..\\..\\${ path }`;
     }
 
-    return require(id);
+    return require(path);
 }
 
-// TODO docs
+/**
+ * Loads a module using require() relative from the Mooltipage code root
+ */
 export type MooltipageRequire = (path: string) => unknown;
 
 /**
