@@ -1,5 +1,5 @@
 import * as NodeLogic from './nodeLogic';
-import { MimeType } from '../util/mimeType';
+import { MimeType } from '..';
 
 /**
  * Recognized node types

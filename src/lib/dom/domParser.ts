@@ -1,6 +1,7 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
 import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MDataNode, ExternalStyleNode, InternalStyleNode, StyleNodeBind, StyleNode, ScriptNode, ExternalScriptNode, InternalScriptNode } from './node';
-import { MimeType } from '../util/mimeType';
+import { MimeType } from '..';
+
 /**
  * Parses HTML into a dom using htmlparser2
  */

@@ -1,7 +1,6 @@
 import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
-import { DocumentNode, MVarNode, MScopeNode, ScopeData } from '../../..';
+import { DocumentNode, MVarNode, MScopeNode, ScopeData, MimeType } from '../../..';
 import { MDataNode, Node, TagNode, MDataNodeRef } from '../../../dom/node';
-import { MimeType } from '../../../util/mimeType';
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
