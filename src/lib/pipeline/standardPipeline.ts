@@ -3,10 +3,8 @@ import { buildPage } from './module/pageBuilder';
 import { PipelineCache } from './pipelineCache';
 import { ResourceParser } from './module/resourceParser';
 import { HtmlCompiler } from './module/htmlCompiler';
-import { DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType, FragmentContext, ScopeData } from '..';
-import { Component } from './object/component';
-import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript, createFragmentScope } from './module/evalEngine';
-import { bindStyle } from './module/resourceBinder';
+import { DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType, FragmentContext } from '..';
+import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript } from './module/evalEngine';
 import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
 
 /**
@@ -60,7 +58,7 @@ export class StandardPipeline {
 
         // overribable
         this.htmlFormatter = htmlFormatter ?? new StandardHtmlFormatter();
-        this.resourceParser = resourceParser ?? new ResourceParser(this);
+        this.resourceParser = resourceParser ?? new ResourceParser();
         this.htmlCompiler = htmlCompiler ?? new HtmlCompiler();
     }
 
@@ -119,7 +117,7 @@ export class StandardPipeline {
             };
         }
 
-        // create module context
+        // create pipeline context
         const pipelineContext: PipelineContext = {
             pipeline: this,
             fragment: fragment,
@@ -128,62 +126,6 @@ export class StandardPipeline {
 
         // compile under current context
         this.htmlCompiler.compileHtml(fragment, pipelineContext);
-
-        return fragment;
-    }
-
-    /**
-     * Compiles a component.
-     * 
-     * @param resPath Path to component source
-     * @param usageContext Current usage context
-     * @returns Fragment instance
-     */
-    compileComponent(resPath: string, fragmentContext: FragmentContext): Fragment {
-        // get or parse component
-        const component: Component = this.getOrParseComponent(resPath);
-
-        // create fragment
-        const fragDom: DocumentNode = component.template.dom;
-        const fragResPath = component.template.srcResPath ?? resPath;
-        const fragment: Fragment = {
-            path: fragResPath,
-            dom: fragDom
-        };
-
-        // create module context for outer (component file) scope
-        const fragmentPipelineContext: PipelineContext = {
-            pipeline: this,
-            fragment: fragment,
-            fragmentContext: fragmentContext
-        };
-
-        // create component script instance
-        const componentInstanceEvalContext = new EvalContext(fragmentPipelineContext, fragmentContext.scope);
-        const componentInstance: ScopeData = component.script.scriptFunction.invoke(componentInstanceEvalContext);
-
-        // add component script data to context
-        const componentPipelineContext: PipelineContext = {
-            pipeline: this,
-            fragment: fragment,
-            fragmentContext: {
-                slotContents: fragmentContext.slotContents,
-                parameters: fragmentContext.parameters,
-                scope: createFragmentScope(fragmentContext.parameters, componentInstance)
-            }
-        };
-
-        // compile HTML
-        this.htmlCompiler.compileHtml(fragment, componentPipelineContext);
-
-        // compile styles
-        if (component.style != undefined) {
-            // compile CSS
-            const compiledStyle = this.compileCss(component.style.styleContent);
-
-            // bind to page
-            bindStyle(component.resPath, compiledStyle, component.style.bindType, componentPipelineContext);
-        }
 
         return fragment;
     }
@@ -373,28 +315,6 @@ export class StandardPipeline {
             path: fragment.path,
             dom: fragment.dom.clone()
         };
-    }
-
-    private getOrParseComponent(resPath: string): Component {
-        let component: Component;
-
-        if (this.cache.hasComponent(resPath)) {
-            // use cached component
-            component = this.cache.getComponent(resPath);
-        } else {
-            // read HTML
-            const html: string = this.pipelineInterface.getResource(MimeType.HTML, resPath);
-
-            // parse component
-            const parsedComponent: Component = this.resourceParser.parseComponent(resPath, html);
-
-            // keep in cache
-            this.cache.storeComponent(parsedComponent);
-
-            component = parsedComponent;
-        }
-
-        return component.clone();
     }
 
     private getOrParseExpression(expression: string): EvalContent<unknown> {

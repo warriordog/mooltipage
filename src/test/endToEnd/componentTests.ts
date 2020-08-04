@@ -6,7 +6,7 @@ import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipe
 
 function createRootPi(): MemoryPipelineInterface {
     const pi = new MemoryPipelineInterface();
-    pi.setSourceHtml('page.html', '<!DOCTYPE html><html><head><title>Component Tests</title></head><body><m-component src="comp.html" /></body></html>');
+    pi.setSourceHtml('page.html', '<!DOCTYPE html><html><head><title>Component Tests</title></head><body><m-fragment src="comp.html" /></body></html>');
 
     return pi;
 }
@@ -15,17 +15,11 @@ test('[endToEnd] Basic component compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
     pi.setSourceHtml('comp.html', `
-        <template>
-            <div class="comp"></div>
-        </template>
-        <script mode="class">
-            return class Comp {
-                constructor(scope, context) {}
-            }
-        </script>
-        <style bind="head">
+        <script compiled></script>
+        <style compiled bind="head">
             .comp {}
         </style>
+        <div class="comp"></div>
     `);
     const pipeline = new StandardPipeline(pi);
 
@@ -44,17 +38,11 @@ test('[endToEnd] Component with scope compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
     pi.setSourceHtml('comp.html', `
-        <template>
-            <div class="comp" value1="\${ $.value1 }" value2="{{ $.value2 }}"></div>
-        </template>
-        <script mode="class">
-            return class Comp {
-                constructor(scope, context) {
-                    this.value1 = "value1";
-                    this.value2 = "value2";
-                }
-            }
+        <script compiled>
+            this.value1 = "value1";
+            this.value2 = "value2";
         </script>
+        <div class="comp" value1="\${ $.value1 }" value2="{{ $.value2 }}"></div>
     `);
     const pipeline = new StandardPipeline(pi);
 
@@ -71,29 +59,17 @@ test('[endToEnd] Nested components compile correctly', t => {
     // set up pipeline
     const pi = createRootPi();
     pi.setSourceHtml('comp.html', `
-        <template>
-            <div class="comp1" value="{{ $.value }}"></div>
-            <m-component src="comp2.html" param="{{ $.value }}" />
-        </template>
-        <script mode="class">
-            return class Comp {
-                constructor(scope, context) {
-                    this.value = "value";
-                }
-            }
+        <script compiled>
+            this.value = "value";
         </script>
+        <div class="comp1" value="{{ $.value }}"></div>
+        <m-fragment src="comp2.html" param="{{ $.value }}" />
     `);
     pi.setSourceHtml('comp2.html', `
-        <template>
-            <div class="comp2" value="{{ $.value }}" param="{{ $.param }}"></div>
-        </template>
-        <script mode="class">
-            return class Comp2 {
-                constructor(scope, context) {
-                    this.value = "value2";
-                }
-            }
+        <script compiled>
+            this.value = "value2";
         </script>
+        <div class="comp2" value="{{ $.value }}" param="{{ $.param }}"></div>
     `);
     const pipeline = new StandardPipeline(pi);
 
@@ -114,39 +90,27 @@ test('[endToEnd] Components compile to correct DOM', t => {
     // set up pipeline
     const pi = createRootPi();
     pi.setSourceHtml('comp.html', `
-        <template>
-            <div class="comp1">
-                <p>\${ $.hello }</p>
-                <m-component src="comp2.html" />
-                <p>\${ $.world }</p>
-            </div>
-        </template>
-        <script mode="class">
-            return class Comp {
-                constructor(scope, context) {
-                    this.hello = "Hello,";
-                    this.world = "World!";
-                }
-            }
+        <script compiled>
+            this.hello = "Hello,";
+            this.world = "World!";
         </script>
-        <style bind="head">
+        <style compiled bind="head">
             .comp1 {}
         </style>
+        <div class="comp1">
+            <p>\${ $.hello }</p>
+            <m-fragment src="comp2.html" />
+            <p>\${ $.world }</p>
+        </div>
     `);
     pi.setSourceHtml('comp2.html', `
-        <template>
-            <div class="comp2">\${ $.message }</div>
-        </template>
-        <script mode="class">
-            return class Comp2 {
-                constructor(scope, context) {
-                    this.message = "This is component 2.";
-                }
-            }
+        <script compiled>
+            this.message = "This is component 2.";
         </script>
-        <style bind="head">
+        <style compiled bind="head">
             .comp2 {}
         </style>
+        <div class="comp2">\${ $.message }</div>
     `);
     const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
     const pipeline = new StandardPipeline(pi, htmlFormatter);
@@ -155,40 +119,28 @@ test('[endToEnd] Components compile to correct DOM', t => {
     const output = pipeline.compilePage('page.html');
 
     // validate
-    t.is(output.html, '<!DOCTYPE html><html><head><title>Component Tests</title><style>.comp2 {}</style><style>.comp1 {}</style></head><body><div class="comp1"><p>Hello,</p><div class="comp2">This is component 2.</div><p>World!</p></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html><head><title>Component Tests</title><style>.comp1 {}</style><style>.comp2 {}</style></head><body><div class="comp1"><p>Hello,</p><div class="comp2">This is component 2.</div><p>World!</p></div></body></html>');
 });
 
 test('[endToEnd] Repeated component usages have correct scope', t => {
     // set up pipeline
     const pi = createRootPi();
     pi.setSourceHtml('comp.html', `
-        <template>
-            <div class="comp1">
-                <m-component src="comp2.html" id="1" param="value1" value="{{ $.sharedValue }}" />
-                <m-component src="comp2.html" id="2" param="value2" value="{{ $.sharedValue }}" />
-                <m-component src="comp2.html" id="3" param="value3" value="{{ $.sharedValue }}" />
-                <m-component src="comp2.html" id="4" param="value4" value="{{ $.sharedValue }}" />
-            </div>
-        </template>
-        <script mode="class">
-            return class Comp {
-                constructor(scope, context) {
-                    this.sharedValue = 'value';
-                }
-            }
+        <script compiled>
+            this.sharedValue = 'value';
         </script>
+        <div class="comp1">
+            <m-fragment src="comp2.html" id="1" param="value1" value="{{ $.sharedValue }}" />
+            <m-fragment src="comp2.html" id="2" param="value2" value="{{ $.sharedValue }}" />
+            <m-fragment src="comp2.html" id="3" param="value3" value="{{ $.sharedValue }}" />
+            <m-fragment src="comp2.html" id="4" param="value4" value="{{ $.sharedValue }}" />
+        </div>
     `);
     pi.setSourceHtml('comp2.html', `
-        <template>
-            <div class="comp2" id="{{ $.id }}" param="{{ $.param }}" value="{{ $.thisValue }}"></div>
-        </template>
-        <script mode="class">
-            return class Comp2 {
-                constructor(scope, context) {
-                    this.thisValue = scope.value;
-                }
-            }
+        <script compiled>
+            this.thisValue = $.value;
         </script>
+        <div class="comp2" id="{{ $.id }}" param="{{ $.param }}" value="{{ $.thisValue }}"></div>
     `);
     const pipeline = new StandardPipeline(pi);
 
@@ -218,30 +170,17 @@ test('[endToEnd] Imported component compiles correctly', t => {
     // set up pipeline
     const pi = createRootPi();
     pi.setSourceHtml('comp.html', `
-        <template>
-            <m-import component src="comp2.html" as="imported-component" />
-            <div class="comp">
-                <imported-component />
-                <imported-component id="{{ 1 }}" />
-            </div>
-        </template>
-        <script mode="class">
-            return class Comp {
-                constructor() {}
-            }
-        </script>
+        <m-import src="comp2.html" as="imported-component" />
+        <div class="comp">
+            <imported-component />
+            <imported-component id="{{ 1 }}" />
+        </div>
     `);
     pi.setSourceHtml('comp2.html', `
-        <template>
-            <div class="comp2" id="\${ $.id }"></div>
-        </template>
-        <script mode="class">
-            return class Comp {
-                constructor(scope) {
-                    this.id = scope.id || 0;
-                }
-            }
+        <script compiled>
+            this.id = $.id || 0;
         </script>
+        <div class="comp2" id="\${ $.id }"></div>
     `);
     const pipeline = new StandardPipeline(pi);
 
@@ -255,31 +194,23 @@ test('[endToEnd] Imported component compiles correctly', t => {
     t.truthy(comp2_1);
 });
 
-test('[endToEnd] Component with function script compiles', compareComponentMacro,
-`<template>
-    <test test="\${ $.test }" />
-</template>
-<script mode="function">
-    return {
-        test: 'testvalue'
-    };
-</script>`,
-'<test test="testvalue"></test>');
+test('[endToEnd] Component with function script compiles', compareComponentMacro,`
+<script compiled>
+    this.test = 'testvalue';
+</script>
+<test test="\${ $.test }" />
+`,'<test test="testvalue"></test>');
 
 
 test('[endToEnd] Component with function script keeps isolated scopes', compareFragmentMacro,
-`<m-component src="comp.html" param="test1" />
-<m-component src="comp.html" param="test2" />`,
+`<m-fragment src="comp.html" param="test1" />
+<m-fragment src="comp.html" param="test2" />`,
 '<test test1="testvalue" test2="test1"></test><test test1="testvalue" test2="test2"></test>',
 [[
-    'comp.html',
-    `<template>
-        <test test1="\${ $.test1 }" test2="\${ $.test2 }" />
-    </template>
-    <script mode="function">
-        return {
-            test1: 'testvalue',
-            test2: $.param
-        };
-    </script>`
+    'comp.html',`
+    <script compiled>
+        this.test1 = 'testvalue';
+        this.test2 = $.param;
+    </script>
+    <test test1="\${ $.test1 }" test2="\${ $.test2 }" />`
 ]]);

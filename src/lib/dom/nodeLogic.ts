@@ -1,4 +1,4 @@
-import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode, MDataNode } from './node';
+import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MDataNode, InternalStyleNode, ExternalStyleNode, StyleNode, ScriptNode, InternalScriptNode, ExternalScriptNode, MImportNode } from './node';
 
 /**
  * Detatch a node and its children from the DOM.
@@ -98,6 +98,18 @@ export function clear(parent: NodeWithChildren): void {
 export function appendChildNodes(parent: NodeWithChildren, childNodes: Node[]): void {
     for (const childNode of childNodes) {
         appendChild(parent, childNode);
+    }
+}
+
+/**
+ * Prepends a list of nodes to a parent
+ * @param parent Parent node
+ * @param childNodes New child nodes
+ */
+export function prependChildNodes(parent: NodeWithChildren, childNodes: Node[]): void {
+    // iterate in reverse to preserve order
+    for (let i = childNodes.length - 1; i >= 0; i--) {
+        prependChild(parent, childNodes[i]);
     }
 }
 
@@ -320,22 +332,6 @@ export function cloneMFragmentNode(node: MFragmentNode, deep: boolean, callback?
 }
 
 /**
- * Clones an m-component node
- * @param node Node to clone
- * @param deep If true, children will be cloned
- * @param callback Optional callback after node is cloned
- */
-export function cloneMComponentNode(node: MComponentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MComponentNode {
-    const newAttrs = cloneAttributes(node);
-
-    const newNode: MComponentNode = new MComponentNode(node.src, newAttrs);
-
-    processClonedParentNode(node, newNode, deep, callback);
-
-    return newNode;
-}
-
-/**
  * Clones an m-slot node
  * @param node Node to clone
  * @param deep If true, children will be cloned
@@ -400,31 +396,15 @@ export function cloneMScopeNode(node: MScopeNode, deep: boolean, callback?: (old
 }
 
 /**
- * Clones a fragment-type m-import node
+ * Clones an m-import node
  * @param node Node to clone
  * @param deep If true, children will be cloned
  * @param callback Optional callback after node is cloned
  */
-export function cloneMImportFragmentNode(node: MImportFragmentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MImportFragmentNode {
+export function cloneMImportNode(node: MImportNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MImportNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new MImportFragmentNode(node.src, node.as, newAttrs);
-
-    processClonedParentNode(node, newNode, deep, callback);
-
-    return newNode;
-}
-
-/**
- * Clones a component-type m-import node
- * @param node Node to clone
- * @param deep If true, children will be cloned
- * @param callback Optional callback after node is cloned
- */
-export function cloneMImportComponentNode(node: MImportComponentNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MImportComponentNode {
-    const newAttrs = cloneAttributes(node);
-
-    const newNode = new MImportComponentNode(node.src, node.as, newAttrs);
+    const newNode = new MImportNode(node.src, node.as, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -511,21 +491,6 @@ export function cloneMForInNode(node: MForInNode, deep: boolean, callback?: (old
 }
 
 /**
- * Clones an MScriptNode
- * @param node Node to clone
- * @param deep If true, children will be cloned
- * @param callback Optional callback after node is cloned
- */
-export function cloneMScriptNode(node: MScriptNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MScriptNode {
-    const newAttrs = cloneAttributes(node);
-
-    const newNode = new MScriptNode(node.src, newAttrs);
-
-    processClonedParentNode(node, newNode, deep, callback);
-
-    return newNode;
-}
-/**
  * Clones an MDataNode
  * @param node Node to clone
  * @param deep If true, children will be cloned
@@ -535,6 +500,102 @@ export function cloneMDataNode(node: MDataNode, deep: boolean, callback?: (oldNo
     const newAttrs = cloneAttributes(node);
 
     const newNode = new MDataNode(node.type, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones a StyleNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneStyleNode(node: StyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): StyleNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new StyleNode(node.compiled, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones an InternalStyleNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneInternalStyleNode(node: InternalStyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): InternalStyleNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new InternalStyleNode(node.bind, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones an ExternalStyleNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneExternalStyleNode(node: ExternalStyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ExternalStyleNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new ExternalStyleNode(node.src, node.bind, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones a ScriptNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneScriptNode(node: ScriptNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ScriptNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new ScriptNode(node.compiled, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones an InternalScriptNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneInternalScriptNode(node: InternalScriptNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): InternalScriptNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new InternalScriptNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones an ExternalScriptNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneExternalScriptNode(node: ExternalScriptNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ExternalScriptNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new ExternalScriptNode(node.src, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 

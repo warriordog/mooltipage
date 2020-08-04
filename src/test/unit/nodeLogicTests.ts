@@ -124,6 +124,38 @@ test('[unit] NodeLogic.appendChildNodes will not append a DocumentNode', t => {
     t.throws(() => NodeLogic.appendChildNodes(parent, [ child ]));
 });
 
+test('[unit] NodeLogic.prependChildNodes appends all child nodes', t => {
+    const parent = new TagNode('div');
+    const child1 = new TagNode('div');
+    const child2 = new TagNode('div');
+    const child3 = new TagNode('div');
+    NodeLogic.appendChild(parent, child1);
+    NodeLogic.prependChildNodes(parent, [ child2, child3 ]);
+
+    t.is(child1.parentNode, parent);
+    t.is(child2.parentNode, parent);
+    t.is(child3.parentNode, parent);
+    t.true(parent.childNodes.includes(child1));
+    t.true(parent.childNodes.includes(child2));
+    t.true(parent.childNodes.includes(child3));
+    t.is(parent.firstChild, child2);
+    t.is(parent.lastChild, child1);
+    t.is(child2.nextSibling, child3);
+    t.is(child3.prevSibling, child2);
+    t.is(child3.nextSibling, child1);
+    t.is(child1.prevSibling, child3);
+    t.is(Object.getPrototypeOf(child1.nodeData), parent.nodeData);
+    t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
+    t.is(Object.getPrototypeOf(child3.nodeData), parent.nodeData);
+});
+
+test('[unit] NodeLogic.prependChildNodes will not append a DocumentNode', t => {
+    const parent = new TagNode('div');
+    const child = new DocumentNode();
+
+    t.throws(() => NodeLogic.prependChildNodes(parent, [ child ]));
+});
+
 test('[unit] NodeLogic.appendSibling appends sibling', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');

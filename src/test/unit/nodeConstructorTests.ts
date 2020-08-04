@@ -1,5 +1,5 @@
 import test from 'ava';
-import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MComponentNode, MContentNode, MSlotNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MImportFragmentNode, MImportComponentNode, MScriptNode, MDataNode, MimeType } from '../../lib';
+import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MContentNode, MSlotNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MDataNode, MimeType, InternalStyleNode, StyleNodeBind, ExternalStyleNode, StyleNode, ScriptNode, InternalScriptNode, ExternalScriptNode, MImportNode } from '../../lib';
 
 test('[unit] TagNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['foo', 'bar'], ['attr', null]]);
@@ -67,18 +67,6 @@ test('[unit] MFragmentNode constructor handles arguments', t => {
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] MComponentNode constructor handles arguments', t => {
-    const src = 'resPath';
-    const attributes: Map<string, unknown> = new Map([['src', src], ['param', 'value']]);
-
-    const node = new MComponentNode(src, attributes);
-
-    t.is(node.tagName, 'm-component');
-    t.is(node.src, src);
-    t.deepEqual(node.parameters, new Map([['param', 'value']]));
-    t.deepEqual(node.getAttributes(), attributes);
-});
-
 test('[unit] MContentNode constructor handles arguments', t => {
     const slot = 'slotName';
     const attributes: Map<string, unknown> = new Map([['slot', slot], ['foo', 'bar']]);
@@ -128,34 +116,17 @@ test('[unit] MVarNode constructor handles arguments', t => {
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] MImportFragmentNode constructor handles arguments', t => {
+test('[unit] MImportNode constructor handles arguments', t => {
     const src = 'resPath';
     const as = 'foo';
 
-    const node = new MImportFragmentNode(src, as, new Map());
+    const node = new MImportNode(src, as, new Map());
 
     t.is(node.tagName, 'm-import');
     t.is(node.src, src);
     t.is(node.as, as);
-    t.is(node.type, 'm-fragment');
     t.is(node.getAttribute('src'), src);
     t.is(node.getAttribute('as'), as);
-    t.true(node.hasAttribute('fragment'));
-});
-
-test('[unit] MImportComponentNode constructor handles arguments', t => {
-    const src = 'resPath';
-    const as = 'foo';
-
-    const node = new MImportComponentNode(src, as, new Map());
-
-    t.is(node.tagName, 'm-import');
-    t.is(node.src, src);
-    t.is(node.as, as);
-    t.is(node.type, 'm-component');
-    t.is(node.getAttribute('src'), src);
-    t.is(node.getAttribute('as'), as);
-    t.true(node.hasAttribute('component'));
 });
 
 test('[unit] MScopeNode constructor handles arguments', t => {
@@ -203,17 +174,6 @@ test('[unit] MForInNode constructor handles arguments', t => {
     t.is(node.expression, expression);
 });
 
-test('[unit] MScriptNode constructor handles src', t => {
-    const src = 'script.js';
-
-    const node = new MScriptNode(src);
-
-    t.is(node.tagName, 'm-script');
-    t.is(node.src, src);
-    t.is(node.getRawAttribute('src'), src);
-});
-
-
 test('[unit] MDataNode constructor accepts JSON type', t => {
     const node = new MDataNode(MimeType.JSON);
 
@@ -260,4 +220,146 @@ test('[unit] MDataNode parses multiple references', t => {
         t.is(actualRef.resPath, expectedRef[1]);
         t.is(actualRef.varName, expectedRef[0]);
     }
+});
+
+test('StyleNode.compiled works', t => {
+    const node1 = new StyleNode(true);
+    const node2 = new StyleNode(false);
+
+    t.true(node1.compiled);
+    t.false(node2.compiled);
+});
+
+test('StyleNode.compiled default value is populated', t => {
+    const node = new StyleNode();
+
+    t.false(node.compiled);
+});
+
+test('InternalStyleNode.compiled value is correct', t => {
+    const node = new InternalStyleNode();
+
+    t.true(node.compiled);
+});
+
+test('InternalStyleNode.bind works', t => {
+    const node = new InternalStyleNode(StyleNodeBind.LINK);
+
+    t.is(node.bind, StyleNodeBind.LINK);
+    t.is(node.getRawAttribute('bind'), StyleNodeBind.LINK);
+
+    node.bind = StyleNodeBind.HEAD;
+
+    t.is(node.bind, StyleNodeBind.HEAD);
+    t.is(node.getRawAttribute('bind'), StyleNodeBind.HEAD);
+});
+
+test('InternalStyleNode.bind default value is populated', t => {
+    const node = new InternalStyleNode();
+
+    t.is(node.bind, StyleNodeBind.HEAD);
+});
+
+test('InternalStyleNode.styleContent works', t => {
+    const css = '.class {}';
+
+    const node = new InternalStyleNode();
+    node.appendChild(new TextNode(css));
+
+    t.is(node.styleContent, css);
+});
+
+test('InternalStyleNode.styleContent default value is populated', t => {
+    const node = new InternalStyleNode();
+
+    t.is(node.styleContent, '');
+});
+
+test('ExternalStyleNode.compiled value is correct', t => {
+    const node = new ExternalStyleNode('test.css');
+
+    t.true(node.compiled);
+});
+
+test('ExternalStyleNode.bind works', t => {
+    const node = new ExternalStyleNode('test.css', StyleNodeBind.LINK);
+
+    t.is(node.bind, StyleNodeBind.LINK);
+    t.is(node.getRawAttribute('bind'), StyleNodeBind.LINK);
+
+    node.bind = StyleNodeBind.HEAD;
+
+    t.is(node.bind, StyleNodeBind.HEAD);
+    t.is(node.getRawAttribute('bind'), StyleNodeBind.HEAD);
+});
+
+test('ExternalStyleNode.bind default value is populated', t => {
+    const node = new ExternalStyleNode('test.css');
+
+    t.is(node.bind, StyleNodeBind.HEAD);
+});
+
+test('ExternalStyleNode.src works', t => {
+    const node = new ExternalStyleNode('test.css');
+
+    t.is(node.src, 'test.css');
+    t.is(node.getRawAttribute('src'), 'test.css');
+
+    node.src = 'new.css';
+
+    t.is(node.src, 'new.css');
+    t.is(node.getRawAttribute('src'), 'new.css');
+});
+
+test('ScriptNode.compiled works', t => {
+    const node1 = new ScriptNode(true);
+    const node2 = new ScriptNode(false);
+
+    t.true(node1.compiled);
+    t.false(node2.compiled);
+});
+
+test('ScriptNode.compiled default value is populated', t => {
+    const node = new ScriptNode();
+
+    t.false(node.compiled);
+});
+
+test('InternalScriptNode.compiled value is correct', t => {
+    const node = new InternalScriptNode();
+
+    t.true(node.compiled);
+});
+
+test('InternalScriptNode.scriptContent works', t => {
+    const js = 'function () {}';
+
+    const node = new InternalScriptNode();
+    node.appendChild(new TextNode(js));
+
+    t.is(node.scriptContent, js);
+});
+
+test('InternalScriptNode.scriptContent default value is populated', t => {
+    const node = new InternalScriptNode();
+
+    t.is(node.scriptContent, '');
+});
+
+test('ExternalScriptNode.compiled value is correct', t => {
+    const node = new ExternalScriptNode('test.js');
+
+    t.true(node.compiled);
+});
+
+test('ExternalScriptNode.src works', t => {
+    const node = new ExternalScriptNode('test.js');
+
+    t.is(node.src, 'test.js');
+    t.is(node.getRawAttribute('src'), 'test.js');
+
+    node.src = 'new.js';
+
+    t.is(node.src, 'new.js');
+    t.is(node.getRawAttribute('src'), 'new.js');
 });

@@ -58,7 +58,7 @@ function createPipeline(): StandardPipeline {
         <m-fragment src="header.html" title="{{ $.name }}" />
 
         <m-data type="application/json" sections="sectiondata.json" />
-        <m-script src="sectionLoader.js" />
+        <script compiled src="sectionLoader.js"></script>
 
         <m-for var="sn" of="{{ $.sectionids }}">
             <br>
@@ -78,6 +78,18 @@ function createPipeline(): StandardPipeline {
         <header class="pageTitle \${ $.class || '' }">\${ $.name }</header>
     `);
     pipelineInterface.setSourceHtml('section.html', `
+        <script compiled>
+            if ($.class) {
+                this.sectionClass = $.class;
+            } else {
+                this.sectionClass = 'defaultSection';
+            }
+
+            this.sectionTitle = $.title;
+        </script>
+
+        <style bind="head" src="section.style.css"></style>
+        
         <template>
             <section class="\${ $.sectionClass }">
                 <header>\${ $.sectionTitle }</header>
@@ -85,25 +97,6 @@ function createPipeline(): StandardPipeline {
                 <m-slot />
             </section>
         </template>
-
-        <script>
-            return class Section {
-                constructor(scope, context) {
-                    this.$ = scope;
-                    this.$$ = context;
-
-                    if (scope.class) {
-                        this.sectionClass = scope.class;
-                    } else {
-                        this.sectionClass = 'defaultSection';
-                    }
-
-                    this.sectionTitle = scope.title;
-                }
-            }
-        </script>
-
-        <style bind="head" src="section.style.css"></style>
     `);
     pipelineInterface.setSource('section.style.css', {
         type: MimeType.CSS,

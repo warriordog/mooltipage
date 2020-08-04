@@ -40,7 +40,7 @@ export function compareFragmentMacro(t: ExecutionContext, fragment: string, expe
 export function compareComponentMacro(t: ExecutionContext, component: string, expected: string, sources?: [string, string][]): void {
     // set up pipeline
     const pi = new MemoryPipelineInterface();
-    pi.setSourceHtml('page.html', '<!DOCTYPE html><html><head><title>Compare Component Macro</title></head><body><m-component src="component.html" /></body></html>');
+    pi.setSourceHtml('page.html', '<!DOCTYPE html><html><head><title>Compare Component Macro</title></head><body><m-fragment src="component.html" /></body></html>');
     pi.setSourceHtml('component.html', component);
     if (sources != undefined) {
         sources.forEach(source => pi.setSourceHtml(source[0], source[1]));

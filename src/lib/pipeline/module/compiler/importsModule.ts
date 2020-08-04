@@ -1,5 +1,5 @@
-import { HtmlCompilerModule, HtmlCompilerContext, ImportDefinition } from '../htmlCompiler';
-import { MImportNode, TagNode, ExternalReferenceNode, MFragmentNode, MComponentNode } from '../../..';
+import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
+import { MImportNode, TagNode, MFragmentNode } from '../../..';
 
 /**
  * Process imports / aliases via m-import
@@ -24,8 +24,7 @@ export class ImportsModule implements HtmlCompilerModule {
         // create import definition and register in compile data
         targetNodeData.defineImport({
             alias: mImport.as,
-            source: mImport.src,
-            type: mImport.type
+            source: mImport.src
         });
 
         // delete node
@@ -38,23 +37,12 @@ export class ImportsModule implements HtmlCompilerModule {
         const importDefinition = htmlContext.getImport(tag.tagName);
 
         // create replacement
-        const replacementTag = this.createReplacementTag(tag, importDefinition);
+        const attributes = new Map(tag.getAttributes().entries());
+        const replacementTag = new MFragmentNode(importDefinition.source, attributes);
 
         // replace tag
         replacementTag.appendChildren(tag.childNodes);
         tag.replaceSelf([ replacementTag ]);
         htmlContext.setDeleted();
-    }
-
-    private createReplacementTag(tag: TagNode, importDefinition: ImportDefinition): ExternalReferenceNode {
-        // clone attributes to give to replacement
-        const attributes = new Map(tag.getAttributes().entries());
-
-        // clone tag
-        switch (importDefinition.type) {
-            case 'm-fragment': return new MFragmentNode(importDefinition.source, attributes);
-            case 'm-component': return new MComponentNode(importDefinition.source, attributes);
-            default: throw new Error(`Unknown import definition type: ${ importDefinition.type }`);
-        }
     }
 }

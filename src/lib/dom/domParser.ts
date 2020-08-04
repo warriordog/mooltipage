@@ -1,5 +1,5 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
-import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MComponentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MImportFragmentNode, MImportComponentNode, MScriptNode, MDataNode } from './node';
+import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MDataNode, ExternalStyleNode, InternalStyleNode, StyleNodeBind, StyleNode, ScriptNode, ExternalScriptNode, InternalScriptNode } from './node';
 import { MimeType } from '../util/mimeType';
 /**
  * Parses HTML into a dom using htmlparser2
@@ -166,8 +166,6 @@ export class DomHandler implements Partial<Handler> {
         switch (tagName) {
             case 'm-fragment':
                 return this.createMFragmentNode(attributes);
-            case 'm-component':
-                return this.createMComponentNode(attributes);
             case 'm-slot':
                 return this.createMSlotNode(attributes);
             case 'm-content':
@@ -186,10 +184,12 @@ export class DomHandler implements Partial<Handler> {
                 return new MElseNode(attributes);
             case 'm-for':
                 return this.createMForNode(attributes);
-            case 'm-script':
-                return this.createMScriptNode(attributes);
             case 'm-data':
                 return this.createMDataNode(attributes);
+            case 'style':
+                return this.createStyleNode(attributes);
+            case 'script':
+                return this.createScriptNode(attributes);
             default:
                 return new TagNode(tagName, attributes);
         }
@@ -199,12 +199,6 @@ export class DomHandler implements Partial<Handler> {
         const src = attributes.get('src');
         if (src == undefined) throw new Error('Parse error: <m-fragment> is missing required attribute: src');
         return new MFragmentNode(src, attributes);
-    }
-
-    private createMComponentNode(attributes: Map<string, string | null>): MComponentNode {
-        const src = attributes.get('src');
-        if (src == undefined) throw new Error('Parse error: <m-component> is missing required attribute: src');
-        return new MComponentNode(src, attributes);
     }
 
     private getSlotAttribute(attributes: Map<string, string | null>): string | undefined {
@@ -227,16 +221,7 @@ export class DomHandler implements Partial<Handler> {
         if (src == undefined) throw new Error('Parse error: <m-import> is missing required attribute: src');
         const as = attributes.get('as');
         if (as == undefined) throw new Error('Parse error: <m-import> is missing required attribute: as');
-        const fragment = attributes.has('fragment');
-        const component = attributes.has('component');
-
-        if (fragment && !component) {
-            return new MImportFragmentNode(src, as, attributes);
-        } else if (!fragment && component) {
-            return new MImportComponentNode(src, as, attributes);
-        } else {
-            throw new Error('Parse error: <m-import> must have exactly one of these attributes: [fragment,component]');
-        }
+        return new MImportNode(src, as, attributes);
     }
 
     private createMIfNode(attributes: Map<string, string | null>): MIfNode {
@@ -268,16 +253,44 @@ export class DomHandler implements Partial<Handler> {
         }
     }
 
-    private createMScriptNode(attributes: Map<string, string | null>): MScriptNode {
-        const src = attributes.get('src');
-        if (src == undefined || src == null) throw new Error('Parse error: <m-script> is missing required attribute: src');
-        return new MScriptNode(src, attributes);
-    }
-
     private createMDataNode(attributes: Map<string, string | null>): MDataNode {
         const type = attributes.get('type');
         if (type == undefined || type == null) throw new Error('Parse error: <m-data> is missing required attribute: type');
         if (type !== MimeType.JSON && type !== MimeType.TEXT) throw new Error(`Parse error: <m-data> has invalid value for attribute 'type': '${ type }'`)
         return new MDataNode(type, attributes);
+    }
+
+    private createStyleNode(attributes: Map<string, string | null>): StyleNode {
+        // "uncompiled" style nodes should be passed on as-is
+        if (!attributes.has('compiled')) {
+            return new StyleNode(false, attributes);
+        }
+
+        // "compiled" stlye nodes need further processing
+        const bind = attributes.get('bind') ?? undefined;
+        if (bind != undefined && bind != StyleNodeBind.HEAD && bind != StyleNodeBind.LINK) {
+            throw new Error(`Parse error: <style> has invalid value for attribute 'bind': '${ bind }'`)
+        }
+        const src = attributes.get('src');
+        if (src != undefined) {
+            return new ExternalStyleNode(src, bind, attributes);
+        } else {
+            return new InternalStyleNode(bind, attributes);
+        }
+    }
+
+    private createScriptNode(attributes: Map<string, string | null>): ScriptNode {
+        // "uncompiled" style nodes should be passed on as-is
+        if (!attributes.has('compiled')) {
+            return new ScriptNode(false, attributes);
+        }
+
+        // "compiled" stlye nodes need further processing
+        const src = attributes.get('src');
+        if (src != undefined) {
+            return new ExternalScriptNode(src, attributes);
+        } else {
+            return new InternalScriptNode(attributes);
+        }
     }
 }

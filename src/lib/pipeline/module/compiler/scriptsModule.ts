@@ -1,26 +1,39 @@
 import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
-import { MScriptNode } from '../../..';
+import { MimeType } from '../../..';
+import { InternalScriptNode, ExternalScriptNode } from '../../../dom/node';
 
 export class ScriptsModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
-        // compile <m-script>
-        if (MScriptNode.isMScriptNode(htmlContext.node)) {
-            this.compileMScript(htmlContext.node, htmlContext);
+        if (InternalScriptNode.isInternalScriptNode(htmlContext.node)) {
+            // compile internal <script>
+            this.compileInternalScript(htmlContext.node, htmlContext);
+
+        } else if (ExternalScriptNode.isExternalScriptNode(htmlContext.node)) {
+            // compile external <script>
+            this.compileExternalScript(htmlContext.node, htmlContext);
         }
     }
 
-    private compileMScript(mScript: MScriptNode, htmlContext: HtmlCompilerContext): void {
+    compileInternalScript(node: InternalScriptNode, htmlContext: HtmlCompilerContext): void {
+        this.compileScript(htmlContext, node.scriptContent);
+    }
+    compileExternalScript(node: ExternalScriptNode, htmlContext: HtmlCompilerContext): void {
+        const scriptConent = htmlContext.pipelineContext.pipeline.getRawText(node.src, MimeType.JAVASCRIPT);
+        this.compileScript(htmlContext, scriptConent);
+    }
+
+    compileScript(htmlContext: HtmlCompilerContext, scriptText: string): void {
         // execute in parent scope, if it exists. Otherwise use local scope
         const targetCompileData = htmlContext.parentContext ?? htmlContext;
 
         // create eval context
         const evalContext = targetCompileData.createEvalContext();
 
-        // compile
-        htmlContext.pipelineContext.pipeline.compileExternalScript(mScript.src, evalContext);
+        // compile and execute
+        htmlContext.pipelineContext.pipeline.compileScript(scriptText, evalContext);
 
         // remove when done
-        mScript.removeSelf();
+        htmlContext.node.removeSelf();
         htmlContext.setDeleted();
     }
 }

@@ -8,6 +8,7 @@ import { ReferenceModule } from './compiler/referenceModule';
 import { Fragment, Node, DocumentNode, NodeWithChildren } from '../..';
 import { EvalContext } from './evalEngine';
 import { PipelineContext } from '../standardPipeline';
+import { StyleModule } from './compiler/styleModule';
 
 /**
  * Provides HTML compilation support to the pipeline.
@@ -42,6 +43,9 @@ export class HtmlCompiler {
             // ImportsModule is responsible for converting custom tag names.
             // It needs to go before any modules that use data from tag names
             new ImportsModule(),
+
+            // StyleModule process <style> tags
+            new StyleModule(),
 
             // ReferenceModule is responsible for loading in content that requires a separate compilation round.
             // Content loaded by ReferenceModule is 100% compiled, so it can go last
@@ -271,14 +275,6 @@ export interface ImportDefinition {
      * Source path to load import from
      */
     source: string;
-
-    /**
-     * Type of import definition.
-     * Current supported values:
-     * * m-fragment - for an <m-fragment> tag
-     * * m-component - for an <m-component> tag
-     */
-    type: 'm-fragment' | 'm-component';
 }
 
 function hasImport(htmlContext: HtmlCompilerContext | undefined, alias: string): boolean {

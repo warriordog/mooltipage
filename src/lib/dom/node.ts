@@ -184,6 +184,14 @@ export abstract class NodeWithChildren extends Node {
     }
 
     /**
+     * Prepend multiple children to the start of this parent's child list
+     * @param children Child nodes to prepend. Can be empty.
+     */
+    prependChildren(children: Node[]): void {
+        NodeLogic.prependChildNodes(this, children);
+    }
+
+    /**
      * Finds the first child node that matches a condition.
      * Returns null if no match found.
      * @param matcher Callback to test condition
@@ -271,7 +279,6 @@ export abstract class NodeWithChildren extends Node {
      * @returns First matching TagNode, or null.
      */
     findChildTagByTagName(tagName: 'm-fragment', deep?: boolean): MFragmentNode | null;
-    findChildTagByTagName(tagName: 'm-component', deep?: boolean): MComponentNode | null;
     findChildTagByTagName(tagName: 'm-content', deep?: boolean): MContentNode | null;
     findChildTagByTagName(tagName: 'm-slot', deep?: boolean): MSlotNode | null;
     findChildTagByTagName(tagName: 'm-var', deep?: boolean): MVarNode | null;
@@ -279,6 +286,9 @@ export abstract class NodeWithChildren extends Node {
     findChildTagByTagName(tagName: 'm-import', deep?: boolean): MImportNode | null;
     findChildTagByTagName(tagName: 'm-if', deep?: boolean): MIfNode | null;
     findChildTagByTagName(tagName: 'm-for', deep?: boolean): MForNode | null;
+    findChildTagByTagName(tagName: 'm-data', deep?: boolean): MDataNode | null;
+    findChildTagByTagName(tagName: 'style', deep?: boolean): StyleNode | null;
+    findChildTagByTagName(tagName: 'script', deep?: boolean): ScriptNode | null;
     findChildTagByTagName(tagName: string, deep?: boolean): TagNode | null;
     findChildTagByTagName(tagName: string, deep = true): TagNode | null {
         return this.findChildTag(tag => tag.tagName === tagName, deep);
@@ -293,7 +303,6 @@ export abstract class NodeWithChildren extends Node {
      * @returns Array of all matching TagNodes
      */
     findChildTagsByTagName(tagName: 'm-fragment', deep?: boolean): MFragmentNode[];
-    findChildTagsByTagName(tagName: 'm-component', deep?: boolean): MComponentNode[];
     findChildTagsByTagName(tagName: 'm-content', deep?: boolean): MContentNode[];
     findChildTagsByTagName(tagName: 'm-slot', deep?: boolean): MSlotNode[];
     findChildTagsByTagName(tagName: 'm-var', deep?: boolean): MVarNode[];
@@ -301,6 +310,9 @@ export abstract class NodeWithChildren extends Node {
     findChildTagsByTagName(tagName: 'm-import', deep?: boolean): MImportNode[];
     findChildTagsByTagName(tagName: 'm-if', deep?: boolean): MIfNode[];
     findChildTagsByTagName(tagName: 'm-for', deep?: boolean): MForNode[];
+    findChildTagsByTagName(tagName: 'm-data', deep?: boolean): MDataNode[];
+    findChildTagsByTagName(tagName: 'style', deep?: boolean): StyleNode[];
+    findChildTagsByTagName(tagName: 'script', deep?: boolean): ScriptNode[];
     findChildTagsByTagName(tagName: string, deep?: boolean): TagNode[];
     findChildTagsByTagName(tagName: string, deep = true): TagNode[] {
         return this.findChildTags(tag => tag.tagName === tagName, deep);
@@ -705,20 +717,20 @@ export class DocumentNode extends NodeWithChildren {
 }
 
 /**
- * Parent type for any custom tag that includes an external reference.
- * The path to the reference is stored in the "src" attribute.
+ * Implements <m-fragment> tag.
+ * MFragmentNode defines a reference to an external HTML fragment.
+ * This node will be replaced with the compiled, plain HTML form of the external fragment.
  */
-export abstract class ExternalReferenceNode extends TagNode {
+export class MFragmentNode extends TagNode {
     /**
-     * Create a new ExternalReferenceNode
-     * @param tagName Tag name of the implementation
-     * @param src Path to the external reference
+     * Create a new MFragmentNode
+     * @param src Path to fragment
      * @param attributes Optional attributes
      */
-    constructor(tagName: string, src: string, attributes?: Map<string, unknown>) {
-        super(tagName, attributes);
+    constructor(src: string, attributes?: Map<string, unknown>) {
+        super('m-fragment', attributes);
 
-        this.setAttribute('src', src);
+        this.src = src;
     }
 
     /**
@@ -751,24 +763,6 @@ export abstract class ExternalReferenceNode extends TagNode {
         this.setAttribute('src', newSrc);
     }
 
-    abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ExternalReferenceNode;
-}
-
-/**
- * Implements <m-fragment> tag.
- * MFragmentNode defines a reference to an external HTML fragment.
- * This node will be replaced with the compiled, plain HTML form of the external fragment.
- */
-export class MFragmentNode extends ExternalReferenceNode {
-    /**
-     * Create a new MFragmentNode
-     * @param src Path to fragment
-     * @param attributes Optional attributes
-     */
-    constructor(src: string, attributes?: Map<string, unknown>) {
-        super('m-fragment', src, attributes);
-    }
-
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MFragmentNode {
         return NodeLogic.cloneMFragmentNode(this, deep, callback);
     }
@@ -779,34 +773,6 @@ export class MFragmentNode extends ExternalReferenceNode {
      */
     static isMFragmentNode(node: Node): node is MFragmentNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-fragment';
-    }
-}
-
-/**
- * Implements <m-component> tag.
- * MFragmentNode defines a reference to an external Mooltipage component.
- * This node will be replaced with the compiled, plain HTML form of the component.
- */
-export class MComponentNode extends ExternalReferenceNode {
-    /**
-     * Creates a new MComponentNode
-     * @param src Path to component
-     * @param attributes Optional attributes
-     */
-    constructor(src: string, attributes?: Map<string, unknown>) {
-        super('m-component', src, attributes);
-    }
-
-    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MComponentNode {
-        return NodeLogic.cloneMComponentNode(this, deep, callback);
-    }
-
-    /**
-     * Returns true if a node is an instance of MComponentNode
-     * @param node Node to check
-     */
-    static isMComponentNode(node: Node): node is MComponentNode {
-        return TagNode.isTagNode(node) && node.tagName === 'm-component';
     }
 }
 
@@ -956,18 +922,18 @@ export class MScopeNode extends TagNode {
  * The "src" attribute specifies the path to the external reference.
  * MImportNode registers imports into the parent scope, like MVarNode.
  */
-export abstract class MImportNode extends TagNode {
+export class MImportNode extends TagNode {
     /**
-     * Creates a new MImportNode. Exactly one of component or fragment must be true.
+     * Creates a new MImportNode.
      * @param src Path to reference
      * @param as Tag name to use as alias
      * @param attributes Optional attributes.
      */
     constructor(src: string, as: string, attributes?: Map<string, unknown>) {
         super('m-import', attributes);
-
-        this.setAttribute('src', src);
-        this.setAttribute('as', as);
+        
+        this.src = src;
+        this.as = as;
     }
 
     /**
@@ -990,10 +956,10 @@ export abstract class MImportNode extends TagNode {
         this.setAttribute('as', newAs);
     }
 
-    /**
-     * Type of external reference to use when resolving import
-     */
-    abstract get type(): 'm-fragment' | 'm-component';
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MImportNode {
+        return NodeLogic.cloneMImportNode(this, deep, callback);
+    }
 
     /**
      * Returns true if a node is an instance of MImportNode
@@ -1001,70 +967,6 @@ export abstract class MImportNode extends TagNode {
      */
     static isMImportNode(node: Node): node is MImportNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-import';
-    }
-}
-
-/**
- * Variant of MImportNode that imports an <m-fragment>
- */
-export class MImportFragmentNode extends MImportNode {
-    /**
-     * Creates a new MImportFragmentNode.
-     * @param src Path to reference
-     * @param as Tag name to use as alias
-     * @param attributes Optional attributes.
-     */
-    constructor(src: string, as: string, attributes?: Map<string, unknown>) {
-        super(src, as, attributes);
-        this.setBooleanAttribute('fragment', true);
-    }
-
-    get type(): 'm-fragment' {
-        return 'm-fragment';
-    }
-
-    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MImportFragmentNode {
-        return NodeLogic.cloneMImportFragmentNode(this, deep, callback);
-    }
-
-    /**
-     * Returns true if a node is an instance of MImportFragmentNode
-     * @param node Node to check
-     */
-    static isMImportFragmentNode(node: Node): node is MImportFragmentNode {
-        return MImportNode.isMImportNode(node) && node.type === 'm-fragment';
-    }
-}
-
-/**
- * Variant of MImportNode that imports an <m-component>S
- */
-export class MImportComponentNode extends MImportNode {
-    /**
-     * Creates a new MImportComponentNode.
-     * @param src Path to reference
-     * @param as Tag name to use as alias
-     * @param attributes Optional attributes.
-     */
-    constructor(src: string, as: string, attributes?: Map<string, unknown>) {
-        super(src, as, attributes);
-        this.setBooleanAttribute('component', true);
-    }
-
-    get type(): 'm-component' {
-        return 'm-component';
-    }
-
-    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MImportComponentNode {
-        return NodeLogic.cloneMImportComponentNode(this, deep, callback);
-    }
-
-    /**
-     * Returns true if a node is an instance of MImportComponentNode
-     * @param node Node to check
-     */
-    static isMMImportComponentNode(node: Node): node is MImportComponentNode {
-        return MImportNode.isMImportNode(node) && node.type === 'm-component';
     }
 }
 
@@ -1389,45 +1291,6 @@ export class MForInNode extends MForNode {
 }
 
 /**
- * <m-script> node.
- * Executes a javascript file in the parent scope
- */
-export class MScriptNode extends TagNode {
-    /**
-     * Create a new MScriptNode
-     * @param src Path to script file
-     * @param attributes Optional attributes
-     */
-    constructor(src: string, attributes?: Map<string, unknown>) {
-        super('m-script', attributes);
-
-        this.src = src;
-    }
-
-    /**
-     * Path to the external source of this <m-script>
-     */
-    get src(): string {
-        return this.getRequiredValueAttribute('src');
-    }
-    set src(newSrc: string) {
-        this.setAttribute('src', newSrc);
-    }
-
-    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MScriptNode {
-        return NodeLogic.cloneMScriptNode(this, deep, callback);
-    }
-
-    /**
-     * Returns true if a node is an MScriptNode
-     * @param node Node to check
-     */
-    static isMScriptNode(node: Node): node is MScriptNode {
-        return TagNode.isTagNode(node) && node.tagName === 'm-script';
-    }
-}
-
-/**
  * Supported MIME types of data contents
  */
 export type MDataNodeType = MimeType.JSON | MimeType.TEXT
@@ -1498,5 +1361,276 @@ export class MDataNode extends TagNode {
      */
     static isMDataNode(node: Node): node is MDataNode {
         return TagNode.isTagNode(node) && node.tagName === 'm-data';
+    }
+}
+
+/**
+ * <style> node.
+ * May be compiled (process by mooltipage) or not (ignored by mooltipage)
+ */
+export class StyleNode extends TagNode {
+    /**
+     * If this StyleNode is being processed by Mooltipage
+     */
+    readonly compiled: boolean;
+
+    constructor(compiled?: boolean, attributes?: Map<string, unknown>) {
+        super('style', attributes);
+
+        this.compiled = compiled ?? false;
+        this.setBooleanAttribute('compiled', this.compiled);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): StyleNode {
+        return NodeLogic.cloneStyleNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is a StyleNode
+     * @param node Node to check
+     */
+    static isStyleNode(node: Node): node is StyleNode {
+        return TagNode.isTagNode(node) && node.tagName === 'style';
+    }
+}
+
+/**
+ * Recognized binding mode for compiled <style> nodes.
+ * Controls how the stylesheet will be linked to the page 
+ */
+export enum StyleNodeBind {
+    /**
+     * Stylesheet will be placed in an inline <style> block in the page <head> section.
+     */
+    HEAD = 'head',
+
+    /**
+     * Stylesheet will be placed in an external CSS file and referenced via a <link> tag.
+     */
+    LINK = 'link'
+}
+
+/**
+ * Parent class for specialized types of compiled <style> nodes
+ */
+export abstract class CompiledStyleNode extends StyleNode {
+    /**
+     * If this style node points to an external stylesheet.
+     */
+    readonly isExternal: boolean;
+
+    constructor(isExternal: boolean, bindType?: StyleNodeBind, attributes?: Map<string, unknown>) {
+        super(true, attributes);
+
+        this.isExternal = isExternal;
+        this.bind = bindType ?? StyleNodeBind.HEAD;
+    }
+
+    /**
+     * The bind type of this <style> node
+     */
+    get bind(): StyleNodeBind {
+        return this.getAttribute('bind') as StyleNodeBind;
+    }
+    set bind(newBindType: StyleNodeBind) {
+        this.setAttribute('bind', newBindType);
+    }
+
+    /**
+     * Returns true if a node is a CompiledStyleNode
+     * @param node Node to check
+     */
+    static isCompiledStyleNode(node: Node): node is CompiledStyleNode {
+        return StyleNode.isStyleNode(node) && node.compiled;
+    }
+}
+
+/**
+ * <style> node that is compiled and contains an inline stylesheet
+ */
+export class InternalStyleNode extends CompiledStyleNode {
+    constructor(bindType?: StyleNodeBind, attributes?: Map<string, unknown>) {
+        super(false, bindType, attributes);
+    }
+
+    /**
+     * Text content of the stylesheet.
+     * Will never be null or undefined.
+     * If no stylesheet is present, then an empty string is returned.
+     */
+    get styleContent(): string {
+        const styleTextNode = this.firstChild;
+        if (styleTextNode != null && TextNode.isTextNode(styleTextNode)) {
+            return styleTextNode.text;
+        } else {
+            return '';
+        }
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): InternalStyleNode {
+        return NodeLogic.cloneInternalStyleNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an InternalStyleNode
+     * @param node Node to check
+     */
+    static isInternalStyleNode(node: Node): node is InternalStyleNode {
+        return CompiledStyleNode.isCompiledStyleNode(node) && !node.isExternal;
+    }
+}
+
+/**
+ * <style> node that is compiled and points to an external stylsheet
+ */
+export class ExternalStyleNode extends CompiledStyleNode {
+    constructor(src: string, bindType?: StyleNodeBind, attributes?: Map<string, unknown>) {
+        super(true, bindType, attributes);
+
+        this.src = src;
+    }
+
+    /**
+     * Path to the stylesheet
+     */
+    get src(): string {
+        return this.getRequiredValueAttribute('src');
+    }
+    set src(newSrc: string) {
+        this.setRequiredValueAttribute('src', newSrc);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): ExternalStyleNode {
+        return NodeLogic.cloneExternalStyleNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an ExternalStyleNode
+     * @param node Node to check
+     */
+    static isExternalStyleNode(node: Node): node is ExternalStyleNode {
+        return CompiledStyleNode.isCompiledStyleNode(node) && node.isExternal;
+    }
+}
+
+/**
+ * <script> tag.
+ * Can be compiled (processed by Mooltipage) or not (ignored by mooltipage)
+ */
+export class ScriptNode extends TagNode {
+    /**
+     * If this <script> is compiled by mooltipage or ignored
+     */
+    readonly compiled: boolean;
+    
+    constructor(compiled?: boolean, attributes?: Map<string, unknown>) {
+        super('script', attributes);
+
+        this.compiled = compiled ?? false;
+        this.setBooleanAttribute('compiled', this.compiled);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): ScriptNode {
+        return NodeLogic.cloneScriptNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is a ScriptNode
+     * @param node Node to check
+     */
+    static isScriptNode(node: Node): node is ScriptNode {
+        return TagNode.isTagNode(node) && node.tagName === 'script';
+    }
+}
+
+/**
+ * Parent class for any specialize <script> nodes
+ */
+export abstract class CompiledScriptNode extends ScriptNode {
+    /**
+     * If this script is loaded from an external file or inline code
+     */
+    readonly isExternal: boolean;
+
+    constructor(isExternal: boolean, attributes?: Map<string, unknown>) {
+        super(true, attributes);
+
+        this.isExternal = isExternal;
+    }
+
+    /**
+     * Returns true if a node is a CompiledScriptNode
+     * @param node Node to check
+     */
+    static isCompiledScriptNode(node: Node): node is CompiledScriptNode {
+        return ScriptNode.isScriptNode(node) && node.compiled;
+    }
+}
+
+/**
+ * <script> node that is compiled from an inline script
+ */
+export class InternalScriptNode extends CompiledScriptNode {
+    constructor(attributes?: Map<string, unknown>) {
+        super(false, attributes);
+    }
+
+    /**
+     * Contents of the script.
+     * Will never be null or undefined.
+     * If no script is included, then an empty string is returned
+     */
+    get scriptContent(): string {
+        const scriptText = this.firstChild;
+        if (scriptText != null && TextNode.isTextNode(scriptText)) {
+            return scriptText.text;
+        } else {
+            return '';
+        }
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): InternalScriptNode {
+        return NodeLogic.cloneInternalScriptNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is a InternalScriptNode
+     * @param node Node to check
+     */
+    static isInternalScriptNode(node: Node): node is InternalScriptNode {
+        return CompiledScriptNode.isCompiledScriptNode(node) && !node.isExternal;
+    }
+}
+
+/**
+ * <script> node that is compiled from an external file
+ */
+export class ExternalScriptNode extends CompiledScriptNode {
+    constructor(src: string, attributes?: Map<string, unknown>) {
+        super(true, attributes);
+
+        this.src = src;
+    }
+
+    /**
+     * Path to source file
+     */
+    get src(): string {
+        return this.getRequiredValueAttribute('src');
+    }
+    set src(newSrc: string) {
+        this.setRequiredValueAttribute('src', newSrc);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): ExternalScriptNode {
+        return NodeLogic.cloneExternalScriptNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an ExternalScriptNode
+     * @param node Node to check
+     */
+    static isExternalScriptNode(node: Node): node is ExternalScriptNode {
+        return CompiledScriptNode.isCompiledScriptNode(node) && node.isExternal;
     }
 }

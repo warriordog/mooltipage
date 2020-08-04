@@ -100,44 +100,6 @@ export function parseHandlebars(jsString: string): EvalContent<unknown> {
 }
 
 /**
- * Parse a function-style component script.
- * 
- * @param jsText Text content of the script
- * @returns EvalContent that will execute the expression and return an instance of the component object.
- * @throws If the script code cannot be parsed
- */
-export function parseComponentFunction(jsText: string): EvalContent<ScopeData> {
-    // generate body for function
-    const functionBody = jsText.trim();
-
-    // create content
-    return parseScript(functionBody);
-}
-
-/**
- * Parse a class-style component script.
- * 
- * @param jsText Text content of the script
- * @returns EvalContent that will execute the expression and return an instance of the component object.
- * @throws If the script cannot be parsed
- */
-export function parseComponentClass(jsText: string): EvalContent<ScopeData> {
-    // generate body for function
-    const functionBody = jsText.trim();
-
-    // parse class declaration
-    const classDeclarationFunc = parseNoArgsFunction<EvalConstructor<ScopeData>>(functionBody);
-
-    // execute class declaration
-    const classConstructor: EvalConstructor<ScopeData> = classDeclarationFunc();
-
-    // create eval content
-    const evalContent = new EvalContentConstructor(classConstructor);
-
-    return evalContent;
-}
-
-/**
  * Parse arbitrarty JS code in a function context.
  * All JS features are available, provided that they are valid for use within a function body.
  * The function can optionally return a value, but return values are not type checked.
@@ -152,17 +114,9 @@ export function parseScript<T>(functionBody: string): EvalContent<T> {
         // This is inherently not type-safe, as the purpose is to run unknown JS code.
         const functionObj = new Function('$', '$$', functionBody) as EvalFunction<T>;
 
-        return new EvalContentFunction(functionObj);
+        return new EvalContent(functionObj);
     } catch (error) {
         throw new Error(`Parse error in function: ${ error }. Function body: ${ functionBody }`);
-    }
-}
-
-function parseNoArgsFunction<T>(functionBody: string): () => T  {
-    try {
-        return new Function(functionBody) as () => T;
-    } catch (error) {
-        throw new Error(`Parse error in function: ${ error }.  Function body: ${ functionBody }`);
     }
 }
 
@@ -170,57 +124,29 @@ function parseNoArgsFunction<T>(functionBody: string): () => T  {
  * A parsed, executable JS expression that can be called with a provided evaluation context to produce the result of the expression.
  * Can be safely cached or reused.
  */
-export interface EvalContent<T> {
-    /**
-     * Invoke the expression in the specified content.
-     * 
-     * @param evalContext Context to execute within
-     * @returns The object produced by the expression
-     */
-    invoke(evalContext: EvalContext): T;
-}
-
-/**
- * A function-based expression
- */
-export type EvalFunction<T> = ($: ScopeData, $$: EvalContext) => T;
-
-/**
- * A constructor (class) based expression
- */
-export type EvalConstructor<T> = new ($: ScopeData, $$: EvalContext) => T;
-
-/**
- * Implementation of EvalContext that can execute a function
- */
-export class EvalContentFunction<T> implements EvalContent<T> {
+export class EvalContent<T> {
     protected readonly evalFunction: EvalFunction<T>;
 
     constructor(evalFunction: EvalFunction<T>) {
         this.evalFunction = evalFunction;
     }
 
+    /**
+     * Invoke the expression in the specified content.
+     * 
+     * @param evalContext Context to execute within
+     * @returns The object produced by the expression
+     */
     invoke(evalContext: EvalContext): T {
         // execute the function
-        return this.evalFunction(evalContext.scope, evalContext);
+        return this.evalFunction.call(evalContext.scope, evalContext.scope, evalContext);
     }
 }
 
 /**
- * Implementation of EvalContext that can execute a constructor
+ * A function-based expression
  */
-export class EvalContentConstructor<T> implements EvalContent<T> {
-    protected readonly evalConstructor: EvalConstructor<T>;
-
-    constructor(evalConstructor: EvalConstructor<T>) {
-        this.evalConstructor = evalConstructor;
-    }
-
-    invoke(evalContext: EvalContext): T {
-        // execute the function
-        return new this.evalConstructor(evalContext.scope, evalContext);
-    }
-}
+export type EvalFunction<T> = ($: ScopeData, $$: EvalContext) => T;
 
 /**
  * Context available to an evaluated script / expression

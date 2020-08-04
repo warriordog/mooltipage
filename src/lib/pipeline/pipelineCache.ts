@@ -1,5 +1,4 @@
 import { Fragment } from '..';
-import { Component } from './object/component';
 import { EvalContent } from './module/evalEngine';
 
 /**
@@ -7,7 +6,6 @@ import { EvalContent } from './module/evalEngine';
  */
 export class PipelineCache {
     private readonly fragmentCache: Map<string, Fragment> = new Map();
-    private readonly componentCache: Map<string, Component> = new Map();
     private readonly expressionCache: Map<string, EvalContent<unknown>> = new Map();
     private readonly scriptCache: Map<string, EvalContent<unknown>> = new Map();
     private readonly externalScriptCache: Map<string, string> = new Map();
@@ -31,26 +29,6 @@ export class PipelineCache {
 
     storeFragment(fragment: Fragment): void {
         this.fragmentCache.set(fragment.path, fragment);
-    }
-
-    // Component
-
-    hasComponent(resPath: string): boolean {
-        return this.componentCache.has(resPath);
-    }
-
-    getComponent(resPath: string): Component {
-        const component: Component | undefined = this.componentCache.get(resPath);
-
-        if (component == undefined) {
-            throw new Error(`Component not found in cache: ${ resPath }.  Make sure to call hasComponent() before getComponent().`);
-        }
-
-        return component;
-    }
-
-    storeComponent(component: Component): void {
-        this.componentCache.set(component.resPath, component);
     }
 
     // Expression
@@ -137,7 +115,6 @@ export class PipelineCache {
 
     clear(): void {
         this.fragmentCache.clear();
-        this.componentCache.clear();
         this.expressionCache.clear();
         this.scriptCache.clear();
         this.externalScriptCache.clear();

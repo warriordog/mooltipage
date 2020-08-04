@@ -84,20 +84,14 @@ test('[endToEnd] m-if works in a fragment', compareFragmentMacro,
 `]]);
 
 test('[endToEnd] m-if works in a component', compareFragmentMacro,
-`<m-component src="comp.html" />`,
+`<m-fragment src="comp.html" />`,
 'good',
 [['comp.html',`
-    <template>
-        <m-if ?="{{ $.test }}">good</m-if>
-        <m-if ?="{{ !$.test }}">bad</m-if>
-    </template>
-    <script>
-        return class Comp {
-            constructor(scope) {
-                this.test = true;
-            }
-        }
-    </script>
+<script compiled>
+    this.test = true;
+</script>
+    <m-if ?="{{ $.test }}">good</m-if>
+    <m-if ?="{{ !$.test }}">bad</m-if>
 `]]);
 
 test('[endToEnd] correct conditional branch is taken when there are multiple options', compareFragmentMacro,

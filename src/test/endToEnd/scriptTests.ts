@@ -4,25 +4,25 @@ import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { MimeType } from '../../lib';
 
-test('[endToEnd] <m-script> executes scripts in correct scope', compareFragmentMacro,
-`<m-script src="script.js" />
+test('[endToEnd] <script> executes scripts in correct scope', compareFragmentMacro,
+`<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
 [[  'script.js',
     `$.test = "good";`
 ]]);
 
-test('[endToEnd] <m-script> can override existing vars', compareFragmentMacro,
+test('[endToEnd] <script> can override existing vars', compareFragmentMacro,
 `<m-var test="bad" />
-<m-script src="script.js" />
+<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
 [[  'script.js',
     `$.test = "good";`
 ]]);
 
-test('[endToEnd] <m-script> supports multiple lines', compareFragmentMacro,
-`<m-script src="script.js" />
+test('[endToEnd] <script> supports multiple lines', compareFragmentMacro,
+`<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
 [[  'script.js',
@@ -34,8 +34,8 @@ test('[endToEnd] <m-script> supports multiple lines', compareFragmentMacro,
     $.test = foo.join('');`
 ]]);
 
-test('[endToEnd] <m-script> supports embedded functions', compareFragmentMacro,
-`<m-script src="script.js" />
+test('[endToEnd] <script> supports embedded functions', compareFragmentMacro,
+`<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
 [[  'script.js',
@@ -45,11 +45,11 @@ test('[endToEnd] <m-script> supports embedded functions', compareFragmentMacro,
     $.test = getGood();`
 ]]);
 
-test('[endToEnd] <m-script> allows script exceptions to bubble', t => {
+test('[endToEnd] <script> allows script exceptions to bubble', t => {
     const errorMessage = 'test error';
 
     const pi = new MemoryPipelineInterface();
-    pi.setSourceHtml('page.html', `<!DOCTYPE html><html><head><title>MScript Tests</title></head><body><m-script src="script.js" /></body></html>`);
+    pi.setSourceHtml('page.html', `<!DOCTYPE html><html><head><title>MScript Tests</title></head><body><script compiled src="script.js"></script></body></html>`);
     pi.setSource('script.js', {
         type: MimeType.JAVASCRIPT,
         content: `throw new Error('${ errorMessage }');`
@@ -61,16 +61,16 @@ test('[endToEnd] <m-script> allows script exceptions to bubble', t => {
     });
 });
 
-test('[endToEnd] <m-script> scripts can access pipeline APIs', compareFragmentMacro,
-`<m-script src="script.js" />
+test('[endToEnd] <script> scripts can access pipeline APIs', compareFragmentMacro,
+`<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
 [[  'script.js',
     `$.test = $$.pipelineContext.pipeline !== undefined;`
 ]]);
 
-test.failing('[endToEnd] <m-script> scripts can access NodeJS APIs', compareFragmentMacro,
-`<m-script src="script.js" />
+test.failing('[endToEnd] <script> scripts can access NodeJS APIs', compareFragmentMacro,
+`<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
 [[  'script.js',
@@ -78,10 +78,22 @@ test.failing('[endToEnd] <m-script> scripts can access NodeJS APIs', compareFrag
     $.test = fs !== undefined;`
 ]]);
 
-test.failing('[endToEnd] <m-script> scripts can access DOM APIs', compareFragmentMacro,
-`<m-script src="script.js" />
+test.failing('[endToEnd] <script> scripts can access DOM APIs', compareFragmentMacro,
+`<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
 [[  'script.js',
     ``
 ]]);
+
+test('[endToEnd] <script> supports inline scripts', compareFragmentMacro,
+`<script compiled>
+    if (true) {
+        this.value = 'good';
+    } else {
+        this.value = 'bad';
+    }
+</script>
+<test value="\${ $.value }" />`,
+'<test value="good"></test>'
+);
