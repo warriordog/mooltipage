@@ -69,7 +69,12 @@ test('[endToEnd] <script> scripts can access pipeline APIs', compareFragmentMacr
     `$.test = $$.pipelineContext.pipeline !== undefined;`
 ]]);
 
-test.failing('[endToEnd] <script> scripts can access NodeJS APIs', compareFragmentMacro,
+test('Scripts can access require()', compareFragmentMacro,`
+<script compiled>$.test = typeof(require)</script>
+\${ $.test }`,
+'function');
+
+test('[endToEnd] <script> scripts can access NodeJS APIs', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
@@ -78,13 +83,9 @@ test.failing('[endToEnd] <script> scripts can access NodeJS APIs', compareFragme
     $.test = fs !== undefined;`
 ]]);
 
-test.failing('[endToEnd] <script> scripts can access DOM APIs', compareFragmentMacro,
-`<script compiled src="script.js"></script>
-<test value="\${ $.test }" />`,
-`<test value="true"></test>`,
-[[  'script.js',
-    ``
-]]);
+test('[endToEnd] <script> scripts can access DOM APIs', compareFragmentMacro,`
+<script compiled> $.test = require('./dom/node') !== undefined;</script>\${ $.test }`,
+`true`);
 
 test('[endToEnd] <script> supports inline scripts', compareFragmentMacro,
 `<script compiled>

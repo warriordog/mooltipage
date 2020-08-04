@@ -112,7 +112,7 @@ export function parseScript<T>(functionBody: string): EvalContent<T> {
     try {
         // Parse function body into callable function.
         // This is inherently not type-safe, as the purpose is to run unknown JS code.
-        const functionObj = new Function('$', '$$', functionBody) as EvalFunction<T>;
+        const functionObj = new Function('$', '$$', 'require', functionBody) as EvalFunction<T>;
 
         return new EvalContent(functionObj);
     } catch (error) {
@@ -125,7 +125,7 @@ export function parseScript<T>(functionBody: string): EvalContent<T> {
  * Can be safely cached or reused.
  */
 export class EvalContent<T> {
-    protected readonly evalFunction: EvalFunction<T>;
+    private readonly evalFunction: EvalFunction<T>;
 
     constructor(evalFunction: EvalFunction<T>) {
         this.evalFunction = evalFunction;
@@ -139,14 +139,28 @@ export class EvalContent<T> {
      */
     invoke(evalContext: EvalContext): T {
         // execute the function
-        return this.evalFunction.call(evalContext.scope, evalContext.scope, evalContext);
+        return this.evalFunction.call(evalContext.scope, evalContext.scope, evalContext, requireFromRoot);
     }
 }
+
+// TODO docs
+export function requireFromRoot(id: string): unknown {
+    if (id.startsWith('./')) {
+        id = `../../${ id }`;
+    } else if (id.startsWith('.\\')) {
+        id = `..\\..\\${ id }`;
+    }
+
+    return require(id);
+}
+
+// TODO docs
+export type MooltipageRequire = (path: string) => unknown;
 
 /**
  * A function-based expression
  */
-export type EvalFunction<T> = ($: ScopeData, $$: EvalContext) => T;
+export type EvalFunction<T> = ($: ScopeData, $$: EvalContext, require: MooltipageRequire) => T;
 
 /**
  * Context available to an evaluated script / expression
