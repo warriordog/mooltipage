@@ -2,7 +2,7 @@ import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
 import { MimeType } from '../../..';
 import { InternalScriptNode, ExternalScriptNode } from '../../../dom/node';
 
-export class ScriptsModule implements HtmlCompilerModule {
+export class ScriptModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
         if (InternalScriptNode.isInternalScriptNode(htmlContext.node)) {
             // compile internal <script>

@@ -1,9 +1,9 @@
-import { ExpressionsModule } from './compiler/expressionsModule';
-import { VarsModule } from './compiler/varsModule';
-import { ScriptsModule } from './compiler/scriptsModule';
+import { ExpressionModule } from './compiler/expressionModule';
+import { VarModule } from './compiler/varModule';
+import { ScriptModule } from './compiler/scriptModule';
 import { SlotModule } from './compiler/slotModule';
 import { DomLogicModule } from './compiler/domLogicModule';
-import { ImportsModule } from './compiler/importsModule';
+import { ImportModule } from './compiler/importModule';
 import { FragmentModule } from './compiler/fragmentModule';
 import { Fragment, Node, DocumentNode, NodeWithChildren } from '../..';
 import { EvalContext } from './evalEngine';
@@ -23,14 +23,14 @@ export class HtmlCompiler {
         this.modules = [
             // ExpressionsModule is responsible for compiling inline expressions.
             // It needs to go before any modules that use attribute or text values
-            new ExpressionsModule(),
+            new ExpressionModule(),
 
             // VarsModule is responsible for initializing the scripting / expression scope(s).
             // All other modules have access to local scope, so vars needs to go immediated after template text
-            new VarsModule(),
+            new VarModule(),
 
             // ScriptsModule executes external or embedded JS scripts
-            new ScriptsModule(),
+            new ScriptModule(),
 
             // SlotModule is responsible for pre-processing the uncompiled DOM to ensure that it contains the final version of the uncompiled input.
             // Incoming slot content may not be fully compiled, and should be compiled as if it is part of this compilation unit.
@@ -42,7 +42,7 @@ export class HtmlCompiler {
             
             // ImportsModule is responsible for converting custom tag names.
             // It needs to go before any modules that use data from tag names
-            new ImportsModule(),
+            new ImportModule(),
 
             // StyleModule process <style> tags
             new StyleModule(),

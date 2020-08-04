@@ -4,7 +4,7 @@ import { MImportNode, TagNode, MFragmentNode } from '../../..';
 /**
  * Process imports / aliases via m-import
  */
-export class ImportsModule implements HtmlCompilerModule {
+export class ImportModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
         
         if (MImportNode.isMImportNode(htmlContext.node)) {

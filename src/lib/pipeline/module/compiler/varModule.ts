@@ -6,7 +6,7 @@ import { MimeType } from '../../../util/mimeType';
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
  */
-export class VarsModule implements HtmlCompilerModule {
+export class VarModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
         if (DocumentNode.isDocumentNode(htmlContext.node)) {
             // if document, then bind root scope and we are done

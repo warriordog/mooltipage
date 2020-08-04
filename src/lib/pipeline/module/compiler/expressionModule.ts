@@ -6,7 +6,7 @@ import { StandardPipeline } from '../../standardPipeline';
 /**
  * Compile module that detects and evalutates embedded JS expressions in attributes and text nodes
  */
-export class ExpressionsModule implements HtmlCompilerModule {
+export class ExpressionModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
         if (TextNode.isTextNode(htmlContext.node)) {
             this.processTextNode(htmlContext, htmlContext.node);

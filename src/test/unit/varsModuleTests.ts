@@ -2,12 +2,12 @@ import test from 'ava';
 import { MockPipeline } from '../_mocks/mockPipeline';
 import { Node, DocumentNode, TagNode, MVarNode, MScopeNode, ScopeKey, Fragment, MDataNode, MimeType } from '../../lib';
 import { HtmlCompilerContext } from '../../lib/pipeline/module/htmlCompiler';
-import { VarsModule } from '../../lib/pipeline/module/compiler/varsModule';
+import { VarModule } from '../../lib/pipeline/module/compiler/varModule';
 import * as NodeLogic from '../../lib/dom/nodeLogic';
 import { PipelineContext } from '../../lib/pipeline/standardPipeline';
 import { createFragmentScope } from '../../lib/pipeline/module/evalEngine';
 
-function runVarsModule(node: Node, cleanup = true, fragmentParams: ReadonlyMap<ScopeKey, unknown> = new Map(), pipeline = new MockPipeline()) {
+function runVarModule(node: Node, cleanup = true, fragmentParams: ReadonlyMap<ScopeKey, unknown> = new Map(), pipeline = new MockPipeline()) {
     const testFrag: Fragment = {
         path: 'page.html',
         dom: new DocumentNode()
@@ -23,7 +23,7 @@ function runVarsModule(node: Node, cleanup = true, fragmentParams: ReadonlyMap<S
     };
 
     const htmlContext = new HtmlCompilerContext(testContext, node);
-    const varsModule = new VarsModule();
+    const varsModule = new VarModule();
 
     varsModule.enterNode(htmlContext);
 
@@ -32,54 +32,54 @@ function runVarsModule(node: Node, cleanup = true, fragmentParams: ReadonlyMap<S
     }
 }
 
-test('[unit] VarsModule does not affect standard elements', t => {
+test('[unit] VarModule does not affect standard elements', t => {
     const parent = new TagNode('div');
     const child = new TagNode('div');
     NodeLogic.appendChild(parent, child);
 
-    runVarsModule(child);
+    runVarModule(child);
 
     t.is(child.parentNode, parent);
 });
 
-test('[unit] VarsModule loads root scope into document', t => {
+test('[unit] VarModule loads root scope into document', t => {
     const params = new Map<ScopeKey, unknown>();
     params.set('test', 123);
 
     const dom = new DocumentNode();
 
-    runVarsModule(dom, true, params);
+    runVarModule(dom, true, params);
 
     t.is(dom.nodeData.test, 123);
 });
 
-test('[unit] VarsModule loads m-var into the parent scope', t => {
+test('[unit] VarModule loads m-var into the parent scope', t => {
     const parent = new TagNode('div');
     const childVar = new MVarNode(new Map([['test', 123]]));
     const childDiv = new TagNode('div');
     NodeLogic.appendChild(parent, childVar);
     NodeLogic.appendChild(parent, childDiv);
 
-    runVarsModule(childVar);
+    runVarModule(childVar);
 
     t.is(parent.nodeData.test, 123);
     t.is(childDiv.nodeData.test, 123);
 });
 
-test('[unit] VarsModule removes m-var after processing', t => {
+test('[unit] VarModule removes m-var after processing', t => {
     const parent = new TagNode('div');
     const childVar = new MVarNode(new Map([['test', 123]]));
     const childDiv = new TagNode('div');
     NodeLogic.appendChild(parent, childVar);
     NodeLogic.appendChild(parent, childDiv);
 
-    runVarsModule(childVar);
+    runVarModule(childVar);
 
     t.falsy(childVar.parentNode);
     t.false(parent.childNodes.includes(childVar));
 });
 
-test('[unit] VarsModule loads m-scope into its own scope', t => {
+test('[unit] VarModule loads m-scope into its own scope', t => {
     const parent = new TagNode('div');
     const childScope = new MScopeNode(new Map([['test', 123]]));
     const childDivOuter = new TagNode('div');
@@ -88,14 +88,14 @@ test('[unit] VarsModule loads m-scope into its own scope', t => {
     NodeLogic.appendChild(parent, childDivOuter);
     NodeLogic.appendChild(childScope, childDivInner);
 
-    runVarsModule(childScope, false);
+    runVarModule(childScope, false);
 
     t.falsy(parent.nodeData.test);
     t.falsy(childDivOuter.nodeData.test);
     t.is(childDivInner.nodeData.test, 123);
 });
 
-test('[unit] VarsModule removes m-scope after processing', t => {
+test('[unit] VarModule removes m-scope after processing', t => {
     const parent = new TagNode('div');
     const childScope = new MScopeNode(new Map([['test', 123]]));
     const childDivOuter = new TagNode('div');
@@ -104,7 +104,7 @@ test('[unit] VarsModule removes m-scope after processing', t => {
     NodeLogic.appendChild(parent, childDivOuter);
     NodeLogic.appendChild(childScope, childDivInner);
 
-    runVarsModule(childScope);
+    runVarModule(childScope);
 
     t.falsy(childScope.parentNode);
     t.false(parent.childNodes.includes(childScope));
@@ -117,40 +117,40 @@ test('[unit] VarsModule removes m-scope after processing', t => {
     t.falsy(childDivOuter.nodeData.test);
 });
 
-test('[unit] VarsModule handles m-var with null attributes', t => {
+test('[unit] VarModule handles m-var with null attributes', t => {
     const parent = new DocumentNode();
     const mVar = new MVarNode();
     mVar.setRawAttribute('test', null);
     parent.appendChild(mVar);
 
-    runVarsModule(mVar);
+    runVarModule(mVar);
 
     t.true(mVar.hasAttribute('test'));
     t.is(mVar.getRawAttribute('test'), null);
 });
 
-test('[unit] VarsModule handles m-scope with null attributes', t => {
+test('[unit] VarModule handles m-scope with null attributes', t => {
     const mScope = new MScopeNode();
     mScope.setRawAttribute('test', null);
 
-    runVarsModule(mScope);
+    runVarModule(mScope);
 
     t.true(mScope.hasAttribute('test'));
     t.is(mScope.getRawAttribute('test'), null);
 });
 
-test('[unit] VarsModule removes <m-data>', t => {
+test('[unit] VarModule removes <m-data>', t => {
     const mData = new MDataNode(MimeType.TEXT);
 
     const root = new DocumentNode();
     root.appendChild(mData);
     
-    runVarsModule(mData);
+    runVarModule(mData);
 
     t.falsy(mData.parentNode);
 });
 
-test('[unit] VarsModule compiles text', t => {
+test('[unit] VarModule compiles text', t => {
     const dataSrc = 'text.txt';
     const dataType = MimeType.TEXT;
     const dataValue = 'Test text';
@@ -165,12 +165,12 @@ test('[unit] VarsModule compiles text', t => {
     const pipe = new MockPipeline();
     pipe.mockRawTexts.push([dataSrc, dataType, dataValue]);
     
-    runVarsModule(mData, undefined, undefined, pipe);
+    runVarModule(mData, undefined, undefined, pipe);
 
     t.is(root.nodeData[dataVar], dataValue);
 });
 
-test('[unit] VarsModule compiles json', t => {
+test('[unit] VarModule compiles json', t => {
     const dataSrc = 'json.json';
     const dataType = MimeType.JSON;
     const dataValue = '{ "testvalue": "value" }';
@@ -185,14 +185,14 @@ test('[unit] VarsModule compiles json', t => {
     const pipe = new MockPipeline();
     pipe.mockRawTexts.push([dataSrc, dataType, dataValue]);
     
-    runVarsModule(mData, undefined, undefined, pipe);
+    runVarModule(mData, undefined, undefined, pipe);
 
     const outValue = root.nodeData[dataVar] as Record<string, unknown>;
     t.truthy(outValue);
     t.is(outValue.testvalue, 'value');
 });
 
-test('[unit] VarsModule compiles multiple data', t => {
+test('[unit] VarModule compiles multiple data', t => {
     const mData = new MDataNode(MimeType.JSON);
     mData.setAttribute('test1', 'test1.json');
     mData.setAttribute('test2', 'test2.json');
@@ -204,7 +204,7 @@ test('[unit] VarsModule compiles multiple data', t => {
     pipe.mockRawTexts.push(['test1.json', MimeType.JSON, '{ "testvalue": "value1" }']);
     pipe.mockRawTexts.push(['test2.json', MimeType.JSON, '{ "testvalue": "value2" }']);
     
-    runVarsModule(mData, undefined, undefined, pipe);
+    runVarModule(mData, undefined, undefined, pipe);
 
     const test1 = root.nodeData.test1 as Record<string, unknown>;
     t.truthy(test1);
