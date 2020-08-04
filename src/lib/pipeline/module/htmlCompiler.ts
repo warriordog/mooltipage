@@ -4,7 +4,7 @@ import { ScriptsModule } from './compiler/scriptsModule';
 import { SlotModule } from './compiler/slotModule';
 import { DomLogicModule } from './compiler/domLogicModule';
 import { ImportsModule } from './compiler/importsModule';
-import { ReferenceModule } from './compiler/referenceModule';
+import { FragmentModule } from './compiler/fragmentModule';
 import { Fragment, Node, DocumentNode, NodeWithChildren } from '../..';
 import { EvalContext } from './evalEngine';
 import { PipelineContext } from '../standardPipeline';
@@ -47,9 +47,8 @@ export class HtmlCompiler {
             // StyleModule process <style> tags
             new StyleModule(),
 
-            // ReferenceModule is responsible for loading in content that requires a separate compilation round.
-            // Content loaded by ReferenceModule is 100% compiled, so it can go last
-            new ReferenceModule()
+            // FragmentModule resolves <m-fragment> references and replaces them with HTML.
+            new FragmentModule()
         ];
     }
 
