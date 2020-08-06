@@ -1,6 +1,5 @@
-import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
-import { DocumentNode, MVarNode, MScopeNode, ScopeData, MimeType } from '../../..';
-import { MDataNode, Node, TagNode, MDataNodeRef } from '../../../dom/node';
+import {HtmlCompilerContext, HtmlCompilerModule} from '../htmlCompiler';
+import { DocumentNode, MDataNode, MDataNodeRef, MimeType, MScopeNode, MVarNode, Node, ScopeData, TagNode } from '../../..';
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
@@ -13,7 +12,7 @@ export class VarModule implements HtmlCompilerModule {
 
         } else if (MVarNode.isMVarNode(htmlContext.node)) {
             // process m-var
-            this.evalVar(htmlContext.node, htmlContext, true);
+            VarModule.evalVar(htmlContext.node, htmlContext, true);
 
             // delete when done
             htmlContext.node.removeSelf();
@@ -21,11 +20,11 @@ export class VarModule implements HtmlCompilerModule {
 
         } else if (MScopeNode.isMScopeNode(htmlContext.node)) {
             // process m-scope, but leave until later to cleanup
-            this.evalVar(htmlContext.node, htmlContext, false);
+            VarModule.evalVar(htmlContext.node, htmlContext, false);
 
         } else if (MDataNode.isMDataNode(htmlContext.node)) {
             // process <m-data>
-            this.processMData(htmlContext.node, htmlContext);
+            VarModule.processMData(htmlContext.node, htmlContext);
 
         }
     }
@@ -39,35 +38,29 @@ export class VarModule implements HtmlCompilerModule {
         }
     }
 
-    private evalVar(node: TagNode, htmlContext: HtmlCompilerContext, useParentScope: boolean) {
+    private static evalVar(node: TagNode, htmlContext: HtmlCompilerContext, useParentScope: boolean) {
         // m-var writes into its parent's scope instead of using its own
-        const targetScope = this.getTargetScope(node, htmlContext, useParentScope);
+        const targetScope = VarModule.getTargetScope(node, htmlContext, useParentScope);
 
         // this should not happen, but if there is ever not a parent then this var is a no-op and can be skipped
         if (targetScope != undefined) {
 
             // promote variables to scope
             for (const variable of node.getAttributes().entries()) {
-                const varName: string = variable[0];
-                const srcValue: unknown = variable[1];
-
                 // assign value
-                targetScope[varName] = srcValue;
+                targetScope[variable[0]] = variable[1];
             }
         }
     }
 
-    private processMData(node: MDataNode, htmlContext: HtmlCompilerContext): void {
+    private static processMData(node: MDataNode, htmlContext: HtmlCompilerContext): void {
         // get target scope - this writes into the containing scope rather than its own
-        const targetScope = this.getTargetScope(node, htmlContext, true);
+        const targetScope = VarModule.getTargetScope(node, htmlContext, true);
 
         // process each reference
         for (const reference of node.references) {
-            // compile content
-            const refValue = this.compileReference(reference, node, htmlContext);
-
-            // bind to scope
-            targetScope[reference.varName] = refValue;
+            // compile content and bind to scope
+            targetScope[reference.varName] = VarModule.compileReference(reference, node, htmlContext);
         }
 
         // delete node
@@ -75,7 +68,7 @@ export class VarModule implements HtmlCompilerModule {
         htmlContext.setDeleted();
     }
 
-    private compileReference(reference: MDataNodeRef, node: MDataNode, htmlContext: HtmlCompilerContext): unknown {
+    private static compileReference(reference: MDataNodeRef, node: MDataNode, htmlContext: HtmlCompilerContext): unknown {
         // get value
         const rawValue = htmlContext.pipelineContext.pipeline.getRawText(reference.resPath, node.type);
 
@@ -93,7 +86,7 @@ export class VarModule implements HtmlCompilerModule {
         }
     }
 
-    private getTargetScope(node: Node, htmlContext: HtmlCompilerContext, useParentScope: boolean): ScopeData {
+    private static getTargetScope(node: Node, htmlContext: HtmlCompilerContext, useParentScope: boolean): ScopeData {
         // if not using the parent scope, then we can take current node's data and use that as scope
         if (!useParentScope) {
             return node.nodeData;

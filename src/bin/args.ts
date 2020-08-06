@@ -69,7 +69,7 @@ function parseOptions(args: string[], parseData: CliArgs): void {
                 break;
             }
             default:
-                throw new Error(`Unkown option: ${ option.label }`);
+                throw new Error(`Unknown option: ${ option.label }`);
         }
     }
 }

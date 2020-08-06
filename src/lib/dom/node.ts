@@ -90,7 +90,7 @@ export abstract class Node {
      * Remove this node and all children from the DOM
      */
     removeSelf(): void {
-        NodeLogic.detatchNode(this);
+        NodeLogic.detachNode(this);
     }
     
     /**
@@ -363,7 +363,7 @@ export abstract class NodeWithText extends Node {
      * @param nodeType Type of node, for Node() constructor
      * @param text Content of this NodeWithText
      */
-    constructor(nodeType: NodeType, text: string) {
+    protected constructor(nodeType: NodeType, text: string) {
         super(nodeType);
         this.text = text;
     }
@@ -391,7 +391,7 @@ export abstract class NodeWithData extends Node {
      * @param nodeType Type of node, for Node() constructor
      * @param data Content of this NodeWithData
      */
-    constructor(nodeType: NodeType, data: string) {
+    protected constructor(nodeType: NodeType, data: string) {
         super(nodeType);
         this.data = data;
     }
@@ -787,7 +787,7 @@ export abstract class SlotReferenceNode extends TagNode {
      * @param slot Name of the slot
      * @param attributes Optional attributes
      */
-    constructor(tagName: string, slot?: string, attributes?: Map<string, unknown>) {
+    protected constructor(tagName: string, slot?: string, attributes?: Map<string, unknown>) {
         super(tagName, attributes);
 
         // populate slot name if missing
@@ -836,7 +836,7 @@ export class MContentNode extends SlotReferenceNode {
 
 /**
  * <m-slot> tag.
- * Defines a slot that can recieve a DOM subtree from <m-content>
+ * Defines a slot that can receive a DOM subtree from <m-content>
  */
 export class MSlotNode extends SlotReferenceNode {
     /**
@@ -981,7 +981,7 @@ export abstract class ConditionalNode extends TagNode {
      * @param condition Conditional value, or a string to be compiled into a conditional value
      * @param attributes Optional attributes
      */
-    constructor(tagName: string, condition: unknown, attributes?: Map<string, unknown>) {
+    protected constructor(tagName: string, condition: unknown, attributes?: Map<string, unknown>) {
         super(tagName, attributes);
 
         this.setRawAttribute('?', condition);
@@ -1170,7 +1170,7 @@ export abstract class MForNode extends TagNode {
      * @param indexName Optional name of the variable to store the current iteration index.
      * @param attributes Optional attributes
      */
-    constructor(expressionAttrName: string, expression: unknown, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
+    protected constructor(expressionAttrName: string, expression: unknown, varName: string, indexName: string | undefined, attributes?: Map<string, unknown>) {
         super('m-for', attributes);
         this.expressionAttrName = expressionAttrName;
 
@@ -1239,7 +1239,7 @@ export class MForOfNode extends MForNode {
     /**
      * Create a new MForOfLoop
      * @param expression Expression that is or evaluates to an array-like object
-     * @param varName Name of varibale to store the current value
+     * @param varName Name of variable to store the current value
      * @param indexName Name of variable to store the current index
      * @param attributes Optional attributes
      */
@@ -1269,7 +1269,7 @@ export class MForInNode extends MForNode {
     /**
      * Create a new MForInLoop
      * @param expression Expression that is or evaluates to an object
-     * @param varName Name of varibale to store the current value
+     * @param varName Name of variable to store the current value
      * @param indexName Name of variable to store the current index
      * @param attributes Optional attributes
      */
@@ -1366,7 +1366,7 @@ export class MDataNode extends TagNode {
 
 /**
  * <style> node.
- * May be compiled (process by mooltipage) or not (ignored by mooltipage)
+ * May be compiled (processed by mooltipage) or not (ignored by mooltipage)
  */
 export class StyleNode extends TagNode {
     /**
@@ -1419,7 +1419,7 @@ export abstract class CompiledStyleNode extends StyleNode {
      */
     readonly isExternal: boolean;
 
-    constructor(isExternal: boolean, bindType?: StyleNodeBind, attributes?: Map<string, unknown>) {
+    protected constructor(isExternal: boolean, bindType?: StyleNodeBind, attributes?: Map<string, unknown>) {
         super(true, attributes);
 
         this.isExternal = isExternal;
@@ -1481,7 +1481,7 @@ export class InternalStyleNode extends CompiledStyleNode {
 }
 
 /**
- * <style> node that is compiled and points to an external stylsheet
+ * <style> node that is compiled and points to an external stylesheet
  */
 export class ExternalStyleNode extends CompiledStyleNode {
     constructor(src: string, bindType?: StyleNodeBind, attributes?: Map<string, unknown>) {
@@ -1552,7 +1552,7 @@ export abstract class CompiledScriptNode extends ScriptNode {
      */
     readonly isExternal: boolean;
 
-    constructor(isExternal: boolean, attributes?: Map<string, unknown>) {
+    protected constructor(isExternal: boolean, attributes?: Map<string, unknown>) {
         super(true, attributes);
 
         this.isExternal = isExternal;

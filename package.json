@@ -25,16 +25,14 @@
     "build": "tsc -b",
     "rebuild": "npm run clean && npm run build",
     "test": "npm run build && ava",
-    
     "coverage": "npm run build && nyc ava",
     "typedoc": "typedoc src/lib",
     "docs": "npm run coverage && npm run typedoc",
-
     "lint": "eslint src --ext .js,.ts",
     "lint-fix": "eslint src --ext .js,.ts --fix",
-
     "prepare": "npm run rebuild",
-    "prepublishOnly": "npm run lint-fix && npm run docs"
+    "prepublishOnly": "npm run lint-fix && npm run docs",
+    "debugtest": "ava --serial --timeout=60m --verbose"
   },
   "bin": {
     "mooltipage": "./dist/bin/main.js"

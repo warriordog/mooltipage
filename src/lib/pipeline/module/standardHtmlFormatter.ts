@@ -53,13 +53,13 @@ export class StandardHtmlFormatter implements HtmlFormatter {
             }
 
             // get content node (if there is one)
-            const contentNode: Node | null = this.getContentNode(currentNode);
+            const contentNode: Node | null = StandardHtmlFormatter.getContentNode(currentNode);
 
             // get preceding text node, or insert it if possible
-            const textNode: TextNode = this.getOrInsertTextNode(currentNode);
+            const textNode: TextNode = StandardHtmlFormatter.getOrInsertTextNode(currentNode);
             
             // absorb adjacent text nodes
-            this.absorbAdjacentTextNodes(textNode);
+            StandardHtmlFormatter.absorbAdjacentTextNodes(textNode);
     
             // process text node
             this.formatTextNode(textNode, depth);
@@ -91,10 +91,10 @@ export class StandardHtmlFormatter implements HtmlFormatter {
 
     private formatTextNode(textNode: TextNode, depth: number): void {
         // extract actual text from node
-        const textContent: string | null = this.extractTextContent(textNode);
+        const textContent: string | null = StandardHtmlFormatter.extractTextContent(textNode);
 
         // if this is inline text (or we are in ugly mode), then dont format
-        if (this.isInlineText(textNode) || this.formatMode === StandardHtmlFormatterMode.MINIMIZED) {
+        if (StandardHtmlFormatter.isInlineText(textNode) || this.formatMode === StandardHtmlFormatterMode.MINIMIZED) {
             if (textContent != null) {
                 textNode.text = textContent;
             } else {
@@ -114,7 +114,7 @@ export class StandardHtmlFormatter implements HtmlFormatter {
                     text += this.indentString;
                 }
     
-                // apend text content
+                // append text content
                 text += textContent;
     
                 // close out content line
@@ -132,12 +132,12 @@ export class StandardHtmlFormatter implements HtmlFormatter {
         }
     }
 
-    private isInlineText(textNode: TextNode): boolean {
+    private static isInlineText(textNode: TextNode): boolean {
         // inline text is a text node with no siblings, and no more than one line of non-whitespace content
         return textNode.prevSibling == null && textNode.nextSibling == null && /^\s*([^\s]| )+\s*$/g.test(textNode.text);
     }
 
-    private extractTextContent(node: TextNode): string | null {
+    private static extractTextContent(node: TextNode): string | null {
         let text: string = node.text;
 
         // check if node has text and text is non-empty
@@ -154,7 +154,7 @@ export class StandardHtmlFormatter implements HtmlFormatter {
         }
     }
 
-    private absorbAdjacentTextNodes(textNode: TextNode): void {
+    private static absorbAdjacentTextNodes(textNode: TextNode): void {
         let currentNode: Node | null = textNode.nextSibling;
         
         while (currentNode != null && TextNode.isTextNode(currentNode)) {
@@ -172,7 +172,7 @@ export class StandardHtmlFormatter implements HtmlFormatter {
         }
     }
 
-    private getOrInsertTextNode(startNode: Node): TextNode {
+    private static getOrInsertTextNode(startNode: Node): TextNode {
         if (TextNode.isTextNode(startNode)) {
             // start node is text node
             return startNode;
@@ -187,7 +187,7 @@ export class StandardHtmlFormatter implements HtmlFormatter {
         }
     }
 
-    private getContentNode(startNode: Node): Node | null {
+    private static getContentNode(startNode: Node): Node | null {
         let currNode: Node | null = startNode;
 
         while (currNode != null && TextNode.isTextNode(currNode)) {

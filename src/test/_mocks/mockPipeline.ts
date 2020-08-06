@@ -20,10 +20,6 @@ export class MockPipeline extends StandardPipeline {
         throw new Error('Not implemented');
     }
 
-    compileComponent(): Fragment {
-        throw new Error('Not implemented');
-    }
-
     compileExpression(): unknown {
         throw new Error('Not implemented');
     }
@@ -33,10 +29,6 @@ export class MockPipeline extends StandardPipeline {
     }
 
     linkResource(): string {
-        throw new Error('Not implemented');
-    }
-
-    getRawFragment(): Fragment {
         throw new Error('Not implemented');
     }
     

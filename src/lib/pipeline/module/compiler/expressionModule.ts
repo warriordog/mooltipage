@@ -1,33 +1,31 @@
-import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
-import { TextNode, TagNode } from '../../..';
-import { EvalContext } from '../evalEngine';
-import { StandardPipeline } from '../../standardPipeline';
+import {HtmlCompilerContext, HtmlCompilerModule} from '../htmlCompiler';
+import {TagNode, TextNode} from '../../..';
+import {EvalContext} from '../evalEngine';
 
 /**
- * Compile module that detects and evalutates embedded JS expressions in attributes and text nodes
+ * Compile module that detects and evaluates embedded JS expressions in attributes and text nodes
  */
 export class ExpressionModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
         if (TextNode.isTextNode(htmlContext.node)) {
-            this.processTextNode(htmlContext, htmlContext.node);
+            ExpressionModule.processTextNode(htmlContext, htmlContext.node);
         } else if (TagNode.isTagNode(htmlContext.node)) {
-            this.processTagNode(htmlContext, htmlContext.node);
+            ExpressionModule.processTagNode(htmlContext, htmlContext.node);
         }
     }
 
-    private processTextNode(htmlContext: HtmlCompilerContext, node: TextNode): void {
+    private static processTextNode(htmlContext: HtmlCompilerContext, node: TextNode): void {
         // create eval context from the current scope
         const evalContext: EvalContext = htmlContext.createEvalContext();
 
         // compile text
         const textValue: unknown = htmlContext.pipelineContext.pipeline.compileExpression(node.text, evalContext);
-        const textString: string = textValue != null ? String(textValue) : '';
 
         // save back to node
-        node.text = textString;
+        node.text = textValue != null ? String(textValue) : '';
     }
 
-    private processTagNode(htmlContext: HtmlCompilerContext, node: TagNode): void {
+    private static processTagNode(htmlContext: HtmlCompilerContext, node: TagNode): void {
         // create eval context from the current scope
         const evalContext: EvalContext = htmlContext.createEvalContext();
 
@@ -43,15 +41,5 @@ export class ExpressionModule implements HtmlCompilerModule {
                 node.setRawAttribute(key, result);
             }
         }
-    }
-
-    private compileToText(pipeline: StandardPipeline, text: string, evalContext: EvalContext): string {
-        const result: unknown = pipeline.compileExpression(text, evalContext);
-
-        if (result == null) {
-            return '';
-        }
-
-        return String(result);
     }
 }

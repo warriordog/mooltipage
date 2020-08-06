@@ -68,7 +68,7 @@ function createPipeline(): StandardPipeline {
                     <m-content slot="subheader">
                         <m-fragment src="header.html" title="Subtitle" class="subheader" />
                     </m-content>
-                </m-if
+                </m-if>
     
                 <p>This is the content of section \${ $.sn }.</p>
             </custom-section>

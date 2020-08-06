@@ -13,7 +13,7 @@ import { StandardHtmlFormatterMode, StandardHtmlFormatter } from '../pipeline/mo
 export type PageCompiledCallback = (page: Page) => void;
 
 /**
- * Options recognized by MooltiPage
+ * Options recognized by Mooltipage
  */
 export interface MpOptions {
     /**
@@ -155,14 +155,14 @@ class NodePipelineInterface implements PipelineInterface {
     }
 
     private resolveSourceResource(resPath: string): string {
-        return this.resolvePath(resPath, this.sourcePath);
+        return NodePipelineInterface.resolvePath(resPath, this.sourcePath);
     }
 
     private resolveDestinationResource(resPath: string): string {
-        return this.resolvePath(resPath, this.destinationPath);
+        return NodePipelineInterface.resolvePath(resPath, this.destinationPath);
     }
 
-    private resolvePath(resPath: string, directory?: string): string {
+    private static resolvePath(resPath: string, directory?: string): string {
         if (directory != null) {
             return Path.resolve(directory, resPath);
         } else {

@@ -1,4 +1,4 @@
-import { DocumentNode } from '../dom/node';
+import { DocumentNode } from '..';
 
 /**
  * Mooltipage compilation pipeline

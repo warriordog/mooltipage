@@ -26,7 +26,7 @@ export class HtmlCompiler {
             new ExpressionModule(),
 
             // VarsModule is responsible for initializing the scripting / expression scope(s).
-            // All other modules have access to local scope, so vars needs to go immediated after template text
+            // All other modules have access to local scope, so vars needs to go immediately after template text
             new VarModule(),
 
             // ScriptsModule executes external or embedded JS scripts
@@ -37,7 +37,7 @@ export class HtmlCompiler {
             new SlotModule(),
             
             // DomLogicModule handles structural logic, like m-if, m-for, etc.
-            // This requires scopes to be initalized and expressions to have been evaluated, but needs to run before the DOM is finalized.
+            // This requires scopes to be initialized and expressions to have been evaluated, but needs to run before the DOM is finalized.
             new DomLogicModule(),
             
             // ImportsModule is responsible for converting custom tag names.
@@ -103,7 +103,7 @@ export class HtmlCompiler {
                     // If this node was removed or replaced, then find the replacement via savedPrevSibling.
                     // If this was the first child, then just call parentNode.firstChild again to get the replacement.
                     if (savedPrevSibling != null) {
-                        // If there is no replacment node, then this will be null and the loop will terminate correctly.
+                        // If there is no replacement node, then this will be null and the loop will terminate correctly.
                         currentChild = savedPrevSibling.nextSibling;
                     } else {
                         // There was no previous node, so check get the parent's firstChild and go from there
@@ -187,7 +187,6 @@ export class HtmlCompilerContext {
 
     /**
      * Creates a new HTML compile data instance that optionally inherits from a parent
-     * @param fragment Fragment being processed
      * @param pipelineContext Current usage context
      * @param node Node being compiled
      * @param parentContext Optional parent HtmlCompileData to inherit from

@@ -10,7 +10,7 @@ export class DomParser {
     private readonly parser: Parser;
 
     constructor(userOptions?: ParserOptions) {
-        // get parser otions
+        // get parser options
         const options = createParserOptions(userOptions);
 
         // set up handler
@@ -95,7 +95,7 @@ export class DomHandler implements Partial<Handler> {
         }
 
         // create tag
-        const tag: TagNode = this.createTagNode(tagName, attributes);
+        const tag: TagNode = DomHandler.createTagNode(tagName, attributes);
 
         this.pushParent(tag);
     }
@@ -163,61 +163,61 @@ export class DomHandler implements Partial<Handler> {
         this.currentParent = this.currentParent.parentNode ?? this.dom;
     }
     
-    private createTagNode(tagName: string, attributes: Map<string, string | null>): TagNode {
+    private static createTagNode(tagName: string, attributes: Map<string, string | null>): TagNode {
         switch (tagName) {
             case 'm-fragment':
-                return this.createMFragmentNode(attributes);
+                return DomHandler.createMFragmentNode(attributes);
             case 'm-slot':
-                return this.createMSlotNode(attributes);
+                return DomHandler.createMSlotNode(attributes);
             case 'm-content':
-                return this.createMContentNode(attributes);
+                return DomHandler.createMContentNode(attributes);
             case 'm-var':
                 return new MVarNode(attributes);
             case 'm-scope':
                 return new MScopeNode(attributes);
             case 'm-import':
-                return this.createMImportNode(attributes);
+                return DomHandler.createMImportNode(attributes);
             case 'm-if':
-                return this.createMIfNode(attributes);
+                return DomHandler.createMIfNode(attributes);
             case 'm-else-if':
-                return this.createMElseIfNode(attributes);
+                return DomHandler.createMElseIfNode(attributes);
             case 'm-else':
                 return new MElseNode(attributes);
             case 'm-for':
-                return this.createMForNode(attributes);
+                return DomHandler.createMForNode(attributes);
             case 'm-data':
-                return this.createMDataNode(attributes);
+                return DomHandler.createMDataNode(attributes);
             case 'style':
-                return this.createStyleNode(attributes);
+                return DomHandler.createStyleNode(attributes);
             case 'script':
-                return this.createScriptNode(attributes);
+                return DomHandler.createScriptNode(attributes);
             default:
                 return new TagNode(tagName, attributes);
         }
     }
 
-    private createMFragmentNode(attributes: Map<string, string | null>): MFragmentNode {
+    private static createMFragmentNode(attributes: Map<string, string | null>): MFragmentNode {
         const src = attributes.get('src');
         if (src == undefined) throw new Error('Parse error: <m-fragment> is missing required attribute: src');
         return new MFragmentNode(src, attributes);
     }
 
-    private getSlotAttribute(attributes: Map<string, string | null>): string | undefined {
+    private static getSlotAttribute(attributes: Map<string, string | null>): string | undefined {
         const slot = attributes.get('slot');
         return slot != undefined ? String(slot) : undefined;
     }
 
-    private createMSlotNode(attributes: Map<string, string | null>): MSlotNode {
-        const slot = this.getSlotAttribute(attributes);
+    private static createMSlotNode = (attributes: Map<string, string | null>): MSlotNode => {
+        const slot = DomHandler.getSlotAttribute(attributes);
         return new MSlotNode(slot, attributes);
-    }
+    };
 
-    private createMContentNode(attributes: Map<string, string | null>): MContentNode {
-        const slot = this.getSlotAttribute(attributes);
+    private static createMContentNode = (attributes: Map<string, string | null>): MContentNode => {
+        const slot = DomHandler.getSlotAttribute(attributes);
         return new MContentNode(slot, attributes);
-    }
+    };
 
-    private createMImportNode(attributes: Map<string, string | null>): MImportNode {
+    private static createMImportNode(attributes: Map<string, string | null>): MImportNode {
         const src = attributes.get('src');
         if (src == undefined) throw new Error('Parse error: <m-import> is missing required attribute: src');
         const as = attributes.get('as');
@@ -225,19 +225,19 @@ export class DomHandler implements Partial<Handler> {
         return new MImportNode(src, as, attributes);
     }
 
-    private createMIfNode(attributes: Map<string, string | null>): MIfNode {
+    private static createMIfNode(attributes: Map<string, string | null>): MIfNode {
         const expression = attributes.get('?');
         if (expression == undefined) throw new Error('Parse error: <m-if> is missing required attribute: ?');
         return new MIfNode(expression, attributes);
     }
 
-    private createMElseIfNode(attributes: Map<string, string | null>): MElseIfNode {
+    private static createMElseIfNode(attributes: Map<string, string | null>): MElseIfNode {
         const expression = attributes.get('?');
         if (expression == undefined) throw new Error('Parse error: <m-else-if> is missing required attribute: ?');
         return new MElseIfNode(expression, attributes);
     }
 
-    private createMForNode(attributes: Map<string, string | null>): MForNode {
+    private static createMForNode(attributes: Map<string, string | null>): MForNode {
         const varName = attributes.get('var');
         if (varName == undefined) throw new Error('Parse error: <m-for> is missing required attribute: varName');
 
@@ -254,23 +254,23 @@ export class DomHandler implements Partial<Handler> {
         }
     }
 
-    private createMDataNode(attributes: Map<string, string | null>): MDataNode {
+    private static createMDataNode(attributes: Map<string, string | null>): MDataNode {
         const type = attributes.get('type');
-        if (type == undefined || type == null) throw new Error('Parse error: <m-data> is missing required attribute: type');
+        if (type == undefined) throw new Error('Parse error: <m-data> is missing required attribute: type');
         if (type !== MimeType.JSON && type !== MimeType.TEXT) throw new Error(`Parse error: <m-data> has invalid value for attribute 'type': '${ type }'`)
         return new MDataNode(type, attributes);
     }
 
-    private createStyleNode(attributes: Map<string, string | null>): StyleNode {
+    private static createStyleNode(attributes: Map<string, string | null>): StyleNode {
         // "uncompiled" style nodes should be passed on as-is
         if (!attributes.has('compiled')) {
             return new StyleNode(false, attributes);
         }
 
-        // "compiled" stlye nodes need further processing
+        // "compiled" style nodes need further processing
         const bind = attributes.get('bind') ?? undefined;
         if (bind != undefined && bind != StyleNodeBind.HEAD && bind != StyleNodeBind.LINK) {
-            throw new Error(`Parse error: <style> has invalid value for attribute 'bind': '${ bind }'`)
+            throw new Error(`Parse error: 'style' tag has invalid value for attribute 'bind': '${ bind }'`)
         }
         const src = attributes.get('src');
         if (src != undefined) {
@@ -280,13 +280,13 @@ export class DomHandler implements Partial<Handler> {
         }
     }
 
-    private createScriptNode(attributes: Map<string, string | null>): ScriptNode {
-        // "uncompiled" style nodes should be passed on as-is
+    private static createScriptNode(attributes: Map<string, string | null>): ScriptNode {
+        // "uncompiled" script nodes should be passed on as-is
         if (!attributes.has('compiled')) {
             return new ScriptNode(false, attributes);
         }
 
-        // "compiled" stlye nodes need further processing
+        // "compiled" script nodes need further processing
         const src = attributes.get('src');
         if (src != undefined) {
             return new ExternalScriptNode(src, attributes);

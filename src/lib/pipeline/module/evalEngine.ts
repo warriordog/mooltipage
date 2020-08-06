@@ -1,8 +1,8 @@
-import { ScopeData, ScopeKey } from '../..';
-import { PipelineContext } from '../standardPipeline';
+import {ScopeData, ScopeKey} from '../..';
+import {PipelineContext} from '../standardPipeline';
 
 /**
- * regular expression to detect a JS template string litteral
+ * regular expression to detect a JS template string literal
  */
 const templateTextRegex = /(?<!\\)\${(([^\\}]|\\}|\\)*)}/;
 
@@ -43,10 +43,7 @@ export function parseExpression(expression: string): EvalContent<unknown> {
     // value is template string
     if (templateTextRegex.test(expression)) {
         // parse into function
-        const templateFunc: EvalContent<string> = parseTemplateString(expression);
-
-        // return it
-        return templateFunc;
+        return parseTemplateString(expression);
     }
 
     // value is handlebars
@@ -56,10 +53,7 @@ export function parseExpression(expression: string): EvalContent<unknown> {
         const handlebarCode: string = handlebarsMatches[1];
 
         // parse into function
-        const handlebarsFunc: EvalContent<unknown> = parseHandlebars(handlebarCode);
-
-        // return it
-        return handlebarsFunc;
+        return parseHandlebars(handlebarCode);
     }
 
     throw new Error('Attempting to compile plain text as JavaScript');
@@ -77,9 +71,7 @@ export function parseTemplateString(templateString: string): EvalContent<string>
     const functionBody = `return \`${  templateString  }\`;`;
 
     // create content
-    const evalContent: EvalContent<string> = parseScript(functionBody);
-
-    return evalContent;
+    return parseScript(functionBody);
 }
 
 /**
@@ -94,13 +86,11 @@ export function parseHandlebars(jsString: string): EvalContent<unknown> {
     const functionBody = `return ${  jsString  };`;
 
     // create content
-    const evalContent: EvalContent<unknown> = parseScript(functionBody);
-
-    return evalContent;
+    return parseScript(functionBody);
 }
 
 /**
- * Parse arbitrarty JS code in a function context.
+ * Parse arbitrary JS code in a function context.
  * All JS features are available, provided that they are valid for use within a function body.
  * The function can optionally return a value, but return values are not type checked.
  * 

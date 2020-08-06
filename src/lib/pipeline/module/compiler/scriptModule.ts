@@ -1,6 +1,5 @@
 import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
-import { MimeType } from '../../..';
-import { InternalScriptNode, ExternalScriptNode } from '../../../dom/node';
+import { InternalScriptNode, ExternalScriptNode, MimeType } from '../../..';
 
 export class ScriptModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
@@ -18,8 +17,8 @@ export class ScriptModule implements HtmlCompilerModule {
         this.compileScript(htmlContext, node.scriptContent);
     }
     compileExternalScript(node: ExternalScriptNode, htmlContext: HtmlCompilerContext): void {
-        const scriptConent = htmlContext.pipelineContext.pipeline.getRawText(node.src, MimeType.JAVASCRIPT);
-        this.compileScript(htmlContext, scriptConent);
+        const scriptContent = htmlContext.pipelineContext.pipeline.getRawText(node.src, MimeType.JAVASCRIPT);
+        this.compileScript(htmlContext, scriptContent);
     }
 
     compileScript(htmlContext: HtmlCompilerContext, scriptText: string): void {

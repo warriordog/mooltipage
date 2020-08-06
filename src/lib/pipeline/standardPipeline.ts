@@ -3,7 +3,7 @@ import { buildPage } from './module/pageBuilder';
 import { PipelineCache } from './pipelineCache';
 import { ResourceParser } from './module/resourceParser';
 import { HtmlCompiler } from './module/htmlCompiler';
-import { DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType, FragmentContext } from '..';
+import {DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType, FragmentContext, Pipeline} from '..';
 import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript } from './module/evalEngine';
 import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
 
@@ -15,9 +15,9 @@ import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
  * 
  * Any incidental resources (such as stylesheets) will be fed to the pipeline interface via createResource().
  */
-export class StandardPipeline {
+export class StandardPipeline implements Pipeline {
     /**
-     * Caches reusable data for the pipline
+     * Caches reusable data for the pipeline
      */
     private readonly cache: PipelineCache;
 
@@ -47,7 +47,6 @@ export class StandardPipeline {
      * @param htmlFormatter Optional HTML formatter to use
      * @param resourceParser Optional override for standard ResourceParser
      * @param htmlCompiler Optional override for standard HtmlCompiler
-     * @param resourceBinder Optional override for standard ResourceBinder
      */
     constructor(pipelineInterface: PipelineInterface, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
         // internal
@@ -56,7 +55,7 @@ export class StandardPipeline {
         // required
         this.pipelineInterface = pipelineInterface;
 
-        // overribable
+        // overridable
         this.htmlFormatter = htmlFormatter ?? new StandardHtmlFormatter();
         this.resourceParser = resourceParser ?? new ResourceParser();
         this.htmlCompiler = htmlCompiler ?? new HtmlCompiler();
@@ -174,24 +173,6 @@ export class StandardPipeline {
         return scriptFunc.invoke(evalContext);
     }
 
-
-    /**
-     * Compiles and executes javascript from an external file.
-     * The script can be multiple lines, and use any JS feature that is available within a function body.
-     * Script will execute with the provided eval context.
-     * 
-     * @param resPath Path to script file
-     * @param evalContext Context to execute in
-     * @returns The return value of the script, if any.
-     */
-    compileExternalScript(resPath: string, evalContext: EvalContext): unknown {
-        // get function for script
-        const script: string = this.getOrParseExternalScript(resPath);
-        
-        // execute it
-        return this.compileScript(script, evalContext);
-    }
-
     /**
      * Compiles CSS. Currently a no-op.
      * 
@@ -238,16 +219,6 @@ export class StandardPipeline {
         this.cache.storeCreatedResource(contentsHash, resPath);
 
         return resPath;
-    }
-
-    /**
-     * Gets a raw (parsed but uncompiled) fragment.
-     * 
-     * @param resPath Path to fragment
-     * @returns Uncompiled fragment
-     */
-    getRawFragment(resPath: string): Fragment {
-        return this.getOrParseFragment(resPath);
     }
 
     /**
@@ -349,24 +320,6 @@ export class StandardPipeline {
         }
 
         return scriptFunc;
-    }
-
-    private getOrParseExternalScript(resPath: string): string {
-        let script: string;
-
-        // get from cache, if present
-        if (this.cache.hasExternalScript(resPath)) {
-            script = this.cache.getExternalScript(resPath);
-        } else {
-            // load resource
-            const scriptResource = this.pipelineInterface.getResource(MimeType.JAVASCRIPT, resPath);
-
-            // store in cache
-            script = scriptResource.trim();
-            this.cache.storeExternalScript(resPath, script);
-        }
-
-        return script;
     }
 }
 

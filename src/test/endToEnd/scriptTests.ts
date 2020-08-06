@@ -4,7 +4,7 @@ import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { MimeType } from '../../lib';
 
-test('[endToEnd] <script> executes scripts in correct scope', compareFragmentMacro,
+test('[endToEnd] ScriptNode executes scripts in correct scope', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
@@ -12,7 +12,7 @@ test('[endToEnd] <script> executes scripts in correct scope', compareFragmentMac
     `$.test = "good";`
 ]]);
 
-test('[endToEnd] <script> can override existing vars', compareFragmentMacro,
+test('[endToEnd] ScriptNode can override existing vars', compareFragmentMacro,
 `<m-var test="bad" />
 <script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
@@ -21,7 +21,7 @@ test('[endToEnd] <script> can override existing vars', compareFragmentMacro,
     `$.test = "good";`
 ]]);
 
-test('[endToEnd] <script> supports multiple lines', compareFragmentMacro,
+test('[endToEnd] ScriptNode supports multiple lines', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
@@ -34,7 +34,7 @@ test('[endToEnd] <script> supports multiple lines', compareFragmentMacro,
     $.test = foo.join('');`
 ]]);
 
-test('[endToEnd] <script> supports embedded functions', compareFragmentMacro,
+test('[endToEnd] ScriptNode supports embedded functions', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
@@ -45,7 +45,7 @@ test('[endToEnd] <script> supports embedded functions', compareFragmentMacro,
     $.test = getGood();`
 ]]);
 
-test('[endToEnd] <script> allows script exceptions to bubble', t => {
+test('[endToEnd] ScriptNode allows script exceptions to bubble', t => {
     const errorMessage = 'test error';
 
     const pi = new MemoryPipelineInterface();
@@ -61,7 +61,7 @@ test('[endToEnd] <script> allows script exceptions to bubble', t => {
     });
 });
 
-test('[endToEnd] <script> scripts can access pipeline APIs', compareFragmentMacro,
+test('[endToEnd] ScriptNode scripts can access pipeline APIs', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
@@ -74,7 +74,7 @@ test('Scripts can access require()', compareFragmentMacro,`
 \${ $.test }`,
 'function');
 
-test('[endToEnd] <script> scripts can access NodeJS APIs', compareFragmentMacro,
+test('[endToEnd] ScriptNode scripts can access NodeJS APIs', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
@@ -83,17 +83,13 @@ test('[endToEnd] <script> scripts can access NodeJS APIs', compareFragmentMacro,
     $.test = fs !== undefined;`
 ]]);
 
-test('[endToEnd] <script> scripts can access DOM APIs', compareFragmentMacro,`
+test('[endToEnd] ScriptNode scripts can access DOM APIs', compareFragmentMacro,`
 <script compiled> $.test = require('./dom/node') !== undefined;</script>\${ $.test }`,
 `true`);
 
-test('[endToEnd] <script> supports inline scripts', compareFragmentMacro,
+test('[endToEnd] ScriptNode supports inline scripts', compareFragmentMacro,
 `<script compiled>
-    if (true) {
-        this.value = 'good';
-    } else {
-        this.value = 'bad';
-    }
+    this.value = 'good';
 </script>
 <test value="\${ $.value }" />`,
 '<test value="good"></test>'

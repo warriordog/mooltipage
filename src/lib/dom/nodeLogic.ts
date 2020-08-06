@@ -1,10 +1,10 @@
 import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MDataNode, InternalStyleNode, ExternalStyleNode, StyleNode, ScriptNode, InternalScriptNode, ExternalScriptNode, MImportNode } from './node';
 
 /**
- * Detatch a node and its children from the DOM.
- * @param node Node to detatch
+ * Detach node and its children from the DOM.
+ * @param node Node to detach
  */
-export function detatchNode(node: Node): void {
+export function detachNode(node: Node): void {
     if (node.parentNode != null) {
         node.parentNode.childNodes = node.parentNode.childNodes.filter((childNode: Node) => childNode !== node);
     }
@@ -44,7 +44,7 @@ export function appendChild(parent: NodeWithChildren, child: Node): void {
         throw new Error(`Cannot insert a DocumentNode as child`);
     }
 
-    detatchNode(child);
+    detachNode(child);
 
     if (parent.lastChild) {
         parent.lastChild.nextSibling = child;
@@ -68,7 +68,7 @@ export function prependChild(parent: NodeWithChildren, child: Node): void {
         throw new Error(`Cannot insert a DocumentNode as child`);
     }
 
-    detatchNode(child);
+    detachNode(child);
 
     if (parent.firstChild) {
         parent.firstChild.prevSibling = child;
@@ -86,7 +86,7 @@ export function prependChild(parent: NodeWithChildren, child: Node): void {
  */
 export function clear(parent: NodeWithChildren): void {
     for (const child of Array.from(parent.childNodes)) {
-        detatchNode(child);
+        detachNode(child);
     }
 }
 
@@ -127,7 +127,7 @@ export function appendSibling(node: Node, after: Node): void {
         throw new Error(`Cannot insert a DocumentNode as child`);
     }
 
-    detatchNode(node);
+    detachNode(node);
 
     const parent = after.parentNode;
 
@@ -151,7 +151,7 @@ export function appendSibling(node: Node, after: Node): void {
 /**
  * Places a node immediately before another as a sibling.
  * @param node Node to insert
- * @param after Existing node
+ * @param before Existing node
  * @throws Throws if after is a DocumentNode
  */
 export function prependSibling(node: Node, before: Node): void {
@@ -162,7 +162,7 @@ export function prependSibling(node: Node, before: Node): void {
         throw new Error(`Cannot insert a DocumentNode as child`);
     }
 
-    detatchNode(node);
+    detachNode(node);
     
     const parent = before.parentNode;
 
@@ -662,7 +662,6 @@ export function findChildTag(parent: NodeWithChildren, matcher: (tag: TagNode) =
  * @param parent Parent node
  * @param matcher Matcher to check tags
  * @param deep If true, child tags will be recursively searched
- * @param matches Existing list of tags to append to, if desired
  */
 export function findChildTags(parent: NodeWithChildren, matcher: (tag: TagNode) => boolean, deep: boolean): TagNode[] {
     const newMatcher = (node: Node) => TagNode.isTagNode(node) && matcher(node);
@@ -684,7 +683,7 @@ export function replaceNode(remove: Node, replacements: Node[]): void {
         prevNode = newNode;
     }
 
-    detatchNode(remove);
+    detachNode(remove);
 }
 
 /**

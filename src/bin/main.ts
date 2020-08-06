@@ -6,7 +6,7 @@ import { Mooltipage } from '../lib';
 import * as FsUtils from '../lib/fs/fsUtils';
 
 
-console.log(`MooltiPage CLI${  os.EOL }`);
+console.log(`Mooltipage CLI${  os.EOL }`);
 
 // parse arguments
 const args: CliArgs = parseArgs(process.argv.slice(2));

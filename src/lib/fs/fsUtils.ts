@@ -90,7 +90,7 @@ export function expandPagePaths(paths: string[], basePath?: string): string[] {
 function expandPagePath(pagePath: string, basePath: string | undefined, outPaths: string[]): void {
     const realPath = basePath != undefined ? Path.resolve(basePath, pagePath) : Path.resolve(pagePath);
 
-    // directories need to be reciursively searched
+    // directories need to be recursively searched
     if (pathIsDirectory(realPath)) {
         for (const subFile of getDirectoryContents(realPath)) {
             const subFilePath = Path.join(pagePath, subFile);

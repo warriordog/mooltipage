@@ -1,6 +1,5 @@
 import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
-import { TagNode, CompiledStyleNode, InternalStyleNode, ExternalStyleNode, TextNode, StyleNodeBind, StyleNode } from '../../../dom/node';
-import { MimeType } from '../../..';
+import { TagNode, CompiledStyleNode, InternalStyleNode, ExternalStyleNode, TextNode, StyleNodeBind, StyleNode, MimeType } from '../../..';
 
 export class StyleModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {

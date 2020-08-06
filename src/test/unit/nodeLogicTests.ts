@@ -2,11 +2,11 @@ import test from 'ava';
 import { TagNode, DocumentNode, Node, TextNode } from '../../lib';
 import * as NodeLogic from '../../lib/dom/nodeLogic';
 
-test('[unit] NodeLogic.detatchNode removes nodes', t => {
+test('[unit] NodeLogic.detachNode removes nodes', t => {
     const parent = new TagNode('div');
     const child = new TagNode('div');
     NodeLogic.appendChild(parent, child);
-    NodeLogic.detatchNode(child);
+    NodeLogic.detachNode(child);
 
     t.falsy(child.parentNode);
     t.falsy(child.nextSibling);

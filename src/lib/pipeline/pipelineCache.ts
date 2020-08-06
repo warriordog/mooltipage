@@ -8,7 +8,6 @@ export class PipelineCache {
     private readonly fragmentCache: Map<string, Fragment> = new Map();
     private readonly expressionCache: Map<string, EvalContent<unknown>> = new Map();
     private readonly scriptCache: Map<string, EvalContent<unknown>> = new Map();
-    private readonly externalScriptCache: Map<string, string> = new Map();
     private readonly createdResourceCache: Map<string, string> = new Map();
 
     // Fragment
@@ -69,26 +68,6 @@ export class PipelineCache {
 
     storeScript(script: string, func: EvalContent<unknown>): void {
         this.scriptCache.set(script, func);
-    }   
-     
-    // ExternalScript
-
-    hasExternalScript(resPath: string): boolean {
-        return this.externalScriptCache.has(resPath);
-    }
-
-    getExternalScript(resPath: string): string {
-        const scriptContent: string | undefined = this.externalScriptCache.get(resPath);
-
-        if (scriptContent == undefined) {
-            throw new Error(`ExternalScript not found in cache: ${ resPath }.  Make sure to call hasExternalScript() before getExternalScript().`);
-        }
-
-        return scriptContent;
-    }
-
-    storeExternalScript(resPath: string, script: string): void {
-        this.externalScriptCache.set(resPath, script);
     }
 
     // created resource
@@ -117,7 +96,6 @@ export class PipelineCache {
         this.fragmentCache.clear();
         this.expressionCache.clear();
         this.scriptCache.clear();
-        this.externalScriptCache.clear();
         this.createdResourceCache.clear();
     }
 }

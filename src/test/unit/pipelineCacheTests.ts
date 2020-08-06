@@ -145,46 +145,6 @@ test('[unit] PipelineCache.storeScript() can overwrite an existing entry', t => 
 
     t.is(cache.getScript('foo'), script2);
 });
-/*
- * ExternalScript
- */
-
-test('[unit] PipelineCache.hasExternalScript() returns true when object is cached', t => {
-    const cache = new PipelineCache();
-
-    cache.storeExternalScript('foo', 'bar');
-
-    t.true(cache.hasExternalScript('foo'));
-});
-
-test('[unit] PipelineCache.hasExternalScript() returns false when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.false(cache.hasExternalScript('foo'));
-});
-
-test('[unit] PipelineCache.getExternalScript() returns cached object when present', t => {
-    const cache = new PipelineCache();
-
-    cache.storeExternalScript('foo', 'bar');
-
-    t.is(cache.getExternalScript('foo'), 'bar');
-});
-
-test('[unit] PipelineCache.getExternalScript() throws when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.throws(() => cache.getExternalScript('foo'));
-});
-
-test('[unit] PipelineCache.storeExternalScript() can overwrite an existing entry', t => {
-    const cache = new PipelineCache();
-
-    cache.storeExternalScript('foo', 'bar1');
-    cache.storeExternalScript('foo', 'bar2');
-
-    t.is(cache.getExternalScript('foo'), 'bar2');
-});
 
 /*
  * CreatedResource
@@ -241,7 +201,6 @@ test('[unit] PipelineCache.clear() clears all caches', t => {
     cache.storeExpression('foo', new EvalContent(() => 'foo'));
     cache.storeCreatedResource('foo', 'foo');
     cache.storeScript('foo', new EvalContent<boolean>(() => true));
-    cache.storeExternalScript('foo', 'true');
     
     cache.clear();
 
@@ -249,5 +208,4 @@ test('[unit] PipelineCache.clear() clears all caches', t => {
     t.false(cache.hasExpression('foo'));
     t.false(cache.hasCreatedResource('foo'));
     t.false(cache.hasScript('foo'));
-    t.false(cache.hasExternalScript('foo'));
 });

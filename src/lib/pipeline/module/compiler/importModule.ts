@@ -9,15 +9,15 @@ export class ImportModule implements HtmlCompilerModule {
         
         if (MImportNode.isMImportNode(htmlContext.node)) {
             // if this is m-import, then process it
-            this.registerImport(htmlContext.node, htmlContext);
+            ImportModule.registerImport(htmlContext.node, htmlContext);
 
         } else if (TagNode.isTagNode(htmlContext.node) && htmlContext.hasImport(htmlContext.node.tagName)) {
             // else if this is a replacement node, then replace it
-            this.replaceImport(htmlContext.node, htmlContext);
+            ImportModule.replaceImport(htmlContext.node, htmlContext);
         }
     }
 
-    private registerImport(mImport: MImportNode, htmlContext: HtmlCompilerContext): void {
+    private static registerImport(mImport: MImportNode, htmlContext: HtmlCompilerContext): void {
         // imports are registered into the parent scope. Fall back to current scope in case this is the root
         const targetNodeData = htmlContext.parentContext ?? htmlContext;
 
@@ -32,7 +32,7 @@ export class ImportModule implements HtmlCompilerModule {
         htmlContext.setDeleted();
     }
 
-    private replaceImport(tag: TagNode, htmlContext: HtmlCompilerContext): void {
+    private static replaceImport(tag: TagNode, htmlContext: HtmlCompilerContext): void {
         // get import definition
         const importDefinition = htmlContext.getImport(tag.tagName);
 
