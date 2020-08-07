@@ -303,3 +303,21 @@ function getImport(htmlContext: HtmlCompilerContext | undefined, alias: string):
 
     throw new Error(`Alias ${ key } is not defined. Always call hasImport() before getImport()`);
 }
+
+/**
+ * Converts an attribute name in snake-case to a JS-compatible scope name in camelCase.
+ *
+ * @param attributeName Attribute name to convert
+ * @returns Attribute name in camelCase
+ * @throws if attribute name is an empty string
+ */
+export function convertAttributeNameToScopeName(attributeName: string): string {
+    // Make sure that name is long enough to process
+    if (attributeName.length === 0) {
+        throw new Error('Invalid attribute name: must be at least one character long');
+    }
+
+    // convert all substrings of the form "-n" to "-N".
+    // in other words, remove dashes and capitalize the next letter
+    return attributeName.replace(/-([a-zA-Z0-9])/g, (_matchToReplace, letterToCapitalize: string) => letterToCapitalize.toUpperCase())
+}

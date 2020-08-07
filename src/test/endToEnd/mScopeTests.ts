@@ -64,3 +64,8 @@ test('[endToEnd] fragment is isolated from parent local scope', compareFragmentM
     ['child.html', `<m-var parent="\${ 'child' }" />`]
 ]
 );
+
+test('Scope vars are case-converted', compareFragmentMacro,
+    `<m-scope test-var="\${ 'TEST' }">\${ $.testVar }</m-scope>`,
+    `TEST`
+);

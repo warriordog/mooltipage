@@ -17,7 +17,7 @@
     "dot-notation": "error",
     "no-eval": "error",
     "no-lone-blocks": "error",
-    "no-return-assign": [ "error", "always" ],
+    "no-return-assign": "error",
     "no-self-compare": "error",
     "no-sequences": "error",
     "no-throw-literal": "warn",

@@ -63,7 +63,7 @@ test('[unit] MFragmentNode constructor handles arguments', t => {
 
     t.is(node.tagName, 'm-fragment');
     t.is(node.src, src);
-    t.deepEqual(node.parameters, new Map([['param', 'value']]));
+    t.deepEqual(node.parameters, [['param', 'value']]);
     t.deepEqual(node.getAttributes(), attributes);
 });
 

@@ -345,3 +345,10 @@ test('[endToEnd] Fragment params are passed raw, not as strings', compareFragmen
 [[ 'child.html',
     `\${ $.number === 123 },\${ $.boolean === true }`
 ]]);
+
+test('[endToEnd] Fragment params are case-converted', compareFragmentMacro,
+    `<m-fragment src="child.html" number-param="{{ 123 }}" boolean-param="{{ true }}" string-param="string" />`,
+    'true,true,true',
+    [[ 'child.html',
+        `\${ $.numberParam === 123 },\${ $.booleanParam === true },\${ $.stringParam === 'string' }`
+    ]]);

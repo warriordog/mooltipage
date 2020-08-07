@@ -61,13 +61,6 @@ export class StandardPipeline implements Pipeline {
         this.htmlCompiler = htmlCompiler ?? new HtmlCompiler();
     }
 
-    /**
-     * Compiles a page from start to finish.
-     * This is the only entry point that should be called by user code.
-     * 
-     * @param resPath Path to the page, relative to both source and destination.
-     * @returns a CompiledPage containing the Page instance and serialized / formatted HTML
-     */
     compilePage(resPath: string): Page {
         // compile fragment
         const pageFragment: Fragment = this.compileFragment(resPath);
@@ -96,13 +89,6 @@ export class StandardPipeline implements Pipeline {
         };
     }
 
-    /**
-     * Compiles a fragment.
-     * 
-     * @param resPath Path to fragment source
-     * @param fragmentContext Current usage context, if applicable
-     * @returns Fragment instance
-     */
     compileFragment(resPath: string, fragmentContext?: FragmentContext): Fragment {
         // get fragment from cache or htmlSource
         const fragment: Fragment = this.getOrParseFragment(resPath);
@@ -111,7 +97,6 @@ export class StandardPipeline implements Pipeline {
         if (fragmentContext == undefined) {
             fragmentContext = {
                 slotContents: new Map(),
-                parameters: new Map(),
                 scope: {}
             };
         }

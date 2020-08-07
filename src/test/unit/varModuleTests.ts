@@ -1,13 +1,22 @@
 import test from 'ava';
 import { MockPipeline } from '../_mocks/mockPipeline';
-import { Node, DocumentNode, TagNode, MVarNode, MScopeNode, ScopeKey, Fragment, MDataNode, MimeType } from '../../lib';
+import {
+    Node,
+    DocumentNode,
+    TagNode,
+    MVarNode,
+    MScopeNode,
+    Fragment,
+    MDataNode,
+    MimeType,
+    ScopeData
+} from '../../lib';
 import { HtmlCompilerContext } from '../../lib/pipeline/module/htmlCompiler';
 import { VarModule } from '../../lib/pipeline/module/compiler/varModule';
 import * as NodeLogic from '../../lib/dom/nodeLogic';
 import { PipelineContext } from '../../lib/pipeline/standardPipeline';
-import { createFragmentScope } from '../../lib/pipeline/module/evalEngine';
 
-function runVarModule(node: Node, cleanup = true, fragmentParams: ReadonlyMap<ScopeKey, unknown> = new Map(), pipeline = new MockPipeline()) {
+function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData = {}, pipeline = new MockPipeline()) {
     const testFrag: Fragment = {
         path: 'page.html',
         dom: new DocumentNode()
@@ -16,9 +25,8 @@ function runVarModule(node: Node, cleanup = true, fragmentParams: ReadonlyMap<Sc
         pipeline: pipeline,
         fragment: testFrag,
         fragmentContext: {
-            parameters: fragmentParams,
             slotContents: new Map(),
-            scope: createFragmentScope(fragmentParams)
+            scope: fragmentScope
         }
     };
 
@@ -43,12 +51,11 @@ test('[unit] VarModule does not affect standard elements', t => {
 });
 
 test('[unit] VarModule loads root scope into document', t => {
-    const params = new Map<ScopeKey, unknown>();
-    params.set('test', 123);
-
     const dom = new DocumentNode();
 
-    runVarModule(dom, true, params);
+    runVarModule(dom, true, {
+        test: 123
+    });
 
     t.is(dom.nodeData.test, 123);
 });
@@ -213,4 +220,22 @@ test('[unit] VarModule compiles multiple data', t => {
     const test2 = root.nodeData.test2 as Record<string, unknown>;
     t.truthy(test2);
     t.is(test2.testvalue, 'value2');
+});
+
+test('VarModule.saveCompiledAttributeToScope() saves to scope', t => {
+    const scope: ScopeData = {};
+
+    VarModule.saveCompiledAttributeToScope(scope, 'key1', 'value1');
+    VarModule.saveCompiledAttributeToScope(scope, 'key2', 2);
+
+    t.is(scope.key1, 'value1');
+    t.is(scope.key2, 2);
+});
+
+test('VarModule.saveCompiledAttributeToScope() converts case', t => {
+    const scope: ScopeData = {};
+
+    VarModule.saveCompiledAttributeToScope(scope, 'key-name-1', 'value1');
+
+    t.is(scope.keyName1, 'value1');
 });

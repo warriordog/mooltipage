@@ -736,21 +736,8 @@ export class MFragmentNode extends TagNode {
     /**
      * Parameters to the external reference.
      */
-    get parameters(): ReadonlyMap<string, unknown> {
-        const params: Map<string, unknown> = new Map();
-
-        // extract fragment params
-        for (const entry of this.attributes) {
-            const key: string = entry[0];
-            const value: unknown = entry[1];
-
-            if (key != 'src' && value != null) {
-                params.set(key, value);
-            }
-        
-        }
-
-        return params;
+    get parameters(): [string, unknown][] {
+        return Array.from(this.attributes.entries()).filter(attr => attr[0] !== 'src');
     }
 
     /**

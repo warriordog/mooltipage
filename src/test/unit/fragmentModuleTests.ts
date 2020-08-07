@@ -8,7 +8,7 @@ test('FragmentModule.extractSlotContents() handles default slot', t => {
     const child2 = new TagNode('div');
     frag.appendChildren([ child1, child2 ]);
 
-    const contents = new FragmentModule().extractSlotContents(frag);
+    const contents = FragmentModule.extractSlotContents(frag);
     t.is(contents.size, 1);
     t.true(contents.has('[default]'));
 
@@ -25,7 +25,7 @@ test('FragmentModule.extractSlotContents() handles named slots', t => {
     mContents.appendChildren([ child1, child2 ]);
     frag.appendChild(mContents);
 
-    const contents = new FragmentModule().extractSlotContents(frag);
+    const contents = FragmentModule.extractSlotContents(frag);
     t.is(contents.size, 1);
 
     t.true(contents.has('slot1'));
@@ -45,7 +45,7 @@ test('FragmentModule.extractSlotContents() handles multiple slots', t => {
     const child3 = new TagNode('div');
     frag.appendChildren([ contents1, contents2, child3 ]);
 
-    const contents = new FragmentModule().extractSlotContents(frag);
+    const contents = FragmentModule.extractSlotContents(frag);
     t.is(contents.size, 3);
 
     t.true(contents.has('slot1'));
@@ -69,7 +69,7 @@ test('FragmentModule.convertNodeToContent() handles <m-content>', t => {
     const child = new TagNode('div');
     node.appendChild(child);
 
-    const contents = (new FragmentModule()).convertNodeToContent(node);
+    const contents = FragmentModule.convertNodeToContent(node);
     t.is(contents.length, 1);
     t.is(contents[0], child);
 });
@@ -77,7 +77,7 @@ test('FragmentModule.convertNodeToContent() handles <m-content>', t => {
 test('FragmentModule.convertNodeToContent() handles other node types', t => {
     const node = new TagNode('div');
 
-    const contents = (new FragmentModule()).convertNodeToContent(node);
+    const contents = FragmentModule.convertNodeToContent(node);
     t.is(contents.length, 1);
     t.is(contents[0], node);
 });
@@ -85,11 +85,58 @@ test('FragmentModule.convertNodeToContent() handles other node types', t => {
 test('FragmentModule.getContentTargetName() handles <m-content>', t => {
     const node = new MContentNode('test');
 
-    t.is((new FragmentModule()).getContentTargetName(node), 'test');
+    t.is(FragmentModule.getContentTargetName(node), 'test');
 });
 
 test('FragmentModule.getContentTargetName() handles other node types', t => {
     const node = new TagNode('div');
 
-    t.is((new FragmentModule()).getContentTargetName(node), '[default]');
+    t.is(FragmentModule.getContentTargetName(node), '[default]');
+});
+
+test('FragmentModule.createFragmentScope ignores src', t => {
+    const node = new MFragmentNode('foo.html');
+
+    const scope = FragmentModule.createFragmentScope(node);
+
+    t.is(scope.src, undefined);
+});
+
+test('FragmentModule.createFragmentScope copies all params', t => {
+    const node = new MFragmentNode('foo.html');
+    node.setRawAttribute('key1', 'value1');
+    node.setRawAttribute('key2', 'value2');
+    node.nodeData.key1 = 'value1';
+    node.nodeData.key2 = 'value2';
+
+    const scope = FragmentModule.createFragmentScope(node);
+
+    t.is(scope.key1, 'value1');
+    t.is(scope.key2, 'value2');
+});
+
+test('FragmentModule.createFragmentScope preserves non-string values', t => {
+    const node = new MFragmentNode('foo.html');
+    node.setRawAttribute('key1', 123);
+    node.setRawAttribute('key2', 456);
+    node.nodeData.key1 = 123;
+    node.nodeData.key2 = 456;
+
+    const scope = FragmentModule.createFragmentScope(node);
+
+    t.is(scope.key1, 123);
+    t.is(scope.key2, 456);
+});
+
+test('FragmentModule.createFragmentScope converts parameter names', t => {
+    const node = new MFragmentNode('foo.html');
+    node.setRawAttribute('key-name1', 'value1');
+    node.setRawAttribute('key-name2', 'value2');
+    node.nodeData.keyName1 = 'value1';
+    node.nodeData.keyName2 = 'value2';
+
+    const scope = FragmentModule.createFragmentScope(node);
+
+    t.is(scope.keyName1, 'value1');
+    t.is(scope.keyName2, 'value2');
 });

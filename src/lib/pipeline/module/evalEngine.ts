@@ -1,4 +1,4 @@
-import {ScopeData, ScopeKey} from '../..';
+import {ScopeData} from '../..';
 import {PipelineContext} from '../standardPipeline';
 
 /**
@@ -174,44 +174,5 @@ export class EvalContext {
     constructor(pipelineContext: PipelineContext, scope: ScopeData) {
         this.pipelineContext = pipelineContext;
         this.scope = scope;
-    }
-}
-
-/**
- * Creates a "root" ScopeData.
- * A root scope is a read-only view into an EvalVars and optional component instance.
- * If included, the component instance will shadow the parameters in the case of conflict.
- * @param parameters EvalVars containing fragment parameters
- * @param componentScope Optional component instance
- */
-export function createFragmentScope(parameters: ReadonlyMap<ScopeKey, unknown>, componentScope?: ScopeData): ScopeData {
-    const scopeProxyHandler = new ScopeDataProxy(parameters, componentScope);
-    return new Proxy(Object.create(null), scopeProxyHandler);
-}
-
-class ScopeDataProxy implements ProxyHandler<ScopeData> {
-    private readonly parameters: ReadonlyMap<ScopeKey, unknown>;
-    private readonly componentScope?: ScopeData;
-    
-    constructor(parameters: ReadonlyMap<ScopeKey, unknown>, componentScope?: ScopeData) {
-        this.parameters = parameters;
-        this.componentScope = componentScope;
-    }
-
-    get (target: ScopeData, key: PropertyKey): unknown {
-        // TS does not support symbols
-        if (typeof(key) !== 'symbol') {
-            // get from component, if present
-            if (this.componentScope?.hasOwnProperty(key)) {
-                return this.componentScope[key];
-            }
-
-            // otherwise fall back to parameters
-            if (this.parameters.has(key)) {
-                return this.parameters.get(key);
-            }
-        }
-
-        return undefined;
     }
 }

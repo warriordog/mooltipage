@@ -39,14 +39,9 @@ export interface FragmentContext {
     readonly slotContents: ReadonlyMap<string, DocumentNode>;
 
     /**
-     * Parameters provided to the current fragment
-     */
-    readonly parameters: ReadonlyMap<ScopeKey, unknown>;
-
-    /**
      * Fragment-global scope.
      * Is read-only.
-     * Contains fragment params and component instance data, if applicable.
+     * Contains mapped fragment params, if applicable.
      */
     readonly scope: ScopeData;
 }
