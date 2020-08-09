@@ -49,25 +49,21 @@ function parseOptions(args: string[], parseData: CliArgs): void {
     // process each option
     for (const option of options) {
         switch (option.name) {
-            case '--help': {
+            case '--help':
                 parseData.isHelp = true;
                 break;
-            }
-            case '--inpath': {
+            case '--inpath':
                 if (!option.value) throw new Error('inPath requires a value');
                 parseData.inPath = option.value;
                 break;
-            }
-            case '--outpath': {
+            case '--outpath':
                 if (!option.value) throw new Error('outPath requires a value');
                 parseData.outPath = option.value;
                 break;
-            }
-            case '--formatter': {
+            case '--formatter':
                 if (!option.value) throw new Error('formatter requires a value');
                 parseData.formatter = option.value;
                 break;
-            }
             default:
                 throw new Error(`Unknown option: ${ option.label }`);
         }

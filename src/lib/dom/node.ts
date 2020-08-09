@@ -9,7 +9,7 @@ export enum NodeType {
     Text = 'text',
     Comment = 'comment',
     CDATA = 'cdata',
-    ProcessingInstruction = 'processinginstruction',
+    ProcessingInstruction = 'processingInstruction',
     Document = 'document'
 }
 

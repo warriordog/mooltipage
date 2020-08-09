@@ -237,7 +237,7 @@ test('[unit] MDataNode parses multiple references', t => {
         ['foo1', 'source1.txt'],
         ['foo2', 'source2.txt'],
         ['foo3', 'source3.txt']
-    ]
+    ];
     const node = new MDataNode(MimeType.TEXT, new Map(references));
 
     t.is(node.references.length, references.length);

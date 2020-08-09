@@ -42,7 +42,7 @@ function createPipeline(): StandardPipeline {
 
                     <br>
 
-                    <button onclick="foo">Click me!</button>
+                    <button>Click me!</button>
                 </article>
 
                 <![CDATA[

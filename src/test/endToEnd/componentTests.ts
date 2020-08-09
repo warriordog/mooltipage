@@ -6,7 +6,7 @@ import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipe
 
 function createRootPi(): MemoryPipelineInterface {
     const pi = new MemoryPipelineInterface();
-    pi.setSourceHtml('page.html', '<!DOCTYPE html><html><head><title>Component Tests</title></head><body><m-fragment src="comp.html" /></body></html>');
+    pi.setSourceHtml('page.html', '<!DOCTYPE html><html lang="en"><head><title>Component Tests</title></head><body><m-fragment src="comp.html" /></body></html>');
 
     return pi;
 }
@@ -119,7 +119,7 @@ test('[endToEnd] Components compile to correct DOM', t => {
     const output = pipeline.compilePage('page.html');
 
     // validate
-    t.is(output.html, '<!DOCTYPE html><html><head><title>Component Tests</title><style>.comp1 {}</style><style>.comp2 {}</style></head><body><div class="comp1"><p>Hello,</p><div class="comp2">This is component 2.</div><p>World!</p></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html lang="en"><head><title>Component Tests</title><style>.comp1 {}</style><style>.comp2 {}</style></head><body><div class="comp1"><p>Hello,</p><div class="comp2">This is component 2.</div><p>World!</p></div></body></html>');
 });
 
 test('[endToEnd] Repeated component usages have correct scope', t => {

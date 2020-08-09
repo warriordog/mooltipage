@@ -19,7 +19,7 @@ function testFormat(t: ExecutionContext, input: string, expected: string, mode: 
 test('[unit] HtmlFormatter PRETTY mode cleans whitespace', testFormat, 
 `
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
                 <title>
                 </title>
@@ -31,7 +31,7 @@ test('[unit] HtmlFormatter PRETTY mode cleans whitespace', testFormat,
             </html>
 `,
 `<!DOCTYPE HTML>
-<html>
+<html lang="en">
     <head>
         <title></title>
     </head>
@@ -42,9 +42,9 @@ test('[unit] HtmlFormatter PRETTY mode cleans whitespace', testFormat,
 StandardHtmlFormatterMode.PRETTY);
 
 test('[unit] HtmlFormatter PRETTY mode breaks up appended elements', testFormat,
-`<!DOCTYPE HTML><html><head><title></title></head><body><div></div></body></html>`,
+`<!DOCTYPE HTML><html lang="en"><head><title></title></head><body><div></div></body></html>`,
 `<!DOCTYPE HTML>
-<html>
+<html lang="en">
     <head>
         <title></title>
     </head>
@@ -55,12 +55,12 @@ test('[unit] HtmlFormatter PRETTY mode breaks up appended elements', testFormat,
 StandardHtmlFormatterMode.PRETTY);
 
 test('[unit] HtmlFormatter PRETTY mode inlines single-line text', testFormat,
-`<!DOCTYPE HTML><html><head><title>
+`<!DOCTYPE HTML><html lang="en"><head><title>
 There is only one line of text, so this should be inlined.
 
 </title></head><body><div></div></body></html>`,
 `<!DOCTYPE HTML>
-<html>
+<html lang="en">
     <head>
         <title>There is only one line of text, so this should be inlined.</title>
     </head>
@@ -72,12 +72,12 @@ StandardHtmlFormatterMode.PRETTY);
 
 
 test('[unit] HtmlFormatter PRETTY mode does not inline multi-line text', testFormat,
-`<!DOCTYPE HTML><html><head><title></title></head><body><div>
+`<!DOCTYPE HTML><html lang="en"><head><title></title></head><body><div>
      There are multiple lines of text here, 
      so this should not be inlined.
 </div></body></html>`,
 `<!DOCTYPE HTML>
-<html>
+<html lang="en">
     <head>
         <title></title>
     </head>
@@ -91,7 +91,7 @@ StandardHtmlFormatterMode.PRETTY);
 
 test('[unit] HtmlFormatter MINIMIZED mode compacts whitespace', testFormat,
 `<!DOCTYPE HTML>
-<html>
+<html lang="en">
     <head>
         <title></title>
     </head>
@@ -99,12 +99,12 @@ test('[unit] HtmlFormatter MINIMIZED mode compacts whitespace', testFormat,
         <div></div>
     </body>
 </html>`,
-'<!DOCTYPE HTML><html><head><title></title></head><body><div></div></body></html>',
+'<!DOCTYPE HTML><html lang="en"><head><title></title></head><body><div></div></body></html>',
 StandardHtmlFormatterMode.MINIMIZED);
 
 test('[unit] HtmlFormatter NONE mode does not change HTML', testFormat,
 `<!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
         <title>
         
@@ -114,7 +114,7 @@ test('[unit] HtmlFormatter NONE mode does not change HTML', testFormat,
     </body>
 </html>`,
 `<!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
         <title>
         
@@ -127,10 +127,10 @@ StandardHtmlFormatterMode.NONE);
 
 test('[unit] HtmlFormatter PRETTY mode trims trailing space', testFormat,
 `   
-<!DOCTYPE HTML><html><head><title></title></head><body><div></div></body></html>        
+<!DOCTYPE HTML><html lang="en"><head><title></title></head><body><div></div></body></html>        
     `,
 `<!DOCTYPE HTML>
-<html>
+<html lang="en">
     <head>
         <title></title>
     </head>
@@ -143,7 +143,7 @@ StandardHtmlFormatterMode.PRETTY);
 test('[unit] HtmlFormatter MINIMIZED mode trims trailing space', testFormat,
 `   
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
     <head>
         <title></title>
     </head>
@@ -152,13 +152,13 @@ test('[unit] HtmlFormatter MINIMIZED mode trims trailing space', testFormat,
     </body>
 </html>  
     `,
-'<!DOCTYPE HTML><html><head><title></title></head><body><div></div></body></html>',
+'<!DOCTYPE HTML><html lang="en"><head><title></title></head><body><div></div></body></html>',
 StandardHtmlFormatterMode.MINIMIZED);
 
 test('[unit] HtmlFormatter NONE mode does not trim trailing space', testFormat,
 `   
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
         <title>
         
@@ -170,7 +170,7 @@ test('[unit] HtmlFormatter NONE mode does not trim trailing space', testFormat,
    `,
 `   
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 <head>
         <title>
         

@@ -84,7 +84,7 @@ function evaluateForOf(ofValue: unknown): MForIteration[] {
     const arrayValue = ofValue as unknown;
 
     // make sure that it actually is an array
-    if (arrayValue != undefined && Array.isArray((arrayValue))) {
+    if (arrayValue != undefined && Array.isArray(arrayValue)) {
         let index = 0;
         for (const value of arrayValue) {
             iterations.push({
@@ -103,7 +103,7 @@ function evaluateForIn(inValue: unknown): MForIteration[] {
     const iterations: MForIteration[] = [];
 
     // make sure that it actually is an object
-    if (inValue != undefined && typeof (inValue) === 'object') {
+    if (inValue != undefined && typeof inValue === 'object') {
         const inObj = inValue as Record<string, unknown>;
         const inValues = Object.keys(inObj);
         let index = 0;

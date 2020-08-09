@@ -6,7 +6,7 @@ import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipe
 
 function createRootPi(): MemoryPipelineInterface {
     const pi = new MemoryPipelineInterface();
-    pi.setSourceHtml('page.html', '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><m-fragment src="frag1.html" /></body></html>');
+    pi.setSourceHtml('page.html', '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><m-fragment src="frag1.html" /></body></html>');
 
     return pi;
 }
@@ -92,7 +92,7 @@ test('[endToEnd] Fragment compile to correct DOM', t => {
     const output = pipeline.compilePage('page.html');
 
     // validate
-    t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"></div></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"></div></div></body></html>');
 });
 
 test('[endToEnd] Repeated fragment usages have correct scope', t => {
@@ -185,7 +185,7 @@ test('[endToEnd] Fragment slots are filled correctly', t => {
     const output = pipeline.compilePage('page.html');
 
     // validate
-    t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><div class="[default]"></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>1</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>2</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>3</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>4.1</div></div><div class="slot1"><div>4.2</div></div></div><div class="frag2"><div class="[default]"><div>5.1</div></div><div class="slot1"><div>5.2</div></div></div></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><div class="[default]"></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>1</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>2</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>3</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>4.1</div></div><div class="slot1"><div>4.2</div></div></div><div class="frag2"><div class="[default]"><div>5.1</div></div><div class="slot1"><div>5.2</div></div></div></div></body></html>');
 });
 
 test('[endToEnd] Fragment slot placeholder content is left when slot is unused', t => {
@@ -220,7 +220,7 @@ test('[endToEnd] Fragment slot placeholder content is left when slot is unused',
     const output = pipeline.compilePage('page.html');
 
     // validate
-    t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
 });
 
 test('Vars work inside fragment slot contents', compareFragmentMacro,
@@ -335,7 +335,7 @@ test('[endToEnd] Nested fragment slot content is placed correctly', t => {
     const output = pipeline.compilePage('page.html');
 
     // validate
-    t.is(output.html, '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div></div></body></html>');
+    t.is(output.html, '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div></div></body></html>');
 });
 
 test('[endToEnd] Fragment params are passed raw, not as strings', compareFragmentMacro,

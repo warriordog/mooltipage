@@ -49,7 +49,7 @@ test('[endToEnd] ScriptNode allows script exceptions to bubble', t => {
     const errorMessage = 'test error';
 
     const pi = new MemoryPipelineInterface();
-    pi.setSourceHtml('page.html', `<!DOCTYPE html><html><head><title>MScript Tests</title></head><body><script compiled src="script.js"></script></body></html>`);
+    pi.setSourceHtml('page.html', `<!DOCTYPE html><html lang="en"><head><title>MScript Tests</title></head><body><script compiled src="script.js"></script></body></html>`);
     pi.setSource('script.js', {
         type: MimeType.JAVASCRIPT,
         content: `throw new Error('${ errorMessage }');`
@@ -70,7 +70,7 @@ test('[endToEnd] ScriptNode scripts can access pipeline APIs', compareFragmentMa
 ]]);
 
 test('Scripts can access require()', compareFragmentMacro,`
-<script compiled>$.test = typeof(require)</script>
+<script compiled>$.test = typeof require</script>
 \${ $.test }`,
 'function');
 

@@ -2,7 +2,7 @@ import test from 'ava';
 import { hashMD5 } from '../../lib/pipeline/standardPipeline';
 
 test('[unit] hashMD5() should hash html content', t => {
-    const testContent = '<html><head><style> .cls {}</style><script> function test() {} </script></head><body><div class="cls"></div></html>';
+    const testContent = '<html lang="en"><head><title>MD5 Tests</title><style> .cls {}</style><script> function test() {} </script></head><body><div class="cls"></div></html>';
 
     t.truthy(hashMD5(testContent));
 });

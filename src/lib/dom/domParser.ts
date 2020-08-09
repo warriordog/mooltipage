@@ -257,7 +257,7 @@ export class DomHandler implements Partial<Handler> {
     private static createMDataNode(attributes: Map<string, string | null>): MDataNode {
         const type = attributes.get('type');
         if (type == undefined) throw new Error('Parse error: <m-data> is missing required attribute: type');
-        if (type !== MimeType.JSON && type !== MimeType.TEXT) throw new Error(`Parse error: <m-data> has invalid value for attribute 'type': '${ type }'`)
+        if (type !== MimeType.JSON && type !== MimeType.TEXT) throw new Error(`Parse error: <m-data> has invalid value for attribute 'type': '${ type }'`);
         return new MDataNode(type, attributes);
     }
 

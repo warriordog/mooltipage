@@ -22,7 +22,7 @@ export class ExpressionModule implements HtmlCompilerModule {
         const textValue: unknown = htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(node.text, evalContext);
 
         // save back to node
-        node.text = textValue != null ? String(textValue) : '';
+        node.text = (textValue !== null && textValue !== undefined) ? String(textValue) : '';
     }
 
     private static processTagNode(htmlContext: HtmlCompilerContext, node: TagNode): void {
@@ -35,7 +35,7 @@ export class ExpressionModule implements HtmlCompilerModule {
             const value = entry[1];
 
             // only process strings, anything else must already be compiled
-            if (typeof(value) === 'string') {
+            if (typeof value === 'string') {
                 // compile the value, preserving the raw output and not converting to a string
                 const result: unknown = htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(value, evalContext);
 

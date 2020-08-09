@@ -37,6 +37,7 @@ export function buildPage(dom: DocumentNode): void {
 }
 
 function createHtml(dom: DocumentNode): TagNode {
+    let finalHtmlTag: TagNode;
     const htmlTags = dom.findChildTagsByTagName('html');
     if (htmlTags.length > 0) {
         const firstHtml = htmlTags[0];
@@ -45,13 +46,30 @@ function createHtml(dom: DocumentNode): TagNode {
         for (let i = 1; i < htmlTags.length; i++) {
             const currHtml = htmlTags[i];
             currHtml.removeSelf();
+
+            // copy children
             firstHtml.appendChildren(currHtml.childNodes);
+
+            // copy attributes
+            firstHtml.getAttributes().forEach((value, key) => {
+                if (!firstHtml.hasAttribute(key)) {
+                    firstHtml.setRawAttribute(key, value);
+                }
+            })
         }
 
-        return firstHtml;
+        finalHtmlTag = firstHtml;
     } else {
-        return new TagNode('html');
+        // if there are none, then make one;
+        finalHtmlTag = new TagNode('html');
     }
+
+    // add required "lang" attribute if missing
+    if (!finalHtmlTag.hasAttribute('lang')) {
+        finalHtmlTag.setAttribute('lang', 'en');
+    }
+
+    return finalHtmlTag;
 }
 
 // Tags that are only allowed (or should only be used) in the <head> section

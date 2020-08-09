@@ -114,9 +114,8 @@ function createFormatter(options: MpOptions): HtmlFormatter {
         case StandardHtmlFormatterMode.NONE:
         case undefined:
             return new StandardHtmlFormatter(StandardHtmlFormatterMode.NONE);
-        default: {
+        default:
             throw new Error(`Unknown HTML formatter: ${ options.formatter }`);
-        }
     }
 }
 
@@ -190,11 +189,11 @@ class NodePipelineInterface implements PipelineInterface {
  */
 export function getResourceTypeExtension(resourceType: MimeType): string {
     switch(resourceType) {
-        case MimeType.HTML: return 'html'
-        case MimeType.CSS: return 'css'
-        case MimeType.JAVASCRIPT: return 'js'
-        case MimeType.JSON: return 'json'
-        case MimeType.TEXT: return 'txt'
-        default: return 'dat'
+        case MimeType.HTML: return 'html';
+        case MimeType.CSS: return 'css';
+        case MimeType.JAVASCRIPT: return 'js';
+        case MimeType.JSON: return 'json';
+        case MimeType.TEXT: return 'txt';
+        default: return 'dat';
     }
 }

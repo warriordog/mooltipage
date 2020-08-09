@@ -6,7 +6,7 @@ export class MemoryPipelineInterface implements PipelineInterface {
     createdContent: Map<string, TestResource> = new Map();
     private nextCreatedContentId = 0;
 
-    clear(): void {
+    reset(): void {
         this.sourceContent = new Map();
         this.destContent = new Map();
         this.createdContent = new Map();

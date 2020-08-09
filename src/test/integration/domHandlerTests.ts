@@ -6,7 +6,7 @@ test('[integration] DomHandler can parse standard HTML', t => {
     const domHandler = new DomHandler();
 
     domHandler.onprocessinginstruction('!DOCTYPE html', '');
-    domHandler.onopentag('div', { 'id': 'root' })
+    domHandler.onopentag('div', { 'id': 'root' });
     domHandler.onopentag('p', {});
     domHandler.ontext('Hello, world!');
     domHandler.onclosetag();
@@ -57,12 +57,12 @@ test('[integration] DomHandler can parse standard HTML', t => {
 test('[integration] DomHandler can reset state', t => {
     const domHandler = new DomHandler();
 
-    domHandler.onopentag('div', { 'id': 'wrong' })
+    domHandler.onopentag('div', { 'id': 'wrong' });
     domHandler.ontext('oops!');
 
     domHandler.onreset();
 
-    domHandler.onopentag('div', { 'id': 'right' })
+    domHandler.onopentag('div', { 'id': 'right' });
     domHandler.ontext('good!');
     domHandler.onclosetag();
 
@@ -84,7 +84,7 @@ test('[integration] DomHandler can reset state', t => {
 test('[integration] DomHandler throws on error', t => {
     const domHandler = new DomHandler();
 
-    domHandler.onopentag('div', {})
+    domHandler.onopentag('div', {});
 
     t.throws(() => domHandler.onerror(new Error()));
 });

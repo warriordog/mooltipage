@@ -221,12 +221,12 @@ test('Attribute API: setRequiredValueAttribute() overwrites existing value', t =
 // deleteAttribute()
 test('Attribute API: deleteAttribute() basic functionality', t => {
     const node = new TagNode('test', new Map([['test', 'testvalue']]));
-    node.deleteAttribute('test')
+    node.deleteAttribute('test');
     t.false(node.hasAttribute('test'));
 });
 test('Attribute API: deleteAttribute() does nothing is attribute does not exist', t => {
     const node = new TagNode('test');
-    node.deleteAttribute('test')
+    node.deleteAttribute('test');
     t.false(node.hasAttribute('test'));
 });
 

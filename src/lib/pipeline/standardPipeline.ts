@@ -225,9 +225,6 @@ export class StandardPipeline implements Pipeline {
         return this.pipelineInterface.getResource(mimeType, resPath);
     }
 
-    /**
-     * Resets the pipeline to its initial state.
-     */
     reset(): void {
         // clear cache to reset state
         this.cache.clear();
