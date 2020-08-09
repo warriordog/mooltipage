@@ -207,6 +207,70 @@ export function getLastNode(nodes: Node[]): Node | null {
     }
 }
 
+/**
+ * Gets the first child that is a TagNode from a list of nodes
+ * @param nodes Return the first TagNode from a list, or null if none exist
+ */
+export function getFirstTag(nodes: Node[]): TagNode | null {
+    for (let i = 0; i < nodes.length; i++) {
+        const currNode = nodes[i];
+
+        if (TagNode.isTagNode(currNode)) {
+            return currNode;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Gets the last child that is a TagNode from a list of nodes
+ * @param nodes Return the last TagNode from a list, or null if none exist
+ */
+export function getLastTag(nodes: Node[]): TagNode | null {
+    for (let i = nodes.length - 1; i >= 0; i--) {
+        const currNode = nodes[i];
+
+        if (TagNode.isTagNode(currNode)) {
+            return currNode;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Gets the first child that is a TextNode from a list of nodes
+ * @param nodes Return the first TextNode from a list, or null if none exist
+ */
+export function getFirstText(nodes: Node[]): TextNode | null {
+    for (let i = 0; i < nodes.length; i++) {
+        const currNode = nodes[i];
+
+        if (TextNode.isTextNode(currNode)) {
+            return currNode;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Gets the last child that is a TextNode from a list of nodes
+ * @param nodes Return the last TextNode from a list, or null if none exist
+ */
+export function getLastText(nodes: Node[]): TextNode | null {
+    for (let i = nodes.length - 1; i >= 0; i--) {
+        const currNode = nodes[i];
+
+        if (TextNode.isTextNode(currNode)) {
+            return currNode;
+        }
+    }
+
+    return null;
+}
+
 // not exported
 function processClonedNode<T extends Node>(oldNode: T, newNode: T, callback?: (oldNode: Node, newNode: Node) => void): void {
     if (callback != undefined) {
@@ -742,6 +806,40 @@ export function getNextTag(node: Node): TagNode | null {
     let currentNode: Node | null = node.nextSibling;
     while (currentNode != null) {
         if (TagNode.isTagNode(currentNode)) {
+            return currentNode;
+        }
+
+        currentNode = currentNode.nextSibling;
+    }
+
+    return null;
+}
+
+/**
+ * Gets the closest previous sibling that is a TextNode
+ * @param node Node to search from
+ */
+export function getPreviousText(node: Node): TextNode | null {
+    let currentNode: Node | null = node.prevSibling;
+    while (currentNode != null) {
+        if (TextNode.isTextNode(currentNode)) {
+            return currentNode;
+        }
+
+        currentNode = currentNode.prevSibling;
+    }
+
+    return null;
+}
+
+/**
+ * Gets the closest following sibling that is a TextNode
+ * @param node Node to search from
+ */
+export function getNextText(node: Node): TextNode | null {
+    let currentNode: Node | null = node.nextSibling;
+    while (currentNode != null) {
+        if (TextNode.isTextNode(currentNode)) {
             return currentNode;
         }
 

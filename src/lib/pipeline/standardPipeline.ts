@@ -1,11 +1,11 @@
 import crypto from 'crypto';
-import { buildPage } from './module/pageBuilder';
 import { PipelineCache } from './pipelineCache';
 import { ResourceParser } from './module/resourceParser';
 import { HtmlCompiler } from './module/htmlCompiler';
 import {DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType, FragmentContext, Pipeline} from '..';
 import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript } from './module/evalEngine';
 import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
+import {buildPage} from './module/pageBuilder';
 
 /**
  * Primary compilation pipeline.
@@ -63,7 +63,7 @@ export class StandardPipeline implements Pipeline {
 
     compilePage(resPath: string): Page {
         // compile fragment
-        const pageFragment: Fragment = this.compileFragment(resPath);
+        const pageFragment: Fragment = this.compileFragmentOnly(resPath);
         const pageDom: DocumentNode = pageFragment.dom;
 
         // compile as page
@@ -90,6 +90,14 @@ export class StandardPipeline implements Pipeline {
     }
 
     compileFragment(resPath: string, fragmentContext?: FragmentContext): Fragment {
+        const fragment = this.compileFragmentOnly(resPath, fragmentContext);
+
+        this.htmlFormatter.formatDom(fragment.dom);
+
+        return fragment;
+    }
+
+    private compileFragmentOnly(resPath: string, fragmentContext?: FragmentContext): Fragment {
         // get fragment from cache or htmlSource
         const fragment: Fragment = this.getOrParseFragment(resPath);
 
@@ -109,7 +117,7 @@ export class StandardPipeline implements Pipeline {
         };
 
         // compile under current context
-        this.htmlCompiler.compileHtml(fragment, pipelineContext);
+        this.htmlCompiler.compileFragment(fragment, pipelineContext);
 
         return fragment;
     }

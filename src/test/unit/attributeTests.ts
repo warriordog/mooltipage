@@ -20,6 +20,25 @@ test('Attribute API: hasAttribute() supports objects', t => {
     t.true(node.hasAttribute('test'));
 });
 
+// hasValueAttribute()
+test('Attribute API: hasValueAttribute() basic functionality', t => {
+    const node = new TagNode('test', new Map([['test', 'testValue']]));
+    t.true(node.hasValueAttribute('test'));
+    t.false(node.hasValueAttribute('test2'));
+});
+test('Attribute API: hasValueAttribute() supports null', t => {
+    const node = new TagNode('test', new Map([['test', null]]));
+    t.false(node.hasValueAttribute('test'));
+});
+test('Attribute API: hasValueAttribute() supports undefined', t => {
+    const node = new TagNode('test', new Map([['test', undefined]]));
+    t.false(node.hasValueAttribute('test'));
+});
+test('Attribute API: hasValueAttribute() supports objects', t => {
+    const node = new TagNode('test', new Map([['test', {}]]));
+    t.true(node.hasValueAttribute('test'));
+});
+
 // getAttribute()
 test('Attribute API: getAttribute() basic functionality', t => {
     const node = new TagNode('test', new Map([['test', 'testvalue']]));

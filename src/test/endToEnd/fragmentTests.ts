@@ -4,7 +4,6 @@ import { compareFragmentMacro } from '../_util/htmlCompare';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
-
 function createRootPi(): MemoryPipelineInterface {
     const pi = new MemoryPipelineInterface();
     pi.setSourceHtml('page.html', '<!DOCTYPE html><html><head><title>Fragment Tests</title></head><body><m-fragment src="frag1.html" /></body></html>');

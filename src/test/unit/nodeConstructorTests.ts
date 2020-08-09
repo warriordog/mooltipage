@@ -18,15 +18,19 @@ test('[unit] TagNode constructor populates defaults', t => {
 });
 
 test('[unit] TextNode constructor handles arguments', t => {
-    const node = new TextNode('text content');
+    const node = new TextNode('  text content  ');
 
-    t.is(node.text, 'text content');
+    t.is(node.text, '  text content  ');
+    t.is(node.textContent, 'text content');
+    t.true(node.hasContent);
 });
 
 test('[unit] TextNode constructor populates defaults', t => {
     const node = new TextNode();
 
     t.is(node.text, '');
+    t.is(node.textContent, '');
+    t.false(node.hasContent);
 });
 
 test('[unit] CommentNode constructor handles arguments', t => {

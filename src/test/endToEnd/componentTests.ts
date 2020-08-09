@@ -1,6 +1,6 @@
 import test from 'ava';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
-import { compareComponentMacro, compareFragmentMacro } from '../_util/htmlCompare';
+import { compareFragmentMacro } from '../_util/htmlCompare';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
@@ -194,7 +194,7 @@ test('[endToEnd] Imported component compiles correctly', t => {
     t.truthy(comp2_1);
 });
 
-test('[endToEnd] Component with function script compiles', compareComponentMacro,`
+test('[endToEnd] Component with function script compiles', compareFragmentMacro,`
 <script compiled>
     this.test = 'testvalue';
 </script>

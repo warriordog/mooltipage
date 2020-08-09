@@ -9,6 +9,7 @@ import { Fragment, Node, DocumentNode, NodeWithChildren } from '../..';
 import { EvalContext } from './evalEngine';
 import { PipelineContext } from '../standardPipeline';
 import { StyleModule } from './compiler/styleModule';
+import {DeduplicateModule} from './compiler/deduplicateModule';
 
 /**
  * Provides HTML compilation support to the pipeline.
@@ -47,18 +48,23 @@ export class HtmlCompiler {
             // StyleModule process <style> tags
             new StyleModule(),
 
+            // DeduplicateModule removes redundant nodes, like duplicate stylesheets and link tags
+            new DeduplicateModule(),
+
             // FragmentModule resolves <m-fragment> references and replaces them with HTML.
             new FragmentModule()
         ];
     }
 
     /**
-     * Compiles a fragment into pure HTML
+     * Processes all custom nodes, logic, expressions, etc in a fragment.
+     * Produces a DOM that can be serialized to valid HTML.
+     * Does not apply HTML structure rules, such as requiring head / body tags or restricting the position of title elements.
      * 
      * @param fragment Fragment to compile
      * @param pipelineContext Current usage context
      */
-    compileHtml(fragment: Fragment, pipelineContext: PipelineContext): void {
+    compileFragment(fragment: Fragment, pipelineContext: PipelineContext): void {
         // create root context
         const htmlContext = new HtmlCompilerContext(pipelineContext, fragment.dom);
 
@@ -178,6 +184,18 @@ export class HtmlCompilerContext {
     readonly localReferenceImports = new Map<string, ImportDefinition>();
 
     /**
+     * Set of all unique CSS styles that have been found during compilation.
+     * This set is inherited and shared by all nodes within the same compilation unit.
+     */
+    readonly uniqueStyles: Set<string>;
+
+    /**
+     * Set of all unique HTML link node targets that have been found during compilation.
+     * This set is inherited and shared by all nodes within the same compilation unit.
+     */
+    readonly uniqueLinks: Set<string>;
+
+    /**
      * If true, then the node has been deleted and compilation should stop
      */
     get isDeleted(): boolean {
@@ -195,6 +213,10 @@ export class HtmlCompilerContext {
         this.pipelineContext = pipelineContext;
         this.node = node;
         this.parentContext = parentContext;
+
+        // if this is a root context (no parent) then create empty list. Otherwise use parent set for consistency
+        this.uniqueStyles = parentContext?.uniqueStyles ?? new Set<string>();
+        this.uniqueLinks = parentContext?.uniqueLinks ?? new Set<string>()
     }
 
     /**

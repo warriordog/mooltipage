@@ -484,3 +484,143 @@ test('[unit] NodeLogic.getNextTag returns null if no tags found', t => {
     const nextTag = NodeLogic.getNextTag(tag);
     t.is(nextTag, null);
 });
+
+// getFirstTag()
+test('NodeLogic.getFirstTag() includes the very first node', t => {
+    const tag = new TagNode('div');
+    t.is(NodeLogic.getFirstTag([ tag ]), tag);
+});
+test('NodeLogic.getFirstTag() finds the first tag', t => {
+    const tag = new TagNode('div');
+    t.is(NodeLogic.getFirstTag([ new TextNode(), tag, new TextNode(), new TagNode('div') ]), tag);
+});
+test('NodeLogic.getFirstTag() returns null if no tags found', t => {
+    t.is(NodeLogic.getFirstTag([ new TextNode(), new TextNode() ]), null);
+});
+
+// getLastTag()
+test('NodeLogic.getLastTag() includes the very last node', t => {
+    const tag = new TagNode('div');
+    t.is(NodeLogic.getLastTag([ tag ]), tag);
+});
+test('NodeLogic.getLastTag() finds the last tag', t => {
+    const tag = new TagNode('div');
+    t.is(NodeLogic.getLastTag([ new TagNode('div'), new TextNode(), tag, new TextNode() ]), tag);
+});
+test('NodeLogic.getLastTag() returns null if no tags found', t => {
+    t.is(NodeLogic.getLastTag([ new TextNode(), new TextNode() ]), null);
+});
+
+// getFirstText()
+test('NodeLogic.getFirstText() includes the very first node', t => {
+    const text = new TextNode();
+    t.is(NodeLogic.getFirstText([ text ]), text);
+});
+test('NodeLogic.getFirstText() finds the first text', t => {
+    const text = new TextNode();
+    t.is(NodeLogic.getFirstText([ new TagNode('div'), text, new TagNode('div'), new TextNode() ]), text);
+});
+test('NodeLogic.getFirstText() returns null if no text found', t => {
+    t.is(NodeLogic.getFirstText([ new TagNode('div'), new TagNode('div') ]), null);
+});
+
+// getLastText()
+test('NodeLogic.getLastText() includes the very last node', t => {
+    const text = new TextNode();
+    t.is(NodeLogic.getLastText([ text ]), text);
+});
+test('NodeLogic.getLastText() finds the last text', t => {
+    const text = new TextNode();
+    t.is(NodeLogic.getLastText([  new TextNode(), new TagNode('div'), text, new TagNode('div') ]), text);
+});
+test('NodeLogic.getLastText() returns null if no text found', t => {
+    t.is(NodeLogic.getLastText([ new TagNode('div'), new TagNode('div') ]), null);
+});
+
+// getPreviousTag()
+test('NodeLogic.getPreviousTag() includes the very first previous sibling', t => {
+    const tag = new TagNode('div');
+    const root = new TagNode('div');
+    root.prependSibling(tag);
+    t.is(NodeLogic.getPreviousTag(root), tag);
+});
+test('NodeLogic.getPreviousTag() finds the first previous tag', t => {
+    const tag = new TagNode('div');
+    const text = new TextNode();
+    const root = new TagNode('div');
+    root.prependSibling(text);
+    text.prependSibling(tag);
+    t.is(NodeLogic.getPreviousTag(root), tag);
+});
+test('NodeLogic.getPreviousTag() returns null if none found', t => {
+    const text = new TextNode();
+    const root = new TagNode('div');
+    root.prependSibling(text);
+    t.is(NodeLogic.getPreviousTag(root), null);
+});
+
+// getNextTag()
+test('NodeLogic.getNextTag() includes the very first next sibling', t => {
+    const tag = new TagNode('div');
+    const root = new TagNode('div');
+    root.appendSibling(tag);
+    t.is(NodeLogic.getNextTag(root), tag);
+});
+test('NodeLogic.getNextTag() finds the first next tag', t => {
+    const tag = new TagNode('div');
+    const text = new TextNode();
+    const root = new TagNode('div');
+    root.appendSibling(text);
+    text.appendSibling(tag);
+    t.is(NodeLogic.getNextTag(root), tag);
+});
+test('NodeLogic.getNextTag() returns null if none found', t => {
+    const text = new TextNode();
+    const root = new TagNode('div');
+    root.prependSibling(text);
+    t.is(NodeLogic.getNextTag(root), null);
+});
+
+// getPreviousText()
+test('NodeLogic.getPreviousText() includes the very first previous sibling', t => {
+    const text = new TextNode();
+    const root = new TagNode('div');
+    root.prependSibling(text);
+    t.is(NodeLogic.getPreviousText(root), text);
+});
+test('NodeLogic.getPreviousText() finds the first previous text', t => {
+    const text = new TextNode();
+    const tag = new TagNode('div');
+    const root = new TagNode('div');
+    root.prependSibling(tag);
+    tag.prependSibling(text);
+    t.is(NodeLogic.getPreviousText(root), text);
+});
+test('NodeLogic.getPreviousText() returns null if none found', t => {
+    const tag = new TagNode('div');
+    const root = new TagNode('div');
+    root.appendSibling(tag);
+    t.is(NodeLogic.getPreviousText(root), null);
+});
+
+// getNextText()
+test('NodeLogic.getNextText() includes the very first next sibling', t => {
+    const text = new TextNode();
+    const root = new TagNode('div');
+    root.appendSibling(text);
+    t.is(NodeLogic.getNextText(root), text);
+});
+test('NodeLogic.getNextText() finds the first next tex', t => {
+    const text = new TextNode();
+    const tag = new TagNode('div');
+    const root = new TagNode('div');
+    root.appendSibling(tag);
+    tag.appendSibling(text);
+    t.is(NodeLogic.getNextText(root), text);
+});
+test('NodeLogic.getNextText() returns null if none found', t => {
+    const tag = new TagNode('div');
+    const root = new TagNode('div');
+    root.appendSibling(tag);
+    t.is(NodeLogic.getPreviousText(root), null);
+});

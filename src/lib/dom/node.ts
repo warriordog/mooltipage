@@ -42,7 +42,6 @@ export abstract class Node {
 
     /**
      * The closest previous sibling that is a TagNode, or null if none exists.
-     * Do not modify this directly, use NodeLogic or instance methods.
      */
     get prevSiblingTag(): TagNode | null {
         return NodeLogic.getPreviousTag(this);
@@ -50,10 +49,23 @@ export abstract class Node {
 
     /**
      * The closest following sibling that is a TagNode, or null if none exists.
-     * Do not modify this directly, use NodeLogic or instance methods.
      */
     get nextSiblingTag(): TagNode | null {
         return NodeLogic.getNextTag(this);
+    }
+
+    /**
+     * The closest previous sibling that is a TextNode, or null if none exists.
+     */
+    get prevSiblingText(): TextNode | null {
+        return NodeLogic.getPreviousText(this);
+    }
+
+    /**
+     * The closest following sibling that is a TextNode, or null if none exists.
+     */
+    get nextSiblingText(): TextNode | null {
+        return NodeLogic.getNextText(this);
     }
 
     /**
@@ -142,6 +154,34 @@ export abstract class NodeWithChildren extends Node {
      */
     get lastChild(): Node | null {
         return NodeLogic.getLastNode(this.childNodes);
+    }
+
+    /**
+     * The first child node that is a TagNode, or null if there is none.
+     */
+    get firstChildTag(): TagNode | null {
+        return NodeLogic.getFirstTag(this.childNodes);
+    }
+
+    /**
+     * The last child node that is a TagNode, or null if there is none.
+     */
+    get lastChildTag(): TagNode | null {
+        return NodeLogic.getLastTag(this.childNodes);
+    }
+
+    /**
+     * The first child node that is a TextNode, or null if there is none.
+     */
+    get firstChildText(): TextNode | null {
+        return NodeLogic.getFirstText(this.childNodes);
+    }
+
+    /**
+     * The last child node that is a TextNode, or null if there is none.
+     */
+    get lastChildText(): TextNode | null {
+        return NodeLogic.getLastText(this.childNodes);
     }
 
     /**
@@ -353,10 +393,35 @@ export abstract class NodeWithChildren extends Node {
  * Parent type for any node that includes textual data
  */
 export abstract class NodeWithText extends Node {
+    private _text = '';
+    private _textContent = '';
+    private _hasContent = false;
+
     /**
      * Text contained by this node
      */
-    text: string;
+    get text(): string {
+        return this._text;
+    }
+    set text(newText: string) {
+        this._text = newText;
+        this._textContent = newText.trim();
+        this._hasContent = /\S/.test(newText);
+    }
+
+    /**
+     * Text contained by this node, with leading and trailing whitespace trimmed.
+     */
+    get textContent(): string {
+        return this._textContent
+    }
+
+    /**
+     * If this node contains any non-whitespace text
+     */
+    get hasContent(): boolean {
+        return this._hasContent;
+    }
 
     /**
      * Creates a new NodeWithText
@@ -438,6 +503,15 @@ export class TagNode extends NodeWithChildren {
      */
     hasAttribute(name: string): boolean {
         return this.attributes.has(name);
+    }
+
+    /**
+     * Checks if this tag has a specified attribute with a non-null and non-undefined value
+     * @param name Name of the attribute
+     * @returns True if the attribute exists and is non-nullish, false otherwise
+     */
+    hasValueAttribute(name: string): boolean {
+        return this.hasAttribute(name) && this.getAttribute(name) != null;
     }
 
     /**
