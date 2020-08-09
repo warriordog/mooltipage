@@ -64,15 +64,16 @@ export class StandardHtmlFormatter implements HtmlFormatter {
             // process text node
             this.formatTextNode(textNode, depth);
 
-            // process children of content node
-            if (contentNode != null && NodeWithChildren.isNodeWithChildren(contentNode) && contentNode.firstChild != null) {
-                // no need to loop through children, child will process its own neighbors
-                this.formatWhitespace(contentNode.firstChild, depth + 1);
-            }
-
             if (contentNode != null) {
-                const nextNode = contentNode.nextSibling;
+                // process children of content node
+                if (NodeWithChildren.isNodeWithChildren(contentNode) && contentNode.firstChild != null) {
 
+                    // no need to loop through children, child will process its own neighbors
+                    this.formatWhitespace(contentNode.firstChild, depth + 1);
+                }
+
+                // pick next node
+                const nextNode = contentNode.nextSibling;
                 if (nextNode != null) {
                     // continue to next sibling, if found
                     currentNode = nextNode;
@@ -101,34 +102,32 @@ export class StandardHtmlFormatter implements HtmlFormatter {
                 textNode.removeSelf();
             }
         } else {
-            // check if there is a following node
-            const hasNeighbor: boolean = textNode.nextSibling != null;
-    
             // start text with newline to close previous line
-            let text: string = this.eol;
+            const text = [ this.eol ];
     
             // append text content, if any
             if (textContent != null) {
                 // append content index
                 for (let i = 0; i < depth; i++) {
-                    text += this.indentString;
+                    text.push(this.indentString);
                 }
     
                 // append text content
-                text += textContent;
+                text.push(textContent);
     
                 // close out content line
-                text += this.eol;
+                text.push(this.eol);
             }
-    
-            // append closing indent
+
+            // append closing indent if there is a following node
+            const hasNeighbor: boolean = textNode.nextSibling != null;
             const closingIndentDepth: number = hasNeighbor ? depth : depth - 1;
             for (let i = 0; i < closingIndentDepth; i++) {
-                text += this.indentString;
+                text.push(this.indentString);
             }
     
             // set node content
-            textNode.text = text;
+            textNode.text = text.join('');
         }
     }
 
@@ -137,39 +136,36 @@ export class StandardHtmlFormatter implements HtmlFormatter {
         return textNode.prevSibling == null && textNode.nextSibling == null && /^\s*([^\s]| )+\s*$/g.test(textNode.text);
     }
 
-    private static extractTextContent(node: TextNode): string | null {
-        let text: string = node.text;
-
+    private static extractTextContent(textNode: TextNode): string | null {
         // check if node has text and text is non-empty
-        if (/\S/.test(text)) {
-            // remove leading and trailing whitespace
-            text = text.trim();
-    
+        if (textNode.hasContent) {
             // compact whitespace in text
-            text = text.replace(/\s{2,}/gm, ' ');
-
-            return text;
+            return textNode.textContent.replace(/\s{2,}/gm, ' ');
         } else {
             return null;
         }
     }
 
     private static absorbAdjacentTextNodes(textNode: TextNode): void {
+        const newTextParts = [ textNode.text ];
+
         let currentNode: Node | null = textNode.nextSibling;
-        
         while (currentNode != null && TextNode.isTextNode(currentNode)) {
-            // back up node to remove it
-            const removeNode: Node = currentNode;
+            // save next node, since we might remove this one
+            const nextNode = currentNode.nextSibling;
 
             // steal its text
-            textNode.text += currentNode.text;
-
-            // increment to next node
-            currentNode = currentNode.nextSibling;
+            newTextParts.push(currentNode.text);
 
             // remove stolen node
-            removeNode.removeSelf();
+            currentNode.removeSelf();
+
+            // increment to next node
+            currentNode = nextNode;
         }
+
+        // combine string parts and assign to node
+        textNode.text = newTextParts.join('');
     }
 
     private static getOrInsertTextNode(startNode: Node): TextNode {
@@ -178,7 +174,7 @@ export class StandardHtmlFormatter implements HtmlFormatter {
             return startNode;
         } else {
             // create new text node
-            const textNode: TextNode = new TextNode('');
+            const textNode: TextNode = new TextNode();
             
             // insert before startNode
             startNode.prependSibling(textNode);
