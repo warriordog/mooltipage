@@ -34,6 +34,7 @@ export class ExpressionModule implements HtmlCompilerModule {
             const key = entry[0];
             const value = entry[1];
 
+            // only process strings, anything else must already be compiled
             if (typeof(value) === 'string') {
                 // compile the value, preserving the raw output and not converting to a string
                 const result: unknown = htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(value, evalContext);

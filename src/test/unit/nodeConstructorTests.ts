@@ -1,5 +1,29 @@
 import test from 'ava';
-import { TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MContentNode, MSlotNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MDataNode, MimeType, InternalStyleNode, StyleNodeBind, ExternalStyleNode, StyleNode, ScriptNode, InternalScriptNode, ExternalScriptNode, MImportNode } from '../../lib';
+import {
+    TagNode,
+    TextNode,
+    CommentNode,
+    ProcessingInstructionNode,
+    MFragmentNode,
+    MContentNode,
+    MSlotNode,
+    MVarNode,
+    MScopeNode,
+    MIfNode,
+    MForOfNode,
+    MForInNode,
+    MDataNode,
+    MimeType,
+    InternalStyleNode,
+    StyleNodeBind,
+    ExternalStyleNode,
+    StyleNode,
+    ScriptNode,
+    InternalScriptNode,
+    ExternalScriptNode,
+    MImportNode,
+    SlotReferenceNode
+} from '../../lib';
 
 test('[unit] TagNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['foo', 'bar'], ['attr', null]]);
@@ -87,8 +111,8 @@ test('[unit] MContentNode constructor populates defaults', t => {
 
     const node = new MContentNode(undefined, attributes);
 
-    t.is(node.slot, '[default]');
-    t.is(node.getAttribute('slot'), '[default]');
+    t.is(node.slot, SlotReferenceNode.DefaultSlotName);
+    t.is(node.getAttribute('slot'), SlotReferenceNode.DefaultSlotName);
 });
 
 test('[unit] MSlotNode constructor handles arguments', t => {
@@ -107,8 +131,8 @@ test('[unit] MSlotNode constructor populates defaults', t => {
 
     const node = new MSlotNode(undefined, attributes);
 
-    t.is(node.slot, '[default]');
-    t.is(node.getAttribute('slot'), '[default]');
+    t.is(node.slot, SlotReferenceNode.DefaultSlotName);
+    t.is(node.getAttribute('slot'), SlotReferenceNode.DefaultSlotName);
 });
 
 test('[unit] MVarNode constructor handles arguments', t => {

@@ -1,6 +1,6 @@
 import test from 'ava';
 import { FragmentModule } from '../../lib/pipeline/module/compiler/fragmentModule';
-import { MContentNode, TagNode, MFragmentNode, DocumentNode } from '../../lib';
+import {MContentNode, TagNode, MFragmentNode, DocumentNode, SlotReferenceNode} from '../../lib';
 
 test('FragmentModule.extractSlotContents() handles default slot', t => {
     const frag = new MFragmentNode('foo.html');
@@ -10,9 +10,9 @@ test('FragmentModule.extractSlotContents() handles default slot', t => {
 
     const contents = FragmentModule.extractSlotContents(frag);
     t.is(contents.size, 1);
-    t.true(contents.has('[default]'));
+    t.true(contents.has(SlotReferenceNode.DefaultSlotName));
 
-    const defaultDom = contents.get('[default]') as DocumentNode;
+    const defaultDom = contents.get(SlotReferenceNode.DefaultSlotName) as DocumentNode;
     t.is(defaultDom.firstChild, child1);
     t.is(defaultDom.lastChild, child2);
 });
@@ -58,8 +58,8 @@ test('FragmentModule.extractSlotContents() handles multiple slots', t => {
     t.is(slot2Dom.firstChild, child2);
     t.is(slot2Dom.lastChild, child2);
     
-    t.true(contents.has('[default]'));
-    const defDom = contents.get('[default]') as DocumentNode;
+    t.true(contents.has(SlotReferenceNode.DefaultSlotName));
+    const defDom = contents.get(SlotReferenceNode.DefaultSlotName) as DocumentNode;
     t.is(defDom.firstChild, child3);
     t.is(defDom.lastChild, child3);
 });
@@ -91,7 +91,7 @@ test('FragmentModule.getContentTargetName() handles <m-content>', t => {
 test('FragmentModule.getContentTargetName() handles other node types', t => {
     const node = new TagNode('div');
 
-    t.is(FragmentModule.getContentTargetName(node), '[default]');
+    t.is(FragmentModule.getContentTargetName(node), SlotReferenceNode.DefaultSlotName);
 });
 
 test('FragmentModule.createFragmentScope ignores src', t => {

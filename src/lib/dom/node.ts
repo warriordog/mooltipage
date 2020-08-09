@@ -852,7 +852,7 @@ export abstract class SlotReferenceNode extends TagNode {
         super(tagName, attributes);
 
         // populate slot name if missing
-        this.setAttribute('slot', slot ?? '[default]');
+        this.setAttribute('slot', slot ?? SlotReferenceNode.DefaultSlotName);
     }
 
     /**
@@ -866,6 +866,8 @@ export abstract class SlotReferenceNode extends TagNode {
     }
 
     abstract clone(deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): SlotReferenceNode;
+
+    static readonly DefaultSlotName = '[default]';
 }
 
 /**
@@ -1520,8 +1522,8 @@ export class InternalStyleNode extends CompiledStyleNode {
      * If no stylesheet is present, then an empty string is returned.
      */
     get styleContent(): string {
-        const styleTextNode = this.firstChild;
-        if (styleTextNode != null && TextNode.isTextNode(styleTextNode)) {
+        const styleTextNode = this.firstChildText;
+        if (styleTextNode != null) {
             return styleTextNode.text;
         } else {
             return '';
@@ -1642,8 +1644,8 @@ export class InternalScriptNode extends CompiledScriptNode {
      * If no script is included, then an empty string is returned
      */
     get scriptContent(): string {
-        const scriptText = this.firstChild;
-        if (scriptText != null && TextNode.isTextNode(scriptText)) {
+        const scriptText = this.firstChildText;
+        if (scriptText != null) {
             return scriptText.text;
         } else {
             return '';

@@ -1,5 +1,14 @@
 import {HtmlCompilerModule, HtmlCompilerContext, convertAttributeNameToScopeName} from '../htmlCompiler';
-import {MFragmentNode, DocumentNode, Fragment, FragmentContext, Node, MContentNode, ScopeData} from '../../..';
+import {
+    MFragmentNode,
+    DocumentNode,
+    Fragment,
+    FragmentContext,
+    Node,
+    MContentNode,
+    ScopeData,
+    SlotReferenceNode
+} from '../../..';
 
 /**
  * Resolve <m-fragment> and replace with compiled HTML 
@@ -74,7 +83,7 @@ export class FragmentModule implements HtmlCompilerModule {
         if (MContentNode.isMContentNode(node)) {
             return node.slot;
         } else {
-            return '[default]';
+            return SlotReferenceNode.DefaultSlotName;
         }
     }
 
