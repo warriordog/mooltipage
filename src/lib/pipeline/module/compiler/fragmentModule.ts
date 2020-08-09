@@ -22,7 +22,7 @@ export class FragmentModule implements HtmlCompilerModule {
         };
 
         // call pipeline to load reference
-        const fragment: Fragment = htmlContext.pipelineContext.pipeline.compileFragment(mFragment.src, fragmentContext);
+        const fragment: Fragment = htmlContext.sharedContext.pipelineContext.pipeline.compileFragment(mFragment.src, fragmentContext);
 
         // replace with compiled fragment
         mFragment.replaceSelf(fragment.dom.childNodes);

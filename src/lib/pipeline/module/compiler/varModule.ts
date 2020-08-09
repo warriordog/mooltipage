@@ -18,7 +18,7 @@ export class VarModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
         if (DocumentNode.isDocumentNode(htmlContext.node)) {
             // if document, then bind root scope and we are done
-            htmlContext.node.setRootScope(htmlContext.pipelineContext.fragmentContext.scope);
+            htmlContext.node.setRootScope(htmlContext.sharedContext.pipelineContext.fragmentContext.scope);
 
         } else if (MVarNode.isMVarNode(htmlContext.node)) {
             // process m-var
@@ -82,7 +82,7 @@ export class VarModule implements HtmlCompilerModule {
 
     private static compileReference(reference: MDataNodeRef, node: MDataNode, htmlContext: HtmlCompilerContext): unknown {
         // get value
-        const rawValue = htmlContext.pipelineContext.pipeline.getRawText(reference.resPath, node.type);
+        const rawValue = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(reference.resPath, node.type);
 
         // parse as correct type
         switch (node.type) {
@@ -110,7 +110,7 @@ export class VarModule implements HtmlCompilerModule {
         }
 
         // if we are using the parent scope but there is no parent node, then fall back to root scope
-        return htmlContext.pipelineContext.fragmentContext.scope;
+        return htmlContext.sharedContext.pipelineContext.fragmentContext.scope;
     }
 
     /**

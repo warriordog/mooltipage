@@ -66,7 +66,11 @@ export class HtmlCompiler {
      */
     compileFragment(fragment: Fragment, pipelineContext: PipelineContext): void {
         // create root context
-        const htmlContext = new HtmlCompilerContext(pipelineContext, fragment.dom);
+        const htmlContext = new HtmlCompilerContext({
+            pipelineContext: pipelineContext,
+            uniqueLinks: new Set(),
+            uniqueStyles: new Set()
+        }, fragment.dom);
 
         // run modules
         this.runModulesAt(fragment.dom, htmlContext);
@@ -158,14 +162,37 @@ export interface HtmlCompilerModule {
 }
 
 /**
- * Stateful compilation context that is shared between all compiler modules.
- * Forms a tree structure that runs parallel to the DOM
+ * Context for the current pipeline-level unit of work.
+ * This is common for all nodes within a single fragment.
  */
-export class HtmlCompilerContext {
+export interface SharedHtmlCompilerContext {
     /**
      * Current usage context
      */
     readonly pipelineContext: PipelineContext;
+
+    /**
+     * Set of all unique CSS styles that have been found during compilation.
+     * This set is inherited and shared by all nodes within the same compilation unit.
+     */
+    readonly uniqueStyles: Set<string>;
+
+    /**
+     * Set of all unique HTML link node targets that have been found during compilation.
+     * This set is inherited and shared by all nodes within the same compilation unit.
+     */
+    readonly uniqueLinks: Set<string>;
+}
+
+/**
+ * Context for the current node-level unit or work.
+ * This is unique for each node being processed.
+ */
+export class HtmlCompilerContext {
+    /**
+     * Pipeline-level shared state
+     */
+    readonly sharedContext: SharedHtmlCompilerContext;
 
     /**
      * HTML Compile data for the parent node, if this node has a parent.
@@ -184,18 +211,6 @@ export class HtmlCompilerContext {
     readonly localReferenceImports = new Map<string, ImportDefinition>();
 
     /**
-     * Set of all unique CSS styles that have been found during compilation.
-     * This set is inherited and shared by all nodes within the same compilation unit.
-     */
-    readonly uniqueStyles: Set<string>;
-
-    /**
-     * Set of all unique HTML link node targets that have been found during compilation.
-     * This set is inherited and shared by all nodes within the same compilation unit.
-     */
-    readonly uniqueLinks: Set<string>;
-
-    /**
      * If true, then the node has been deleted and compilation should stop
      */
     get isDeleted(): boolean {
@@ -205,18 +220,14 @@ export class HtmlCompilerContext {
 
     /**
      * Creates a new HTML compile data instance that optionally inherits from a parent
-     * @param pipelineContext Current usage context
+     * @param sharedContext Shared context for this entire unit of work
      * @param node Node being compiled
      * @param parentContext Optional parent HtmlCompileData to inherit from
      */
-    constructor(pipelineContext: PipelineContext, node: Node, parentContext?: HtmlCompilerContext) {
-        this.pipelineContext = pipelineContext;
+    constructor(sharedContext: SharedHtmlCompilerContext, node: Node, parentContext?: HtmlCompilerContext) {
+        this.sharedContext = sharedContext;
         this.node = node;
         this.parentContext = parentContext;
-
-        // if this is a root context (no parent) then create empty list. Otherwise use parent set for consistency
-        this.uniqueStyles = parentContext?.uniqueStyles ?? new Set<string>();
-        this.uniqueLinks = parentContext?.uniqueLinks ?? new Set<string>()
     }
 
     /**
@@ -262,7 +273,7 @@ export class HtmlCompilerContext {
      * @returns an EvalContext bound to the data in this HtmlCompileData and the provided scope
      */
     createEvalContext(): EvalContext {
-        return new EvalContext(this.pipelineContext, this.node.nodeData);
+        return new EvalContext(this.sharedContext.pipelineContext, this.node.nodeData);
     }
 
     /**
@@ -271,7 +282,7 @@ export class HtmlCompilerContext {
      * @returns new HtmlCompileData instance
      */
     createChildData(node: Node): HtmlCompilerContext {
-        return new HtmlCompilerContext(this.pipelineContext, node, this);
+        return new HtmlCompilerContext(this.sharedContext, node, this);
     }
 
     /**

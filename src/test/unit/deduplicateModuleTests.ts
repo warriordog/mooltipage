@@ -5,7 +5,11 @@ import {Node, StyleNode, TagNode, TextNode} from '../../lib';
 import {PipelineContext} from '../../lib/pipeline/standardPipeline';
 
 function createHtmlContext(node: Node): HtmlCompilerContext {
-    return new HtmlCompilerContext({} as unknown as PipelineContext, node);
+    return new HtmlCompilerContext({
+        pipelineContext: {} as unknown as PipelineContext,
+        uniqueStyles: new Set<string>(),
+        uniqueLinks: new Set<string>()
+    }, node);
 }
 
 // dedupeLink()
@@ -27,7 +31,7 @@ test('DeduplicateModule.dedupeLink() skips invalid links', t => {
     DeduplicateModule.dedupeLink(linkNode, htmlContext);
 
     t.false(htmlContext.isDeleted);
-    t.is(htmlContext.uniqueLinks.size, 0);
+    t.is(htmlContext.sharedContext.uniqueLinks.size, 0);
 });
 
 test('DeduplicateModule.dedupeLink() remembers unique links', t => {
@@ -38,21 +42,21 @@ test('DeduplicateModule.dedupeLink() remembers unique links', t => {
     DeduplicateModule.dedupeLink(linkNode, htmlContext);
 
     t.false(htmlContext.isDeleted);
-    t.is(htmlContext.uniqueLinks.size, 1);
-    t.true(htmlContext.uniqueLinks.has('style.css'));
+    t.is(htmlContext.sharedContext.uniqueLinks.size, 1);
+    t.true(htmlContext.sharedContext.uniqueLinks.has('style.css'));
 });
 
 test('DeduplicateModule.dedupeLink() removes duplicate links', t => {
     const linkNode = new TagNode('link');
     linkNode.setAttribute('href', 'style.css');
     const htmlContext = createHtmlContext(linkNode);
-    htmlContext.uniqueLinks.add('style.css');
+    htmlContext.sharedContext.uniqueLinks.add('style.css');
 
     DeduplicateModule.dedupeLink(linkNode, htmlContext);
 
     t.true(htmlContext.isDeleted);
-    t.is(htmlContext.uniqueLinks.size, 1);
-    t.true(htmlContext.uniqueLinks.has('style.css'));
+    t.is(htmlContext.sharedContext.uniqueLinks.size, 1);
+    t.true(htmlContext.sharedContext.uniqueLinks.has('style.css'));
 });
 
 // dedupeStyle
@@ -76,7 +80,7 @@ test('DeduplicateModule.dedupeStyle() deletes empty styles', t => {
     DeduplicateModule.dedupeStyle(styleNode, htmlContext);
 
     t.true(htmlContext.isDeleted);
-    t.is(htmlContext.uniqueStyles.size, 0);
+    t.is(htmlContext.sharedContext.uniqueStyles.size, 0);
 });
 
 test('DeduplicateModule.dedupeStyle() remembers unique styles', t => {
@@ -89,8 +93,8 @@ test('DeduplicateModule.dedupeStyle() remembers unique styles', t => {
     DeduplicateModule.dedupeStyle(styleNode, htmlContext);
 
     t.false(htmlContext.isDeleted);
-    t.is(htmlContext.uniqueStyles.size, 1);
-    t.true(htmlContext.uniqueStyles.has(css));
+    t.is(htmlContext.sharedContext.uniqueStyles.size, 1);
+    t.true(htmlContext.sharedContext.uniqueStyles.has(css));
 });
 
 test('DeduplicateModule.dedupeStyle() removes duplicate styles', t => {
@@ -99,13 +103,13 @@ test('DeduplicateModule.dedupeStyle() removes duplicate styles', t => {
     const textNode = new TextNode(css);
     styleNode.appendChild(textNode);
     const htmlContext = createHtmlContext(styleNode);
-    htmlContext.uniqueStyles.add(css);
+    htmlContext.sharedContext.uniqueStyles.add(css);
 
     DeduplicateModule.dedupeStyle(styleNode, htmlContext);
 
     t.true(htmlContext.isDeleted);
-    t.is(htmlContext.uniqueStyles.size, 1);
-    t.true(htmlContext.uniqueStyles.has(css));
+    t.is(htmlContext.sharedContext.uniqueStyles.size, 1);
+    t.true(htmlContext.sharedContext.uniqueStyles.has(css));
 });
 
 test('DeduplicateModule.dedupeStyle() ignores whitespace', t => {
@@ -115,11 +119,11 @@ test('DeduplicateModule.dedupeStyle() ignores whitespace', t => {
     const textNode = new TextNode(cssSpace);
     styleNode.appendChild(textNode);
     const htmlContext = createHtmlContext(styleNode);
-    htmlContext.uniqueStyles.add(css);
+    htmlContext.sharedContext.uniqueStyles.add(css);
 
     DeduplicateModule.dedupeStyle(styleNode, htmlContext);
 
     t.true(htmlContext.isDeleted);
-    t.is(htmlContext.uniqueStyles.size, 1);
-    t.true(htmlContext.uniqueStyles.has(css));
+    t.is(htmlContext.sharedContext.uniqueStyles.size, 1);
+    t.true(htmlContext.sharedContext.uniqueStyles.has(css));
 });

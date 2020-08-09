@@ -17,7 +17,7 @@ export class ScriptModule implements HtmlCompilerModule {
         this.compileScript(htmlContext, node.scriptContent);
     }
     compileExternalScript(node: ExternalScriptNode, htmlContext: HtmlCompilerContext): void {
-        const scriptContent = htmlContext.pipelineContext.pipeline.getRawText(node.src, MimeType.JAVASCRIPT);
+        const scriptContent = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(node.src, MimeType.JAVASCRIPT);
         this.compileScript(htmlContext, scriptContent);
     }
 
@@ -29,7 +29,7 @@ export class ScriptModule implements HtmlCompilerModule {
         const evalContext = targetCompileData.createEvalContext();
 
         // compile and execute
-        htmlContext.pipelineContext.pipeline.compileScript(scriptText, evalContext);
+        htmlContext.sharedContext.pipelineContext.pipeline.compileScript(scriptText, evalContext);
 
         // remove when done
         htmlContext.node.removeSelf();

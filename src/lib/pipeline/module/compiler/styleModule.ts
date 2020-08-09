@@ -5,12 +5,12 @@ export class StyleModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
         if (InternalStyleNode.isInternalStyleNode(htmlContext.node)) {
             // internal (inline) CSS
-            const src = htmlContext.pipelineContext.fragment.path;
+            const src = htmlContext.sharedContext.pipelineContext.fragment.path;
             this.compileStyle(htmlContext.node, htmlContext.node.styleContent, src, htmlContext);
 
         } else if (ExternalStyleNode.isExternalStyleNode(htmlContext.node)) {
             // external CSS
-            const styleContent = htmlContext.pipelineContext.pipeline.getRawText(htmlContext.node.src, MimeType.CSS);
+            const styleContent = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(htmlContext.node.src, MimeType.CSS);
             this.compileStyle(htmlContext.node, styleContent, htmlContext.node.src, htmlContext);
         }
     }
@@ -41,7 +41,7 @@ export class StyleModule implements HtmlCompilerModule {
 
     compileStyleLink(currentNode: CompiledStyleNode, src: string, styleContent: string, htmlContext: HtmlCompilerContext): void {
         // write external CSS
-        const styleResPath = htmlContext.pipelineContext.pipeline.linkResource(MimeType.CSS, styleContent, src);
+        const styleResPath = htmlContext.sharedContext.pipelineContext.pipeline.linkResource(MimeType.CSS, styleContent, src);
 
         // create link
         const link = new TagNode('link');

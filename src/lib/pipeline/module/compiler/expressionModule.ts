@@ -19,7 +19,7 @@ export class ExpressionModule implements HtmlCompilerModule {
         const evalContext: EvalContext = htmlContext.createEvalContext();
 
         // compile text
-        const textValue: unknown = htmlContext.pipelineContext.pipeline.compileExpression(node.text, evalContext);
+        const textValue: unknown = htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(node.text, evalContext);
 
         // save back to node
         node.text = textValue != null ? String(textValue) : '';
@@ -36,7 +36,7 @@ export class ExpressionModule implements HtmlCompilerModule {
 
             if (typeof(value) === 'string') {
                 // compile the value, preserving the raw output and not converting to a string
-                const result: unknown = htmlContext.pipelineContext.pipeline.compileExpression(value, evalContext);
+                const result: unknown = htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(value, evalContext);
 
                 node.setRawAttribute(key, result);
             }

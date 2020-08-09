@@ -14,23 +14,25 @@ import {
 import { HtmlCompilerContext } from '../../lib/pipeline/module/htmlCompiler';
 import { VarModule } from '../../lib/pipeline/module/compiler/varModule';
 import * as NodeLogic from '../../lib/dom/nodeLogic';
-import { PipelineContext } from '../../lib/pipeline/standardPipeline';
 
 function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData = {}, pipeline = new MockPipeline()) {
     const testFrag: Fragment = {
         path: 'page.html',
         dom: new DocumentNode()
     };
-    const testContext: PipelineContext = {
-        pipeline: pipeline,
-        fragment: testFrag,
-        fragmentContext: {
-            slotContents: new Map(),
-            scope: fragmentScope
-        }
-    };
 
-    const htmlContext = new HtmlCompilerContext(testContext, node);
+    const htmlContext = new HtmlCompilerContext({
+        pipelineContext: {
+            pipeline: pipeline,
+            fragment: testFrag,
+            fragmentContext: {
+                slotContents: new Map(),
+                scope: fragmentScope
+            }
+        },
+        uniqueStyles: new Set<string>(),
+        uniqueLinks: new Set<string>()
+    }, node);
     const varsModule = new VarModule();
 
     varsModule.enterNode(htmlContext);

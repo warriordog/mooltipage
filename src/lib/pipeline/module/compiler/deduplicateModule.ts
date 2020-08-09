@@ -29,9 +29,9 @@ export class DeduplicateModule implements HtmlCompilerModule {
         const styleTextNode = styleNode.firstChildText;
 
         // check if it contains unique styles
-        if (styleTextNode != null && styleTextNode.hasContent && !htmlContext.uniqueStyles.has(styleTextNode.textContent)) {
+        if (styleTextNode != null && styleTextNode.hasContent && !htmlContext.sharedContext.uniqueStyles.has(styleTextNode.textContent)) {
             // this style is unique, so save it
-            htmlContext.uniqueStyles.add(styleTextNode.textContent);
+            htmlContext.sharedContext.uniqueStyles.add(styleTextNode.textContent);
         } else {
             // if not unique, then cull;
             styleNode.removeSelf();
@@ -54,13 +54,13 @@ export class DeduplicateModule implements HtmlCompilerModule {
             const href = linkNode.getRequiredValueAttribute('href');
 
             // check if we have seen this link before
-            if (htmlContext.uniqueLinks.has(href)) {
+            if (htmlContext.sharedContext.uniqueLinks.has(href)) {
                 // duplicate, so cull it
                 linkNode.removeSelf();
                 htmlContext.setDeleted();
             } else {
                 // unique link, so save it
-                htmlContext.uniqueLinks.add(href)
+                htmlContext.sharedContext.uniqueLinks.add(href)
             }
         }
     }

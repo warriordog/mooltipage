@@ -9,7 +9,7 @@ export class SlotModule implements HtmlCompilerModule {
         // check if this is a m-slot
         if (MSlotNode.isMSlotNode(htmlContext.node)) {
             // get contents from context, and clone in case slot is repeated
-            const content: DocumentNode | undefined = htmlContext.pipelineContext.fragmentContext.slotContents.get(htmlContext.node.slot)?.clone();
+            const content: DocumentNode | undefined = htmlContext.sharedContext.pipelineContext.fragmentContext.slotContents.get(htmlContext.node.slot)?.clone();
 
             if (content != undefined) {
                 // fill content

@@ -73,12 +73,12 @@ export class StandardHtmlFormatter implements HtmlFormatter {
             if (contentNode != null) {
                 const nextNode = contentNode.nextSibling;
 
-                if (nextNode != undefined) {
+                if (nextNode != null) {
                     // continue to next sibling, if found
                     currentNode = nextNode;
                 } else {
                     // If this is the last node at this level, insert a final text node and iterate one more time to support closing indentation
-                    const newLastNode = new TextNode('');
+                    const newLastNode = new TextNode();
                     contentNode.appendSibling(newLastNode);
                     currentNode = newLastNode;
                 }
