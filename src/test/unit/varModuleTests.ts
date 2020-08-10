@@ -33,12 +33,12 @@ function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData = {},
         uniqueStyles: new Set<string>(),
         uniqueLinks: new Set<string>()
     }, node);
-    const varsModule = new VarModule();
+    const varModule = new VarModule();
 
-    varsModule.enterNode(htmlContext);
+    varModule.enterNode(htmlContext);
 
     if (cleanup && !htmlContext.isDeleted) {
-        varsModule.exitNode(htmlContext);
+        varModule.exitNode(htmlContext);
     }
 }
 
@@ -160,19 +160,18 @@ test('[unit] VarModule removes <m-data>', t => {
 });
 
 test('[unit] VarModule compiles text', t => {
-    const dataSrc = 'text.txt';
     const dataType = MimeType.TEXT;
     const dataValue = 'Test text';
     const dataVar = 'test';
 
     const mData = new MDataNode(dataType);
-    mData.setAttribute(dataVar, dataSrc);
+    mData.setAttribute(dataVar, 'text.txt');
 
     const root = new DocumentNode();
     root.appendChild(mData);
 
     const pipe = new MockPipeline();
-    pipe.mockRawTexts.push([dataSrc, dataType, dataValue]);
+    pipe.mockRawTexts.push(['./text.txt', dataType, dataValue]);
     
     runVarModule(mData, undefined, undefined, pipe);
 
@@ -180,19 +179,18 @@ test('[unit] VarModule compiles text', t => {
 });
 
 test('[unit] VarModule compiles json', t => {
-    const dataSrc = 'json.json';
     const dataType = MimeType.JSON;
     const dataValue = '{ "testvalue": "value" }';
     const dataVar = 'test';
 
     const mData = new MDataNode(dataType);
-    mData.setAttribute(dataVar, dataSrc);
+    mData.setAttribute(dataVar, 'json.json');
 
     const root = new DocumentNode();
     root.appendChild(mData);
 
     const pipe = new MockPipeline();
-    pipe.mockRawTexts.push([dataSrc, dataType, dataValue]);
+    pipe.mockRawTexts.push(['./json.json', dataType, dataValue]);
     
     runVarModule(mData, undefined, undefined, pipe);
 
@@ -210,8 +208,8 @@ test('[unit] VarModule compiles multiple data', t => {
     root.appendChild(mData);
 
     const pipe = new MockPipeline();
-    pipe.mockRawTexts.push(['test1.json', MimeType.JSON, '{ "testvalue": "value1" }']);
-    pipe.mockRawTexts.push(['test2.json', MimeType.JSON, '{ "testvalue": "value2" }']);
+    pipe.mockRawTexts.push(['./test1.json', MimeType.JSON, '{ "testvalue": "value1" }']);
+    pipe.mockRawTexts.push(['./test2.json', MimeType.JSON, '{ "testvalue": "value2" }']);
     
     runVarModule(mData, undefined, undefined, pipe);
 

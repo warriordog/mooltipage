@@ -113,24 +113,24 @@ test('[endToEnd] Repeated fragment usages have correct scope', t => {
 
     // compile fragment
     const page = pipeline.compilePage('page.html');
-    const frag2_1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '1');
-    const frag2_2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '2');
-    const frag2_3 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '3');
-    const frag2_4 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '4');
+    const frag21 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '1');
+    const frag22 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '2');
+    const frag23 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '3');
+    const frag24 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '4');
 
     // validate
-    t.truthy(frag2_1);
-    t.is(frag2_1?.getAttribute('param'), 'value1');
-    t.is(frag2_1?.getAttribute('value'), 'value');
-    t.truthy(frag2_2);
-    t.is(frag2_2?.getAttribute('param'), 'value2');
-    t.is(frag2_2?.getAttribute('value'), 'value');
-    t.truthy(frag2_3);
-    t.is(frag2_3?.getAttribute('param'), 'value3');
-    t.is(frag2_3?.getAttribute('value'), 'value');
-    t.truthy(frag2_4);
-    t.is(frag2_4?.getAttribute('param'), 'value4');
-    t.is(frag2_4?.getAttribute('value'), 'value');
+    t.truthy(frag21);
+    t.is(frag21?.getAttribute('param'), 'value1');
+    t.is(frag21?.getAttribute('value'), 'value');
+    t.truthy(frag22);
+    t.is(frag22?.getAttribute('param'), 'value2');
+    t.is(frag22?.getAttribute('value'), 'value');
+    t.truthy(frag23);
+    t.is(frag23?.getAttribute('param'), 'value3');
+    t.is(frag23?.getAttribute('value'), 'value');
+    t.truthy(frag24);
+    t.is(frag24?.getAttribute('param'), 'value4');
+    t.is(frag24?.getAttribute('value'), 'value');
 });
 
 test('[endToEnd] Fragment slots are filled correctly', t => {
@@ -351,3 +351,14 @@ test('[endToEnd] Fragment params are case-converted', compareFragmentMacro,
     [[ 'child.html',
         `\${ $.numberParam === 123 },\${ $.booleanParam === true },\${ $.stringParam === 'string' }`
     ]]);
+
+test('Resources are resolved relative to current fragment', compareFragmentMacro,
+`<style compiled src="style.css"></style><m-fragment src="child/frag.html" />`,
+`<style>.root {}</style><style>.child {}</style><style>.inner {}</style>`,
+[
+    [ 'style.css', '.root {}'],
+    [ 'child/frag.html', '<style compiled src="style.css"></style><m-fragment src="child/frag.html" />'],
+    [ 'child/style.css', '.child {}'],
+    [ 'child/child/frag.html', '<style compiled src="style.css"></style>'],
+    [ 'child/child/style.css', '.inner {}']
+]);

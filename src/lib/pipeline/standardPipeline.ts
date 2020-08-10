@@ -6,6 +6,7 @@ import {DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType
 import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript } from './module/evalEngine';
 import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
 import {buildPage} from './module/pageBuilder';
+import {resolveResPath} from './module/resolvePath';
 
 /**
  * Primary compilation pipeline.
@@ -98,9 +99,6 @@ export class StandardPipeline implements Pipeline {
     }
 
     private compileFragmentOnly(resPath: string, fragmentContext?: FragmentContext): Fragment {
-        // get fragment from cache or htmlSource
-        const fragment: Fragment = this.getOrParseFragment(resPath);
-
         // create usage context if not provided
         if (fragmentContext == undefined) {
             fragmentContext = {
@@ -108,6 +106,9 @@ export class StandardPipeline implements Pipeline {
                 scope: {}
             };
         }
+
+        // get fragment from cache or htmlSource
+        const fragment: Fragment = this.getOrParseFragment(resPath);
 
         // create pipeline context
         const pipelineContext: PipelineContext = {

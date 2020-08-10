@@ -10,6 +10,7 @@ import {
     ScopeData,
     TagNode
 } from '../../..';
+import {resolveResPath} from '../resolvePath';
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
@@ -81,8 +82,11 @@ export class VarModule implements HtmlCompilerModule {
     }
 
     private static compileReference(reference: MDataNodeRef, node: MDataNode, htmlContext: HtmlCompilerContext): unknown {
+        // compute path to reference
+        const resPath = resolveResPath(reference.resPath, htmlContext.sharedContext.pipelineContext.fragment.path);
+
         // get value
-        const rawValue = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(reference.resPath, node.type);
+        const rawValue = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(resPath, node.type);
 
         // parse as correct type
         switch (node.type) {

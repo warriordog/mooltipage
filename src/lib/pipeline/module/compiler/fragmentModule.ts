@@ -9,6 +9,7 @@ import {
     ScopeData,
     SlotReferenceNode
 } from '../../..';
+import {resolveResPath} from '../resolvePath';
 
 /**
  * Resolve <m-fragment> and replace with compiled HTML 
@@ -30,8 +31,11 @@ export class FragmentModule implements HtmlCompilerModule {
             scope: FragmentModule.createFragmentScope(mFragment)
         };
 
+        // compute path to fragment
+        const fragmentPath = resolveResPath(mFragment.src, htmlContext.sharedContext.pipelineContext.fragment.path);
+
         // call pipeline to load reference
-        const fragment: Fragment = htmlContext.sharedContext.pipelineContext.pipeline.compileFragment(mFragment.src, fragmentContext);
+        const fragment: Fragment = htmlContext.sharedContext.pipelineContext.pipeline.compileFragment(fragmentPath, fragmentContext);
 
         // replace with compiled fragment
         mFragment.replaceSelf(fragment.dom.childNodes);

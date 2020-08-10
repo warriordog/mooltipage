@@ -1,5 +1,6 @@
 import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
 import { TagNode, CompiledStyleNode, InternalStyleNode, ExternalStyleNode, TextNode, StyleNodeBind, StyleNode, MimeType } from '../../..';
+import {resolveResPath} from '../resolvePath';
 
 export class StyleModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
@@ -10,7 +11,8 @@ export class StyleModule implements HtmlCompilerModule {
 
         } else if (ExternalStyleNode.isExternalStyleNode(htmlContext.node)) {
             // external CSS
-            const styleContent = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(htmlContext.node.src, MimeType.CSS);
+            const resPath = resolveResPath(htmlContext.node.src, htmlContext.sharedContext.pipelineContext.fragment.path);
+            const styleContent = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(resPath, MimeType.CSS);
             this.compileStyle(htmlContext.node, styleContent, htmlContext.node.src, htmlContext);
         }
     }

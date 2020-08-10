@@ -72,17 +72,29 @@ export class MemoryPipelineInterface implements PipelineInterface {
     }
 
     getResource(type: MimeType, resPath: string): string {
-        if (this.sourceContent.has(resPath)) {
-            const resource = this.sourceContent.get(resPath);
-
-            if (resource == undefined) {
-                throw new Error(`Stored HTML for resource ${ resPath } is undefined`);
-            }
-
-            return resource.content;
+        // generate list of "similar" paths to try - necessary since real FS will resolve the path first
+        const testPaths = [ resPath ];
+        if (resPath.startsWith('./')) {
+            // remove leading ./
+            testPaths.push(resPath.substring(2, resPath.length));
         } else {
-            throw new Error(`Unable to resolve HTML resource ${ resPath }`);
+            // add leading ./
+            testPaths.push(`./${ resPath }`);
         }
+
+        for (const testPath of testPaths) {
+            if (this.sourceContent.has(testPath)) {
+                const resource = this.sourceContent.get(testPath);
+
+                if (resource == undefined) {
+                    throw new Error(`Stored HTML for resource "${ resPath }" is undefined`);
+                }
+
+                return resource.content;
+            }
+        }
+
+        throw new Error(`Unable to resolve HTML resource "${ resPath }"`);
     }
 
     writeResource(type: MimeType, resPath: string, content: string): void {

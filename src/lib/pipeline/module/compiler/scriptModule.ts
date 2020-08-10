@@ -1,5 +1,6 @@
 import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
 import { InternalScriptNode, ExternalScriptNode, MimeType } from '../../..';
+import {resolveResPath} from '../resolvePath';
 
 export class ScriptModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
@@ -17,7 +18,8 @@ export class ScriptModule implements HtmlCompilerModule {
         this.compileScript(htmlContext, node.scriptContent);
     }
     compileExternalScript(node: ExternalScriptNode, htmlContext: HtmlCompilerContext): void {
-        const scriptContent = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(node.src, MimeType.JAVASCRIPT);
+        const resPath = resolveResPath(node.src, htmlContext.sharedContext.pipelineContext.fragment.path);
+        const scriptContent = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(resPath, MimeType.JAVASCRIPT);
         this.compileScript(htmlContext, scriptContent);
     }
 
