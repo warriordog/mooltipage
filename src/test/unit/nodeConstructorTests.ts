@@ -25,7 +25,7 @@ import {
     SlotReferenceNode
 } from '../../lib';
 
-test('[unit] TagNode constructor handles arguments', t => {
+test('TagNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['foo', 'bar'], ['attr', null]]);
 
     const node = new TagNode('sometag', attributes);
@@ -34,14 +34,14 @@ test('[unit] TagNode constructor handles arguments', t => {
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] TagNode constructor populates defaults', t => {
+test('TagNode constructor populates defaults', t => {
     const node = new TagNode('sometag');
 
     t.is(node.tagName, 'sometag');
     t.is(node.getAttributes().size, 0);
 });
 
-test('[unit] TextNode constructor handles arguments', t => {
+test('TextNode constructor handles arguments', t => {
     const node = new TextNode('  text content  ');
 
     t.is(node.text, '  text content  ');
@@ -49,7 +49,7 @@ test('[unit] TextNode constructor handles arguments', t => {
     t.true(node.hasContent);
 });
 
-test('[unit] TextNode constructor populates defaults', t => {
+test('TextNode constructor populates defaults', t => {
     const node = new TextNode();
 
     t.is(node.text, '');
@@ -57,33 +57,33 @@ test('[unit] TextNode constructor populates defaults', t => {
     t.false(node.hasContent);
 });
 
-test('[unit] CommentNode constructor handles arguments', t => {
+test('CommentNode constructor handles arguments', t => {
     const node = new CommentNode('text content');
 
     t.is(node.text, 'text content');
 });
 
-test('[unit] CommentNode constructor populates defaults', t => {
+test('CommentNode constructor populates defaults', t => {
     const node = new CommentNode();
 
     t.is(node.text, '');
 });
 
-test('[unit] ProcessingInstructionNode constructor handles arguments', t => {
+test('ProcessingInstructionNode constructor handles arguments', t => {
     const node = new ProcessingInstructionNode('name', 'data');
 
     t.is(node.name, 'name');
     t.is(node.data, 'data');
 });
 
-test('[unit] ProcessingInstructionNode constructor populates defaults', t => {
+test('ProcessingInstructionNode constructor populates defaults', t => {
     const node = new ProcessingInstructionNode();
 
     t.is(node.name, '');
     t.is(node.data, '');
 });
 
-test('[unit] MFragmentNode constructor handles arguments', t => {
+test('MFragmentNode constructor handles arguments', t => {
     const src = 'resPath';
     const attributes: Map<string, unknown> = new Map([['src', src], ['param', 'value']]);
 
@@ -95,7 +95,7 @@ test('[unit] MFragmentNode constructor handles arguments', t => {
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] MContentNode constructor handles arguments', t => {
+test('MContentNode constructor handles arguments', t => {
     const slot = 'slotName';
     const attributes: Map<string, unknown> = new Map([['slot', slot], ['foo', 'bar']]);
 
@@ -106,7 +106,7 @@ test('[unit] MContentNode constructor handles arguments', t => {
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] MContentNode constructor populates defaults', t => {
+test('MContentNode constructor populates defaults', t => {
     const attributes: Map<string, unknown> = new Map([['param', 'value']]);
 
     const node = new MContentNode(undefined, attributes);
@@ -115,7 +115,7 @@ test('[unit] MContentNode constructor populates defaults', t => {
     t.is(node.getAttribute('slot'), SlotReferenceNode.DefaultSlotName);
 });
 
-test('[unit] MSlotNode constructor handles arguments', t => {
+test('MSlotNode constructor handles arguments', t => {
     const slot = 'slotName';
     const attributes: Map<string, unknown> = new Map([['slot', slot], ['foo', 'bar']]);
 
@@ -126,7 +126,7 @@ test('[unit] MSlotNode constructor handles arguments', t => {
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] MSlotNode constructor populates defaults', t => {
+test('MSlotNode constructor populates defaults', t => {
     const attributes: Map<string, unknown> = new Map([['param', 'value']]);
 
     const node = new MSlotNode(undefined, attributes);
@@ -135,7 +135,7 @@ test('[unit] MSlotNode constructor populates defaults', t => {
     t.is(node.getAttribute('slot'), SlotReferenceNode.DefaultSlotName);
 });
 
-test('[unit] MVarNode constructor handles arguments', t => {
+test('MVarNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['param', 'value'], ['foo', 'bar'], ['attr', null]]);
 
     const node = new MVarNode(attributes);
@@ -144,7 +144,7 @@ test('[unit] MVarNode constructor handles arguments', t => {
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] MImportNode constructor handles arguments', t => {
+test('MImportNode constructor handles arguments', t => {
     const src = 'resPath';
     const as = 'foo';
 
@@ -157,7 +157,7 @@ test('[unit] MImportNode constructor handles arguments', t => {
     t.is(node.getAttribute('as'), as);
 });
 
-test('[unit] MScopeNode constructor handles arguments', t => {
+test('MScopeNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['param', 'value'], ['foo', 'bar'], ['attr', null]]);
 
     const node = new MScopeNode(attributes);
@@ -166,7 +166,7 @@ test('[unit] MScopeNode constructor handles arguments', t => {
     t.deepEqual(node.getAttributes(), attributes);
 });
 
-test('[unit] MIfNode constructor handles arguments', t => {
+test('MIfNode constructor handles arguments', t => {
     const condition = '{{ true }}';
     const node = new MIfNode(condition);
 
@@ -174,7 +174,7 @@ test('[unit] MIfNode constructor handles arguments', t => {
     t.is(node.condition, condition);
 });
 
-test('[unit] MForOfNode constructor handles arguments', t => {
+test('MForOfNode constructor handles arguments', t => {
     const varName = 'value';
     const indexName = 'i';
     const expression = '{{ [] }}';
@@ -188,7 +188,7 @@ test('[unit] MForOfNode constructor handles arguments', t => {
     t.is(node.expression, expression);
 });
 
-test('[unit] MForInNode constructor handles arguments', t => {
+test('MForInNode constructor handles arguments', t => {
     const varName = 'key';
     const indexName = 'i';
     const expression = '{{ {} }}';
@@ -202,7 +202,7 @@ test('[unit] MForInNode constructor handles arguments', t => {
     t.is(node.expression, expression);
 });
 
-test('[unit] MDataNode constructor accepts JSON type', t => {
+test('MDataNode constructor accepts JSON type', t => {
     const node = new MDataNode(MimeType.JSON);
 
     t.is(node.tagName, 'm-data');
@@ -210,7 +210,7 @@ test('[unit] MDataNode constructor accepts JSON type', t => {
     t.is(node.getRawAttribute('type'), MimeType.JSON);
 });
 
-test('[unit] MDataNode constructor accepts TEXT type', t => {
+test('MDataNode constructor accepts TEXT type', t => {
     const node = new MDataNode(MimeType.TEXT);
 
     t.is(node.tagName, 'm-data');
@@ -218,13 +218,13 @@ test('[unit] MDataNode constructor accepts TEXT type', t => {
     t.is(node.getRawAttribute('type'), MimeType.TEXT);
 });
 
-test('[unit] MDataNode parses no references', t => {
+test('MDataNode parses no references', t => {
     const node = new MDataNode(MimeType.TEXT);
 
     t.is(node.references.length, 0);
 });
 
-test('[unit] MDataNode parses single reference', t => {
+test('MDataNode parses single reference', t => {
     const node = new MDataNode(MimeType.TEXT, new Map([['foo', 'source.txt']]));
 
     t.is(node.references.length, 1);
@@ -232,7 +232,7 @@ test('[unit] MDataNode parses single reference', t => {
     t.is(node.references[0].varName, 'foo');
 });
 
-test('[unit] MDataNode parses multiple references', t => {
+test('MDataNode parses multiple references', t => {
     const references: [string, string][] = [
         ['foo1', 'source1.txt'],
         ['foo2', 'source2.txt'],

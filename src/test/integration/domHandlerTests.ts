@@ -2,7 +2,7 @@ import test from 'ava';
 import { ProcessingInstructionNode, TagNode, TextNode, CommentNode, CDATANode } from '../../lib';
 import { DomHandler } from '../../lib/dom/domParser';
 
-test('[integration] DomHandler can parse standard HTML', t => {
+test('DomHandler can parse standard HTML', t => {
     const domHandler = new DomHandler();
 
     domHandler.onprocessinginstruction('!DOCTYPE html', '');
@@ -54,7 +54,7 @@ test('[integration] DomHandler can parse standard HTML', t => {
     t.is(cdataText.text, 'This is CDATA content');
 });
 
-test('[integration] DomHandler can reset state', t => {
+test('DomHandler can reset state', t => {
     const domHandler = new DomHandler();
 
     domHandler.onopentag('div', { 'id': 'wrong' });
@@ -81,7 +81,7 @@ test('[integration] DomHandler can reset state', t => {
     t.is(text.text, 'good!');
 });
 
-test('[integration] DomHandler throws on error', t => {
+test('DomHandler throws on error', t => {
     const domHandler = new DomHandler();
 
     domHandler.onopentag('div', {});

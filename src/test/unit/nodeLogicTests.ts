@@ -2,7 +2,7 @@ import test from 'ava';
 import { TagNode, DocumentNode, Node, TextNode } from '../../lib';
 import * as NodeLogic from '../../lib/dom/nodeLogic';
 
-test('[unit] NodeLogic.detachNode removes nodes', t => {
+test('NodeLogic.detachNode removes nodes', t => {
     const parent = new TagNode('div');
     const child = new TagNode('div');
     NodeLogic.appendChild(parent, child);
@@ -18,7 +18,7 @@ test('[unit] NodeLogic.detachNode removes nodes', t => {
     t.is(parent.childNodes.length, 0);
 });
 
-test('[unit] NodeLogic.hasChild detects children', t => {
+test('NodeLogic.hasChild detects children', t => {
     const parent = new TagNode('div');
     const child = new TagNode('div');
     const notChild = new TagNode('div');
@@ -28,7 +28,7 @@ test('[unit] NodeLogic.hasChild detects children', t => {
     t.false(NodeLogic.hasChild(parent, notChild));
 });
 
-test('[unit] NodeLogic.appendChild appends children', t => {
+test('NodeLogic.appendChild appends children', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
     const child2 = new TagNode('div');
@@ -47,14 +47,14 @@ test('[unit] NodeLogic.appendChild appends children', t => {
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
 });
 
-test('[unit] NodeLogic.appendChild will not append a DocumentNode', t => {
+test('NodeLogic.appendChild will not append a DocumentNode', t => {
     const parent = new TagNode('div');
     const child = new DocumentNode();
 
     t.throws(() => NodeLogic.appendChild(parent, child));
 });
 
-test('[unit] NodeLogic.prependChild inserts children', t => {
+test('NodeLogic.prependChild inserts children', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
     const child2 = new TagNode('div');
@@ -73,14 +73,14 @@ test('[unit] NodeLogic.prependChild inserts children', t => {
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
 });
 
-test('[unit] NodeLogic.prependChild will not prepend a DocumentNode', t => {
+test('NodeLogic.prependChild will not prepend a DocumentNode', t => {
     const parent = new TagNode('div');
     const child = new DocumentNode();
 
     t.throws(() => NodeLogic.prependChild(parent, child));
 });
 
-test('[unit] NodeLogic.clear removes all child nodes', t => {
+test('NodeLogic.clear removes all child nodes', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
     const child2 = new TagNode('div');
@@ -99,7 +99,7 @@ test('[unit] NodeLogic.clear removes all child nodes', t => {
     t.falsy(Object.getPrototypeOf(child2.nodeData));
 });
 
-test('[unit] NodeLogic.appendChildNodes appends all child nodes', t => {
+test('NodeLogic.appendChildNodes appends all child nodes', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
     const child2 = new TagNode('div');
@@ -117,14 +117,14 @@ test('[unit] NodeLogic.appendChildNodes appends all child nodes', t => {
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
 });
 
-test('[unit] NodeLogic.appendChildNodes will not append a DocumentNode', t => {
+test('NodeLogic.appendChildNodes will not append a DocumentNode', t => {
     const parent = new TagNode('div');
     const child = new DocumentNode();
 
     t.throws(() => NodeLogic.appendChildNodes(parent, [ child ]));
 });
 
-test('[unit] NodeLogic.prependChildNodes appends all child nodes', t => {
+test('NodeLogic.prependChildNodes appends all child nodes', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
     const child2 = new TagNode('div');
@@ -149,14 +149,14 @@ test('[unit] NodeLogic.prependChildNodes appends all child nodes', t => {
     t.is(Object.getPrototypeOf(child3.nodeData), parent.nodeData);
 });
 
-test('[unit] NodeLogic.prependChildNodes will not append a DocumentNode', t => {
+test('NodeLogic.prependChildNodes will not append a DocumentNode', t => {
     const parent = new TagNode('div');
     const child = new DocumentNode();
 
     t.throws(() => NodeLogic.prependChildNodes(parent, [ child ]));
 });
 
-test('[unit] NodeLogic.appendSibling appends sibling', t => {
+test('NodeLogic.appendSibling appends sibling', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
     const child2 = new TagNode('div');
@@ -175,7 +175,7 @@ test('[unit] NodeLogic.appendSibling appends sibling', t => {
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
 });
 
-test('[unit] NodeLogic.appendSibling will not append a DocumentNode', t => {
+test('NodeLogic.appendSibling will not append a DocumentNode', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
     const child2 = new DocumentNode();
@@ -184,7 +184,7 @@ test('[unit] NodeLogic.appendSibling will not append a DocumentNode', t => {
     t.throws(() => NodeLogic.appendSibling(child2, child1));
 });
 
-test('[unit] NodeLogic.prependSibling inserts sibling', t => {
+test('NodeLogic.prependSibling inserts sibling', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
     const child2 = new TagNode('div');
@@ -203,7 +203,7 @@ test('[unit] NodeLogic.prependSibling inserts sibling', t => {
     t.is(Object.getPrototypeOf(child2.nodeData), parent.nodeData);
 });
 
-test('[unit] NodeLogic.prependSibling will not append a DocumentNode', t => {
+test('NodeLogic.prependSibling will not append a DocumentNode', t => {
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
     const child2 = new DocumentNode();
@@ -212,7 +212,7 @@ test('[unit] NodeLogic.prependSibling will not append a DocumentNode', t => {
     t.throws(() => NodeLogic.prependSibling(child2, child1));
 });
 
-test('[unit] NodeLogic.replaceNode works with no replacements', t => {
+test('NodeLogic.replaceNode works with no replacements', t => {
     const root = new TagNode('div');
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
@@ -228,7 +228,7 @@ test('[unit] NodeLogic.replaceNode works with no replacements', t => {
     t.is(parent.parentNode, root);
 });
 
-test('[unit] NodeLogic.replaceNode works with one replacement', t => {
+test('NodeLogic.replaceNode works with one replacement', t => {
     const root = new TagNode('div');
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
@@ -246,7 +246,7 @@ test('[unit] NodeLogic.replaceNode works with one replacement', t => {
     t.is(child2.parentNode, parent);
 });
 
-test('[unit] NodeLogic.replaceNode works with multiple replacements', t => {
+test('NodeLogic.replaceNode works with multiple replacements', t => {
     const root = new TagNode('div');
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
@@ -276,7 +276,7 @@ test('[unit] NodeLogic.replaceNode works with multiple replacements', t => {
     t.falsy(child4.nextSibling);
 });
 
-test('[unit] NodeLogic.replaceNode works with neighbors', t => {
+test('NodeLogic.replaceNode works with neighbors', t => {
     const root = new TagNode('div');
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
@@ -309,7 +309,7 @@ test('[unit] NodeLogic.replaceNode works with neighbors', t => {
     t.falsy(child3.nextSibling);
 });
 
-test('[unit] NodeLogic.replaceNode can promote child nodes', t => {
+test('NodeLogic.replaceNode can promote child nodes', t => {
     const root = new TagNode('div');
     const parent = new TagNode('div');
     const child1 = new TagNode('div');
@@ -342,7 +342,7 @@ test('[unit] NodeLogic.replaceNode can promote child nodes', t => {
     t.falsy(child4.nextSibling);
 });
 
-test('[unit] NodeLogic.replaceNode will not insert a DocumentNode', t => {
+test('NodeLogic.replaceNode will not insert a DocumentNode', t => {
     const parent = new TagNode('div');
     const child = new TagNode('div');
     const replace = new DocumentNode();
@@ -351,7 +351,7 @@ test('[unit] NodeLogic.replaceNode will not insert a DocumentNode', t => {
     t.throws(() => NodeLogic.replaceNode(child, [ replace ]));
 });
 
-test('[unit] NodeLogic.cloneDocumentNode deep clones DOM correctly', t => {
+test('NodeLogic.cloneDocumentNode deep clones DOM correctly', t => {
     const root = new DocumentNode();
     const child1 = new TagNode('div', new Map([['hello', 'world']]));
     NodeLogic.appendChild(child1, new TagNode('div'));
@@ -380,7 +380,7 @@ test('[unit] NodeLogic.cloneDocumentNode deep clones DOM correctly', t => {
     t.true(TagNode.isTagNode(cloneChild2.lastChild as Node));
 });
 
-test('[unit] NodeLogic.cloneDocumentNode shallow clones DOM correctly', t => {
+test('NodeLogic.cloneDocumentNode shallow clones DOM correctly', t => {
     const root = new DocumentNode();
     const child1 = new TagNode('div', new Map([['hello', 'world']]));
     NodeLogic.appendChild(root, child1);
@@ -391,7 +391,7 @@ test('[unit] NodeLogic.cloneDocumentNode shallow clones DOM correctly', t => {
     t.is(clone.childNodes.length, 0);
 });
 
-test('[unit] NodeLogic.cloneDocumentNode fires callbacks', t => {
+test('NodeLogic.cloneDocumentNode fires callbacks', t => {
     const root = new DocumentNode();
     const child1 = new TagNode('div', new Map([['hello', 'world']]));
     NodeLogic.appendChild(root, child1);
@@ -423,7 +423,7 @@ test('[unit] NodeLogic.cloneDocumentNode fires callbacks', t => {
     t.true(clonedNodes.includes(child2child2));
 });
 
-test('[unit] NodeLogic.getChildTags filters for TagNodes', t => {
+test('NodeLogic.getChildTags filters for TagNodes', t => {
     const root = new DocumentNode();
     root.appendChild(new TextNode('text'));
     const child1 = new TagNode('div');
@@ -439,7 +439,7 @@ test('[unit] NodeLogic.getChildTags filters for TagNodes', t => {
     t.true(childTags.includes(child2));
 });
 
-test('[unit] NodeLogic.getPreviousTag finds previous tag', t => {
+test('NodeLogic.getPreviousTag finds previous tag', t => {
     const root = new DocumentNode();
     const tag1 = new TagNode('div');
     const text1 = new TextNode('text1');
@@ -451,7 +451,7 @@ test('[unit] NodeLogic.getPreviousTag finds previous tag', t => {
     t.is(prevTag, tag1);
 });
 
-test('[unit] NodeLogic.getPreviousTag returns null if no tags found', t => {
+test('NodeLogic.getPreviousTag returns null if no tags found', t => {
     const root = new DocumentNode();
     const text1 = new TextNode('text1');
     const text2 = new TextNode('text2');
@@ -462,7 +462,7 @@ test('[unit] NodeLogic.getPreviousTag returns null if no tags found', t => {
     t.is(prevTag, null);
 });
 
-test('[unit] NodeLogic.getNextTag finds next tag', t => {
+test('NodeLogic.getNextTag finds next tag', t => {
     const root = new DocumentNode();
     const tag1 = new TagNode('div');
     const text1 = new TextNode('text1');
@@ -474,7 +474,7 @@ test('[unit] NodeLogic.getNextTag finds next tag', t => {
     t.is(nextTag, tag2);
 });
 
-test('[unit] NodeLogic.getNextTag returns null if no tags found', t => {
+test('NodeLogic.getNextTag returns null if no tags found', t => {
     const root = new DocumentNode();
     const tag = new TagNode('div');
     const text1 = new TextNode('text1');

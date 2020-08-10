@@ -18,16 +18,16 @@ function testTags(t: ExecutionContext, html: string, tags: string[]) {
     }
 }
 
-test('[integration] DomParser handles void tags', testTags, '<div></div><br><meta><input><div></div>', ['div', 'br', 'meta', 'input', 'div']);
-test('[integration] DomParser handles void tags with explicit closing', testTags, '<div></div><br/><meta/><input/><div></div>', ['div', 'br', 'meta', 'input', 'div']);
-test('[integration] DomParser handles void tags with explicit closing and space', testTags, '<div></div><br /><meta /><input /><div></div>', ['div', 'br', 'meta', 'input', 'div']);
-test('[integration] DomParser handles custom tags used as void', testTags, '<div></div><m-slot /><m-content /><m-var /><div></div>', ['div', 'm-slot', 'm-content', 'm-var', 'div']);
-test('[integration] DomParser handles standard tags used as void', testTags, '<div></div><div /><p /><h1 /><div></div>', ['div', 'div', 'p', 'h1', 'div']);
+test('DomParser handles void tags', testTags, '<div></div><br><meta><input><div></div>', ['div', 'br', 'meta', 'input', 'div']);
+test('DomParser handles void tags with explicit closing', testTags, '<div></div><br/><meta/><input/><div></div>', ['div', 'br', 'meta', 'input', 'div']);
+test('DomParser handles void tags with explicit closing and space', testTags, '<div></div><br /><meta /><input /><div></div>', ['div', 'br', 'meta', 'input', 'div']);
+test('DomParser handles custom tags used as void', testTags, '<div></div><m-slot /><m-content /><m-var /><div></div>', ['div', 'm-slot', 'm-content', 'm-var', 'div']);
+test('DomParser handles standard tags used as void', testTags, '<div></div><div /><p /><h1 /><div></div>', ['div', 'div', 'p', 'h1', 'div']);
 
 // This is a bug in htmlparser2. A PR has been submitted to fix the issue.
-test.failing('[integration] DomParser handles special tags used as void', testTags, '<div></div><script /><style /><title /><div></div>', ['div', 'script', 'style', 'title', 'div']);
+test.failing('DomParser handles special tags used as void', testTags, '<div></div><script /><style /><title /><div></div>', ['div', 'script', 'style', 'title', 'div']);
 
-test('[integration] DomParser allows non-text in <title>', t => {
+test('DomParser allows non-text in <title>', t => {
     const domParser = new DomParser();
     const dom = domParser.parseDom('<title><div></div></title>');
     

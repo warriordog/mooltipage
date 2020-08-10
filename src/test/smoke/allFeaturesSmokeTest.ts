@@ -4,7 +4,7 @@ import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { MimeType } from '../../lib';
 import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
-test('[smoke] Build produces a page and does not crash', t => {
+test('Build produces a page and does not crash', t => {
     // set up pipeline
     const pipeline = createPipeline();
 
@@ -57,10 +57,10 @@ function createPipeline(): StandardPipeline {
 
         <m-fragment src="header.html" title="{{ $.name }}" />
 
-        <m-data type="application/json" sections="sectiondata.json" />
+        <m-data type="application/json" sections="sectionData.json" />
         <script compiled src="sectionLoader.js"></script>
 
-        <m-for var="sn" of="{{ $.sectionids }}">
+        <m-for var="sn" of="{{ $.sectionIds }}">
             <br>
 
             <custom-section title="Section \${ $.sn }">
@@ -109,10 +109,10 @@ function createPipeline(): StandardPipeline {
     pipelineInterface.setSource('sectionLoader.js', {
         type: MimeType.JAVASCRIPT,
         content: `
-            $.sectionids = $.sections.map(s => s.id);
+            $.sectionIds = $.sections.map(s => s.id);
         `
     });
-    pipelineInterface.setSource('sectiondata.json', {
+    pipelineInterface.setSource('sectionData.json', {
         type: MimeType.JSON,
         content: `
         [

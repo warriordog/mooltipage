@@ -4,7 +4,7 @@ import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { MimeType } from '../../lib';
 
-test('[endToEnd] ScriptNode executes scripts in correct scope', compareFragmentMacro,
+test('ScriptNode executes scripts in correct scope', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
@@ -12,7 +12,7 @@ test('[endToEnd] ScriptNode executes scripts in correct scope', compareFragmentM
     `$.test = "good";`
 ]]);
 
-test('[endToEnd] ScriptNode can override existing vars', compareFragmentMacro,
+test('ScriptNode can override existing vars', compareFragmentMacro,
 `<m-var test="bad" />
 <script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
@@ -21,7 +21,7 @@ test('[endToEnd] ScriptNode can override existing vars', compareFragmentMacro,
     `$.test = "good";`
 ]]);
 
-test('[endToEnd] ScriptNode supports multiple lines', compareFragmentMacro,
+test('ScriptNode supports multiple lines', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
@@ -34,7 +34,7 @@ test('[endToEnd] ScriptNode supports multiple lines', compareFragmentMacro,
     $.test = foo.join('');`
 ]]);
 
-test('[endToEnd] ScriptNode supports embedded functions', compareFragmentMacro,
+test('ScriptNode supports embedded functions', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
@@ -45,7 +45,7 @@ test('[endToEnd] ScriptNode supports embedded functions', compareFragmentMacro,
     $.test = getGood();`
 ]]);
 
-test('[endToEnd] ScriptNode allows script exceptions to bubble', t => {
+test('ScriptNode allows script exceptions to bubble', t => {
     const errorMessage = 'test error';
 
     const pi = new MemoryPipelineInterface();
@@ -61,7 +61,7 @@ test('[endToEnd] ScriptNode allows script exceptions to bubble', t => {
     });
 });
 
-test('[endToEnd] ScriptNode scripts can access pipeline APIs', compareFragmentMacro,
+test('ScriptNode scripts can access pipeline APIs', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
@@ -74,7 +74,7 @@ test('Scripts can access require()', compareFragmentMacro,`
 \${ $.test }`,
 'function');
 
-test('[endToEnd] ScriptNode scripts can access NodeJS APIs', compareFragmentMacro,
+test('ScriptNode scripts can access NodeJS APIs', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
@@ -83,11 +83,11 @@ test('[endToEnd] ScriptNode scripts can access NodeJS APIs', compareFragmentMacr
     $.test = fs !== undefined;`
 ]]);
 
-test('[endToEnd] ScriptNode scripts can access DOM APIs', compareFragmentMacro,`
+test('ScriptNode scripts can access DOM APIs', compareFragmentMacro,`
 <script compiled> $.test = require('./dom/node') !== undefined;</script>\${ $.test }`,
 `true`);
 
-test('[endToEnd] ScriptNode supports inline scripts', compareFragmentMacro,
+test('ScriptNode supports inline scripts', compareFragmentMacro,
 `<script compiled>
     this.value = 'good';
 </script>

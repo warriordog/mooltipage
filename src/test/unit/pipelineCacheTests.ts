@@ -7,7 +7,7 @@ import { EvalContent } from '../../lib/pipeline/module/evalEngine';
  * Fragment
  */
 
-test('[unit] PipelineCache.hasFragment() returns true when object is cached', t => {
+test('PipelineCache.hasFragment() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
     cache.storeFragment({
@@ -18,13 +18,13 @@ test('[unit] PipelineCache.hasFragment() returns true when object is cached', t 
     t.true(cache.hasFragment('foo'));
 });
 
-test('[unit] PipelineCache.hasFragment() returns false when object is not cached', t => {
+test('PipelineCache.hasFragment() returns false when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.false(cache.hasFragment('foo'));
 });
 
-test('[unit] PipelineCache.getFragment() returns cached object when present', t => {
+test('PipelineCache.getFragment() returns cached object when present', t => {
     const cache = new PipelineCache();
     const fragment: Fragment = {
         path: 'foo',
@@ -36,13 +36,13 @@ test('[unit] PipelineCache.getFragment() returns cached object when present', t 
     t.is(cache.getFragment('foo'), fragment);
 });
 
-test('[unit] PipelineCache.getFragment() throws when object is not cached', t => {
+test('PipelineCache.getFragment() throws when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.throws(() => cache.getFragment('foo'));
 });
 
-test('[unit] PipelineCache.storeFragment() can overwrite an existing entry', t => {
+test('PipelineCache.storeFragment() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
     const fragment1: Fragment = {
         path: 'foo',
@@ -63,7 +63,7 @@ test('[unit] PipelineCache.storeFragment() can overwrite an existing entry', t =
  * Expression
  */
 
-test('[unit] PipelineCache.hasExpression() returns true when object is cached', t => {
+test('PipelineCache.hasExpression() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
     cache.storeExpression('foo', new EvalContent(() => 'foo'));
@@ -71,13 +71,13 @@ test('[unit] PipelineCache.hasExpression() returns true when object is cached', 
     t.true(cache.hasExpression('foo'));
 });
 
-test('[unit] PipelineCache.hasExpression() returns false when object is not cached', t => {
+test('PipelineCache.hasExpression() returns false when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.false(cache.hasExpression('foo'));
 });
 
-test('[unit] PipelineCache.getExpression() returns cached object when present', t => {
+test('PipelineCache.getExpression() returns cached object when present', t => {
     const cache = new PipelineCache();
     const expression = new EvalContent(() => 'foo');
 
@@ -86,13 +86,13 @@ test('[unit] PipelineCache.getExpression() returns cached object when present', 
     t.is(cache.getExpression('foo'), expression);
 });
 
-test('[unit] PipelineCache.getExpression() throws when object is not cached', t => {
+test('PipelineCache.getExpression() throws when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.throws(() => cache.getExpression('foo'));
 });
 
-test('[unit] PipelineCache.storeExpression() can overwrite an existing entry', t => {
+test('PipelineCache.storeExpression() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
     const expression1 = new EvalContent(() => 'foo');
     const expression2 = new EvalContent(() => 'foo');
@@ -106,7 +106,7 @@ test('[unit] PipelineCache.storeExpression() can overwrite an existing entry', t
  * Script
  */
 
-test('[unit] PipelineCache.hasScript() returns true when object is cached', t => {
+test('PipelineCache.hasScript() returns true when object is cached', t => {
     const cache = new PipelineCache();
 
     cache.storeScript('foo', new EvalContent(() => 'foo'));
@@ -114,13 +114,13 @@ test('[unit] PipelineCache.hasScript() returns true when object is cached', t =>
     t.true(cache.hasScript('foo'));
 });
 
-test('[unit] PipelineCache.hasScript() returns false when object is not cached', t => {
+test('PipelineCache.hasScript() returns false when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.false(cache.hasScript('foo'));
 });
 
-test('[unit] PipelineCache.getScript() returns cached object when present', t => {
+test('PipelineCache.getScript() returns cached object when present', t => {
     const cache = new PipelineCache();
     const script = new EvalContent(() => 'foo');
 
@@ -129,13 +129,13 @@ test('[unit] PipelineCache.getScript() returns cached object when present', t =>
     t.is(cache.getScript('foo'), script);
 });
 
-test('[unit] PipelineCache.getScript() throws when object is not cached', t => {
+test('PipelineCache.getScript() throws when object is not cached', t => {
     const cache = new PipelineCache();
 
     t.throws(() => cache.getScript('foo'));
 });
 
-test('[unit] PipelineCache.storeScript() can overwrite an existing entry', t => {
+test('PipelineCache.storeScript() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
     const script1 = new EvalContent(() => 'foo');
     const script2 = new EvalContent(() => 'foo');
@@ -150,7 +150,7 @@ test('[unit] PipelineCache.storeScript() can overwrite an existing entry', t => 
  * CreatedResource
  */
 
-test('[unit] PipelineCache.hasCreatedResource() returns true when resource is cached', t => {
+test('PipelineCache.hasCreatedResource() returns true when resource is cached', t => {
     const cache = new PipelineCache();
 
     cache.storeCreatedResource('hash', 'path');
@@ -158,13 +158,13 @@ test('[unit] PipelineCache.hasCreatedResource() returns true when resource is ca
     t.true(cache.hasCreatedResource('hash'));
 });
 
-test('[unit] PipelineCache.hasCreatedResource() returns false when resource is not cached', t => {
+test('PipelineCache.hasCreatedResource() returns false when resource is not cached', t => {
     const cache = new PipelineCache();
 
     t.false(cache.hasCreatedResource('hash'));
 });
 
-test('[unit] PipelineCache.getCreatedResource() returns cached resource when present', t => {
+test('PipelineCache.getCreatedResource() returns cached resource when present', t => {
     const cache = new PipelineCache();
 
     cache.storeCreatedResource('hash', 'path');
@@ -172,13 +172,13 @@ test('[unit] PipelineCache.getCreatedResource() returns cached resource when pre
     t.is(cache.getCreatedResource('hash'), 'path');
 });
 
-test('[unit] PipelineCache.getCreatedResource() throws when resource is not cached', t => {
+test('PipelineCache.getCreatedResource() throws when resource is not cached', t => {
     const cache = new PipelineCache();
 
     t.throws(() => cache.getCreatedResource('hash'));
 });
 
-test('[unit] PipelineCache.storeCreatedResource() can overwrite an existing entry', t => {
+test('PipelineCache.storeCreatedResource() can overwrite an existing entry', t => {
     const cache = new PipelineCache();
 
     cache.storeCreatedResource('hash', 'path1');
@@ -191,7 +191,7 @@ test('[unit] PipelineCache.storeCreatedResource() can overwrite an existing entr
  * General
  */
 
-test('[unit] PipelineCache.clear() clears all caches', t => {
+test('PipelineCache.clear() clears all caches', t => {
     const cache = new PipelineCache();
 
     cache.storeFragment({

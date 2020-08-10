@@ -1,236 +1,111 @@
 import test from 'ava';
-import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { compareFragmentMacro } from '../_util/htmlCompare';
-import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
-import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
-function createRootPi(): MemoryPipelineInterface {
-    const pi = new MemoryPipelineInterface();
-    pi.setSourceHtml('page.html', '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><m-fragment src="frag1.html" /></body></html>');
+test('Basic fragment compiles correctly', compareFragmentMacro, '<div class="frag1"></div>', '<div class="frag1"></div>');
 
-    return pi;
-}
+test('Nested fragments compile correctly', compareFragmentMacro,
+`
+    <div class="frag1">
+        <m-fragment src="frag2.html" />
+    </div>
+`, '<div class="frag1"><div class="frag2"></div></div>',
+[['frag2.html', '<div class="frag2"></div>']]);
 
-test('[endToEnd] Basic fragment compiles correctly', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', '<div class="frag1"></div>');
-    const pipeline = new StandardPipeline(pi);
+test('Fragment params compile correctly', compareFragmentMacro,
+`
+<div class="frag1">
+    <m-fragment src="frag2.html" param1="value1" param2="\${ 'value2' }" param3="{{ 'value3' }}"/>
+</div>
+`, '<div class="frag1"><div class="frag2" param1="value1" param2="value2" param3="value3"></div></div>',
+[['frag2.html', '<div class="frag2" param1="{{ $.param1 }}" param2="{{ $.param2 }}" param3="{{ $.param3 }}">']]);
 
-    // compile fragment
-    const page = pipeline.compilePage('page.html');
-    const div = page.dom.findChildTagByTagName('div');
+test('Repeated fragment usages have correct scope', compareFragmentMacro,
+`
+    <div class="comp1">
+        <m-fragment src="frag2.html" id="1" param="value1" value="value" />
+        <m-fragment src="frag2.html" id="2" param="value2" value="value" />
+    </div>
+`, '<div class="comp1"><div class="frag2" id="1" param="value1" value="value"></div><div class="frag2" id="2" param="value2" value="value"></div></div>',
+[['frag2.html', '<div class="frag2" id="{{ $.id }}" param="{{ $.param }}" value="{{ $.value }}"></div>']]);
 
-    // validate
-    t.truthy(div);
-    t.is(div?.getAttribute('class'), 'frag1');
-});
+test('Fragment slots are filled correctly', compareFragmentMacro,
+`
+<div class="frag1">
+    <m-fragment src="frag2.html" />
+    <m-fragment src="frag2.html">
+        <div>1</div>
+    </m-fragment>
+    <m-fragment src="frag2.html">
+        <m-content>
+            <div>2</div>
+        </m-content>
+    </m-fragment>
+    <m-fragment src="frag2.html">
+        <m-content slot="[default]">
+            <div>3</div>
+        </m-content>
+    </m-fragment>
+    <m-fragment src="frag2.html">
+        <m-content>
+            <div>4.1</div>
+        </m-content>
+        <m-content slot="slot1">
+            <div>4.2</div>
+        </m-content>
+    </m-fragment>
+    <m-fragment src="frag2.html">
+        <div>5.1</div>
+        <m-content slot="slot1">
+            <div>5.2</div>
+        </m-content>
+    </m-fragment>
+</div>
+`, '<div class="frag1"><div class="frag2"><div class="[default]"></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>1</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>2</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>3</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>4.1</div></div><div class="slot1"><div>4.2</div></div></div><div class="frag2"><div class="[default]"><div>5.1</div></div><div class="slot1"><div>5.2</div></div></div></div>',
+    [['frag2.html', `
+<div class="frag2">
+    <div class="[default]">
+        <m-slot />
+    </div>
+    <div class="slot1">
+        <m-slot slot="slot1" />
+    </div>
+</div>`]]);
 
-test('[endToEnd] Nested fragments compiles correctly', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', `
-        <div class="frag1">
-            <m-fragment src="frag2.html" />
-        </div>
-    `);
-    pi.setSourceHtml('frag2.html', `
-        <div class="frag2"></div>
-    `);
-    const pipeline = new StandardPipeline(pi);
-
-    // compile fragment
-    const page = pipeline.compilePage('page.html');
-    const frag1 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag1');
-    const frag2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2');
-
-    // validate
-    t.truthy(frag1);
-    t.truthy(frag2);
-});
-
-test('[endToEnd] Fragment params compile correctly', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', `
-        <div class="frag1">
-            <m-fragment src="frag2.html" param1="value1" param2="\${ 'value2' }" param3="{{ 'value3' }}"/>
-        </div>
-    `);
-    pi.setSourceHtml('frag2.html', `
-        <div class="frag2" param1="{{ $.param1 }}" param2="{{ $.param2 }}" param3="{{ $.param3 }}">
-        </div>
-    `);
-    const pipeline = new StandardPipeline(pi);
-
-    // compile fragment
-    const page = pipeline.compilePage('page.html');
-    const frag2 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2');
-
-    // validate
-    t.truthy(frag2);
-    t.is(frag2?.getAttribute('param1'), 'value1', 'Raw parameters are preserved');
-    t.is(frag2?.getAttribute('param2'), 'value2', 'Template text parameters are compiled');
-    t.is(frag2?.getAttribute('param3'), 'value3', 'Handlebars parameters are compiled');
-});
-
-test('[endToEnd] Fragment compile to correct DOM', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', `
-        <div class="frag1">
-            <m-fragment src="frag2.html" />
-        </div>
-    `);
-    pi.setSourceHtml('frag2.html', `
-        <div class="frag2"></div>
-    `);
-    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
-    const pipeline = new StandardPipeline(pi, htmlFormatter);
-
-    // compile fragment
-    const output = pipeline.compilePage('page.html');
-
-    // validate
-    t.is(output.html, '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"></div></div></body></html>');
-});
-
-test('[endToEnd] Repeated fragment usages have correct scope', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', `
-        <div class="comp1">
-            <m-fragment src="frag2.html" id="1" param="value1" value="value" />
-            <m-fragment src="frag2.html" id="2" param="value2" value="value" />
-            <m-fragment src="frag2.html" id="3" param="value3" value="value" />
-            <m-fragment src="frag2.html" id="4" param="value4" value="value" />
-        </div>
-    `);
-    pi.setSourceHtml('frag2.html', `
-        <div class="frag2" id="{{ $.id }}" param="{{ $.param }}" value="{{ $.value }}"></div>
-    `);
-    const pipeline = new StandardPipeline(pi);
-
-    // compile fragment
-    const page = pipeline.compilePage('page.html');
-    const frag21 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '1');
-    const frag22 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '2');
-    const frag23 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '3');
-    const frag24 = page.dom.findChildTag(tag => tag.tagName === 'div' && tag.getAttribute('class') === 'frag2' && tag.getAttribute('id') === '4');
-
-    // validate
-    t.truthy(frag21);
-    t.is(frag21?.getAttribute('param'), 'value1');
-    t.is(frag21?.getAttribute('value'), 'value');
-    t.truthy(frag22);
-    t.is(frag22?.getAttribute('param'), 'value2');
-    t.is(frag22?.getAttribute('value'), 'value');
-    t.truthy(frag23);
-    t.is(frag23?.getAttribute('param'), 'value3');
-    t.is(frag23?.getAttribute('value'), 'value');
-    t.truthy(frag24);
-    t.is(frag24?.getAttribute('param'), 'value4');
-    t.is(frag24?.getAttribute('value'), 'value');
-});
-
-test('[endToEnd] Fragment slots are filled correctly', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', `
-        <div class="frag1">
-            <m-fragment src="frag2.html" />
-            <m-fragment src="frag2.html">
-                <div>1</div>
-            </m-fragment>
-            <m-fragment src="frag2.html">
-                <m-content>
-                    <div>2</div>
-                </m-content>
-            </m-fragment>
-            <m-fragment src="frag2.html">
-                <m-content slot="[default]">
-                    <div>3</div>
-                </m-content>
-            </m-fragment>
-            <m-fragment src="frag2.html">
-                <m-content>
-                    <div>4.1</div>
-                </m-content>
-                <m-content slot="slot1">
-                    <div>4.2</div>
-                </m-content>
-            </m-fragment>
-            <m-fragment src="frag2.html">
-                <div>5.1</div>
-                <m-content slot="slot1">
-                    <div>5.2</div>
-                </m-content>
-            </m-fragment>
-        </div>
-    `);
-    pi.setSourceHtml('frag2.html', `
-        <div class="frag2">
-            <div class="[default]">
-                <m-slot />
-            </div>
-            <div class="slot1">
-                <m-slot slot="slot1" />
-            </div>
-        </div>
-    `);
-    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
-    const pipeline = new StandardPipeline(pi, htmlFormatter);
-
-    // compile fragment
-    const output = pipeline.compilePage('page.html');
-
-    // validate
-    t.is(output.html, '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><div class="[default]"></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>1</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>2</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>3</div></div><div class="slot1"></div></div><div class="frag2"><div class="[default]"><div>4.1</div></div><div class="slot1"><div>4.2</div></div></div><div class="frag2"><div class="[default]"><div>5.1</div></div><div class="slot1"><div>5.2</div></div></div></div></body></html>');
-});
-
-test('[endToEnd] Fragment slot placeholder content is left when slot is unused', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', `
-        <div>
-            <m-fragment src="frag2.html" />
-            <m-fragment src="frag2.html">filled</m-fragment>
-            <m-fragment src="frag3.html" />
-            <m-fragment src="frag3.html">
-                <m-content slot="named">filled</m-content>
-            </m-fragment>
-        </div>
-    `);
-    pi.setSourceHtml('frag2.html', `
+test('Fragment slot placeholder content is left when slot is unused', compareFragmentMacro,
+`
+<div>
+    <m-fragment src="frag2.html" />
+    <m-fragment src="frag2.html">filled</m-fragment>
+    <m-fragment src="frag3.html" />
+    <m-fragment src="frag3.html">
+        <m-content slot="named">filled</m-content>
+    </m-fragment>
+</div>
+`, '<div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div>',
+[
+    [
+        'frag2.html', `
         <div>
             <m-slot>empty</m-slot>
         </div>
-    `);
-    pi.setSourceHtml('frag3.html', `
+    `],[
+        'frag3.html', `
         <div>
             <div class="named">
                 <m-slot slot="named">empty</m-slot>
             </div>
-        </div>
-    `);
-    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
-    const pipeline = new StandardPipeline(pi, htmlFormatter);
-
-    // compile fragment
-    const output = pipeline.compilePage('page.html');
-
-    // validate
-    t.is(output.html, '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><div><div>empty</div><div>filled</div><div><div class="named">empty</div></div><div><div class="named">filled</div></div></div></body></html>');
-});
+        </div>`
+    ]
+]);
 
 test('Vars work inside fragment slot contents', compareFragmentMacro,
 `<m-fragment src="child.html">
-    <m-var test="testvalue" />
+    <m-var test="testValue" />
     <m-scope test2="another">
         <div test="\${ $.test }" test2="\${ $.test2 }"></div>
     </m-scope>
 </m-fragment>`,
-'<div test="testvalue" test2="another"></div>',
+'<div test="testValue" test2="another"></div>',
 [['child.html', `
     <m-var test="bad" test2="bad" />
     <m-slot />
@@ -239,113 +114,69 @@ test('Vars work inside fragment slot contents', compareFragmentMacro,
 test('Vars work inside fragment default slot contents', compareFragmentMacro,
 `<m-var test="bad" test2="bad" />
 <m-fragment src="child.html" />`,
-'<div test="testvalue" test2="another"></div>',
+'<div test="testValue" test2="another"></div>',
 [['child.html', `
     <m-slot>
-        <m-var test="testvalue" />
+        <m-var test="testValue" />
         <m-scope test2="another">
             <div test="\${ $.test }" test2="\${ $.test2 }"></div>
         </m-scope>
     </m-slot>
 `]]);
 
-test('[endToEnd] Imported basic fragment compiles correctly', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', `
-        <div class="frag1">
-            <m-import fragment src="frag2.html" as="imported-fragment" />
+test('Imported basic fragment compiles correctly', compareFragmentMacro,
+`
+    <div class="frag1">
+        <m-import fragment src="frag2.html" as="imported-fragment" />
+    
+        <imported-fragment />
+        <imported-fragment />
+    </div>
+`, '<div class="frag1"><div class="frag2"></div><div class="frag2"></div></div>',
+[['frag2.html', `<div class="frag2"></div>`]]);
 
-            <imported-fragment />
-            <imported-fragment />
-        </div>
-    `);
-    pi.setSourceHtml('frag2.html', `
-        <div class="frag2"></div>
-    `);
-    const pipeline = new StandardPipeline(pi);
+test('Imported fragment w/ params compiles correctly', compareFragmentMacro,
+    `
+    <div class="frag1">
+        <m-import fragment src="frag2.html" as="imported-fragment" />
 
-    // compile fragment
-    const page = pipeline.compilePage('page.html');
-    const frag2s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2');
+        <imported-fragment count="1"/>
+        <imported-fragment count="{{ 2 }}"/>
+        <imported-fragment count="\${ 3 }"/>
+    </div>
+`, '<div class="frag1"><div class="frag2" count="1"></div><div class="frag2" count="2"></div><div class="frag2" count="3"></div></div>',
+[['frag2.html', `<div class="frag2" count="\${ $.count }"></div>`]]);
 
-    // validate
-    t.is(frag2s.length, 2);
-});
-
-test('[endToEnd] Imported fragment w/ params compiles correctly', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', `
-        <div class="frag1">
-            <m-import fragment src="frag2.html" as="imported-fragment" />
-
-            <imported-fragment count="1"/>
-            <imported-fragment count="{{ 2 }}"/>
-            <imported-fragment count="{{ 2 }}"/>
-            <imported-fragment count="\${ 3 }"/>
-            <imported-fragment count="\${ 3 }"/>
-            <imported-fragment count="\${ 3 }"/>
-        </div>
-    `);
-    pi.setSourceHtml('frag2.html', `
-        <div class="frag2" count="\${ $.count }"></div>
-    `);
-    const pipeline = new StandardPipeline(pi);
-
-    // compile fragment
-    const page = pipeline.compilePage('page.html');
-    const frag2count1s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '1');
-    const frag2count2s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '2');
-    const frag2count3s = page.dom.findChildTags(tag => tag.getAttribute('class') === 'frag2' && tag.getAttribute('count') === '3');
-
-    // validate
-    t.is(frag2count1s.length, 1);
-    t.is(frag2count2s.length, 2);
-    t.is(frag2count3s.length, 3);
-});
-
-test('[endToEnd] Nested fragment slot content is placed correctly', t => {
-    // set up pipeline
-    const pi = createRootPi();
-    pi.setSourceHtml('frag1.html', `
-        <m-var localval="frag1" />
-        <div class="frag1">
+test('Nested fragment slot content is placed correctly', compareFragmentMacro,
+    `
+    <m-var local-val="frag1" />
+    <div class="frag1">
+        <m-fragment src="frag2.html">
+            <test-div expected="frag1" actual="{{ $.localVal }}" />
             <m-fragment src="frag2.html">
-                <test-div expected="frag1" actual="{{ $.localval }}" />
-                <m-fragment src="frag2.html">
-                    <test-div expected="frag1" actual="{{ $.localval }}" />
-                </m-fragment>
-                <test-div expected="frag1" actual="{{ $.localval }}" />
+                <test-div expected="frag1" actual="{{ $.localVal }}" />
             </m-fragment>
-        </div>
-    `);
-    pi.setSourceHtml('frag2.html', `
-        <m-var localval="frag2" />
+            <test-div expected="frag1" actual="{{ $.localVal }}" />
+        </m-fragment>
+    </div>
+`, '<div class="frag1"><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div></div>',
+    [['frag2.html', `
+        <m-var local-val="frag2" />
         <div class="frag2">
-            <test-div expected="frag2" actual="{{ $.localval }}" />
+            <test-div expected="frag2" actual="{{ $.localVal }}" />
             <m-slot />
-            <test-div expected="frag2" actual="{{ $.localval }}" />
+            <test-div expected="frag2" actual="{{ $.localVal }}" />
         </div>
-    `);
-    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
-    const pipeline = new StandardPipeline(pi, htmlFormatter);
+    `]]);
 
-    // compile fragment
-    const output = pipeline.compilePage('page.html');
-
-    // validate
-    t.is(output.html, '<!DOCTYPE html><html lang="en"><head><title>Fragment Tests</title></head><body><div class="frag1"><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><div class="frag2"><test-div expected="frag2" actual="frag2"></test-div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div><test-div expected="frag1" actual="frag1"></test-div><test-div expected="frag2" actual="frag2"></test-div></div></div></body></html>');
-});
-
-test('[endToEnd] Fragment params are passed raw, not as strings', compareFragmentMacro,
+test('Fragment params are passed raw, not as strings', compareFragmentMacro,
 `<m-fragment src="child.html" number="{{ 123 }}" boolean="{{ true }}" />`,
 'true,true',
 [[ 'child.html',
     `\${ $.number === 123 },\${ $.boolean === true }`
 ]]);
 
-test('[endToEnd] Fragment params are case-converted', compareFragmentMacro,
+test('Fragment params are case-converted', compareFragmentMacro,
     `<m-fragment src="child.html" number-param="{{ 123 }}" boolean-param="{{ true }}" string-param="string" />`,
     'true,true,true',
     [[ 'child.html',

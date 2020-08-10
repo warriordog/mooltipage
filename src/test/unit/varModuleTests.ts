@@ -42,7 +42,7 @@ function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData = {},
     }
 }
 
-test('[unit] VarModule does not affect standard elements', t => {
+test('VarModule does not affect standard elements', t => {
     const parent = new TagNode('div');
     const child = new TagNode('div');
     NodeLogic.appendChild(parent, child);
@@ -52,7 +52,7 @@ test('[unit] VarModule does not affect standard elements', t => {
     t.is(child.parentNode, parent);
 });
 
-test('[unit] VarModule loads root scope into document', t => {
+test('VarModule loads root scope into document', t => {
     const dom = new DocumentNode();
 
     runVarModule(dom, true, {
@@ -62,7 +62,7 @@ test('[unit] VarModule loads root scope into document', t => {
     t.is(dom.nodeData.test, 123);
 });
 
-test('[unit] VarModule loads m-var into the parent scope', t => {
+test('VarModule loads m-var into the parent scope', t => {
     const parent = new TagNode('div');
     const childVar = new MVarNode(new Map([['test', 123]]));
     const childDiv = new TagNode('div');
@@ -75,7 +75,7 @@ test('[unit] VarModule loads m-var into the parent scope', t => {
     t.is(childDiv.nodeData.test, 123);
 });
 
-test('[unit] VarModule removes m-var after processing', t => {
+test('VarModule removes m-var after processing', t => {
     const parent = new TagNode('div');
     const childVar = new MVarNode(new Map([['test', 123]]));
     const childDiv = new TagNode('div');
@@ -88,7 +88,7 @@ test('[unit] VarModule removes m-var after processing', t => {
     t.false(parent.childNodes.includes(childVar));
 });
 
-test('[unit] VarModule loads m-scope into its own scope', t => {
+test('VarModule loads m-scope into its own scope', t => {
     const parent = new TagNode('div');
     const childScope = new MScopeNode(new Map([['test', 123]]));
     const childDivOuter = new TagNode('div');
@@ -104,7 +104,7 @@ test('[unit] VarModule loads m-scope into its own scope', t => {
     t.is(childDivInner.nodeData.test, 123);
 });
 
-test('[unit] VarModule removes m-scope after processing', t => {
+test('VarModule removes m-scope after processing', t => {
     const parent = new TagNode('div');
     const childScope = new MScopeNode(new Map([['test', 123]]));
     const childDivOuter = new TagNode('div');
@@ -126,7 +126,7 @@ test('[unit] VarModule removes m-scope after processing', t => {
     t.falsy(childDivOuter.nodeData.test);
 });
 
-test('[unit] VarModule handles m-var with null attributes', t => {
+test('VarModule handles m-var with null attributes', t => {
     const parent = new DocumentNode();
     const mVar = new MVarNode();
     mVar.setRawAttribute('test', null);
@@ -138,7 +138,7 @@ test('[unit] VarModule handles m-var with null attributes', t => {
     t.is(mVar.getRawAttribute('test'), null);
 });
 
-test('[unit] VarModule handles m-scope with null attributes', t => {
+test('VarModule handles m-scope with null attributes', t => {
     const mScope = new MScopeNode();
     mScope.setRawAttribute('test', null);
 
@@ -148,7 +148,7 @@ test('[unit] VarModule handles m-scope with null attributes', t => {
     t.is(mScope.getRawAttribute('test'), null);
 });
 
-test('[unit] VarModule removes <m-data>', t => {
+test('VarModule removes <m-data>', t => {
     const mData = new MDataNode(MimeType.TEXT);
 
     const root = new DocumentNode();
@@ -159,7 +159,7 @@ test('[unit] VarModule removes <m-data>', t => {
     t.falsy(mData.parentNode);
 });
 
-test('[unit] VarModule compiles text', t => {
+test('VarModule compiles text', t => {
     const dataType = MimeType.TEXT;
     const dataValue = 'Test text';
     const dataVar = 'test';
@@ -178,7 +178,7 @@ test('[unit] VarModule compiles text', t => {
     t.is(root.nodeData[dataVar], dataValue);
 });
 
-test('[unit] VarModule compiles json', t => {
+test('VarModule compiles json', t => {
     const dataType = MimeType.JSON;
     const dataValue = '{ "testvalue": "value" }';
     const dataVar = 'test';
@@ -199,7 +199,7 @@ test('[unit] VarModule compiles json', t => {
     t.is(outValue.testvalue, 'value');
 });
 
-test('[unit] VarModule compiles multiple data', t => {
+test('VarModule compiles multiple data', t => {
     const mData = new MDataNode(MimeType.JSON);
     mData.setAttribute('test1', 'test1.json');
     mData.setAttribute('test2', 'test2.json');

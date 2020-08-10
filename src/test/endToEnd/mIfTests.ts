@@ -1,73 +1,49 @@
 import test from 'ava';
-import { comparePageMacro, compareFragmentMacro } from '../_util/htmlCompare';
+import { compareFragmentMacro } from '../_util/htmlCompare';
 
-test('[endToEnd] m-if works at the root context', comparePageMacro,
-`<!DOCTYPE html>
-<html lang="en">
-    <head><title>m-if tests</title></head>
-    <body>
-        <m-if ?="{{ true }}">
-            <div class="good"></div>
-        </m-if>
-        <m-if ?="{{ false }}">
-            <div class="bad"></div>
-        </m-if>
-    </body>
-</html>`,
-'<!DOCTYPE html><html lang="en"><head><title>m-if tests</title></head><body><div class="good"></div></body></html>');
+test('m-if works at the root context', compareFragmentMacro,`
+    <m-if ?="{{ true }}">
+        <div class="good"></div>
+    </m-if>
+    <m-if ?="{{ false }}">
+        <div class="bad"></div>
+    </m-if>
+`, '<div class="good"></div>');
 
-test('[endToEnd] m-if works with truthy and falsy values', comparePageMacro,
-`<!DOCTYPE html>
-<html lang="en">
-    <head><title>m-if tests</title></head>
-    <body>
-        <m-if ?="{{ 1 }}">
-            <div class="good"></div>
-        </m-if>
-        <m-if ?="{{ 0 }}">
-            <div class="bad"></div>
-        </m-if>
-    </body>
-</html>`,
-'<!DOCTYPE html><html lang="en"><head><title>m-if tests</title></head><body><div class="good"></div></body></html>');
+test('m-if works with truthy and falsy values', compareFragmentMacro, `
+    <m-if ?="{{ 1 }}">
+        <div class="good"></div>
+    </m-if>
+    <m-if ?="{{ 0 }}">
+        <div class="bad"></div>
+    </m-if>
+`, '<div class="good"></div>');
 
-test('[endToEnd] m-if works with vars', comparePageMacro,
-`<!DOCTYPE html>
-<html lang="en">
-    <head><title>m-if tests</title></head>
-    <body>
-        <m-var test="{{ true }}" />
-        <m-if ?="{{ $.test }}">
-            <div class="good"></div>
-        </m-if>
-        <m-if ?="{{ !$.test }}">
-            <div class="bad"></div>
-        </m-if>
-    </body>
-</html>`,
-'<!DOCTYPE html><html lang="en"><head><title>m-if tests</title></head><body><div class="good"></div></body></html>');
+test('m-if works with vars', compareFragmentMacro,
+`
+    <m-var test="{{ true }}" />
+    <m-if ?="{{ $.test }}">
+        <div class="good"></div>
+    </m-if>
+    <m-if ?="{{ !$.test }}">
+        <div class="bad"></div>
+    </m-if>`,
+'<div class="good"></div>');
 
-test('[endToEnd] m-if works when nested', comparePageMacro,
-`<!DOCTYPE html>
-<html lang="en">
-    <head><title>m-if tests</title></head>
-    <body>
-        <m-if ?="{{ true }}">
-            <m-if ?="{{ true }}">
-                <div class="good"></div>
-            </m-if>
-            <m-if ?="{{ false }}">
-                <div class="bad"></div>
-            </m-if>
-        </m-if>
-        <m-if ?="{{ false }}">
-            <div class="bad"></div>
-        </m-if>
-    </body>
-</html>`,
-'<!DOCTYPE html><html lang="en"><head><title>m-if tests</title></head><body><div class="good"></div></body></html>');
+test('m-if works when nested', compareFragmentMacro, `
+<m-if ?="{{ true }}">
+    <m-if ?="{{ true }}">
+        <div class="good"></div>
+    </m-if>
+    <m-if ?="{{ false }}">
+        <div class="bad"></div>
+    </m-if>
+</m-if>
+<m-if ?="{{ false }}">
+    <div class="bad"></div>
+</m-if>`, '<div class="good"></div>');
 
-test('[endToEnd] m-if respects scopes', compareFragmentMacro,
+test('m-if respects scopes', compareFragmentMacro,
 `<m-var test="{{ true }}" />
 <m-scope test="{{ false }}">
     <m-if ?="{{ $.test }}">bad</m-if>
@@ -75,7 +51,7 @@ test('[endToEnd] m-if respects scopes', compareFragmentMacro,
 </m-scope>`,
 'good');
 
-test('[endToEnd] m-if works in a fragment', compareFragmentMacro,
+test('m-if works in a fragment', compareFragmentMacro,
 `<m-fragment src="child.html" test="{{ true }}" />`,
 'good',
 [['child.html', `
@@ -83,7 +59,7 @@ test('[endToEnd] m-if works in a fragment', compareFragmentMacro,
     <m-if ?="{{ !$.test }}">bad</m-if>
 `]]);
 
-test('[endToEnd] m-if works in a component', compareFragmentMacro,
+test('m-if works in a component', compareFragmentMacro,
 `<m-fragment src="comp.html" />`,
 'good',
 [['comp.html',`
@@ -94,7 +70,7 @@ test('[endToEnd] m-if works in a component', compareFragmentMacro,
     <m-if ?="{{ !$.test }}">bad</m-if>
 `]]);
 
-test('[endToEnd] correct conditional branch is taken when there are multiple options', compareFragmentMacro,
+test('correct conditional branch is taken when there are multiple options', compareFragmentMacro,
 `<m-if ?="{{ true }}">
     <good />
 </m-if>
