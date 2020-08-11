@@ -7,6 +7,7 @@ export default {
     files: [
         'src/test/**/*',
         '!src/test/_mocks/**/*',
-        '!src/test/_util/**/*'
+        '!src/test/_util/**/*',
+        '!src/test/_data/**/*'
     ]
 }

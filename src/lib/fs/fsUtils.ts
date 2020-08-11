@@ -71,13 +71,14 @@ export function writeFile(path: string, content: string, createPaths?: boolean):
 /**
  * Scans a list of paths to extract all HTML files.
  * Paths can be any mix of files or directories.
- * Directories will be recursively searched
- * 
+ * Directories will be recursively searched.
+ * Returned paths are all relative to basePath.
+ *
  * @param paths List of paths to search
- * @param basePath If specified, all paths will be resolved relative to basePath
+ * @param basePath Base path to compute relative paths
  * @returns Array of paths to all HTML files found in paths and subdirectories
  */
-export function expandPagePaths(paths: string[], basePath?: string): string[] {
+export function expandPagePaths(paths: string[], basePath: string): string[] {
     const outPages: string[] = [];
 
     for (const rawPath of paths) {
@@ -87,8 +88,8 @@ export function expandPagePaths(paths: string[], basePath?: string): string[] {
     return outPages;
 }
 
-function expandPagePath(pagePath: string, basePath: string | undefined, outPaths: string[]): void {
-    const realPath = basePath != undefined ? Path.resolve(basePath, pagePath) : Path.resolve(pagePath);
+function expandPagePath(pagePath: string, basePath: string, outPaths: string[]): void {
+    const realPath = Path.resolve(pagePath);
 
     // directories need to be recursively searched
     if (pathIsDirectory(realPath)) {
@@ -102,7 +103,8 @@ function expandPagePath(pagePath: string, basePath: string | undefined, outPaths
 
     // HTML are added directly
     if (pathIsFile(realPath) && realPath.toLowerCase().endsWith('.html')) {
-        outPaths.push(pagePath);
+        const relativePath = Path.relative(basePath, pagePath);
+        outPaths.push(relativePath);
     }
 
     // other file types (such as links) are currently skipped

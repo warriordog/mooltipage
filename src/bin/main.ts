@@ -29,7 +29,8 @@ function runApp(): void {
     });
 
     // convert page arguments into full list of pages
-    const pages = FsUtils.expandPagePaths(args.pages, args.inPath);
+    const basePath = args.inPath ?? process.cwd();
+    const pages = FsUtils.expandPagePaths(args.pages, basePath);
 
     // print stats
     console.log(`Source path: [${ args.inPath ?? '*unspecified*' }]`);
