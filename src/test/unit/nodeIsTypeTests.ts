@@ -29,7 +29,7 @@ function testNode(t: ExecutionContext, node: Node, isTag: boolean, isText: boole
     t.is(ExternalScriptNode.isExternalScriptNode(node), isExternalScript);
 }
 
-test('TagNode is correct types', testNode, new TagNode('tagname'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('TagNode is correct types', testNode, new TagNode('test'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
 test('TextNode is correct types', testNode, new TextNode(), false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
 test('CommentNode is correct types', testNode, new CommentNode(), false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
 test('ProcessingInstructionNode is correct types', testNode, new ProcessingInstructionNode(), false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);

@@ -28,16 +28,16 @@ import {
 test('TagNode constructor handles arguments', t => {
     const attributes: Map<string, unknown> = new Map([['foo', 'bar'], ['attr', null]]);
 
-    const node = new TagNode('sometag', attributes);
+    const node = new TagNode('test', attributes);
 
-    t.is(node.tagName, 'sometag');
+    t.is(node.tagName, 'test');
     t.deepEqual(node.getAttributes(), attributes);
 });
 
 test('TagNode constructor populates defaults', t => {
-    const node = new TagNode('sometag');
+    const node = new TagNode('test');
 
-    t.is(node.tagName, 'sometag');
+    t.is(node.tagName, 'test');
     t.is(node.getAttributes().size, 0);
 });
 

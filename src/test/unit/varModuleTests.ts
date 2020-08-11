@@ -180,7 +180,7 @@ test('VarModule compiles text', t => {
 
 test('VarModule compiles json', t => {
     const dataType = MimeType.JSON;
-    const dataValue = '{ "testvalue": "value" }';
+    const dataValue = '{ "testValue": "value" }';
     const dataVar = 'test';
 
     const mData = new MDataNode(dataType);
@@ -196,7 +196,7 @@ test('VarModule compiles json', t => {
 
     const outValue = root.nodeData[dataVar] as Record<string, unknown>;
     t.truthy(outValue);
-    t.is(outValue.testvalue, 'value');
+    t.is(outValue.testValue, 'value');
 });
 
 test('VarModule compiles multiple data', t => {
@@ -208,18 +208,18 @@ test('VarModule compiles multiple data', t => {
     root.appendChild(mData);
 
     const pipe = new MockPipeline();
-    pipe.mockRawTexts.push(['./test1.json', MimeType.JSON, '{ "testvalue": "value1" }']);
-    pipe.mockRawTexts.push(['./test2.json', MimeType.JSON, '{ "testvalue": "value2" }']);
+    pipe.mockRawTexts.push(['./test1.json', MimeType.JSON, '{ "testValue": "value1" }']);
+    pipe.mockRawTexts.push(['./test2.json', MimeType.JSON, '{ "testValue": "value2" }']);
     
     runVarModule(mData, undefined, undefined, pipe);
 
     const test1 = root.nodeData.test1 as Record<string, unknown>;
     t.truthy(test1);
-    t.is(test1.testvalue, 'value1');
+    t.is(test1.testValue, 'value1');
 
     const test2 = root.nodeData.test2 as Record<string, unknown>;
     t.truthy(test2);
-    t.is(test2.testvalue, 'value2');
+    t.is(test2.testValue, 'value2');
 });
 
 test('VarModule.saveCompiledAttributeToScope() saves to scope', t => {

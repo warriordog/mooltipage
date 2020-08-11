@@ -6,7 +6,6 @@ import {DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType
 import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript } from './module/evalEngine';
 import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
 import {buildPage} from './module/pageBuilder';
-import {resolveResPath} from './module/resolvePath';
 
 /**
  * Primary compilation pipeline.
