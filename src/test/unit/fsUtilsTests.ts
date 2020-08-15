@@ -43,8 +43,12 @@ test('getDirectoryContents() gets directory contents', t => {
     t.true(contents.includes('textContent.txt'));
 });
 test('getDirectoryContents() handles empty directories', t => {
-    const contents = getDirectoryContents(getTestDataPath('emptyFolder'));
-    t.is(contents.length, 0);
+    useSandboxDirectory(() => {
+        const emptyPath = getSandboxPath('emptyFolder');
+        fs.mkdirSync(emptyPath);
+        const contents = getDirectoryContents(emptyPath);
+        t.is(contents.length, 0);
+    });
 });
 test('getDirectoryContents() throws on non-directory arguments', t => {
     t.throws(() => getDirectoryContents(getTestDataPath('testPage.html')));
