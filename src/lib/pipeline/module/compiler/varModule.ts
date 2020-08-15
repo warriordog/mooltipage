@@ -52,7 +52,7 @@ export class VarModule implements HtmlCompilerModule {
         }
     }
 
-    private static bindAttributeDataToScope(node: TagNode, htmlContext: HtmlCompilerContext, useParentScope: boolean, attributes: Iterable<[string, unknown]>) {
+    private static bindAttributeDataToScope(node: TagNode, htmlContext: HtmlCompilerContext, useParentScope: boolean, attributes: Iterable<[string, unknown]>): void {
         // m-var writes into its parent's scope instead of using its own
         const targetScope = VarModule.getTargetScope(node, htmlContext, useParentScope);
 
@@ -92,7 +92,7 @@ export class VarModule implements HtmlCompilerModule {
         switch (node.type) {
             case MimeType.JSON:
                 // JSON data
-                return JSON.parse(rawValue);
+                return JSON.parse(rawValue) as unknown;
             case MimeType.TEXT:
                 // text data
                 return String(rawValue);

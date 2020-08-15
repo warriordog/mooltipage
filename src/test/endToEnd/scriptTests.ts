@@ -69,7 +69,7 @@ test('ScriptNode scripts can access pipeline APIs', compareFragmentMacro,
     `$.test = $$.pipelineContext.pipeline !== undefined;`
 ]]);
 
-test('Scripts can access require()', compareFragmentMacro,`
+test('Scripts can access require()', compareFragmentMacro, `
 <script compiled>$.test = typeof require</script>
 \${ $.test }`,
 'function');
@@ -83,7 +83,7 @@ test('ScriptNode scripts can access NodeJS APIs', compareFragmentMacro,
     $.test = fs !== undefined;`
 ]]);
 
-test('ScriptNode scripts can access DOM APIs', compareFragmentMacro,`
+test('ScriptNode scripts can access DOM APIs', compareFragmentMacro, `
 <script compiled> $.test = require('./dom/node') !== undefined;</script>\${ $.test }`,
 `true`);
 

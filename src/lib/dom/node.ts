@@ -413,7 +413,7 @@ export abstract class NodeWithText extends Node {
      * Text contained by this node, with leading and trailing whitespace trimmed.
      */
     get textContent(): string {
-        return this._textContent
+        return this._textContent;
     }
 
     /**
@@ -810,7 +810,7 @@ export class MFragmentNode extends TagNode {
     /**
      * Parameters to the external reference.
      */
-    get parameters(): [string, unknown][] {
+    get parameters(): Array<[string, unknown]> {
         return Array.from(this.attributes.entries()).filter(attr => attr[0] !== 'src');
     }
 
@@ -859,7 +859,7 @@ export abstract class SlotReferenceNode extends TagNode {
      * Name of the slot
      */
     get slot(): string {
-        return this.getRequiredValueAttribute('slot')
+        return this.getRequiredValueAttribute('slot');
     }
     set slot(newSlotName: string) {
         this.setAttribute('slot', newSlotName);
@@ -1356,7 +1356,7 @@ export class MForInNode extends MForNode {
 /**
  * Supported MIME types of data contents
  */
-export type MDataNodeType = MimeType.JSON | MimeType.TEXT
+export type MDataNodeType = MimeType.JSON | MimeType.TEXT;
 
 /**
  * A data reference defined in an <m-data> node
@@ -1365,12 +1365,12 @@ export interface MDataNodeRef {
     /**
      * Path to the data file
      */
-    resPath: string,
+    resPath: string;
 
     /**
      * Name of the scope variable to bind to
      */
-    varName: string
+    varName: string;
 }
 
 /**
@@ -1406,11 +1406,11 @@ export class MDataNode extends TagNode {
             .filter(entry => entry[0] != 'type')
             
             // convert remaining attributes into MDataNodeRef objects
-            .map(entry => {
+            .map((entry): MDataNodeRef => {
                 return {
                     resPath: String(entry[1]),
                     varName: entry[0]
-                } as MDataNodeRef;
+                };
             });
     }
 

@@ -100,11 +100,11 @@ export class FragmentModule implements HtmlCompilerModule {
             .map(parameterName => convertAttributeNameToScopeName(parameterName))
 
             // copy all data from MFragmentNode scope to new fragment scope
-            .reduce((fragmentScope, scopeName) => {
+            .reduce<ScopeData>((fragmentScope, scopeName) => {
                 // copy current parameter from scope prototype chain into an isolated ScopeData
                 fragmentScope[scopeName] = fragmentNode.nodeData[scopeName];
 
                 return fragmentScope;
-            }, {} as ScopeData);
+            }, {});
     }
 }

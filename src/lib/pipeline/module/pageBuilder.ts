@@ -55,7 +55,7 @@ function createHtml(dom: DocumentNode): TagNode {
                 if (!firstHtml.hasAttribute(key)) {
                     firstHtml.setRawAttribute(key, value);
                 }
-            })
+            });
         }
 
         finalHtmlTag = firstHtml;

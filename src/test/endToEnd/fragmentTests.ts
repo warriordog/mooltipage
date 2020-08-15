@@ -88,7 +88,7 @@ test('Fragment slot placeholder content is left when slot is unused', compareFra
         <div>
             <m-slot>empty</m-slot>
         </div>
-    `],[
+    `], [
         'frag3.html', `
         <div>
             <div class="named">

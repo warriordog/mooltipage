@@ -1,15 +1,15 @@
 import { PipelineInterface, MimeType } from '../../lib';
 
 export class MemoryPipelineInterface implements PipelineInterface {
-    sourceContent: Map<string, TestResource> = new Map();
-    destContent: Map<string, TestResource> = new Map();
-    createdContent: Map<string, TestResource> = new Map();
+    sourceContent: Map<string, TestResource> = new Map<string, TestResource>();
+    destContent: Map<string, TestResource> = new Map<string, TestResource>();
+    createdContent: Map<string, TestResource> = new Map<string, TestResource>();
     private nextCreatedContentId = 0;
 
     reset(): void {
-        this.sourceContent = new Map();
-        this.destContent = new Map();
-        this.createdContent = new Map();
+        this.sourceContent = new Map<string, TestResource>();
+        this.destContent = new Map<string, TestResource>();
+        this.createdContent = new Map<string, TestResource>();
         this.nextCreatedContentId = 0;
     }
 
@@ -118,6 +118,6 @@ export class MemoryPipelineInterface implements PipelineInterface {
 }
 
 export interface TestResource {
-    content: string,
-    type: MimeType
+    content: string;
+    type: MimeType;
 }

@@ -38,7 +38,7 @@ export class DomParser {
     }
 }
 
-function createParserOptions(userOptions?: ParserOptions) {
+function createParserOptions(userOptions?: ParserOptions): ParserOptions {
     // base (default) options
     const options: ParserOptions = {
         recognizeSelfClosing: true,
@@ -90,7 +90,7 @@ export class DomHandler implements Partial<Handler> {
         const attributes = new Map<string, string | null>();
         for (const key of Object.keys(attribs)) {
             const attrVal = attribs[key];
-            const value: string | null = (attrVal != undefined && attrVal.length > 0) ? attrVal : null;
+            const value: string | null = attrVal.length > 0 ? attrVal : null;
             attributes.set(key, value);
         }
 
@@ -152,10 +152,6 @@ export class DomHandler implements Partial<Handler> {
     }
 
     private popParent(): void {
-        if (this.currentParent == null) {
-            throw new Error('Tried to close too many tags');
-        }
-
         if (this.currentParent === this.dom) {
             throw new Error('Tried to close too many tags: DOM is currentParent');
         }
@@ -270,7 +266,7 @@ export class DomHandler implements Partial<Handler> {
         // "compiled" style nodes need further processing
         const bind = attributes.get('bind') ?? undefined;
         if (bind != undefined && bind != StyleNodeBind.HEAD && bind != StyleNodeBind.LINK) {
-            throw new Error(`Parse error: 'style' tag has invalid value for attribute 'bind': '${ bind }'`)
+            throw new Error(`Parse error: 'style' tag has invalid value for attribute 'bind': '${ bind }'`);
         }
         const src = attributes.get('src');
         if (src != undefined) {

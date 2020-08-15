@@ -1,7 +1,9 @@
-import test, { ExecutionContext } from 'ava';
+import test, {
+    ExecutionContext
+} from 'ava';
 import { Node, TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MContentNode, MSlotNode, MVarNode, DocumentNode, CDATANode, MImportNode, MScopeNode, MIfNode, MForNode, MForOfNode, MForInNode, MDataNode, MimeType, CompiledStyleNode, InternalStyleNode, ExternalStyleNode, StyleNode, ScriptNode, CompiledScriptNode, InternalScriptNode, ExternalScriptNode } from '../../lib';
 
-function testNode(t: ExecutionContext, node: Node, isTag: boolean, isText: boolean, isComment: boolean, isPi: boolean, isDom: boolean, isCData: boolean, isMFragment: boolean, isMComponent: boolean, isMContent: boolean, isMSlot: boolean, isMVar: boolean, isMImport: boolean, isMImportFragment: boolean, isMImportComponent: boolean, isMScope: boolean, isMIf: boolean, isMFor: boolean, isMForOf: boolean, isMForIn: boolean, unused: boolean, isMData: boolean, isCompiledStyle: boolean, isInternalStyle: boolean, isExternalStyle: boolean, isStyle: boolean, isScript: boolean, isCompiledScript: boolean, isInternalScript: boolean, isExternalScript: boolean) {
+function testNode(t: ExecutionContext, node: Node, isTag: boolean, isText: boolean, isComment: boolean, isPi: boolean, isDom: boolean, isCData: boolean, isMFragment: boolean, isMComponent: boolean, isMContent: boolean, isMSlot: boolean, isMVar: boolean, isMImport: boolean, isMImportFragment: boolean, isMImportComponent: boolean, isMScope: boolean, isMIf: boolean, isMFor: boolean, isMForOf: boolean, isMForIn: boolean, unused: boolean, isMData: boolean, isCompiledStyle: boolean, isInternalStyle: boolean, isExternalStyle: boolean, isStyle: boolean, isScript: boolean, isCompiledScript: boolean, isInternalScript: boolean, isExternalScript: boolean): void {
     t.is(TagNode.isTagNode(node), isTag);
     t.is(TextNode.isTextNode(node), isText);
     t.is(CommentNode.isCommentNode(node), isComment);

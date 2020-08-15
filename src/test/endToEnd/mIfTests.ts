@@ -1,7 +1,7 @@
 import test from 'ava';
 import { compareFragmentMacro } from '../_util/htmlCompare';
 
-test('m-if works at the root context', compareFragmentMacro,`
+test('m-if works at the root context', compareFragmentMacro, `
     <m-if ?="{{ true }}">
         <div class="good"></div>
     </m-if>
@@ -62,7 +62,7 @@ test('m-if works in a fragment', compareFragmentMacro,
 test('m-if works in a component', compareFragmentMacro,
 `<m-fragment src="comp.html" />`,
 'good',
-[['comp.html',`
+[['comp.html', `
 <script compiled>
     this.test = true;
 </script>

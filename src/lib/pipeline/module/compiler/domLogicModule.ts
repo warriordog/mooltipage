@@ -81,12 +81,12 @@ function evaluateForOf(ofValue: unknown): MForIteration[] {
     const iterations: MForIteration[] = [];
 
     // get the compiled of expression as an array
-    const arrayValue = ofValue as unknown;
+    const arrayValue = ofValue;
 
     // make sure that it actually is an array
     if (arrayValue != undefined && Array.isArray(arrayValue)) {
         let index = 0;
-        for (const value of arrayValue) {
+        for (const value of arrayValue as unknown[]) {
             iterations.push({
                 value: value,
                 index: index

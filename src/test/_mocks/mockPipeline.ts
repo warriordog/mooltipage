@@ -3,7 +3,7 @@ import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { Page, Fragment, HtmlFormatter, MimeType } from '../../lib';
 
 export class MockPipeline extends StandardPipeline {
-    readonly mockRawTexts: [string, MimeType, string][] = [];
+    readonly mockRawTexts: Array<[string, MimeType, string]> = [];
 
     readonly mockPi: MemoryPipelineInterface;
 
@@ -37,7 +37,7 @@ export class MockPipeline extends StandardPipeline {
         if (rawText != undefined) {
             return rawText[2];
         } else {
-            throw new Error(`No mock defined for getRawText(resPath="${ resPath }", resourceType="${ mimeType }")`)
+            throw new Error(`No mock defined for getRawText(resPath="${ resPath }", resourceType="${ mimeType }")`);
         }
     }
 

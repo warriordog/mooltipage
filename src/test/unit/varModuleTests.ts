@@ -15,7 +15,7 @@ import { HtmlCompilerContext } from '../../lib/pipeline/module/htmlCompiler';
 import { VarModule } from '../../lib/pipeline/module/compiler/varModule';
 import * as NodeLogic from '../../lib/dom/nodeLogic';
 
-function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData = {}, pipeline = new MockPipeline()) {
+function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData = {}, pipeline = new MockPipeline()): void {
     const testFrag: Fragment = {
         path: 'page.html',
         dom: new DocumentNode()

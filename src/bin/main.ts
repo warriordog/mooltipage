@@ -25,7 +25,7 @@ function runApp(): void {
         inPath: args.inPath,
         outPath: args.outPath,
         formatter: args.formatter,
-        onPageCompiled: pagePath => console.log(`Compiled [${ pagePath }].`)
+        onPageCompiled: page => console.log(`Compiled [${ page.path }].`)
     });
 
     // convert page arguments into full list of pages

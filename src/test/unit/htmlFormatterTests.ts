@@ -1,8 +1,10 @@
-import test, { ExecutionContext } from 'ava';
+import test, {
+    ExecutionContext
+} from 'ava';
 import { DomParser } from '../../lib/dom/domParser';
 import { StandardHtmlFormatterMode, StandardHtmlFormatter } from '../../lib/pipeline/module/standardHtmlFormatter';
 
-function testFormat(t: ExecutionContext, input: string, expected: string, mode: StandardHtmlFormatterMode = StandardHtmlFormatterMode.NONE) {
+function testFormat(t: ExecutionContext, input: string, expected: string, mode: StandardHtmlFormatterMode = StandardHtmlFormatterMode.NONE): void {
     const parser = new DomParser();
 
     const dom = parser.parseDom(input);

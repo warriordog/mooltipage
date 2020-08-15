@@ -5,10 +5,10 @@ import { EvalContent } from './module/evalEngine';
  * Caches any data that can be reused by the pipeline
  */
 export class PipelineCache {
-    private readonly fragmentCache: Map<string, Fragment> = new Map();
-    private readonly expressionCache: Map<string, EvalContent<unknown>> = new Map();
-    private readonly scriptCache: Map<string, EvalContent<unknown>> = new Map();
-    private readonly createdResourceCache: Map<string, string> = new Map();
+    private readonly fragmentCache: Map<string, Fragment> = new Map<string, Fragment>();
+    private readonly expressionCache: Map<string, EvalContent<unknown>> = new Map<string, EvalContent<unknown>>();
+    private readonly scriptCache: Map<string, EvalContent<unknown>> = new Map<string, EvalContent<unknown>>();
+    private readonly createdResourceCache: Map<string, string> = new Map<string, string>();
 
     // Fragment
 

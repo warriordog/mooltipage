@@ -3,7 +3,7 @@ import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
 
-export function compareFragmentMacro(t: ExecutionContext, fragmentHtml: string, expectedHtml: string, sources?: [string, string][]): void {
+export function compareFragmentMacro(t: ExecutionContext, fragmentHtml: string, expectedHtml: string, sources?: Array<[string, string]>): void {
     // set up pipeline
     const pi = new MemoryPipelineInterface();
     pi.setSourceHtml('frag.html', fragmentHtml);

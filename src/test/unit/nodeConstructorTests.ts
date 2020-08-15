@@ -233,7 +233,7 @@ test('MDataNode parses single reference', t => {
 });
 
 test('MDataNode parses multiple references', t => {
-    const references: [string, string][] = [
+    const references: Array<[string, string]> = [
         ['foo1', 'source1.txt'],
         ['foo2', 'source2.txt'],
         ['foo3', 'source3.txt']

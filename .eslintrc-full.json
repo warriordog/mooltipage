@@ -1,12 +1,15 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./**/tsconfig.json"
+  },
   "plugins": [
     "@typescript-eslint"
   ],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
   "rules": {
     "accessor-pairs": "error",
@@ -17,6 +20,7 @@
     "default-param-last": "off",
     "@typescript-eslint/default-param-last": ["error"],
     "dot-notation": "off",
+    "@typescript-eslint/dot-notation": ["error"],
     "grouped-accessor-pairs": "warn",
     "no-eval": "error",
     "no-lone-blocks": "error",
@@ -27,6 +31,8 @@
     "no-unmodified-loop-condition": "warn",
     "no-unused-expressions": "off",
     "@typescript-eslint/no-unused-expressions": ["error"],
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
     "no-unreachable-loop": "error",
     "no-useless-call": "warn",
     "no-shadow": [ "error", { "builtinGlobals": true }],
@@ -47,15 +53,25 @@
     "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true, "allowTypedFunctionExpressions": true, "allowHigherOrderFunctions": true}],
     "@typescript-eslint/member-delimiter-style": ["error", { "multiline": { "delimiter": "semi", "requireLast": true }, "singleline": { "delimiter": "semi", "requireLast": false }}],
     "@typescript-eslint/method-signature-style": ["warn", "property"],
+    "@typescript-eslint/no-base-to-string": "error",
     "@typescript-eslint/no-confusing-non-null-assertion": "error",
     "@typescript-eslint/no-extraneous-class": "error",
     "@typescript-eslint/no-invalid-void-type": "error",
     "@typescript-eslint/no-parameter-properties": "error",
     "@typescript-eslint/no-require-imports": "error",
+    "@typescript-eslint/no-throw-literal": "error",
+    "@typescript-eslint/no-unnecessary-boolean-literal-compare": "error",
+    "@typescript-eslint/no-unnecessary-condition": "error",
+    "@typescript-eslint/no-unnecessary-qualifier": "error",
     "@typescript-eslint/prefer-enum-initializers": "error",
     "@typescript-eslint/prefer-for-of": "error",
+    "@typescript-eslint/prefer-includes": "error",
     "@typescript-eslint/prefer-literal-enum-member": "error",
+    "@typescript-eslint/prefer-nullish-coalescing": "error",
     "@typescript-eslint/prefer-optional-chain": "error",
+    "@typescript-eslint/prefer-reduce-type-parameter": "error",
+    "@typescript-eslint/prefer-string-starts-ends-with": "error",
+    "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/type-annotation-spacing": "error"
   }
 }

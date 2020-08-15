@@ -25,22 +25,22 @@ import Path from 'path';
 test('createFormatter() creates pretty formatter', t => {
     const formatter = createFormatter({ formatter: StandardHtmlFormatterMode.PRETTY });
     t.true(formatter instanceof StandardHtmlFormatter);
-    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.PRETTY)
+    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.PRETTY);
 });
 test('createFormatter() creates ugly formatter', t => {
     const formatter = createFormatter({ formatter: StandardHtmlFormatterMode.MINIMIZED });
     t.true(formatter instanceof StandardHtmlFormatter);
-    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.MINIMIZED)
+    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.MINIMIZED);
 });
 test('createFormatter() creates none formatter', t => {
     const formatter = createFormatter({ formatter: StandardHtmlFormatterMode.NONE });
     t.true(formatter instanceof StandardHtmlFormatter);
-    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.NONE)
+    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.NONE);
 });
 test('createFormatter() defaults to none formatter', t => {
     const formatter = createFormatter({ formatter: undefined });
     t.true(formatter instanceof StandardHtmlFormatter);
-    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.NONE)
+    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.NONE);
 });
 test('createFormatter() throws on invalid formatter', t => {
     t.throws(() => createFormatter({ formatter: 'invalid' }));
@@ -73,7 +73,7 @@ test('NodePipelineInterface.createResPath() generates unique resource paths', t 
 test('NodePipelineInterface.createResPath() attaches correct file extension', t => {
     const pi = new NodePipelineInterface();
     for (const mime of [MimeType.HTML, MimeType.CSS, MimeType.JAVASCRIPT, MimeType.JSON, MimeType.TEXT, 'unknown' as MimeType]) {
-        t.true(pi.createResPath(mime).endsWith(getResourceTypeExtension(mime)))
+        t.true(pi.createResPath(mime).endsWith(getResourceTypeExtension(mime)));
     }
 });
 test('NodePipelineInterface.getResource() reads relative to source path', t => {

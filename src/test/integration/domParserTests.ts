@@ -2,7 +2,7 @@ import test, { ExecutionContext } from 'ava';
 import { DomParser } from '../../lib/dom/domParser';
 import { Node, TagNode } from '../../lib';
 
-function testTags(t: ExecutionContext, html: string, tags: string[]) {
+function testTags(t: ExecutionContext, html: string, tags: string[]): void {
     const domParser = new DomParser();
 
     const dom = domParser.parseDom(html);

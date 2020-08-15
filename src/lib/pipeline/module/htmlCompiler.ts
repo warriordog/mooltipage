@@ -150,7 +150,7 @@ export interface HtmlCompilerModule {
      * 
      * @param htmlContext Current semi-stateful compilation data
      */
-    enterNode?(htmlContext: HtmlCompilerContext): void;
+    enterNode?: (htmlContext: HtmlCompilerContext) => void;
 
     /**
      * Called when the HTML Compiler is finished compiling a node and its children.
@@ -158,7 +158,7 @@ export interface HtmlCompilerModule {
      * 
      * @param htmlContext Current semi-stateful compilation data
      */
-    exitNode?(htmlContext: HtmlCompilerContext): void;
+    exitNode?: (htmlContext: HtmlCompilerContext) => void;
 }
 
 /**
@@ -352,5 +352,5 @@ export function convertAttributeNameToScopeName(attributeName: string): string {
 
     // convert all substrings of the form "-n" to "-N".
     // in other words, remove dashes and capitalize the next letter
-    return attributeName.replace(/-([a-zA-Z0-9])/g, (_matchToReplace, letterToCapitalize: string) => letterToCapitalize.toUpperCase())
+    return attributeName.replace(/-([a-zA-Z0-9])/g, (matchToReplace, letterToCapitalize: string) => letterToCapitalize.toUpperCase());
 }

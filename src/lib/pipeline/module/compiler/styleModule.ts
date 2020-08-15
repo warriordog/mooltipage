@@ -26,7 +26,7 @@ export class StyleModule implements HtmlCompilerModule {
                 this.compileStyleLink(node, src, styleContent, htmlContext);
                 break;
             default:
-                throw new Error(`Unknown StyleNodeBind value: '${ node.bind }'`)
+                throw new Error(`Unknown StyleNodeBind value: '${ node.bind }'`);
         }
     }
 

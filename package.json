@@ -28,10 +28,12 @@
     "coverage": "npm run build && nyc ava",
     "typedoc": "typedoc src/lib",
     "docs": "npm run coverage && npm run typedoc",
-    "lint": "eslint src --ext .js,.ts",
-    "lint-fix": "eslint src --ext .js,.ts --fix",
+    "lint": "eslint --ext .js,.ts src",
+    "lint-fix": "eslint --ext .js,.ts --fix src",
+    "lint-full": "eslint --ext .js,.ts --no-eslintrc --config .eslintrc-full.json src",
+    "lint-full-fix": "eslint --ext .js,.ts --no-eslintrc --config .eslintrc-full.json --fix src",
     "prepare": "npm run rebuild",
-    "prepublishOnly": "npm run lint-fix && npm run docs",
+    "prepublishOnly": "npm run lint-full && npm run docs",
     "debugtest": "ava --serial --timeout=60m --verbose"
   },
   "bin": {

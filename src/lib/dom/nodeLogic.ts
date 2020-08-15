@@ -212,11 +212,9 @@ export function getLastNode(nodes: Node[]): Node | null {
  * @param nodes Return the first TagNode from a list, or null if none exist
  */
 export function getFirstTag(nodes: Node[]): TagNode | null {
-    for (let i = 0; i < nodes.length; i++) {
-        const currNode = nodes[i];
-
-        if (TagNode.isTagNode(currNode)) {
-            return currNode;
+    for (const node of nodes) {
+        if (TagNode.isTagNode(node)) {
+            return node;
         }
     }
 
@@ -244,11 +242,9 @@ export function getLastTag(nodes: Node[]): TagNode | null {
  * @param nodes Return the first TextNode from a list, or null if none exist
  */
 export function getFirstText(nodes: Node[]): TextNode | null {
-    for (let i = 0; i < nodes.length; i++) {
-        const currNode = nodes[i];
-
-        if (TextNode.isTextNode(currNode)) {
-            return currNode;
+    for (const node of nodes) {
+        if (TextNode.isTextNode(node)) {
+            return node;
         }
     }
 
@@ -717,7 +713,7 @@ export function findChildNodes(parent: NodeWithChildren, matcher: (node: Node) =
  * @param deep If true, child tags will be recursively searched
  */
 export function findChildTag(parent: NodeWithChildren, matcher: (tag: TagNode) => boolean, deep: boolean): TagNode | null {
-    const newMatcher = (node: Node) => TagNode.isTagNode(node) && matcher(node);
+    const newMatcher = (node: Node): boolean => TagNode.isTagNode(node) && matcher(node);
     return findChildNode(parent, newMatcher, deep) as TagNode;
 }
 
@@ -728,7 +724,7 @@ export function findChildTag(parent: NodeWithChildren, matcher: (tag: TagNode) =
  * @param deep If true, child tags will be recursively searched
  */
 export function findChildTags(parent: NodeWithChildren, matcher: (tag: TagNode) => boolean, deep: boolean): TagNode[] {
-    const newMatcher = (node: Node) => TagNode.isTagNode(node) && matcher(node);
+    const newMatcher = (node: Node): boolean => TagNode.isTagNode(node) && matcher(node);
     return findChildNodes(parent, newMatcher, deep) as TagNode[];
 }
 
@@ -997,7 +993,7 @@ function isSelfClosingTag(tagName: string): boolean {
 
 // From https://stackoverflow.com/a/34838936/1857993
 // contextual self-closing tags are not supported
-const selfClosingTags: ReadonlyArray<string> = [
+const selfClosingTags: readonly string[] = [
     'area',
     'base',
     'br',

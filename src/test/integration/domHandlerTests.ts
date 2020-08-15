@@ -37,7 +37,7 @@ test('DomHandler can parse standard HTML', t => {
     const pText = p.firstChild as TextNode;
     t.truthy(pText);
     t.true(TextNode.isTextNode(pText));
-    t.is(pText.text,'Hello, world!');
+    t.is(pText.text, 'Hello, world!');
     
     const comment = p.nextSibling as CommentNode;
     t.truthy(comment);

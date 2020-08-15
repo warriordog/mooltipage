@@ -29,7 +29,7 @@ export class DeduplicateModule implements HtmlCompilerModule {
         const styleTextNode = styleNode.firstChildText;
 
         // check if it contains unique styles
-        if (styleTextNode != null && styleTextNode.hasContent && !htmlContext.sharedContext.uniqueStyles.has(styleTextNode.textContent)) {
+        if (styleTextNode?.hasContent && !htmlContext.sharedContext.uniqueStyles.has(styleTextNode.textContent)) {
             // this style is unique, so save it
             htmlContext.sharedContext.uniqueStyles.add(styleTextNode.textContent);
         } else {
@@ -60,7 +60,7 @@ export class DeduplicateModule implements HtmlCompilerModule {
                 htmlContext.setDeleted();
             } else {
                 // unique link, so save it
-                htmlContext.sharedContext.uniqueLinks.add(href)
+                htmlContext.sharedContext.uniqueLinks.add(href);
             }
         }
     }

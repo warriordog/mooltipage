@@ -63,7 +63,7 @@ export class Mooltipage {
         if (options) {
             this.options = options;
         } else {
-            this.options = new DefaultMpOptions()
+            this.options = new DefaultMpOptions();
         }
 
         this.pipeline = createPipeline(this.options);

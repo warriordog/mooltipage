@@ -47,7 +47,7 @@ export function parseExpression(expression: string): EvalContent<unknown> {
     }
 
     // value is handlebars
-    const handlebarsMatches: RegExpMatchArray | null = expression.match(handlebarsRegex);
+    const handlebarsMatches: RegExpMatchArray | null = handlebarsRegex.exec(expression);
     if (handlebarsMatches != null && handlebarsMatches.length === 2) {
         // get JS code from handlebars text
         const handlebarCode: string = handlebarsMatches[1];
@@ -102,6 +102,7 @@ export function parseScript<T>(functionBody: string): EvalContent<T> {
     try {
         // Parse function body into callable function.
         // This is inherently not type-safe, as the purpose is to run unknown JS code.
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval
         const functionObj = new Function('$', '$$', 'require', functionBody) as EvalFunction<T>;
 
         return new EvalContent(functionObj);
@@ -144,7 +145,9 @@ export function requireFromRoot(path: string): unknown {
         path = `..\\..\\${ path }`;
     }
 
-    return require(path);
+    // explicit use of require() is necessary here
+    // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
+    return require(path) as unknown;
 }
 
 /**

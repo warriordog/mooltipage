@@ -37,13 +37,13 @@ function parseOptions(args: string[], parseData: CliArgs): void {
     // get option args
     const options: CliOption[] = args
        .filter(arg => arg.startsWith('--'))
-       .map(arg => {
+       .map((arg): CliOption => {
            const parts = arg.split('=');
            return {
                label: parts[0],
                name: parts[0].toLowerCase(),
                value: parts.length > 1 ? parts[1] : undefined
-           } as CliOption;
+           };
        });
 
     // process each option
@@ -71,7 +71,7 @@ function parseOptions(args: string[], parseData: CliArgs): void {
 }
 
 interface CliOption {
-    label: string,
-    name: string,
-    value?: string
+    label: string;
+    name: string;
+    value?: string;
 }
