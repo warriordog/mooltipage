@@ -1,5 +1,4 @@
 import test from 'ava';
-import Path from 'path';
 import fs from 'fs';
 import {
     expandPagePaths,
@@ -9,18 +8,12 @@ import {
     readFile,
     writeFile
 } from '../../lib/fs/fsUtils';
-
-function fixSep(path: string): string {
-    return path.replace('/', Path.sep);
-}
-
-function getTestDataPath(offsetPath: string): string {
-    // tests run from compiled root /dist, but the test data is not compiled and exists in /src
-    return Path.resolve(__dirname, fixSep('../../../src/test/_data'), fixSep(offsetPath));
-}
-function getLocalTestDataPath(offsetPath: string): string {
-    return Path.resolve(__dirname, fixSep('../_data'), fixSep(offsetPath));
-}
+import {
+    fixSep,
+    getSandboxPath,
+    getTestDataPath,
+    useSandboxDirectory
+} from '../_util/testFsUtils';
 
 test('pathIsFile() identifies files', t => {
     t.true(pathIsFile(getTestDataPath('testPage.html')));
@@ -77,44 +70,28 @@ test('readFile() throws on incorrect path',t  => {
 });
 
 test.serial('writeFile() writes file', t => {
-    const localTestDataPath = getLocalTestDataPath('./');
-    const path = getLocalTestDataPath('testWrite.txt');
-    try {
-        if (!fs.existsSync(localTestDataPath)) {
-            fs.mkdirSync(localTestDataPath);
-        }
+    useSandboxDirectory(() => {
+        const path = getSandboxPath('testWrite.txt');
 
         writeFile(path, 'test content');
 
         t.true(fs.existsSync(path));
         t.is(fs.readFileSync(path, 'utf-8'), 'test content');
-    } finally {
-        if (fs.existsSync(localTestDataPath)) {
-            fs.rmdirSync(localTestDataPath, {
-                recursive: true
-            });
-        }
-    }
+    });
 });
 test.serial('writeFile() creates directory structure', t => {
-    const localTestDataPath = getLocalTestDataPath('./');
-    const path = getLocalTestDataPath('testWriteDir/testWrite2/testWrite.txt');
-    try {
+    useSandboxDirectory(() => {
+        const path = getSandboxPath('testWriteDir/testWrite2/testWrite.txt');
+
         writeFile(path, 'test content', true);
 
-        t.true(fs.existsSync(getLocalTestDataPath('testWriteDir')));
-        t.true(fs.statSync(getLocalTestDataPath('testWriteDir')).isDirectory());
-        t.true(fs.existsSync(getLocalTestDataPath('testWriteDir/testWrite2')));
-        t.true(fs.statSync(getLocalTestDataPath('testWriteDir/testWrite2')).isDirectory());
+        t.true(fs.existsSync(getSandboxPath('testWriteDir')));
+        t.true(fs.statSync(getSandboxPath('testWriteDir')).isDirectory());
+        t.true(fs.existsSync(getSandboxPath('testWriteDir/testWrite2')));
+        t.true(fs.statSync(getSandboxPath('testWriteDir/testWrite2')).isDirectory());
 
         t.true(fs.existsSync(path));
         t.true(fs.statSync(path).isFile());
         t.is(fs.readFileSync(path, 'utf-8'), 'test content');
-    } finally {
-        if (fs.existsSync(localTestDataPath)) {
-            fs.rmdirSync(localTestDataPath, {
-                recursive: true
-            });
-        }
-    }
+    });
 });

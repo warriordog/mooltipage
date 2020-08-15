@@ -1,3 +1,3 @@
 export * from './dom/node';
-export * from './api/mooltipage';
+export { Mooltipage, MpOptions, DefaultMpOptions, PageCompiledCallback } from './api/mooltipage';
 export * from './api/pipeline';

@@ -31,7 +31,7 @@ export function getDirectoryContents(path: string): string[] {
     if (pathIsDirectory(path)) {
         return fs.readdirSync(path);
     } else {
-        throw new Error(`Attempting to list files in directory that does not exist or is not a directory: '${ path }'`);
+        throw new Error(`Attempting to list files in directory that does not exist or is not a directory: "${ path }"`);
     }
 }
 
@@ -47,7 +47,7 @@ export function readFile(path: string): string {
     if (pathIsFile(path)) {
         return fs.readFileSync(path, 'utf-8');
     } else {
-        throw new Error(`Attempting to read file that does not exist or is not a file: '${ path }'`);
+        throw new Error(`Attempting to read file that does not exist or is not a file: "${ path }"`);
     }
 }
 

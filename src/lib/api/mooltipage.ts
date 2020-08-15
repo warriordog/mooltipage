@@ -45,15 +45,15 @@ export interface MpOptions {
  * Default Mooltipage options
  */
 export class DefaultMpOptions implements MpOptions {
-    formatter?: StandardHtmlFormatterMode.PRETTY;
+    readonly formatter: StandardHtmlFormatterMode.PRETTY = StandardHtmlFormatterMode.PRETTY;
 }
 
 /**
  * Mooltipage JS API entry point.
  */
 export class Mooltipage {
-    private readonly options: MpOptions;
-    private readonly pipeline: Pipeline;
+    readonly options: MpOptions;
+    readonly pipeline: Pipeline;
 
     /**
      * Constructs a new Mooltipage instance using the provided options, or defaults if not specified.
@@ -105,7 +105,10 @@ function createPipeline(options: MpOptions): Pipeline {
     return new StandardPipeline(pi, formatter);
 }
 
-function createFormatter(options: MpOptions): HtmlFormatter {
+/**
+ * @internal
+ */
+export function createFormatter(options: MpOptions): HtmlFormatter {
     switch (options.formatter) {
         case StandardHtmlFormatterMode.PRETTY:
             return new StandardHtmlFormatter(StandardHtmlFormatterMode.PRETTY, os.EOL);
@@ -121,8 +124,9 @@ function createFormatter(options: MpOptions): HtmlFormatter {
 
 /**
  * Pipeline interface that uses Node.JS file APIs
+ * @internal
  */
-class NodePipelineInterface implements PipelineInterface {
+export class NodePipelineInterface implements PipelineInterface {
     private readonly sourcePath?: string;
     private readonly destinationPath?: string;
     private nextResIndex = 0;
@@ -153,12 +157,23 @@ class NodePipelineInterface implements PipelineInterface {
         return resPath;
     }
 
-    private resolveSourceResource(resPath: string): string {
+    resolveSourceResource(resPath: string): string {
         return NodePipelineInterface.resolvePath(resPath, this.sourcePath);
     }
 
-    private resolveDestinationResource(resPath: string): string {
+    resolveDestinationResource(resPath: string): string {
         return NodePipelineInterface.resolvePath(resPath, this.destinationPath);
+    }
+
+    // TODO better implementation
+    createResPath(type: MimeType): string {
+        const index = this.nextResIndex;
+        this.nextResIndex++;
+
+        const extension = getResourceTypeExtension(type);
+        const fileName = `${ index }.${ extension }`;
+
+        return Path.join('resources', fileName);
     }
 
     private static resolvePath(resPath: string, directory?: string): string {
@@ -167,17 +182,6 @@ class NodePipelineInterface implements PipelineInterface {
         } else {
             return Path.resolve(resPath);
         }
-    }
-
-    // TODO better implementation
-    private createResPath(type: MimeType): string {
-        const index = this.nextResIndex;
-        this.nextResIndex++;
-
-        const extension = getResourceTypeExtension(type);
-        const fileName = `${ index }.${ extension }`;
-
-        return Path.join('resources', fileName);
     }
 }
 
@@ -188,7 +192,7 @@ class NodePipelineInterface implements PipelineInterface {
  * @returns filename extension, without the dot.
  */
 export function getResourceTypeExtension(resourceType: MimeType): string {
-    switch(resourceType) {
+    switch (resourceType) {
         case MimeType.HTML: return 'html';
         case MimeType.CSS: return 'css';
         case MimeType.JAVASCRIPT: return 'js';

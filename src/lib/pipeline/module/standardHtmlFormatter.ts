@@ -5,9 +5,9 @@ import { HtmlFormatter, DocumentNode, Node, TextNode, NodeWithChildren } from '.
  * Implements minification, basic pretty formatting, and bypass modes.
  */
 export class StandardHtmlFormatter implements HtmlFormatter {
-    private readonly formatMode: StandardHtmlFormatterMode;
-    private readonly eol: string;
-    private readonly indentString: string;
+    readonly formatMode: StandardHtmlFormatterMode;
+    readonly eol: string;
+    readonly indentString: string;
 
     /**
      * Create a new StandardHtmlFormatter.
