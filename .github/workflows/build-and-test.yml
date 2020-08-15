@@ -10,16 +10,31 @@ on:
     branches: [ master ]
 
 jobs:
-  build_and_test:
-    name: Builds, tests, and lints project
-    
+  # Lints the source code before the build starts.
+  # This is separated out because linting is one of the most time-consuming parts of the build, and it does not need to run in the OS x Node matrix.
+  lint:
+    name: Lint source code
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Install dependencies
+      run: npm ci
+    - name: Lint code
+      run: npm run lint-full
+
+  # Build the code and run all tests
+  build-and-test:
+    name: Build and test project
     runs-on: ${{ matrix.os }}
-    
+    needs: lint
     strategy:
       matrix:
         node-version: [12.x, 14.x]
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
-
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -32,6 +47,3 @@ jobs:
       run: npm run build --if-present
     - name: Run all tests
       run: npm test
-    - name: Lint code
-      run: npm run lint-full
-      
