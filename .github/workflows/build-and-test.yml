@@ -33,5 +33,5 @@ jobs:
     - name: Run all tests
       run: npm test
     - name: Lint code
-      run: npm lint-full
+      run: npm run lint-full
       
