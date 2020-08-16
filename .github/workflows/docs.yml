@@ -32,13 +32,13 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: mooltipage-coverage
-          path: docs/gen/coverage
+          path: docs/dist/gen/coverage
           if-no-files-found: error
       - name: "Archive documentation: type docs"
         uses: actions/upload-artifact@v2
         with:
           name: mooltipage-typedoc
-          path: docs/gen/typedoc
+          path: docs/dist/gen/typedoc
           if-no-files-found: error
       - name: Merge doc components into final package
         run: cp -r ./docs/dist/. ./docs/gh-pages/
