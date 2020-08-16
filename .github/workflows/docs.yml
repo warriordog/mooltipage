@@ -43,9 +43,9 @@ jobs:
           path: docs/gen/typedoc
           if-no-files-found: error
       - name: Upload to GitHub Pages
-          uses: JamesIves/github-pages-deploy-action@3.5.9
-          with:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            BRANCH: gh-pages
-            FOLDER: docs/gh-pages
-            CLEAN: true
+        uses: JamesIves/github-pages-deploy-action@3.5.9
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: docs/gh-pages
+          CLEAN: true
