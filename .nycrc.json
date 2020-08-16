@@ -1,5 +1,5 @@
 {
-    "report-dir": "docs/gen/coverage",
+    "report-dir": "docs/dist/gen/coverage",
     "exclude": "src/test/**/*",
     "reporter": [ "lcov", "text" ],
     "check-coverage": false

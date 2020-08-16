@@ -22,5 +22,5 @@ function removePath(path) {
 }
 
 removePath('dist');
-removePath('docs/dist/gen');
+removePath('docs/dist');
 removePath('.nyc_output');
