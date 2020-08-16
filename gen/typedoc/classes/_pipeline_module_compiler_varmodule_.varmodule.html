@@ -1,0 +1,473 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>VarModule | mooltipage - v0.0.1</title>
+	<meta name="description" content="Documentation for mooltipage - v0.0.1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">mooltipage - v0.0.1</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/_pipeline_module_compiler_varmodule_.html">&quot;pipeline/module/compiler/varModule&quot;</a>
+				</li>
+				<li>
+					<a href="_pipeline_module_compiler_varmodule_.varmodule.html">VarModule</a>
+				</li>
+			</ul>
+			<h1>Class VarModule</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Compile module that implements <m-var> and <m-scope> parsing</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">VarModule</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/_pipeline_module_htmlcompiler_.htmlcompilermodule.html" class="tsd-signature-type">HtmlCompilerModule</a></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_pipeline_module_compiler_varmodule_.varmodule.html#enternode" class="tsd-kind-icon">enter<wbr>Node</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_pipeline_module_compiler_varmodule_.varmodule.html#exitnode" class="tsd-kind-icon">exit<wbr>Node</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_pipeline_module_compiler_varmodule_.varmodule.html#bindattributedatatoscope" class="tsd-kind-icon">bind<wbr>Attribute<wbr>Data<wbr>ToScope</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_pipeline_module_compiler_varmodule_.varmodule.html#compilereference" class="tsd-kind-icon">compile<wbr>Reference</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_pipeline_module_compiler_varmodule_.varmodule.html#gettargetscope" class="tsd-kind-icon">get<wbr>Target<wbr>Scope</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_pipeline_module_compiler_varmodule_.varmodule.html#processmdata" class="tsd-kind-icon">processMData</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_pipeline_module_compiler_varmodule_.varmodule.html#savecompiledattributetoscope" class="tsd-kind-icon">save<wbr>Compiled<wbr>Attribute<wbr>ToScope</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="enternode" class="tsd-anchor"></a>
+					<h3>enter<wbr>Node</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">enter<wbr>Node<span class="tsd-signature-symbol">(</span>htmlContext<span class="tsd-signature-symbol">: </span><a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3fa56d4/src/lib/pipeline/module/compiler/varModule.ts#L19">pipeline/module/compiler/varModule.ts:19</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>htmlContext: <a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="exitnode" class="tsd-anchor"></a>
+					<h3>exit<wbr>Node</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">exit<wbr>Node<span class="tsd-signature-symbol">(</span>htmlContext<span class="tsd-signature-symbol">: </span><a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3fa56d4/src/lib/pipeline/module/compiler/varModule.ts#L46">pipeline/module/compiler/varModule.ts:46</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>htmlContext: <a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+					<a name="bindattributedatatoscope" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> bind<wbr>Attribute<wbr>Data<wbr>ToScope</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">bind<wbr>Attribute<wbr>Data<wbr>ToScope<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><a href="_dom_node_.tagnode.html" class="tsd-signature-type">TagNode</a>, htmlContext<span class="tsd-signature-symbol">: </span><a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a>, useParentScope<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, attributes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3fa56d4/src/lib/pipeline/module/compiler/varModule.ts#L55">pipeline/module/compiler/varModule.ts:55</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <a href="_dom_node_.tagnode.html" class="tsd-signature-type">TagNode</a></h5>
+								</li>
+								<li>
+									<h5>htmlContext: <a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a></h5>
+								</li>
+								<li>
+									<h5>useParentScope: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>attributes: <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+					<a name="compilereference" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> compile<wbr>Reference</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Reference<span class="tsd-signature-symbol">(</span>reference<span class="tsd-signature-symbol">: </span><a href="../interfaces/_dom_node_.mdatanoderef.html" class="tsd-signature-type">MDataNodeRef</a>, node<span class="tsd-signature-symbol">: </span><a href="_dom_node_.mdatanode.html" class="tsd-signature-type">MDataNode</a>, htmlContext<span class="tsd-signature-symbol">: </span><a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3fa56d4/src/lib/pipeline/module/compiler/varModule.ts#L84">pipeline/module/compiler/varModule.ts:84</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>reference: <a href="../interfaces/_dom_node_.mdatanoderef.html" class="tsd-signature-type">MDataNodeRef</a></h5>
+								</li>
+								<li>
+									<h5>node: <a href="_dom_node_.mdatanode.html" class="tsd-signature-type">MDataNode</a></h5>
+								</li>
+								<li>
+									<h5>htmlContext: <a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">unknown</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+					<a name="gettargetscope" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Target<wbr>Scope</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Target<wbr>Scope<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><a href="_dom_node_.node.html" class="tsd-signature-type">Node</a>, htmlContext<span class="tsd-signature-symbol">: </span><a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a>, useParentScope<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_api_pipeline_.html#scopedata" class="tsd-signature-type">ScopeData</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3fa56d4/src/lib/pipeline/module/compiler/varModule.ts#L105">pipeline/module/compiler/varModule.ts:105</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <a href="_dom_node_.node.html" class="tsd-signature-type">Node</a></h5>
+								</li>
+								<li>
+									<h5>htmlContext: <a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a></h5>
+								</li>
+								<li>
+									<h5>useParentScope: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../modules/_api_pipeline_.html#scopedata" class="tsd-signature-type">ScopeData</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+					<a name="processmdata" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> processMData</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">processMData<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><a href="_dom_node_.mdatanode.html" class="tsd-signature-type">MDataNode</a>, htmlContext<span class="tsd-signature-symbol">: </span><a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3fa56d4/src/lib/pipeline/module/compiler/varModule.ts#L66">pipeline/module/compiler/varModule.ts:66</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <a href="_dom_node_.mdatanode.html" class="tsd-signature-type">MDataNode</a></h5>
+								</li>
+								<li>
+									<h5>htmlContext: <a href="_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="savecompiledattributetoscope" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> save<wbr>Compiled<wbr>Attribute<wbr>ToScope</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">save<wbr>Compiled<wbr>Attribute<wbr>ToScope<span class="tsd-signature-symbol">(</span>scope<span class="tsd-signature-symbol">: </span><a href="../modules/_api_pipeline_.html#scopedata" class="tsd-signature-type">ScopeData</a>, attributeName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, compiledValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3fa56d4/src/lib/pipeline/module/compiler/varModule.ts#L128">pipeline/module/compiler/varModule.ts:128</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Binds a compiled data attribute to a scope object.
+									Performs case-conversion on the attribute name</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>scope: <a href="../modules/_api_pipeline_.html#scopedata" class="tsd-signature-type">ScopeData</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Scope object to save to</p>
+									</div>
+								</li>
+								<li>
+									<h5>attributeName: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Attribute name</p>
+									</div>
+								</li>
+								<li>
+									<h5>compiledValue: <span class="tsd-signature-type">unknown</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Value of the attribute</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_api_mooltipage_.html">&quot;api/mooltipage&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_api_pipeline_.html">&quot;api/pipeline&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_dom_domparser_.html">&quot;dom/dom<wbr>Parser&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_dom_node_.html">&quot;dom/node&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_dom_nodelogic_.html">&quot;dom/node<wbr>Logic&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_fs_fsutils_.html">&quot;fs/fs<wbr>Utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_index_.html">&quot;index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_compiler_deduplicatemodule_.html">&quot;pipeline/module/compiler/deduplicate<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_compiler_domlogicmodule_.html">&quot;pipeline/module/compiler/dom<wbr>Logic<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_compiler_expressionmodule_.html">&quot;pipeline/module/compiler/expression<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_compiler_fragmentmodule_.html">&quot;pipeline/module/compiler/fragment<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_compiler_importmodule_.html">&quot;pipeline/module/compiler/import<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_compiler_scriptmodule_.html">&quot;pipeline/module/compiler/script<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_compiler_slotmodule_.html">&quot;pipeline/module/compiler/slot<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_compiler_stylemodule_.html">&quot;pipeline/module/compiler/style<wbr>Module&quot;</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_pipeline_module_compiler_varmodule_.html">&quot;pipeline/module/compiler/var<wbr>Module&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_evalengine_.html">&quot;pipeline/module/eval<wbr>Engine&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_htmlcompiler_.html">&quot;pipeline/module/html<wbr>Compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_pagebuilder_.html">&quot;pipeline/module/page<wbr>Builder&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_resolvepath_.html">&quot;pipeline/module/resolve<wbr>Path&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_resourceparser_.html">&quot;pipeline/module/resource<wbr>Parser&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_module_standardhtmlformatter_.html">&quot;pipeline/module/standard<wbr>Html<wbr>Formatter&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_pipelinecache_.html">&quot;pipeline/pipeline<wbr>Cache&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_pipeline_standardpipeline_.html">&quot;pipeline/standard<wbr>Pipeline&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="_pipeline_module_compiler_varmodule_.varmodule.html" class="tsd-kind-icon">Var<wbr>Module</a>
+						<ul>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_pipeline_module_compiler_varmodule_.varmodule.html#enternode" class="tsd-kind-icon">enter<wbr>Node</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_pipeline_module_compiler_varmodule_.varmodule.html#exitnode" class="tsd-kind-icon">exit<wbr>Node</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+								<a href="_pipeline_module_compiler_varmodule_.varmodule.html#bindattributedatatoscope" class="tsd-kind-icon">bind<wbr>Attribute<wbr>Data<wbr>ToScope</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+								<a href="_pipeline_module_compiler_varmodule_.varmodule.html#compilereference" class="tsd-kind-icon">compile<wbr>Reference</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+								<a href="_pipeline_module_compiler_varmodule_.varmodule.html#gettargetscope" class="tsd-kind-icon">get<wbr>Target<wbr>Scope</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
+								<a href="_pipeline_module_compiler_varmodule_.varmodule.html#processmdata" class="tsd-kind-icon">processMData</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_pipeline_module_compiler_varmodule_.varmodule.html#savecompiledattributetoscope" class="tsd-kind-icon">save<wbr>Compiled<wbr>Attribute<wbr>ToScope</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
