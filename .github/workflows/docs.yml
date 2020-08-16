@@ -41,7 +41,7 @@ jobs:
           path: docs/gen/typedoc
           if-no-files-found: error
       - name: Merge doc components into final package
-        run: cp -r ./docs/gen/. ./docs/gh-pages/
+        run: cp -r ./docs/gen/. ./docs/gh-pages/gen/
       - name: Upload to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.5.9
         with:
