@@ -27,7 +27,7 @@
     "test": "npm run build && ava",
     "coverage": "npm run build && nyc ava",
     "typedoc": "typedoc src/lib",
-    "docs": "npm run coverage && npm run typedoc",
+    "docs": "npm run rebuild && npm run coverage && npm run typedoc && node ./dist/bin/main.js",
     "lint": "eslint --ext .js,.ts src",
     "lint-fix": "npm run lint -- --fix",
     "lint-full": "npm run lint -- --no-eslintrc --config .eslintrc-full.json",

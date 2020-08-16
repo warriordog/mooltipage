@@ -12,6 +12,7 @@ function removePath(path) {
         } else if (pathStat.isDirectory()) {
             // if directory, then recursively delete
             fs.rmdirSync(path, {
+                // TODO this is the only reason we can't support NodeJS 10.x
                 recursive: true,
                 maxRetries: 5,
                 retryDelay: 250
@@ -21,5 +22,5 @@ function removePath(path) {
 }
 
 removePath('dist');
-removePath('docs');
+removePath('docs/gen');
 removePath('.nyc_output');

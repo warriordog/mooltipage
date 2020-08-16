@@ -2,11 +2,10 @@
 /dist/
 
 # Documentation
-/docs/
+/docs/gen/
 
 # Code coverage
 .nyc_output
-
 
 # local env files
 .env.local
