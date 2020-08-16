@@ -2,7 +2,7 @@
 /dist/
 
 # Documentation
-/docs/gen/
+/docs/dist/gen/
 
 # Code coverage
 .nyc_output
