@@ -443,34 +443,6 @@ export abstract class NodeWithText extends Node {
 }
 
 /**
- * Parent type for any node that includes raw data
- */
-export abstract class NodeWithData extends Node {
-    /**
-     * Data contained by this node
-     */
-    data: string;
-
-    /**
-     * Creates a new NodeWithData
-     * @param nodeType Type of node, for Node() constructor
-     * @param data Content of this NodeWithData
-     */
-    protected constructor(nodeType: NodeType, data: string) {
-        super(nodeType);
-        this.data = data;
-    }
-
-    /**
-     * Returns true if a node is an instance of NodeWithData
-     * @param node Node to check
-     */
-    static isNodeWithData(node: Node): node is NodeWithData {
-        return node.nodeType === NodeType.ProcessingInstruction;
-    }
-}
-
-/**
  * A tag node
  */
 export class TagNode extends NodeWithChildren {
@@ -729,11 +701,16 @@ export class CDATANode extends NodeWithChildren {
 /**
  * A Processing instruction node
  */
-export class ProcessingInstructionNode extends NodeWithData {
+export class ProcessingInstructionNode extends Node {
     /**
      * Name of this processing instruction
      */
     name: string;
+
+    /**
+     * Data contained by this node
+     */
+    data: string;
 
     /**
      * Creates a new Processing Instruction
@@ -741,8 +718,9 @@ export class ProcessingInstructionNode extends NodeWithData {
      * @param data Data value
      */
     constructor(name = '', data = '') {
-        super(NodeType.ProcessingInstruction, data);
+        super(NodeType.ProcessingInstruction);
         this.name = name;
+        this.data = data;
     }
 
     clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): ProcessingInstructionNode {

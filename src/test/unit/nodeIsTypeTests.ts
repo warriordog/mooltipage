@@ -1,9 +1,38 @@
 import test, {
     ExecutionContext
 } from 'ava';
-import { Node, TagNode, TextNode, CommentNode, ProcessingInstructionNode, MFragmentNode, MContentNode, MSlotNode, MVarNode, DocumentNode, CDATANode, MImportNode, MScopeNode, MIfNode, MForNode, MForOfNode, MForInNode, MDataNode, MimeType, CompiledStyleNode, InternalStyleNode, ExternalStyleNode, StyleNode, ScriptNode, CompiledScriptNode, InternalScriptNode, ExternalScriptNode } from '../../lib';
+import {
+    Node,
+    TagNode,
+    TextNode,
+    CommentNode,
+    ProcessingInstructionNode,
+    MFragmentNode,
+    MContentNode,
+    MSlotNode,
+    MVarNode,
+    DocumentNode,
+    CDATANode,
+    MImportNode,
+    MScopeNode,
+    MIfNode,
+    MForNode,
+    MForOfNode,
+    MForInNode,
+    MDataNode,
+    MimeType,
+    CompiledStyleNode,
+    InternalStyleNode,
+    ExternalStyleNode,
+    StyleNode,
+    ScriptNode,
+    CompiledScriptNode,
+    InternalScriptNode,
+    ExternalScriptNode,
+    NodeWithText
+} from '../../lib';
 
-function testNode(t: ExecutionContext, node: Node, isTag: boolean, isText: boolean, isComment: boolean, isPi: boolean, isDom: boolean, isCData: boolean, isMFragment: boolean, isMComponent: boolean, isMContent: boolean, isMSlot: boolean, isMVar: boolean, isMImport: boolean, isMImportFragment: boolean, isMImportComponent: boolean, isMScope: boolean, isMIf: boolean, isMFor: boolean, isMForOf: boolean, isMForIn: boolean, unused: boolean, isMData: boolean, isCompiledStyle: boolean, isInternalStyle: boolean, isExternalStyle: boolean, isStyle: boolean, isScript: boolean, isCompiledScript: boolean, isInternalScript: boolean, isExternalScript: boolean): void {
+function testNode(t: ExecutionContext, node: Node, isTag: boolean, isText: boolean, isComment: boolean, isPi: boolean, isDom: boolean, isCData: boolean, isMFragment: boolean, isMComponent: boolean, isMContent: boolean, isMSlot: boolean, isMVar: boolean, isMImport: boolean, isMImportFragment: boolean, isMImportComponent: boolean, isMScope: boolean, isMIf: boolean, isMFor: boolean, isMForOf: boolean, isMForIn: boolean, unused: boolean, isMData: boolean, isCompiledStyle: boolean, isInternalStyle: boolean, isExternalStyle: boolean, isStyle: boolean, isScript: boolean, isCompiledScript: boolean, isInternalScript: boolean, isExternalScript: boolean, isNodeWithText: boolean): void {
     t.is(TagNode.isTagNode(node), isTag);
     t.is(TextNode.isTextNode(node), isText);
     t.is(CommentNode.isCommentNode(node), isComment);
@@ -29,26 +58,27 @@ function testNode(t: ExecutionContext, node: Node, isTag: boolean, isText: boole
     t.is(CompiledScriptNode.isCompiledScriptNode(node), isCompiledScript);
     t.is(InternalScriptNode.isInternalScriptNode(node), isInternalScript);
     t.is(ExternalScriptNode.isExternalScriptNode(node), isExternalScript);
+    t.is(NodeWithText.isNodeWithText(node), isNodeWithText);
 }
 
-test('TagNode is correct types', testNode, new TagNode('test'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('TextNode is correct types', testNode, new TextNode(), false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('CommentNode is correct types', testNode, new CommentNode(), false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('ProcessingInstructionNode is correct types', testNode, new ProcessingInstructionNode(), false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('DocumentNode is correct types', testNode, new DocumentNode(), false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('CDATANode is correct types', testNode, new CDATANode(), false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('MFragmentNode is correct types', testNode, new MFragmentNode('resPath'), true, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('MContentNode is correct types', testNode, new MContentNode(), true, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('MSlotNode is correct types', testNode, new MSlotNode(), true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('MVarNode is correct types', testNode, new MVarNode(), true, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('MScopeNode is correct types', testNode, new MScopeNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('MIfNode is correct types', testNode, new MIfNode('{{ true }}'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false);
-test('MForOfNode is correct types', testNode, new MForOfNode('{{ [] }}', 'var', undefined), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false, false, false, false);
-test('MForInNode is correct types', testNode, new MForInNode('{{ {} }}', 'var', undefined), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, true, false, false, false, false, false, false, false, false, false, false);
-test('MDataNode is correct types', testNode, new MDataNode(MimeType.JSON), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false);
-test('StyleNode is correct types', testNode, new StyleNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false);
-test('InternalStyleNode is correct types', testNode, new InternalStyleNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, true, false, false, false, false);
-test('ExternalStyleNode is correct types', testNode, new ExternalStyleNode('path.css'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, true, true, false, false, false, false);
-test('ScriptNode is correct types', testNode, new ScriptNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false);
-test('InternalScriptNode is correct types', testNode, new InternalScriptNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, false);
-test('ExternalScriptNode is correct types', testNode, new ExternalScriptNode('path.css'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, true);
+test('TagNode is correct types', testNode, new TagNode('test'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('TextNode is correct types', testNode, new TextNode(), false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true);
+test('CommentNode is correct types', testNode, new CommentNode(), false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true);
+test('ProcessingInstructionNode is correct types', testNode, new ProcessingInstructionNode(), false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('DocumentNode is correct types', testNode, new DocumentNode(), false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('CDATANode is correct types', testNode, new CDATANode(), false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('MFragmentNode is correct types', testNode, new MFragmentNode('resPath'), true, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('MContentNode is correct types', testNode, new MContentNode(), true, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('MSlotNode is correct types', testNode, new MSlotNode(), true, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('MVarNode is correct types', testNode, new MVarNode(), true, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('MScopeNode is correct types', testNode, new MScopeNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('MIfNode is correct types', testNode, new MIfNode('{{ true }}'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+test('MForOfNode is correct types', testNode, new MForOfNode('{{ [] }}', 'var', undefined), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, false, false, false, false, false, false, false, false, false, false, false);
+test('MForInNode is correct types', testNode, new MForInNode('{{ {} }}', 'var', undefined), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, true, false, false, false, false, false, false, false, false, false, false, false);
+test('MDataNode is correct types', testNode, new MDataNode(MimeType.JSON), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false, false, false, false, false);
+test('StyleNode is correct types', testNode, new StyleNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false, false);
+test('InternalStyleNode is correct types', testNode, new InternalStyleNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, true, false, false, false, false, false);
+test('ExternalStyleNode is correct types', testNode, new ExternalStyleNode('path.css'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, true, true, false, false, false, false, false);
+test('ScriptNode is correct types', testNode, new ScriptNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, false, false, false, false);
+test('InternalScriptNode is correct types', testNode, new InternalScriptNode(), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, false, false);
+test('ExternalScriptNode is correct types', testNode, new ExternalScriptNode('path.css'), true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, false, true, false);
