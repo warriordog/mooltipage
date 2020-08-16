@@ -2,7 +2,7 @@
 # Please note - commits including this file cannot be pushed from some IDEs (including all JetBrains products).
 # As a workaround, push the commit using the git CLI.
 
-name: Build
+name: Docs
 
 on:
   push:
@@ -13,7 +13,6 @@ jobs:
   docs:
     name: Generate documentation
     runs-on: ubuntu-latest
-    needs: build-all
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -29,20 +28,24 @@ jobs:
         run: npm run build
       - name: Generate documentation
         run: npm run docs
-      - name: Upload code artifacts
+      - name: Merge doc components into final package
+        run: cp -r docs/gen/. docs/gh-pages/
+      - name: "Archive documentation: code coverage"
         uses: actions/upload-artifact@v2
         with:
-          name: mooltipage-dist
-          path: |
-            dist/
-            package.json
-            package-lock.json
-            LICENSE
-            README.md
+          name: mooltipage-coverage
+          path: docs/gen/coverage
           if-no-files-found: error
-      - name: Upload documentation artifacts
+      - name: "Archive documentation: type docs"
         uses: actions/upload-artifact@v2
         with:
-          name: mooltipage-docs
-          path: docs/
+          name: mooltipage-typedoc
+          path: docs/gen/typedoc
           if-no-files-found: error
+      - name: Upload to GitHub Pages
+          uses: JamesIves/github-pages-deploy-action@3.5.9
+          with:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            BRANCH: gh-pages
+            FOLDER: docs/gh-pages
+            CLEAN: true

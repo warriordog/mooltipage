@@ -37,10 +37,9 @@ jobs:
       run: npm run lint-full
 
   # Upload artifacts
-  # This runs one final build (without a matrix) to produce compiled output, then generates docs.
-  # Docs and build artifacts are all uploaded
+  # This runs one final build (without a matrix) to produce compiled output, then uploads it.
   dist:
-    name: Generate code and documentation artifacts
+    name: Generate code artifacts
     runs-on: ubuntu-latest
     needs: build-all
     steps:
@@ -66,10 +65,4 @@ jobs:
           package-lock.json
           LICENSE
           README.md
-        if-no-files-found: error
-    - name: Upload documentation artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: mooltipage-docs
-        path: docs/
         if-no-files-found: error
