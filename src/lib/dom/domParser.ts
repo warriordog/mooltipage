@@ -6,9 +6,20 @@ import { MimeType } from '..';
  * Parses HTML into a dom using htmlparser2
  */
 export class DomParser {
+    /**
+     * DomHandler instance that receives callbacks from {@link parser}
+     */
     private readonly handler: DomHandler;
+
+    /**
+     * HTML parser instance
+     */
     private readonly parser: Parser;
 
+    /**
+     * Creates a new DomParser instance
+     * @param userOptions Optional options to pass to htmlparser2
+     */
     constructor(userOptions?: ParserOptions) {
         // get parser options
         const options = createParserOptions(userOptions);
@@ -38,6 +49,11 @@ export class DomParser {
     }
 }
 
+/**
+ * Creates an instance of ParserOptions.
+ * Loads defaults and optionally overrides with a provided instance
+ * @param userOptions optional options to include
+ */
 function createParserOptions(userOptions?: ParserOptions): ParserOptions {
     // base (default) options
     const options: ParserOptions = {
@@ -57,9 +73,21 @@ function createParserOptions(userOptions?: ParserOptions): ParserOptions {
  * Implementation of htmlparser2's Handler interface that generates a DOM from the parsed HTML.
  */
 export class DomHandler implements Partial<Handler> {
+    /**
+     * DOM containing parsed nodes
+     */
     private dom: DocumentNode;
+
+    /**
+     * Current parent node.
+     * The next incoming node will be attached as a child to this node
+     */
     private currentParent: NodeWithChildren;
 
+    /**
+     * Creates a new DomHandler.
+     * The instance will be fully initialized and ready to begin receiving callbacks from htmlparser2
+     */
     constructor() {
         this.dom = new DocumentNode();
         this.currentParent = this.dom;
@@ -143,6 +171,10 @@ export class DomHandler implements Partial<Handler> {
         this.currentParent.appendChild(piNode);
     }
 
+    /**
+     * Attaches a node to the current parent, and then sets the new node as the current parent.
+     * @param node Node to attach
+     */
     private pushParent(node: NodeWithChildren): void {
         // attach to parent
         this.currentParent.appendChild(node);
@@ -151,6 +183,9 @@ export class DomHandler implements Partial<Handler> {
         this.currentParent = node;
     }
 
+    /**
+     * "closes" the current parent and sets its parent as the current
+     */
     private popParent(): void {
         if (this.currentParent === this.dom) {
             throw new Error('Tried to close too many tags: DOM is currentParent');
@@ -158,7 +193,13 @@ export class DomHandler implements Partial<Handler> {
         
         this.currentParent = this.currentParent.parentNode ?? this.dom;
     }
-    
+
+    /**
+     * Creates an instance of TagNode or one of its subclasses based on the provided tag data.
+     * @param tagName Name of the tag to create
+     * @param attributes Tag attributes
+     * @returns Instance of TagNode or a subclass
+     */
     private static createTagNode(tagName: string, attributes: Map<string, string | null>): TagNode {
         switch (tagName) {
             case 'm-fragment':

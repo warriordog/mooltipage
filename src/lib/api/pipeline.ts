@@ -1,7 +1,7 @@
 import { DocumentNode } from '..';
 
 /**
- * Mooltipage compilation pipeline
+ * Compiles inputs from the project source into plain web resources
  */
 export interface Pipeline {
     /**

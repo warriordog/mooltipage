@@ -8,12 +8,13 @@ import { StandardHtmlFormatterMode, StandardHtmlFormatter } from '../pipeline/mo
 
 /**
  * Called whenever a page is compiled.
- * @param page Compiled page object
+ * @param page Compiled Page object
  */
 export type PageCompiledCallback = (page: Page) => void;
 
 /**
  * Options recognized by Mooltipage
+ * See {@link DefaultMpOptions} for default values
  */
 export interface MpOptions {
     /**
@@ -52,11 +53,20 @@ export class DefaultMpOptions implements MpOptions {
  * Mooltipage JS API entry point.
  */
 export class Mooltipage {
+    /**
+     * Configuration objects for this Mooltipage instance
+     */
     readonly options: MpOptions;
+
+    /**
+     * Pipeline instance that will be used for the lifetime of this instance
+     */
     readonly pipeline: Pipeline;
 
     /**
-     * Constructs a new Mooltipage instance using the provided options, or defaults if not specified.
+     * Constructs a new Mooltipage instance.
+     * An options object can be passed to configure the instance.
+     * If no options are provided, then {@ling DefaultMpOptions} will be used.
      * @param options Configuration options
      */
     constructor(options?: MpOptions) {
@@ -94,6 +104,10 @@ export class Mooltipage {
     }
 }
 
+/**
+ * Creates a pipeline from an options object
+ * @param options Options object to configure pipeline
+ */
 function createPipeline(options: MpOptions): Pipeline {
     // create the HTML formatter, if specified
     const formatter: HtmlFormatter = createFormatter(options);
@@ -106,7 +120,10 @@ function createPipeline(options: MpOptions): Pipeline {
 }
 
 /**
+ * Creates an HtmlFormatter from the provided options
+ * TODO move elsewhere
  * @internal
+ * @returns an HtmlFormatter instance configured from {@link options}
  */
 export function createFormatter(options: MpOptions): HtmlFormatter {
     switch (options.formatter) {
@@ -124,13 +141,30 @@ export function createFormatter(options: MpOptions): HtmlFormatter {
 
 /**
  * Pipeline interface that uses Node.JS file APIs
+ * TODO move elsewhere
  * @internal
  */
 export class NodePipelineInterface implements PipelineInterface {
+    /**
+     * Path to source directory, if not current working directory.
+     */
     private readonly sourcePath?: string;
+
+    /**
+     * Path to destination directory, if not current working directory.
+     */
     private readonly destinationPath?: string;
+
+    /**
+     * Next available generated resource ID
+     */
     private nextResIndex = 0;
 
+    /**
+     * Creates a new NodePipelineInterface
+     * @param sourcePath Optional path to source directory
+     * @param destinationPath Optional path to destination directory
+     */
     constructor(sourcePath?: string, destinationPath?: string) {
         this.sourcePath = sourcePath;
         this.destinationPath = destinationPath;
@@ -157,15 +191,31 @@ export class NodePipelineInterface implements PipelineInterface {
         return resPath;
     }
 
+    /**
+     * Gets the real path to a resource, factoring in {@link sourcePath}.
+     * @param resPath Raw path to resource
+     * @returns Real path to resource
+     */
     resolveSourceResource(resPath: string): string {
         return NodePipelineInterface.resolvePath(resPath, this.sourcePath);
     }
 
+
+    /**
+     * Gets the real path to a resource, factoring in {@link destinationPath}.
+     * @param resPath Raw path to resource
+     * @returns Real path to resource
+     */
     resolveDestinationResource(resPath: string): string {
         return NodePipelineInterface.resolvePath(resPath, this.destinationPath);
     }
 
-    // TODO better implementation
+    /**
+     * Creates a unique resource path for a generated resource
+     * // TODO better implementation
+     * @param type MIME type of the resource to create
+     * @returns returns a unique resource path that is acceptable for the specified MIME type
+     */
     createResPath(type: MimeType): string {
         const index = this.nextResIndex;
         this.nextResIndex++;
