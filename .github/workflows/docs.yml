@@ -28,8 +28,6 @@ jobs:
         run: npm run build
       - name: Generate documentation
         run: npm run docs
-      - name: Merge doc components into final package
-        run: cp -r ./docs/gen/. ./docs/gh-pages/
       - name: "Archive documentation: code coverage"
         uses: actions/upload-artifact@v2
         with:
@@ -42,6 +40,8 @@ jobs:
           name: mooltipage-typedoc
           path: docs/gen/typedoc
           if-no-files-found: error
+      - name: Merge doc components into final package
+        run: cp -r ./docs/gen/. ./docs/gh-pages/
       - name: Upload to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.5.9
         with:

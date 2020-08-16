@@ -1,5 +1,5 @@
 {
-    "out": "./docs/typedoc",
+    "out": "./docs/gen/typedoc",
     "mode": "modules",
     "includeVersion": true
 }
