@@ -5,8 +5,7 @@ import { CliArgs, parseArgs } from './args';
 import { Mooltipage } from '../lib';
 import * as FsUtils from '../lib/fs/fsUtils';
 
-
-console.log(`Mooltipage CLI${  os.EOL }`);
+console.log(`Mooltipage CLI${ os.EOL }`);
 
 // parse arguments
 const args: CliArgs = parseArgs(process.argv.slice(2));
@@ -47,16 +46,16 @@ function runApp(): void {
 
 function printHelp(): void {
     console.log(
-        `Usage: mooltipage [options] <page1> [page2 [page3...]]${ os.EOL }
-        Pages can be individual files or entire directories.${ os.EOL }
-        Directories will be recursively searched, and all HTML contents will be treated as pages.${ os.EOL }
-        If inPath and outPath are not specified, then they will default to the current working directory.${ os.EOL }
-        If no outPath is specified, then source pages will be overwritten when compiled.${ os.EOL }
-        ${ os.EOL }
-        Options:${ os.EOL }
-            --help                               Print this help and exit.${ os.EOL }
-            --inPath=<input_path>                Specify a folder to read inputs from${ os.EOL }
-            --outPath=<output_path>              Specify a folder to write outputs to${ os.EOL }
+        `Usage: mooltipage [options] <page1> [page2 [page3...]]
+        Pages can be individual files or entire directories.
+        Directories will be recursively searched, and all HTML contents will be treated as pages.
+        If inPath and outPath are not specified, then they will default to the current working directory.
+        If no outPath is specified, then source pages will be overwritten when compiled.
+        
+        Options:
+            --help                               Print this help and exit.
+            --inPath=<input_path>                Specify a folder to read inputs from
+            --outPath=<output_path>              Specify a folder to write outputs to
             --formatter=<formatter_name>         Use an HTML formatter (default "pretty")`
     );
 }
