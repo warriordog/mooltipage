@@ -1,5 +1,5 @@
 # mooltipage
-![Build Status](https://github.com/warriordog/mooltipage/workflows/Build%20Status/badge.svg)
+![Build](https://github.com/warriordog/mooltipage/workflows/Build/badge.svg)
 
 Compile-time framework for creating static multi-page web applications
 
