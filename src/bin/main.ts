@@ -5,6 +5,19 @@ import { CliArgs, parseArgs } from './args';
 import { Mooltipage } from '../lib';
 import * as FsUtils from '../lib/fs/fsUtils';
 
+console.log(`Mooltipage CLI${ os.EOL }`);
+
+// parse arguments
+const args: CliArgs = parseArgs(process.argv.slice(2));
+
+if (args.isHelp) {
+    printHelp();
+} else if (args.pages.length === 0) {
+    console.log('No input pages specified.');
+} else {
+    runApp();
+}
+
 function runApp(): void {
     // create mooltipage instance
     const mooltipage = new Mooltipage({
@@ -45,17 +58,4 @@ function printHelp(): void {
             --outPath=<output_path>              Specify a folder to write outputs to
             --formatter=<formatter_name>         Use an HTML formatter (default "pretty")`
     );
-}
-
-console.log(`Mooltipage CLI${ os.EOL }`);
-
-// parse arguments
-const args: CliArgs = parseArgs(process.argv.slice(2));
-
-if (args.isHelp) {
-    printHelp();
-} else if (args.pages.length === 0) {
-    console.log('No input pages specified.');
-} else {
-    runApp();
 }

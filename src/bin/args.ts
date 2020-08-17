@@ -21,7 +21,7 @@ export interface CliArgs {
     /**
      * Value of --formatter parameter
      */
-    formatter: string;
+    formatter?: string;
 
     /**
      * List of all non-option parameters identified
@@ -59,7 +59,7 @@ export function parseArgs(args: string[]): CliArgs {
  * @param args Array of args to parse
  * @param parseData CliArgs to receive parsed pages
  */
-function parsePages(args: string[], parseData: CliArgs): void {
+export function parsePages(args: string[], parseData: CliArgs): void {
     // get page args
     const pages = args.filter(arg => !arg.startsWith('--'));
 
@@ -69,42 +69,35 @@ function parsePages(args: string[], parseData: CliArgs): void {
 }
 
 /**
- * Extracts all known options from a list of CLI arguments.
- * An option is any argument that starts with "--".
- * Basic validation is performed - if an argument requires a value but none is provided, then an exception will be thrown.
+ * Parses known options from an array of arguments.
+ * Basic validation is performed:
+ * 1. If an argument requires a value but none is provided, then an exception will be thrown.
+ * 2. If an argument is not recognised, then an exception will be thrown.
  *
  * @param args Array of args to parse
  * @param parseData CliArgs to receive parsed options
  * @throws if invalid arguments are encountered
+ * @throws if unknown arguments are encountered
  */
-function parseOptions(args: string[], parseData: CliArgs): void {
+export function parseOptions(args: string[], parseData: CliArgs): void {
     // get option args
-    const options: CliOption[] = args
-       .filter(arg => arg.startsWith('--'))
-       .map((arg): CliOption => {
-           const parts = arg.split('=');
-           return {
-               label: parts[0],
-               name: parts[0].toLowerCase(),
-               value: parts.length > 1 ? parts[1] : undefined
-           };
-       });
+    const options = extractOptions(args);
 
     // process each option
     for (const option of options) {
         switch (option.name) {
-            case '--help':
+            case 'help':
                 parseData.isHelp = true;
                 break;
-            case '--inpath':
+            case 'inpath':
                 if (!option.value) throw new Error('inPath requires a value');
                 parseData.inPath = option.value;
                 break;
-            case '--outpath':
+            case 'outpath':
                 if (!option.value) throw new Error('outPath requires a value');
                 parseData.outPath = option.value;
                 break;
-            case '--formatter':
+            case 'formatter':
                 if (!option.value) throw new Error('formatter requires a value');
                 parseData.formatter = option.value;
                 break;
@@ -115,12 +108,31 @@ function parseOptions(args: string[], parseData: CliArgs): void {
 }
 
 /**
+ * Extracts all known options from a list of CLI arguments.
+ * An option is any argument that starts with "--".
+ * @param args string arguments to parse
+ * @returns Array of CLIOptions objects parsed from input
+ */
+export function extractOptions(args: string[]): CliOption[] {
+    return args
+        .filter(arg => arg.startsWith('--'))
+        .map((arg): CliOption => {
+            const parts = arg.split('=');
+            return {
+                label: parts[0],
+                name: parts[0].substring(2).toLowerCase(),
+                value: parts.length > 1 ? parts[1] : undefined
+            };
+        });
+}
+
+/**
  * Stores an option parsed from the CLI
  */
-interface CliOption {
+export interface CliOption {
     /**
      * Human-readable display label of the option.
-     * In most cases, this is the string that was identified as an option.
+     * This is the exact string that was identified as an option.
      */
     label: string;
 
