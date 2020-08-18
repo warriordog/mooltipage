@@ -89,7 +89,7 @@ export function expandPagePaths(paths: string[], basePath: string): string[] {
 }
 
 function expandPagePath(pagePath: string, basePath: string, outPaths: string[]): void {
-    const realPath = Path.resolve(basePath, pagePath);
+    const realPath = Path.resolve(pagePath);
 
     // directories need to be recursively searched
     if (pathIsDirectory(realPath)) {
@@ -103,7 +103,7 @@ function expandPagePath(pagePath: string, basePath: string, outPaths: string[]):
 
     // HTML are added directly
     if (pathIsFile(realPath) && realPath.toLowerCase().endsWith('.html')) {
-        const relativePath = Path.relative(basePath, realPath);
+        const relativePath = Path.relative(basePath, pagePath);
         outPaths.push(relativePath);
     }
 

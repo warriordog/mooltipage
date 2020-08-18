@@ -20,7 +20,7 @@ import os
 class TestCliConsole implements CliConsole {
     logs: string[] = [];
 
-    log(message: string): void {
+    log(message?: string): void {
         if (message === undefined) {
             message = os.EOL;
         }
@@ -36,8 +36,8 @@ test('runApp() compiles test project', t => {
             outPath: getSandboxPath(),
             formatter: 'minimized',
             pages: [
-                'testPage.html',
-                'testFolder/subFolder'
+                getTestDataPath('testPage.html'),
+                getTestDataPath('testFolder/subFolder')
             ]
         };
 
@@ -76,7 +76,7 @@ test('cliMain() with no pages shows warning', t => {
 test('cliMain() compiles test project', t => {
     useSandboxDirectory(() => {
         const cliConsole = new TestCliConsole();
-        const args = [ `--inpath=${ getTestDataPath() }`, `--outpath=${ getSandboxPath() }`, '--formatter=pretty', 'testPage.html' ];
+        const args = [ `--inpath=${ getTestDataPath() }`, `--outpath=${ getSandboxPath() }`, '--formatter=pretty', getTestDataPath('testPage.html') ];
 
         cliMain(args, cliConsole);
 
