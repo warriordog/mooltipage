@@ -11,7 +11,7 @@ export interface Pipeline {
      * @param resPath Path to the page, relative to both source and destination.
      * @returns a Page containing the DOM and serialized / formatted HTML
      */
-    compilePage: (resPath: string) => Page;
+    compilePage(resPath: string): Page;
 
     /**
      * Compiles a fragment.
@@ -21,12 +21,12 @@ export interface Pipeline {
      * @param fragmentContext Data related to the specific usage context of this fragment
      * @returns Fragment instance
      */
-    compileFragment: (resPath: string, fragmentContext?: FragmentContext) => Fragment;
+    compileFragment(resPath: string, fragmentContext?: FragmentContext): Fragment;
 
     /**
      * Resets the pipeline to its initial state.
      */
-    reset: () => void;
+    reset(): void;
 }
 
 /**
@@ -93,7 +93,7 @@ export interface PipelineInterface {
      * @param resPath Relative path to resource (source and destination) 
      * @param contents File contents as a UTF-8 string
      */
-    writeResource: (type: MimeType, resPath: string, contents: string) => void;
+    writeResource(type: MimeType, resPath: string, contents: string): void;
 
     /**
      * Reads a resource of a specified type from the pipeline input.
@@ -102,7 +102,7 @@ export interface PipelineInterface {
      * @param resPath Relative path to resource (source and destination)
      * @returns text content of resource
      */
-    getResource: (type: MimeType, resPath: string) => string;
+    getResource(type: MimeType, resPath: string): string;
 
     /**
      * Creates a new output resource and generates a resource path to reference it
@@ -113,7 +113,7 @@ export interface PipelineInterface {
      * @param sourceResPath Resource path of the resource that spawned this resource
      * @returns path to resource
      */
-    createResource: (type: MimeType, contents: string, sourceResPath: string) => string;
+    createResource(type: MimeType, contents: string, sourceResPath: string): string;
 
     /**
      * Called when the pipeline is about to reuse a path that was created by a former call to createResource().
@@ -129,7 +129,7 @@ export interface PipelineInterface {
      * @param originalResPath The resource path that was produced by the call to createResource()
      * @returns new path to resource, or original if no changes are needed
      */
-    reLinkCreatedResource?: (type: MimeType, contents: string, sourceResPath: string, originalResPath: string) => string;
+    reLinkCreatedResource?(type: MimeType, contents: string, sourceResPath: string, originalResPath: string): string;
 }
 
 /**
@@ -142,7 +142,7 @@ export interface HtmlFormatter {
      * 
      * @param dom DOM tree to format
      */
-    formatDom: (dom: DocumentNode) => void;
+    formatDom(dom: DocumentNode): void;
 
     /**
      * Formats serialized HTML before being exported from the pipeline.
@@ -150,7 +150,7 @@ export interface HtmlFormatter {
      * 
      * @param html HTML to format.
      */
-    formatHtml: (html: string) => string;
+    formatHtml(html: string): string;
 }
 
 /**

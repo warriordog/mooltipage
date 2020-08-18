@@ -46,7 +46,6 @@
     "@typescript-eslint/consistent-type-definitions": ["warn", "interface"],
     "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true, "allowTypedFunctionExpressions": true, "allowHigherOrderFunctions": true}],
     "@typescript-eslint/member-delimiter-style": ["error", { "multiline": { "delimiter": "semi", "requireLast": true }, "singleline": { "delimiter": "semi", "requireLast": false }}],
-    "@typescript-eslint/method-signature-style": ["warn", "property"],
     "@typescript-eslint/no-confusing-non-null-assertion": "error",
     "@typescript-eslint/no-extraneous-class": "error",
     "@typescript-eslint/no-invalid-void-type": "error",

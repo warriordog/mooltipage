@@ -150,7 +150,7 @@ export interface HtmlCompilerModule {
      * 
      * @param htmlContext Current semi-stateful compilation data
      */
-    enterNode?: (htmlContext: HtmlCompilerContext) => void;
+    enterNode?(htmlContext: HtmlCompilerContext): void;
 
     /**
      * Called when the HTML Compiler is finished compiling a node and its children.
@@ -158,7 +158,7 @@ export interface HtmlCompilerModule {
      * 
      * @param htmlContext Current semi-stateful compilation data
      */
-    exitNode?: (htmlContext: HtmlCompilerContext) => void;
+    exitNode?(htmlContext: HtmlCompilerContext): void;
 }
 
 /**

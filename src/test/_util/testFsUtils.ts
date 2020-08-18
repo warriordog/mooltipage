@@ -6,13 +6,21 @@ export function fixSep(path: string): string {
     return path.replace('/', Path.sep);
 }
 
-export function getTestDataPath(offsetPath: string): string {
+export function getTestDataPath(offsetPath?: string): string {
     // tests run from compiled root /dist, but the test data is not compiled and exists in /src
-    return Path.resolve(__dirname, fixSep('../../../src/test/_data'), fixSep(offsetPath));
+    if (offsetPath !== undefined) {
+        return Path.resolve(__dirname, fixSep('../../../src/test/_data'), fixSep(offsetPath));
+    } else {
+        return Path.resolve(__dirname, fixSep('../../../src/test/_data'));
+    }
 }
 
-export function getSandboxPath(offsetPath: string): string {
-    return Path.resolve(__dirname, fixSep('../_data'), fixSep(offsetPath));
+export function getSandboxPath(offsetPath?: string): string {
+    if (offsetPath !== undefined) {
+        return Path.resolve(__dirname, fixSep('../_data'), fixSep(offsetPath));
+    } else {
+        return Path.resolve(__dirname, fixSep('../_data'));
+    }
 }
 
 /**
