@@ -103,58 +103,80 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_pipeline_module_htmlcompiler_.htmlcompilermodule.html#enternode" class="tsd-kind-icon">enter<wbr>Node</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_pipeline_module_htmlcompiler_.htmlcompilermodule.html#exitnode" class="tsd-kind-icon">exit<wbr>Node</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_pipeline_module_htmlcompiler_.htmlcompilermodule.html#enternode" class="tsd-kind-icon">enter<wbr>Node</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_pipeline_module_htmlcompiler_.htmlcompilermodule.html#exitnode" class="tsd-kind-icon">exit<wbr>Node</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="enternode" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> enter<wbr>Node</h3>
-					<div class="tsd-signature tsd-kind-icon">enter<wbr>Node<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>htmlContext<span class="tsd-signature-symbol">: </span><a href="../classes/_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/e0dbb9e/src/lib/pipeline/module/htmlCompiler.ts#L153">pipeline/module/htmlCompiler.ts:153</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Called when the HTML Compiler begins compiling a node.
-							After all modules have finished their enterNode() section, the node&#39;s children will be compiled.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>param</dt>
-							<dd><p>Current semi-stateful compilation data</p>
-							</dd>
-						</dl>
-					</div>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">enter<wbr>Node<span class="tsd-signature-symbol">(</span>htmlContext<span class="tsd-signature-symbol">: </span><a href="../classes/_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1e62627/src/lib/pipeline/module/htmlCompiler.ts#L153">pipeline/module/htmlCompiler.ts:153</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Called when the HTML Compiler begins compiling a node.
+									After all modules have finished their enterNode() section, the node&#39;s children will be compiled.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>htmlContext: <a href="../classes/_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Current semi-stateful compilation data</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="exitnode" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> exit<wbr>Node</h3>
-					<div class="tsd-signature tsd-kind-icon">exit<wbr>Node<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>htmlContext<span class="tsd-signature-symbol">: </span><a href="../classes/_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/e0dbb9e/src/lib/pipeline/module/htmlCompiler.ts#L161">pipeline/module/htmlCompiler.ts:161</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Called when the HTML Compiler is finished compiling a node and its children.
-							The node can still be modified, however changes will not trickle down to children at this point.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>param</dt>
-							<dd><p>Current semi-stateful compilation data</p>
-							</dd>
-						</dl>
-					</div>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">exit<wbr>Node<span class="tsd-signature-symbol">(</span>htmlContext<span class="tsd-signature-symbol">: </span><a href="../classes/_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1e62627/src/lib/pipeline/module/htmlCompiler.ts#L161">pipeline/module/htmlCompiler.ts:161</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Called when the HTML Compiler is finished compiling a node and its children.
+									The node can still be modified, however changes will not trickle down to children at this point.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>htmlContext: <a href="../classes/_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-signature-type">HtmlCompilerContext</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Current semi-stateful compilation data</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -251,10 +273,10 @@
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
 						<a href="_pipeline_module_htmlcompiler_.htmlcompilermodule.html" class="tsd-kind-icon">Html<wbr>Compiler<wbr>Module</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_pipeline_module_htmlcompiler_.htmlcompilermodule.html#enternode" class="tsd-kind-icon">enter<wbr>Node</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_pipeline_module_htmlcompiler_.htmlcompilermodule.html#exitnode" class="tsd-kind-icon">exit<wbr>Node</a>
 							</li>
 						</ul>
@@ -294,7 +316,7 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>

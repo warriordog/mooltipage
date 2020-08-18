@@ -398,31 +398,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { DocumentNode } from '..';
 &nbsp;
 /**
@@ -436,7 +436,7 @@ export interface Pipeline {
      * @param resPath Path to the page, relative to both source and destination.
      * @returns a Page containing the DOM and serialized / formatted HTML
      */
-    compilePage: (resPath: string) =&gt; Page;
+    compilePage(resPath: string): Page;
 &nbsp;
     /**
      * Compiles a fragment.
@@ -446,12 +446,12 @@ export interface Pipeline {
      * @param fragmentContext Data related to the specific usage context of this fragment
      * @returns Fragment instance
      */
-    compileFragment: (resPath: string, fragmentContext?: FragmentContext) =&gt; Fragment;
+    compileFragment(resPath: string, fragmentContext?: FragmentContext): Fragment;
 &nbsp;
     /**
      * Resets the pipeline to its initial state.
      */
-    reset: () =&gt; void;
+    reset(): void;
 }
 &nbsp;
 /**
@@ -518,7 +518,7 @@ export interface PipelineInterface {
      * @param resPath Relative path to resource (source and destination) 
      * @param contents File contents as a UTF-8 string
      */
-    writeResource: (type: MimeType, resPath: string, contents: string) =&gt; void;
+    writeResource(type: MimeType, resPath: string, contents: string): void;
 &nbsp;
     /**
      * Reads a resource of a specified type from the pipeline input.
@@ -527,7 +527,7 @@ export interface PipelineInterface {
      * @param resPath Relative path to resource (source and destination)
      * @returns text content of resource
      */
-    getResource: (type: MimeType, resPath: string) =&gt; string;
+    getResource(type: MimeType, resPath: string): string;
 &nbsp;
     /**
      * Creates a new output resource and generates a resource path to reference it
@@ -538,7 +538,7 @@ export interface PipelineInterface {
      * @param sourceResPath Resource path of the resource that spawned this resource
      * @returns path to resource
      */
-    createResource: (type: MimeType, contents: string, sourceResPath: string) =&gt; string;
+    createResource(type: MimeType, contents: string, sourceResPath: string): string;
 &nbsp;
     /**
      * Called when the pipeline is about to reuse a path that was created by a former call to createResource().
@@ -554,7 +554,7 @@ export interface PipelineInterface {
      * @param originalResPath The resource path that was produced by the call to createResource()
      * @returns new path to resource, or original if no changes are needed
      */
-    reLinkCreatedResource?: (type: MimeType, contents: string, sourceResPath: string, originalResPath: string) =&gt; string;
+    reLinkCreatedResource?(type: MimeType, contents: string, sourceResPath: string, originalResPath: string): string;
 }
 &nbsp;
 /**
@@ -567,7 +567,7 @@ export interface HtmlFormatter {
      * 
      * @param dom DOM tree to format
      */
-    formatDom: (dom: DocumentNode) =&gt; void;
+    formatDom(dom: DocumentNode): void;
 &nbsp;
     /**
      * Formats serialized HTML before being exported from the pipeline.
@@ -575,7 +575,7 @@ export interface HtmlFormatter {
      * 
      * @param html HTML to format.
      */
-    formatHtml: (html: string) =&gt; string;
+    formatHtml(html: string): string;
 }
 &nbsp;
 /**
@@ -613,7 +613,7 @@ export enum MimeType {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Aug 17 2020 13:57:13 GMT+0000 (Coordinated Universal Time)
+                at Tue Aug 18 2020 21:46:40 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

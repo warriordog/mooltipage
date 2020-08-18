@@ -95,143 +95,111 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.pipeline.html#compilefragment" class="tsd-kind-icon">compile<wbr>Fragment</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.pipeline.html#compilepage" class="tsd-kind-icon">compile<wbr>Page</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.pipeline.html#reset" class="tsd-kind-icon">reset</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipeline.html#compilefragment" class="tsd-kind-icon">compile<wbr>Fragment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipeline.html#compilepage" class="tsd-kind-icon">compile<wbr>Page</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipeline.html#reset" class="tsd-kind-icon">reset</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="compilefragment" class="tsd-anchor"></a>
 					<h3>compile<wbr>Fragment</h3>
-					<div class="tsd-signature tsd-kind-icon">compile<wbr>Fragment<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fragmentContext<span class="tsd-signature-symbol">?: </span><a href="_api_pipeline_.fragmentcontext.html" class="tsd-signature-type">FragmentContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><a href="_api_pipeline_.fragment.html" class="tsd-signature-type">Fragment</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/e0dbb9e/src/lib/api/pipeline.ts#L24">api/pipeline.ts:24</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Compiles a fragment.
-							This entry point should be used if the source HTML does not represent a complete page, or if further processing is to be done.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>param</dt>
-							<dd><p>Path to fragment source</p>
-							</dd>
-							<dt>param</dt>
-							<dd><p>Data related to the specific usage context of this fragment</p>
-							</dd>
-							<dt>returns</dt>
-							<dd><p>Fragment instance</p>
-							</dd>
-						</dl>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-signature">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fragmentContext<span class="tsd-signature-symbol">?: </span><a href="_api_pipeline_.fragmentcontext.html" class="tsd-signature-type">FragmentContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_api_pipeline_.fragment.html" class="tsd-signature-type">Fragment</a></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Fragment<span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fragmentContext<span class="tsd-signature-symbol">?: </span><a href="_api_pipeline_.fragmentcontext.html" class="tsd-signature-type">FragmentContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_api_pipeline_.fragment.html" class="tsd-signature-type">Fragment</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1e62627/src/lib/api/pipeline.ts#L24">api/pipeline.ts:24</a></li>
 								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>resPath: <span class="tsd-signature-type">string</span></h5>
-											</li>
-											<li>
-												<h5><span class="tsd-flag ts-flagOptional">Optional</span> fragmentContext: <a href="_api_pipeline_.fragmentcontext.html" class="tsd-signature-type">FragmentContext</a></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <a href="_api_pipeline_.fragment.html" class="tsd-signature-type">Fragment</a></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Compiles a fragment.
+									This entry point should be used if the source HTML does not represent a complete page, or if further processing is to be done.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>resPath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Path to fragment source</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> fragmentContext: <a href="_api_pipeline_.fragmentcontext.html" class="tsd-signature-type">FragmentContext</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Data related to the specific usage context of this fragment</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_api_pipeline_.fragment.html" class="tsd-signature-type">Fragment</a></h4>
+							<p>Fragment instance</p>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="compilepage" class="tsd-anchor"></a>
 					<h3>compile<wbr>Page</h3>
-					<div class="tsd-signature tsd-kind-icon">compile<wbr>Page<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><a href="_api_pipeline_.page.html" class="tsd-signature-type">Page</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/e0dbb9e/src/lib/api/pipeline.ts#L14">api/pipeline.ts:14</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Compiles a page from start to finish.
-							This entry point should be used with the source HTML is intended to be used as a full HTML page.</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>param</dt>
-							<dd><p>Path to the page, relative to both source and destination.</p>
-							</dd>
-							<dt>returns</dt>
-							<dd><p>a Page containing the DOM and serialized / formatted HTML</p>
-							</dd>
-						</dl>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-signature">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_api_pipeline_.page.html" class="tsd-signature-type">Page</a></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Page<span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_api_pipeline_.page.html" class="tsd-signature-type">Page</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1e62627/src/lib/api/pipeline.ts#L14">api/pipeline.ts:14</a></li>
 								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-parameters-title">Parameters</h4>
-										<ul class="tsd-parameters">
-											<li>
-												<h5>resPath: <span class="tsd-signature-type">string</span></h5>
-											</li>
-										</ul>
-										<h4 class="tsd-returns-title">Returns <a href="_api_pipeline_.page.html" class="tsd-signature-type">Page</a></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Compiles a page from start to finish.
+									This entry point should be used with the source HTML is intended to be used as a full HTML page.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>resPath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Path to the page, relative to both source and destination.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_api_pipeline_.page.html" class="tsd-signature-type">Page</a></h4>
+							<p>a Page containing the DOM and serialized / formatted HTML</p>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="reset" class="tsd-anchor"></a>
 					<h3>reset</h3>
-					<div class="tsd-signature tsd-kind-icon">reset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/e0dbb9e/src/lib/api/pipeline.ts#L29">api/pipeline.ts:29</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Resets the pipeline to its initial state.</p>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-signature">
-								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
-									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">reset<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1e62627/src/lib/api/pipeline.ts#L29">api/pipeline.ts:29</a></li>
 								</ul>
-								<ul class="tsd-descriptions">
-									<li class="tsd-description">
-										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Resets the pipeline to its initial state.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -337,13 +305,13 @@
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
 						<a href="_api_pipeline_.pipeline.html" class="tsd-kind-icon">Pipeline</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_api_pipeline_.pipeline.html#compilefragment" class="tsd-kind-icon">compile<wbr>Fragment</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_api_pipeline_.pipeline.html#compilepage" class="tsd-kind-icon">compile<wbr>Page</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="_api_pipeline_.pipeline.html#reset" class="tsd-kind-icon">reset</a>
 							</li>
 						</ul>
@@ -377,7 +345,7 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
