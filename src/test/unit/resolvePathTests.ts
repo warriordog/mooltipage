@@ -20,3 +20,8 @@ test('resolveResPath() with base path makes relative', t => {
 test('resolveResPath() take directory name of base path', t => {
     t.is(resolveResPath('child.html', './fragments/frag.html'), './fragments/child.html');
 });
+
+test('resolvePath() treats "@" paths as relative to root', t => {
+    t.is(resolveResPath('@/some/path'), './some/path');
+    t.is(resolveResPath('@/some/path', 'base/path'), './some/path');
+});
