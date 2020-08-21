@@ -73,7 +73,7 @@
 						<section class="tsd-index-section ">
 							<h3>Enumerations</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum tsd-parent-kind-module"><a href="../enums/_pipeline_module_standardhtmlformatter_.standardhtmlformattermode.html" class="tsd-kind-icon">Standard<wbr>Html<wbr>Formatter<wbr>Mode</a></li>
+								<li class="tsd-kind-enum tsd-parent-kind-module"><a href="../enums/_pipeline_module_standardhtmlformatter_.formattermode.html" class="tsd-kind-icon">Formatter<wbr>Mode</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -82,7 +82,272 @@
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html" class="tsd-kind-icon">Standard<wbr>Html<wbr>Formatter</a></li>
 							</ul>
 						</section>
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-kind-icon">Formatter<wbr>Options</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_pipeline_module_standardhtmlformatter_.html#createformatteroptions" class="tsd-kind-icon">create<wbr>Formatter<wbr>Options</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-module"><a href="_pipeline_module_standardhtmlformatter_.html#minimizedformatterpreset" class="tsd-kind-icon">Minimized<wbr>Formatter<wbr>Preset</a></li>
+								<li class="tsd-kind-object-literal tsd-parent-kind-module"><a href="_pipeline_module_standardhtmlformatter_.html#noneformatterpreset" class="tsd-kind-icon">None<wbr>Formatter<wbr>Preset</a></li>
+								<li class="tsd-kind-object-literal tsd-parent-kind-module"><a href="_pipeline_module_standardhtmlformatter_.html#prettyformatterpreset" class="tsd-kind-icon">Pretty<wbr>Formatter<wbr>Preset</a></li>
+							</ul>
+						</section>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="createformatteroptions" class="tsd-anchor"></a>
+					<h3>create<wbr>Formatter<wbr>Options</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Formatter<wbr>Options<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-signature-type">FormatterOptions</a><span class="tsd-signature-symbol">&gt;</span>, defaultOptions<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-signature-type">FormatterOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-signature-type">FormatterOptions</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L319">pipeline/module/standardHtmlFormatter.ts:319</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Creates a complete <a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html">FormatterOptions</a> object from a partial object and a default object.
+										If {@link defaultOptions} is not specified, <a href="_pipeline_module_standardhtmlformatter_.html#noneformatterpreset">NoneFormatterPreset</a> will be used.
+									If <a href="../classes/_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#options">options</a> is not specified, then {@link defaultOptions} will be used directly.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-signature-type">FormatterOptions</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Partial <a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html">FormatterOptions</a> object to override {@link defaultOptions}</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> defaultOptions: <a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-signature-type">FormatterOptions</a><span class="tsd-signature-symbol"> = NoneFormatterPreset</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p><a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html">FormatterOptions</a> object to pull default values from</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-signature-type">FormatterOptions</a></h4>
+							<p>returns a complete <a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html">FormatterOptions</a> object created from {@link defaultOptions} and <a href="../classes/_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#options">options</a></p>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module">
+					<a name="minimizedformatterpreset" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Minimized<wbr>Formatter<wbr>Preset</h3>
+					<div class="tsd-signature tsd-kind-icon">Minimized<wbr>Formatter<wbr>Preset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L302">pipeline/module/standardHtmlFormatter.ts:302</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Formatter preset that minimizes the generated HTML.
+							This mode compacts whitespace, strips comments and CDATA, and packs all markup onto a single line.</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="minimizedformatterpreset.endofline" class="tsd-anchor"></a>
+						<h3>end<wbr>OfLine</h3>
+						<div class="tsd-signature tsd-kind-icon">end<wbr>OfLine<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L305">pipeline/module/standardHtmlFormatter.ts:305</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="minimizedformatterpreset.formatmode" class="tsd-anchor"></a>
+						<h3>format<wbr>Mode</h3>
+						<div class="tsd-signature tsd-kind-icon">format<wbr>Mode<span class="tsd-signature-symbol">:</span> <a href="../enums/_pipeline_module_standardhtmlformatter_.formattermode.html#minimized" class="tsd-signature-type">MINIMIZED</a><span class="tsd-signature-symbol"> = FormatterMode.MINIMIZED</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L303">pipeline/module/standardHtmlFormatter.ts:303</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="minimizedformatterpreset.indentstring" class="tsd-anchor"></a>
+						<h3>indent<wbr>String</h3>
+						<div class="tsd-signature tsd-kind-icon">indent<wbr>String<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L304">pipeline/module/standardHtmlFormatter.ts:304</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="minimizedformatterpreset.stripcdata" class="tsd-anchor"></a>
+						<h3>stripCDATA</h3>
+						<div class="tsd-signature tsd-kind-icon">stripCDATA<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L307">pipeline/module/standardHtmlFormatter.ts:307</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="minimizedformatterpreset.stripcomments" class="tsd-anchor"></a>
+						<h3>strip<wbr>Comments</h3>
+						<div class="tsd-signature tsd-kind-icon">strip<wbr>Comments<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L306">pipeline/module/standardHtmlFormatter.ts:306</a></li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module">
+					<a name="noneformatterpreset" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> None<wbr>Formatter<wbr>Preset</h3>
+					<div class="tsd-signature tsd-kind-icon">None<wbr>Formatter<wbr>Preset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L277">pipeline/module/standardHtmlFormatter.ts:277</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Formatter preset that disables all processing.
+							Input DOM and HTML will be ignore and unchanged.</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="noneformatterpreset.endofline-1" class="tsd-anchor"></a>
+						<h3>end<wbr>OfLine</h3>
+						<div class="tsd-signature tsd-kind-icon">end<wbr>OfLine<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L280">pipeline/module/standardHtmlFormatter.ts:280</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="noneformatterpreset.formatmode-1" class="tsd-anchor"></a>
+						<h3>format<wbr>Mode</h3>
+						<div class="tsd-signature tsd-kind-icon">format<wbr>Mode<span class="tsd-signature-symbol">:</span> <a href="../enums/_pipeline_module_standardhtmlformatter_.formattermode.html#none" class="tsd-signature-type">NONE</a><span class="tsd-signature-symbol"> = FormatterMode.NONE</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L278">pipeline/module/standardHtmlFormatter.ts:278</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="noneformatterpreset.indentstring-1" class="tsd-anchor"></a>
+						<h3>indent<wbr>String</h3>
+						<div class="tsd-signature tsd-kind-icon">indent<wbr>String<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L279">pipeline/module/standardHtmlFormatter.ts:279</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="noneformatterpreset.stripcdata-1" class="tsd-anchor"></a>
+						<h3>stripCDATA</h3>
+						<div class="tsd-signature tsd-kind-icon">stripCDATA<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L282">pipeline/module/standardHtmlFormatter.ts:282</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="noneformatterpreset.stripcomments-1" class="tsd-anchor"></a>
+						<h3>strip<wbr>Comments</h3>
+						<div class="tsd-signature tsd-kind-icon">strip<wbr>Comments<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L281">pipeline/module/standardHtmlFormatter.ts:281</a></li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-module">
+					<a name="prettyformatterpreset" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Pretty<wbr>Formatter<wbr>Preset</h3>
+					<div class="tsd-signature tsd-kind-icon">Pretty<wbr>Formatter<wbr>Preset<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L290">pipeline/module/standardHtmlFormatter.ts:290</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Formatter preset that attempts to &quot;prettify&quot; the generated HTML.
+								This mode applies formatting and indentation, and strips CDATA sections.
+							HTML comments are left in place.</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="prettyformatterpreset.endofline-2" class="tsd-anchor"></a>
+						<h3>end<wbr>OfLine</h3>
+						<div class="tsd-signature tsd-kind-icon">end<wbr>OfLine<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L293">pipeline/module/standardHtmlFormatter.ts:293</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="prettyformatterpreset.formatmode-2" class="tsd-anchor"></a>
+						<h3>format<wbr>Mode</h3>
+						<div class="tsd-signature tsd-kind-icon">format<wbr>Mode<span class="tsd-signature-symbol">:</span> <a href="../enums/_pipeline_module_standardhtmlformatter_.formattermode.html#pretty" class="tsd-signature-type">PRETTY</a><span class="tsd-signature-symbol"> = FormatterMode.PRETTY</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L291">pipeline/module/standardHtmlFormatter.ts:291</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="prettyformatterpreset.indentstring-2" class="tsd-anchor"></a>
+						<h3>indent<wbr>String</h3>
+						<div class="tsd-signature tsd-kind-icon">indent<wbr>String<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;    &quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L292">pipeline/module/standardHtmlFormatter.ts:292</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="prettyformatterpreset.stripcdata-2" class="tsd-anchor"></a>
+						<h3>stripCDATA</h3>
+						<div class="tsd-signature tsd-kind-icon">stripCDATA<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L295">pipeline/module/standardHtmlFormatter.ts:295</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="prettyformatterpreset.stripcomments-2" class="tsd-anchor"></a>
+						<h3>strip<wbr>Comments</h3>
+						<div class="tsd-signature tsd-kind-icon">strip<wbr>Comments<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L294">pipeline/module/standardHtmlFormatter.ts:294</a></li>
+							</ul>
+						</aside>
+					</section>
 				</section>
 			</section>
 		</div>
@@ -169,10 +434,25 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/_pipeline_module_standardhtmlformatter_.standardhtmlformattermode.html" class="tsd-kind-icon">Standard<wbr>Html<wbr>Formatter<wbr>Mode</a>
+						<a href="../enums/_pipeline_module_standardhtmlformatter_.formattermode.html" class="tsd-kind-icon">Formatter<wbr>Mode</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html" class="tsd-kind-icon">Standard<wbr>Html<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-kind-icon">Formatter<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_pipeline_module_standardhtmlformatter_.html#createformatteroptions" class="tsd-kind-icon">create<wbr>Formatter<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="_pipeline_module_standardhtmlformatter_.html#minimizedformatterpreset" class="tsd-kind-icon">Minimized<wbr>Formatter<wbr>Preset</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="_pipeline_module_standardhtmlformatter_.html#noneformatterpreset" class="tsd-kind-icon">None<wbr>Formatter<wbr>Preset</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="_pipeline_module_standardhtmlformatter_.html#prettyformatterpreset" class="tsd-kind-icon">Pretty<wbr>Formatter<wbr>Preset</a>
 					</li>
 				</ul>
 			</nav>
@@ -184,6 +464,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>

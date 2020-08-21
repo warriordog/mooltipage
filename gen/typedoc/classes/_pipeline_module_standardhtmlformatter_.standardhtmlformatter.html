@@ -104,9 +104,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#eol" class="tsd-kind-icon">eol</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#formatmode" class="tsd-kind-icon">format<wbr>Mode</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#indentstring" class="tsd-kind-icon">indent<wbr>String</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#options" class="tsd-kind-icon">options</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -116,6 +114,8 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#formathtml" class="tsd-kind-icon">format<wbr>Html</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#formattextnode" class="tsd-kind-icon">format<wbr>Text<wbr>Node</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#formatwhitespace" class="tsd-kind-icon">format<wbr>Whitespace</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#stripcdata" class="tsd-kind-icon">stripCDATA</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#stripcomments" class="tsd-kind-icon">strip<wbr>Comments</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#absorbadjacenttextnodes" class="tsd-kind-icon">absorb<wbr>Adjacent<wbr>Text<wbr>Nodes</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#extracttextcontent" class="tsd-kind-icon">extract<wbr>Text<wbr>Content</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#getcontentnode" class="tsd-kind-icon">get<wbr>Content<wbr>Node</a></li>
@@ -132,43 +132,29 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Standard<wbr>Html<wbr>Formatter<span class="tsd-signature-symbol">(</span>formatMode<span class="tsd-signature-symbol">?: </span><a href="../enums/_pipeline_module_standardhtmlformatter_.standardhtmlformattermode.html" class="tsd-signature-type">StandardHtmlFormatterMode</a>, eol<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, indentString<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html" class="tsd-signature-type">StandardHtmlFormatter</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Standard<wbr>Html<wbr>Formatter<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-signature-type">FormatterOptions</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html" class="tsd-signature-type">StandardHtmlFormatter</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L10">pipeline/module/standardHtmlFormatter.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L15">pipeline/module/standardHtmlFormatter.ts:15</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Create a new StandardHtmlFormatter.</p>
+									<p>Create a new StandardHtmlFormatter.
+										Configuration options can be passed through the <a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#options">options</a> parameter.
+									If a partial options object is provided, then the missing options will be inherited from <a href="../modules/_pipeline_module_standardhtmlformatter_.html#noneformatterpreset">NoneFormatterPreset</a>.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> formatMode: <a href="../enums/_pipeline_module_standardhtmlformatter_.standardhtmlformattermode.html" class="tsd-signature-type">StandardHtmlFormatterMode</a><span class="tsd-signature-symbol"> = StandardHtmlFormatterMode.NONE</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-signature-type">FormatterOptions</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>HTML formatting mode. Defaults to NONE.</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> eol: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Set the line ending for pretty mode (default \n)</p>
-										</div>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> indentString: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Set the indentation string for pretty mode (default 4 spaces)</p>
+											<p>Configuration options for the formatter</p>
 										</div>
 									</div>
 								</li>
@@ -181,32 +167,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="eol" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> eol</h3>
-					<div class="tsd-signature tsd-kind-icon">eol<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="options" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> options</h3>
+					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-signature-type">FormatterOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L9">pipeline/module/standardHtmlFormatter.ts:9</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="formatmode" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> format<wbr>Mode</h3>
-					<div class="tsd-signature tsd-kind-icon">format<wbr>Mode<span class="tsd-signature-symbol">:</span> <a href="../enums/_pipeline_module_standardhtmlformatter_.standardhtmlformattermode.html" class="tsd-signature-type">StandardHtmlFormatterMode</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L8">pipeline/module/standardHtmlFormatter.ts:8</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="indentstring" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> indent<wbr>String</h3>
-					<div class="tsd-signature tsd-kind-icon">indent<wbr>String<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L10">pipeline/module/standardHtmlFormatter.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L15">pipeline/module/standardHtmlFormatter.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -224,7 +190,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_api_pipeline_.htmlformatter.html">HtmlFormatter</a>.<a href="../interfaces/_api_pipeline_.htmlformatter.html#formatdom">formatDom</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L27">pipeline/module/standardHtmlFormatter.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L28">pipeline/module/standardHtmlFormatter.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -248,7 +214,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_api_pipeline_.htmlformatter.html">HtmlFormatter</a>.<a href="../interfaces/_api_pipeline_.htmlformatter.html#formathtml">formatHtml</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L35">pipeline/module/standardHtmlFormatter.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L46">pipeline/module/standardHtmlFormatter.ts:46</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -271,7 +237,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L93">pipeline/module/standardHtmlFormatter.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L116">pipeline/module/standardHtmlFormatter.ts:116</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -297,7 +263,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L45">pipeline/module/standardHtmlFormatter.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L68">pipeline/module/standardHtmlFormatter.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -307,6 +273,52 @@
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> depth: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a name="stripcdata" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> stripCDATA</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">stripCDATA<span class="tsd-signature-symbol">(</span>root<span class="tsd-signature-symbol">: </span><a href="_dom_node_.nodewithchildren.html" class="tsd-signature-type">NodeWithChildren</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L62">pipeline/module/standardHtmlFormatter.ts:62</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>root: <a href="_dom_node_.nodewithchildren.html" class="tsd-signature-type">NodeWithChildren</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a name="stripcomments" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> strip<wbr>Comments</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">strip<wbr>Comments<span class="tsd-signature-symbol">(</span>root<span class="tsd-signature-symbol">: </span><a href="_dom_node_.nodewithchildren.html" class="tsd-signature-type">NodeWithChildren</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L56">pipeline/module/standardHtmlFormatter.ts:56</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>root: <a href="_dom_node_.nodewithchildren.html" class="tsd-signature-type">NodeWithChildren</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -323,7 +335,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L149">pipeline/module/standardHtmlFormatter.ts:149</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L172">pipeline/module/standardHtmlFormatter.ts:172</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -346,7 +358,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L139">pipeline/module/standardHtmlFormatter.ts:139</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L162">pipeline/module/standardHtmlFormatter.ts:162</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -369,7 +381,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L186">pipeline/module/standardHtmlFormatter.ts:186</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L209">pipeline/module/standardHtmlFormatter.ts:209</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -392,7 +404,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L171">pipeline/module/standardHtmlFormatter.ts:171</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L194">pipeline/module/standardHtmlFormatter.ts:194</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -415,7 +427,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/0aeecdc/src/lib/pipeline/module/standardHtmlFormatter.ts#L134">pipeline/module/standardHtmlFormatter.ts:134</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L157">pipeline/module/standardHtmlFormatter.ts:157</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -513,7 +525,7 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/_pipeline_module_standardhtmlformatter_.standardhtmlformattermode.html" class="tsd-kind-icon">Standard<wbr>Html<wbr>Formatter<wbr>Mode</a>
+						<a href="../enums/_pipeline_module_standardhtmlformatter_.formattermode.html" class="tsd-kind-icon">Formatter<wbr>Mode</a>
 					</li>
 				</ul>
 				<ul class="current">
@@ -524,13 +536,7 @@
 								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#eol" class="tsd-kind-icon">eol</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#formatmode" class="tsd-kind-icon">format<wbr>Mode</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#indentstring" class="tsd-kind-icon">indent<wbr>String</a>
+								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#options" class="tsd-kind-icon">options</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#formatdom" class="tsd-kind-icon">format<wbr>Dom</a>
@@ -543,6 +549,12 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#formatwhitespace" class="tsd-kind-icon">format<wbr>Whitespace</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#stripcdata" class="tsd-kind-icon">stripCDATA</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#stripcomments" class="tsd-kind-icon">strip<wbr>Comments</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
 								<a href="_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html#absorbadjacenttextnodes" class="tsd-kind-icon">absorb<wbr>Adjacent<wbr>Text<wbr>Nodes</a>
@@ -563,6 +575,21 @@
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-kind-icon">Formatter<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_pipeline_module_standardhtmlformatter_.html#createformatteroptions" class="tsd-kind-icon">create<wbr>Formatter<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="../modules/_pipeline_module_standardhtmlformatter_.html#minimizedformatterpreset" class="tsd-kind-icon">Minimized<wbr>Formatter<wbr>Preset</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="../modules/_pipeline_module_standardhtmlformatter_.html#noneformatterpreset" class="tsd-kind-icon">None<wbr>Formatter<wbr>Preset</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="../modules/_pipeline_module_standardhtmlformatter_.html#prettyformatterpreset" class="tsd-kind-icon">Pretty<wbr>Formatter<wbr>Preset</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -573,6 +600,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>

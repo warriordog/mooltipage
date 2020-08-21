@@ -309,13 +309,40 @@
 <a name='L250'></a><a href='#L250'>250</a>
 <a name='L251'></a><a href='#L251'>251</a>
 <a name='L252'></a><a href='#L252'>252</a>
-<a name='L253'></a><a href='#L253'>253</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
+<a name='L253'></a><a href='#L253'>253</a>
+<a name='L254'></a><a href='#L254'>254</a>
+<a name='L255'></a><a href='#L255'>255</a>
+<a name='L256'></a><a href='#L256'>256</a>
+<a name='L257'></a><a href='#L257'>257</a>
+<a name='L258'></a><a href='#L258'>258</a>
+<a name='L259'></a><a href='#L259'>259</a>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a>
+<a name='L265'></a><a href='#L265'>265</a>
+<a name='L266'></a><a href='#L266'>266</a>
+<a name='L267'></a><a href='#L267'>267</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -443,8 +470,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -561,13 +589,26 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import os from 'os';
-import Path from 'path';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import Path
+    from 'path';
 &nbsp;
-import { StandardPipeline } from '../pipeline/standardPipeline';
-import * as FsUtils from '../fs/fsUtils';
-import { Page, Pipeline, HtmlFormatter, PipelineInterface, MimeType } from '..';
-import { StandardHtmlFormatterMode, StandardHtmlFormatter } from '../pipeline/module/standardHtmlFormatter';
+import {StandardPipeline} from '../pipeline/standardPipeline';
+import * as FsUtils
+    from '../fs/fsUtils';
+import {
+    HtmlFormatter,
+    MimeType,
+    Page,
+    Pipeline,
+    PipelineInterface
+} from '..';
+import {
+    NoneFormatterPreset,
+    FormatterMode,
+    MinimizedFormatterPreset,
+    PrettyFormatterPreset,
+    StandardHtmlFormatter
+} from '../pipeline/module/standardHtmlFormatter';
 &nbsp;
 /**
  * Called whenever a page is compiled.
@@ -609,7 +650,7 @@ export interface MpOptions {
  * Default Mooltipage options
  */
 export class DefaultMpOptions implements MpOptions {
-    readonly formatter: StandardHtmlFormatterMode.PRETTY = StandardHtmlFormatterMode.PRETTY;
+    readonly formatter: FormatterMode.PRETTY = FormatterMode.PRETTY;
 }
 &nbsp;
 /**
@@ -690,13 +731,14 @@ function createPipeline(options: MpOptions): Pipeline {
  */
 export function createFormatter(options: MpOptions): HtmlFormatter {
     switch (options.formatter) {
-        case StandardHtmlFormatterMode.PRETTY:
-            return new StandardHtmlFormatter(StandardHtmlFormatterMode.PRETTY, os.EOL);
-        case StandardHtmlFormatterMode.MINIMIZED:
-            return new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
-        case StandardHtmlFormatterMode.NONE:
+        case FormatterMode.PRETTY:
+            return new StandardHtmlFormatter(PrettyFormatterPreset);
+        case FormatterMode.MINIMIZED:
+            return new StandardHtmlFormatter(MinimizedFormatterPreset);
+        case FormatterMode.NONE:
+            return new StandardHtmlFormatter(NoneFormatterPreset);
         case undefined:
-            return new StandardHtmlFormatter(StandardHtmlFormatterMode.NONE);
+            return new StandardHtmlFormatter();
         default:
             throw new Error(`Unknown HTML formatter: ${ options.formatter }`);
     }
@@ -820,7 +862,7 @@ export function getResourceTypeExtension(resourceType: MimeType): string {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Aug 20 2020 13:19:44 GMT+0000 (Coordinated Universal Time)
+                at Fri Aug 21 2020 13:52:28 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

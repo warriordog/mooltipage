@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DomParser | mooltipage - v0.0.1</title>
+	<title>FormatterMode | mooltipage - v0.0.1</title>
 	<meta name="description" content="Documentation for mooltipage - v0.0.1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_dom_domparser_.html">&quot;dom/domParser&quot;</a>
+					<a href="../modules/_pipeline_module_standardhtmlformatter_.html">&quot;pipeline/module/standardHtmlFormatter&quot;</a>
 				</li>
 				<li>
-					<a href="_dom_domparser_.domparser.html">DomParser</a>
+					<a href="_pipeline_module_standardhtmlformatter_.formattermode.html">FormatterMode</a>
 				</li>
 			</ul>
-			<h1>Class DomParser</h1>
+			<h1>Enumeration FormatterMode</h1>
 		</div>
 	</div>
 </header>
@@ -72,146 +72,72 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Parses HTML into a dom using htmlparser2</p>
+						<p>Formatting styles for the standard HtmlFormatter.
+						These do not have to be respected by subclasses</p>
 					</div>
 				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">DomParser</span>
-					</li>
-				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_dom_domparser_.domparser.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_dom_domparser_.domparser.html#handler" class="tsd-kind-icon">handler</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_dom_domparser_.domparser.html#parser" class="tsd-kind-icon">parser</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dom_domparser_.domparser.html#parsedom" class="tsd-kind-icon">parse<wbr>Dom</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_pipeline_module_standardhtmlformatter_.formattermode.html#minimized" class="tsd-kind-icon">MINIMIZED</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_pipeline_module_standardhtmlformatter_.formattermode.html#none" class="tsd-kind-icon">NONE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_pipeline_module_standardhtmlformatter_.formattermode.html#pretty" class="tsd-kind-icon">PRETTY</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Dom<wbr>Parser<span class="tsd-signature-symbol">(</span>userOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ParserOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_domparser_.domparser.html" class="tsd-signature-type">DomParser</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/dom/domParser.ts#L17">dom/domParser.ts:17</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Creates a new DomParser instance</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> userOptions: <span class="tsd-signature-type">ParserOptions</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Optional options to pass to htmlparser2</p>
-										</div>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_dom_domparser_.domparser.html" class="tsd-signature-type">DomParser</a></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="handler" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> handler</h3>
-					<div class="tsd-signature tsd-kind-icon">handler<span class="tsd-signature-symbol">:</span> <a href="_dom_domparser_.domhandler.html" class="tsd-signature-type">DomHandler</a></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="minimized" class="tsd-anchor"></a>
+					<h3>MINIMIZED</h3>
+					<div class="tsd-signature tsd-kind-icon">MINIMIZED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;minimized&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/dom/domParser.ts#L12">dom/domParser.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L233">pipeline/module/standardHtmlFormatter.ts:233</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>DomHandler instance that receives callbacks from <a href="_dom_domparser_.domparser.html#parser">parser</a></p>
+							<p>Minimized / &quot;ugly&quot; mode - compacts HTML to single line</p>
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="parser" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> parser</h3>
-					<div class="tsd-signature tsd-kind-icon">parser<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Parser</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="none" class="tsd-anchor"></a>
+					<h3>NONE</h3>
+					<div class="tsd-signature tsd-kind-icon">NONE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;none&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/dom/domParser.ts#L17">dom/domParser.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L238">pipeline/module/standardHtmlFormatter.ts:238</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>HTML parser instance</p>
+							<p>None / disabled mode - do not modify the HTML</p>
 						</div>
 					</div>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="parsedom" class="tsd-anchor"></a>
-					<h3>parse<wbr>Dom</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>Dom<span class="tsd-signature-symbol">(</span>html<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.documentnode.html" class="tsd-signature-type">DocumentNode</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/dom/domParser.ts#L39">dom/domParser.ts:39</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Parse a string of HTML into a DOM</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>html: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>HTML to parse</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_dom_node_.documentnode.html" class="tsd-signature-type">DocumentNode</a></h4>
-							<p>a DocumentNode containing parsed HTML</p>
-						</li>
-					</ul>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="pretty" class="tsd-anchor"></a>
+					<h3>PRETTY</h3>
+					<div class="tsd-signature tsd-kind-icon">PRETTY<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;pretty&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/1cb0b0a/src/lib/pipeline/module/standardHtmlFormatter.ts#L228">pipeline/module/standardHtmlFormatter.ts:228</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Pretty mode - will format HTML for human readability</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -227,7 +153,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_api_pipeline_.html">&quot;api/pipeline&quot;</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/_dom_domparser_.html">&quot;dom/dom<wbr>Parser&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -284,7 +210,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_pipeline_module_resourceparser_.html">&quot;pipeline/module/resource<wbr>Parser&quot;</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/_pipeline_module_standardhtmlformatter_.html">&quot;pipeline/module/standard<wbr>Html<wbr>Formatter&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -297,32 +223,41 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_dom_domparser_.domhandler.html" class="tsd-kind-icon">Dom<wbr>Handler</a>
-					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="_dom_domparser_.domparser.html" class="tsd-kind-icon">Dom<wbr>Parser</a>
+					<li class="current tsd-kind-enum tsd-parent-kind-module">
+						<a href="_pipeline_module_standardhtmlformatter_.formattermode.html" class="tsd-kind-icon">Formatter<wbr>Mode</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_dom_domparser_.domparser.html#constructor" class="tsd-kind-icon">constructor</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_pipeline_module_standardhtmlformatter_.formattermode.html#minimized" class="tsd-kind-icon">MINIMIZED</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_dom_domparser_.domparser.html#handler" class="tsd-kind-icon">handler</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_pipeline_module_standardhtmlformatter_.formattermode.html#none" class="tsd-kind-icon">NONE</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_dom_domparser_.domparser.html#parser" class="tsd-kind-icon">parser</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dom_domparser_.domparser.html#parsedom" class="tsd-kind-icon">parse<wbr>Dom</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_pipeline_module_standardhtmlformatter_.formattermode.html#pretty" class="tsd-kind-icon">PRETTY</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_dom_domparser_.html#createparseroptions" class="tsd-kind-icon">create<wbr>Parser<wbr>Options</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_pipeline_module_standardhtmlformatter_.standardhtmlformatter.html" class="tsd-kind-icon">Standard<wbr>Html<wbr>Formatter</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="../interfaces/_pipeline_module_standardhtmlformatter_.formatteroptions.html" class="tsd-kind-icon">Formatter<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_pipeline_module_standardhtmlformatter_.html#createformatteroptions" class="tsd-kind-icon">create<wbr>Formatter<wbr>Options</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="../modules/_pipeline_module_standardhtmlformatter_.html#minimizedformatterpreset" class="tsd-kind-icon">Minimized<wbr>Formatter<wbr>Preset</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="../modules/_pipeline_module_standardhtmlformatter_.html#noneformatterpreset" class="tsd-kind-icon">None<wbr>Formatter<wbr>Preset</a>
+					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="../modules/_pipeline_module_standardhtmlformatter_.html#prettyformatterpreset" class="tsd-kind-icon">Pretty<wbr>Formatter<wbr>Preset</a>
 					</li>
 				</ul>
 			</nav>
@@ -344,17 +279,12 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 			</ul>
 		</div>
 	</div>
