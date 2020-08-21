@@ -1,6 +1,12 @@
 import test, { ExecutionContext } from 'ava';
 import { DomParser } from '../../lib/dom/domParser';
-import { Node, TagNode } from '../../lib';
+import {
+    CDATANode,
+    CommentNode,
+    Node,
+    TagNode,
+    TextNode
+} from '../../lib';
 
 function testTags(t: ExecutionContext, html: string, tags: string[]): void {
     const domParser = new DomParser();
@@ -40,4 +46,25 @@ test('DomParser allows non-text in <title>', t => {
     t.truthy(div);
     t.true(TagNode.isTagNode(div as Node));
     t.is((div as TagNode).tagName, 'div');
+});
+
+test('DomParser parses CDATA as CDATANode when CDATA enabled', t => {
+    const domParser = new DomParser({
+        recognizeCDATA: true
+    });
+    const dom = domParser.parseDom('<![CDATA[cdata contents]]>');
+    t.truthy(dom.firstChild);
+    t.true(CDATANode.isCDATANode(dom.firstChild as Node));
+    t.truthy((dom.firstChild as CDATANode).firstChild);
+    t.true(TextNode.isTextNode((dom.firstChild as CDATANode).firstChild as Node));
+    t.is(((dom.firstChild as CDATANode).firstChild as TextNode).text, 'cdata contents');
+});
+test('DomParser parses CDATA as CommentNode when CDATA disabled', t => {
+    const domParser = new DomParser({
+        recognizeCDATA: false
+    });
+    const dom = domParser.parseDom('<![CDATA[cdata contents]]>');
+    t.truthy(dom.firstChild);
+    t.true(CommentNode.isCommentNode(dom.firstChild as Node));
+    t.is((dom.firstChild as CommentNode).text, '[CDATA[cdata contents]]');
 });

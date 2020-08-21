@@ -1,7 +1,10 @@
 import { ExecutionContext } from 'ava';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
-import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
+import {
+    StandardHtmlFormatter,
+    MinimizedFormatterPreset
+} from '../../lib/pipeline/module/standardHtmlFormatter';
 
 export function compareFragmentMacro(t: ExecutionContext, fragmentHtml: string, expectedHtml: string, sources?: Array<[string, string]>): void {
     // set up pipeline
@@ -10,7 +13,7 @@ export function compareFragmentMacro(t: ExecutionContext, fragmentHtml: string, 
     if (sources != undefined) {
         sources.forEach(source => pi.setSourceHtml(source[0], source[1]));
     }
-    const pipeline = new StandardPipeline(pi, new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED));
+    const pipeline = new StandardPipeline(pi, new StandardHtmlFormatter(MinimizedFormatterPreset));
 
     // run build
     const fragment = pipeline.compileFragment('frag.html');

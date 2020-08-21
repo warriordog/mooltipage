@@ -1,10 +1,23 @@
-import os from 'os';
-import Path from 'path';
+import Path
+    from 'path';
 
-import { StandardPipeline } from '../pipeline/standardPipeline';
-import * as FsUtils from '../fs/fsUtils';
-import { Page, Pipeline, HtmlFormatter, PipelineInterface, MimeType } from '..';
-import { StandardHtmlFormatterMode, StandardHtmlFormatter } from '../pipeline/module/standardHtmlFormatter';
+import {StandardPipeline} from '../pipeline/standardPipeline';
+import * as FsUtils
+    from '../fs/fsUtils';
+import {
+    HtmlFormatter,
+    MimeType,
+    Page,
+    Pipeline,
+    PipelineInterface
+} from '..';
+import {
+    NoneFormatterPreset,
+    FormatterMode,
+    MinimizedFormatterPreset,
+    PrettyFormatterPreset,
+    StandardHtmlFormatter
+} from '../pipeline/module/standardHtmlFormatter';
 
 /**
  * Called whenever a page is compiled.
@@ -46,7 +59,7 @@ export interface MpOptions {
  * Default Mooltipage options
  */
 export class DefaultMpOptions implements MpOptions {
-    readonly formatter: StandardHtmlFormatterMode.PRETTY = StandardHtmlFormatterMode.PRETTY;
+    readonly formatter: FormatterMode.PRETTY = FormatterMode.PRETTY;
 }
 
 /**
@@ -127,13 +140,14 @@ function createPipeline(options: MpOptions): Pipeline {
  */
 export function createFormatter(options: MpOptions): HtmlFormatter {
     switch (options.formatter) {
-        case StandardHtmlFormatterMode.PRETTY:
-            return new StandardHtmlFormatter(StandardHtmlFormatterMode.PRETTY, os.EOL);
-        case StandardHtmlFormatterMode.MINIMIZED:
-            return new StandardHtmlFormatter(StandardHtmlFormatterMode.MINIMIZED);
-        case StandardHtmlFormatterMode.NONE:
+        case FormatterMode.PRETTY:
+            return new StandardHtmlFormatter(PrettyFormatterPreset);
+        case FormatterMode.MINIMIZED:
+            return new StandardHtmlFormatter(MinimizedFormatterPreset);
+        case FormatterMode.NONE:
+            return new StandardHtmlFormatter(NoneFormatterPreset);
         case undefined:
-            return new StandardHtmlFormatter(StandardHtmlFormatterMode.NONE);
+            return new StandardHtmlFormatter();
         default:
             throw new Error(`Unknown HTML formatter: ${ options.formatter }`);
     }

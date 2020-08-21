@@ -2,7 +2,10 @@ import test from 'ava';
 import { MemoryPipelineInterface } from '../_mocks/memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { MimeType } from '../../lib';
-import { StandardHtmlFormatter, StandardHtmlFormatterMode } from '../../lib/pipeline/module/standardHtmlFormatter';
+import {
+    StandardHtmlFormatter,
+    PrettyFormatterPreset
+} from '../../lib/pipeline/module/standardHtmlFormatter';
 
 test('Build produces a page and does not crash', t => {
     // set up pipeline
@@ -124,7 +127,7 @@ function createPipeline(): StandardPipeline {
     });
 
     // enable pretty formatting
-    const htmlFormatter = new StandardHtmlFormatter(StandardHtmlFormatterMode.PRETTY);
+    const htmlFormatter = new StandardHtmlFormatter(PrettyFormatterPreset);
 
     return new StandardPipeline(pipelineInterface, htmlFormatter);
 }

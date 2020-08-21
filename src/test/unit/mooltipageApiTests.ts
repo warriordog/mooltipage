@@ -10,7 +10,10 @@ import {
 } from '../../lib/api/mooltipage';
 import {
     StandardHtmlFormatter,
-    StandardHtmlFormatterMode
+    FormatterMode,
+    PrettyFormatterPreset,
+    MinimizedFormatterPreset,
+    NoneFormatterPreset
 } from '../../lib/pipeline/module/standardHtmlFormatter';
 import {
     getSandboxPath,
@@ -23,24 +26,24 @@ import Path from 'path';
 
 // createFormatter()
 test('createFormatter() creates pretty formatter', t => {
-    const formatter = createFormatter({ formatter: StandardHtmlFormatterMode.PRETTY });
+    const formatter = createFormatter({ formatter: FormatterMode.PRETTY });
     t.true(formatter instanceof StandardHtmlFormatter);
-    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.PRETTY);
+    t.deepEqual((formatter as StandardHtmlFormatter).options, PrettyFormatterPreset);
 });
 test('createFormatter() creates ugly formatter', t => {
-    const formatter = createFormatter({ formatter: StandardHtmlFormatterMode.MINIMIZED });
+    const formatter = createFormatter({ formatter: FormatterMode.MINIMIZED });
     t.true(formatter instanceof StandardHtmlFormatter);
-    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.MINIMIZED);
+    t.deepEqual((formatter as StandardHtmlFormatter).options, MinimizedFormatterPreset);
 });
 test('createFormatter() creates none formatter', t => {
-    const formatter = createFormatter({ formatter: StandardHtmlFormatterMode.NONE });
+    const formatter = createFormatter({ formatter: FormatterMode.NONE });
     t.true(formatter instanceof StandardHtmlFormatter);
-    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.NONE);
+    t.deepEqual((formatter as StandardHtmlFormatter).options, NoneFormatterPreset);
 });
 test('createFormatter() defaults to none formatter', t => {
     const formatter = createFormatter({ formatter: undefined });
     t.true(formatter instanceof StandardHtmlFormatter);
-    t.is((formatter as StandardHtmlFormatter).formatMode, StandardHtmlFormatterMode.NONE);
+    t.deepEqual((formatter as StandardHtmlFormatter).options, NoneFormatterPreset);
 });
 test('createFormatter() throws on invalid formatter', t => {
     t.throws(() => createFormatter({ formatter: 'invalid' }));
@@ -48,7 +51,7 @@ test('createFormatter() throws on invalid formatter', t => {
 
 // DefaultMpOptions
 test('DefaultMpOptions sets formatter', t => {
-    t.is(new DefaultMpOptions().formatter, StandardHtmlFormatterMode.PRETTY);
+    t.is(new DefaultMpOptions().formatter, FormatterMode.PRETTY);
 });
 // NodePipelineInterface
 test('NodePipelineInterface.resolveSourceResource() resolves relative to source path', t => {
