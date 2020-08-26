@@ -14,20 +14,17 @@ export function buildPage(dom: DocumentNode): void {
         procIn.removeSelf();
     }
 
+    // init head
+    const headTag = createHead(dom);
+
+    // init body
+    const bodyTag = createBody(dom);
+
     // get or create html
     const htmlTag = createHtml(dom);
 
-    // init head
-    const headTag = createHead(htmlTag);
-    htmlTag.appendChild(headTag);
-
-    // init body
-    const bodyTag = createBody(htmlTag);
-    htmlTag.appendChild(bodyTag);
-
     // remove any left over nodes
     dom.clear();
-    htmlTag.clear();
 
     // rebuild page
     dom.appendChildren(procIns);
@@ -37,39 +34,30 @@ export function buildPage(dom: DocumentNode): void {
 }
 
 function createHtml(dom: DocumentNode): TagNode {
-    let finalHtmlTag: TagNode;
-    const htmlTags = dom.findChildTagsByTagName('html');
-    if (htmlTags.length > 0) {
-        const firstHtml = htmlTags[0];
-        firstHtml.removeSelf();
+    const htmlTag = new TagNode('html');
 
-        for (let i = 1; i < htmlTags.length; i++) {
-            const currHtml = htmlTags[i];
-            currHtml.removeSelf();
+    const sourceHtmlTags = dom.findChildTagsByTagName('html');
+    for (const sourceHtml of sourceHtmlTags) {
+        // copy children
+        htmlTag.appendChildren(sourceHtml.childNodes);
 
-            // copy children
-            firstHtml.appendChildren(currHtml.childNodes);
+        // copy attributes
+        sourceHtml.getAttributes().forEach((value, key) => {
+            if (!htmlTag.hasAttribute(key)) {
+                htmlTag.setRawAttribute(key, value);
+            }
+        });
 
-            // copy attributes
-            firstHtml.getAttributes().forEach((value, key) => {
-                if (!firstHtml.hasAttribute(key)) {
-                    firstHtml.setRawAttribute(key, value);
-                }
-            });
-        }
-
-        finalHtmlTag = firstHtml;
-    } else {
-        // if there are none, then make one;
-        finalHtmlTag = new TagNode('html');
+        // remove HTML tag
+        sourceHtml.removeSelf();
     }
 
     // add required "lang" attribute if missing
-    if (!finalHtmlTag.hasAttribute('lang')) {
-        finalHtmlTag.setAttribute('lang', 'en');
+    if (!htmlTag.hasAttribute('lang')) {
+        htmlTag.setAttribute('lang', 'en');
     }
 
-    return finalHtmlTag;
+    return htmlTag;
 }
 
 // Tags that are only allowed (or should only be used) in the <head> section
@@ -77,21 +65,24 @@ const headTags: string[] = [
     'style',
     'link',
     'meta',
-    'head',
     'base'
 ];
 
 function createHead(root: NodeWithChildren): TagNode {
     const headTag = new TagNode('head');
 
-    // copy <head> elements from dom
+    // extract children of head tags into new head
+    for (const existingHead of root.findChildTagsByTagName('head')) {
+        // move children
+        headTag.appendChildren(existingHead.childNodes);
+
+        // remove the old head when done
+        existingHead.removeSelf();
+    }
+
+    // move elements that can only exist in the head
     const headContents: Node[] = root.findChildTags((tag: TagNode) => headTags.includes(tag.tagName));
     headTag.appendChildren(headContents);
-
-    // "promote" children of nested <head> tags
-    for (const childHead of headTag.findChildTagsByTagName('head')) {
-        childHead.removeSelf(true);
-    }
 
     // add title if missing
     if (headTag.findChildTagByTagName('title', false) === null) {
