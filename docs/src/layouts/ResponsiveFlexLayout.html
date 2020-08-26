@@ -1,0 +1,32 @@
+<!-- Layout that switches between row and column based on screen size -->
+
+<div class="responsive-flex-layout ${ $.class || '' }" id="{{ $.id }}" data-direction="{{ $.direction || 'row' }}">
+    <m-slot></m-slot>
+</div>
+
+<style compiled bind="link">
+    .responsive-flex-layout {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    .responsive-flex-layout[data-direction="row"] {
+        flex-direction: var(--flow-flex-direction-inverse);
+        align-items: flex-start;
+    }
+
+    .responsive-flex-layout[data-direction="column"] {
+        flex-direction: var(--flow-flex-direction);
+        align-items: center;
+    }
+
+    @media(min-width: 992px) {
+        .responsive-flex-layout[data-direction="row"] {
+            align-items: center;
+        }
+
+        .responsive-flex-layout[data-direction="column"] {
+            align-items: flex-start;
+        }
+    }
+</style>

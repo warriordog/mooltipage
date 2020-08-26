@@ -1,0 +1,87 @@
+<m-import src="@/layouts/ResponsiveFlexLayout.html" as="responsive" />
+<m-import src="@/fragments/Island.html" as="island" />
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${ $.pageTitle }</title>
+    <style compiled src="@/css/common.css" bind="link"></style>
+</head>
+<body>
+    <div id="main-layout">
+        <!-- Top bar -->
+        <header id="top-bar">
+            <h1 id="page-title">${ $.pageTitle }</h1>
+            <div class="flex-spacer"></div>
+            <m-slot slot="top-bar"></m-slot>
+        </header>
+
+        <responsive id="lower-section" direction="row">
+            <!-- Side bar -->
+            <aside id="side-bar">
+                <island>
+                    <responsive direction="column">
+                        <m-fragment src="@/fragments/SiteNav.html"></m-fragment>
+                        <m-slot slot="side-bar"></m-slot>
+                    </responsive>
+                </island>
+            </aside>
+
+            <!-- Main content -->
+            <main id="main-content">
+                <m-slot></m-slot>
+            </main>
+        </responsive>
+    </div>
+</body>
+</html>
+
+<!-- CSS for MainLayout -->
+<style compiled bind="link">
+    #main-layout {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: stretch;
+    }
+
+    #top-bar {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+
+        padding: var(--flow-padding);
+        background-color: var(--color-bg-banner);
+
+        flex: 1 0 100%;
+    }
+
+    #lower-section {
+        background-color: var(--color-bg-content);
+        box-shadow: inset 0 8px 5px -5px var(--color-bg-banner);
+
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: stretch;
+    }
+
+    #side-bar {
+        flex: 1 0 100%;
+    }
+
+    @media(min-width: 992px) {
+        #side-bar {
+            flex: 0 0 250px;
+        }
+    }
+
+    #main-content {
+        padding: var(--flow-padding);
+
+        flex: 1;
+    }
+</style>

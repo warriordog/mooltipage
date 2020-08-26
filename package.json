@@ -27,13 +27,14 @@
     "test": "npm run build && ava",
     "coverage": "npm run build && nyc ava",
     "typedoc": "typedoc src/lib",
-    "docs": "npm run rebuild && npm run coverage && npm run typedoc && node ./dist/bin/main.js --inPath=./docs/src --outPath=./docs/dist --formatter=minimized ./docs/src/index.html",
+    "makedocs": "node ./dist/bin/main.js --inPath=./docs/src --outPath=./docs/dist --formatter=minimized ./docs/src/index.html",
+    "docs": "npm run rebuild && npm run coverage && npm run typedoc && npm run makedocs",
     "lint": "eslint --ext .js,.ts src",
     "lint-fix": "npm run lint -- --fix",
     "lint-full": "npm run lint -- --no-eslintrc --config .eslintrc-full.json",
     "lint-full-fix": "npm run lint-fix -- --no-eslintrc --config .eslintrc-full.json",
     "prepublishOnly": "npm run rebuild && npm run lint-full && npm run docs",
-    "debugtest": "ava --serial --timeout=60m --verbose"
+    "debugtest": "ava --serial --verbose"
   },
   "bin": {
     "mooltipage": "./dist/bin/main.js"

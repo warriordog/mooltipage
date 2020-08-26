@@ -1,15 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Mooltipage Documentation</title>
-</head>
-<body>
-    <h1>This is where the mooltipage official docs will go.</h1>
-    <p>This file will be compiled with mooltipage itself, and the rendered HTML will be served by Github pages.</p>
+<m-fragment src="@/layouts/page/MainLayout.html" page-title="Mooltipage Documentation">
+
+    <h1>This is the work-in-progress official Mooltipage documentation.</h1>
+    <p>
+        This file is compiled with Mooltipage itself, and the rendered HTML is served by Github pages.
+    </p>
+
     <br>
-    <a href="gen/coverage/lcov-report/index.html">Code Coverage Report</a>
-    <br>
-    <a href="gen/typedoc/index.html">TypeDoc Index (JSDocs)</a>
-</body>
-</html>
+    Auto-generated Reports:
+    <ul>
+        <li><a href="gen/coverage/lcov-report/index.html" target="_blank" rel="noopener">Code Coverage Report</a></li>
+        <li><a href="gen/typedoc/index.html" target="_blank" rel="noopener">TypeDoc Index (JSDocs)</a></li>
+    </ul>
+</m-fragment>

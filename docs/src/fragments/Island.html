@@ -1,0 +1,22 @@
+<!-- Implementation of "islands" - isolated, floating sections of content -->
+
+<div class="island">
+    <div class="island-content">
+        <m-slot></m-slot>
+    </div>
+</div>
+
+<style compiled>
+    .island {
+        padding: var(--flow-padding);
+    }
+
+    .island-content {
+        padding: var(--flow-padding);
+
+        box-shadow: 3px 3px 7px 1px var(--color-bg-shadow);
+        border: 1px solid var(--color-bg-shadow);
+        border-radius: 5px;
+
+    }
+</style>
