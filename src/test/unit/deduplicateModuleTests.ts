@@ -1,8 +1,12 @@
 import test from 'ava';
-import {DeduplicateModule} from '../../lib/pipeline/module/compiler/deduplicateModule';
+import {
+    DeduplicateModule,
+    NODE_TAG_IS_DEDUPLICATED
+} from '../../lib/pipeline/module/compiler/deduplicateModule';
 import {HtmlCompilerContext} from '../../lib/pipeline/module/htmlCompiler';
 import {Node, StyleNode, TagNode, TextNode} from '../../lib';
 import {PipelineContext} from '../../lib/pipeline/standardPipeline';
+import {compareFragmentMacro} from '../_util/htmlCompare';
 
 function createHtmlContext(node: Node): HtmlCompilerContext {
     return new HtmlCompilerContext({
@@ -127,3 +131,36 @@ test('DeduplicateModule.dedupeStyle() ignores whitespace', t => {
     t.is(htmlContext.sharedContext.uniqueStyles.size, 1);
     t.true(htmlContext.sharedContext.uniqueStyles.has(css));
 });
+
+test('DeduplicateModule.enterNode() skips nodes with tag set', t => {
+    const css = '.class{}';
+    const styleNode = new StyleNode();
+    styleNode.nodeTags.add(NODE_TAG_IS_DEDUPLICATED);
+    const textNode = new TextNode(css);
+    styleNode.appendChild(textNode);
+    const htmlContext = createHtmlContext(styleNode);
+    htmlContext.sharedContext.uniqueStyles.add(css);
+
+    const dedupeModule = new DeduplicateModule();
+    dedupeModule.enterNode(htmlContext);
+
+    t.false(htmlContext.isDeleted);
+    t.is(htmlContext.sharedContext.uniqueStyles.size, 1);
+    t.true(htmlContext.sharedContext.uniqueStyles.has(css));
+});
+
+test('DeduplicateModule works if style is nested multiple slots deep', compareFragmentMacro, `
+    <m-fragment src="nested.html">
+        <m-fragment src="nested.html">
+            <m-fragment src="nested.html">
+                <style>.class1{}</style>
+                <style>.class2{}</style>
+            </m-fragment>
+            <style>.class2{}</style>
+        </m-fragment>
+        <style>.class2{}</style>
+    </m-fragment>`,
+    `<style>.class1{}</style><style>.class2{}</style>`,
+    [
+        ['nested.html', `<m-slot></m-slot>`]
+    ]);

@@ -2,16 +2,30 @@ import {HtmlCompilerModule, HtmlCompilerContext} from '../htmlCompiler';
 import {StyleNode, TagNode} from '../../..';
 
 /**
+ * Node tag that indicates that a node has already been processed by DeduplicateModule.
+ * Nodes with this tag set will be skipped.
+ */
+export const NODE_TAG_IS_DEDUPLICATED = 'DeduplicateModule.IsDeduplicated';
+
+/**
  * Removes unnecessary duplicate nodes from the DOM.
  */
 export class DeduplicateModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
-        if (StyleNode.isStyleNode(htmlContext.node)) {
-            DeduplicateModule.dedupeStyle(htmlContext.node, htmlContext);
+        const node = htmlContext.node;
 
-        } else if (TagNode.isTagNode(htmlContext.node) && htmlContext.node.tagName === 'link') {
-            DeduplicateModule.dedupeLink(htmlContext.node, htmlContext);
+        // Don't process nodes more than once.
+        // This can happen if a style or link node is generated inside a nested fragment.
+        if (!node.nodeTags.has(NODE_TAG_IS_DEDUPLICATED)) {
+            // mark as processed
+            node.nodeTags.add(NODE_TAG_IS_DEDUPLICATED);
 
+            if (StyleNode.isStyleNode(node)) {
+                DeduplicateModule.dedupeStyle(node, htmlContext);
+
+            } else if (TagNode.isTagNode(node) && node.tagName === 'link') {
+                DeduplicateModule.dedupeLink(node, htmlContext);
+            }
         }
     }
 

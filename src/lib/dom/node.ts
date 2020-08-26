@@ -75,6 +75,13 @@ export abstract class Node {
     readonly nodeData: Record<PropertyKey, unknown> = {};
 
     /**
+     * Set of unique string tags applied to this node.
+     * These tags do not inherit and are unique to each instance.
+     * Meaning is tag-specific.
+     */
+    readonly nodeTags = new Set<string>();
+
+    /**
      * Creates a new Node
      * @param nodeType Type of this node
      */
