@@ -92,7 +92,13 @@ export class StandardPipeline implements Pipeline {
     compileFragment(resPath: string, fragmentContext?: FragmentContext): Fragment {
         const fragment = this.compileFragmentOnly(resPath, fragmentContext);
 
-        this.htmlFormatter.formatDom(fragment.dom);
+        // Only format if this fragment is being compiled standalone instead of as part of a page.
+        // If this fragment is being used elsewhere, then it will be formatted there.
+        // Formatting is an expensive operation and should not be duplicated if possible.
+        const isTopLevel = fragmentContext === undefined;
+        if (isTopLevel) {
+            this.htmlFormatter.formatDom(fragment.dom);
+        }
 
         return fragment;
     }
