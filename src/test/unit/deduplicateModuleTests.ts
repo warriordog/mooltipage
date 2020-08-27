@@ -4,7 +4,12 @@ import {
     NODE_TAG_IS_DEDUPLICATED
 } from '../../lib/pipeline/module/compiler/deduplicateModule';
 import {HtmlCompilerContext} from '../../lib/pipeline/module/htmlCompiler';
-import {Node, StyleNode, TagNode, TextNode} from '../../lib';
+import {
+    Node,
+    UncompiledStyleNode,
+    TagNode,
+    TextNode
+} from '../../lib';
 import {PipelineContext} from '../../lib/pipeline/standardPipeline';
 import {compareFragmentMacro} from '../_util/htmlCompare';
 
@@ -67,7 +72,7 @@ test('DeduplicateModule.dedupeLink() removes duplicate links', t => {
 
 test('DeduplicateModule.dedupeStyle() skips non-duplicate styles', t => {
     const css = '.class {}';
-    const styleNode = new StyleNode();
+    const styleNode = new UncompiledStyleNode();
     const textNode = new TextNode(css);
     styleNode.appendChild(textNode);
     const htmlContext = createHtmlContext(styleNode);
@@ -78,7 +83,7 @@ test('DeduplicateModule.dedupeStyle() skips non-duplicate styles', t => {
 });
 
 test('DeduplicateModule.dedupeStyle() deletes empty styles', t => {
-    const styleNode = new StyleNode();
+    const styleNode = new UncompiledStyleNode();
     const htmlContext = createHtmlContext(styleNode);
 
     DeduplicateModule.dedupeStyle(styleNode, htmlContext);
@@ -89,7 +94,7 @@ test('DeduplicateModule.dedupeStyle() deletes empty styles', t => {
 
 test('DeduplicateModule.dedupeStyle() remembers unique styles', t => {
     const css = '.class {}';
-    const styleNode = new StyleNode();
+    const styleNode = new UncompiledStyleNode();
     const textNode = new TextNode(css);
     styleNode.appendChild(textNode);
     const htmlContext = createHtmlContext(styleNode);
@@ -103,7 +108,7 @@ test('DeduplicateModule.dedupeStyle() remembers unique styles', t => {
 
 test('DeduplicateModule.dedupeStyle() removes duplicate styles', t => {
     const css = '.class {}';
-    const styleNode = new StyleNode();
+    const styleNode = new UncompiledStyleNode();
     const textNode = new TextNode(css);
     styleNode.appendChild(textNode);
     const htmlContext = createHtmlContext(styleNode);
@@ -119,7 +124,7 @@ test('DeduplicateModule.dedupeStyle() removes duplicate styles', t => {
 test('DeduplicateModule.dedupeStyle() ignores whitespace', t => {
     const css = '.class {}';
     const cssSpace = `    ${ css }\n\n\n`;
-    const styleNode = new StyleNode();
+    const styleNode = new UncompiledStyleNode();
     const textNode = new TextNode(cssSpace);
     styleNode.appendChild(textNode);
     const htmlContext = createHtmlContext(styleNode);
@@ -134,7 +139,7 @@ test('DeduplicateModule.dedupeStyle() ignores whitespace', t => {
 
 test('DeduplicateModule.enterNode() skips nodes with tag set', t => {
     const css = '.class{}';
-    const styleNode = new StyleNode();
+    const styleNode = new UncompiledStyleNode();
     styleNode.nodeTags.add(NODE_TAG_IS_DEDUPLICATED);
     const textNode = new TextNode(css);
     styleNode.appendChild(textNode);

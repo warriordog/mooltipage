@@ -1416,21 +1416,18 @@ export class MDataNode extends TagNode {
  * <style> node.
  * May be compiled (processed by mooltipage) or not (ignored by mooltipage)
  */
-export class StyleNode extends TagNode {
+export abstract class StyleNode extends TagNode {
+    protected constructor(compiled: boolean, attributes?: Map<string, unknown>) {
+        super('style', attributes);
+
+        this.setBooleanAttribute('compiled', compiled);
+    }
+
     /**
      * If this StyleNode is being processed by Mooltipage
      */
-    readonly compiled: boolean;
-
-    constructor(compiled?: boolean, attributes?: Map<string, unknown>) {
-        super('style', attributes);
-
-        this.compiled = compiled ?? false;
-        this.setBooleanAttribute('compiled', this.compiled);
-    }
-
-    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): StyleNode {
-        return NodeLogic.cloneStyleNode(this, deep, callback);
+    get compiled(): boolean {
+        return this.hasAttribute('compiled');
     }
 
     /**
@@ -1439,6 +1436,27 @@ export class StyleNode extends TagNode {
      */
     static isStyleNode(node: Node): node is StyleNode {
         return TagNode.isTagNode(node) && node.tagName === 'style';
+    }
+}
+
+/**
+ * Style node that will be ignored by Mooltipage
+ */
+export class UncompiledStyleNode extends StyleNode {
+    constructor(attributes?: Map<string, unknown>) {
+        super(false, attributes);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): UncompiledStyleNode {
+        return NodeLogic.cloneUncompiledStyleNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is a UncompiledStyleNode
+     * @param node Node to check
+     */
+    static isUncompiledStyleNode(node: Node): node is UncompiledStyleNode {
+        return StyleNode.isStyleNode(node) && !node.compiled;
     }
 }
 
@@ -1565,21 +1583,18 @@ export class ExternalStyleNode extends CompiledStyleNode {
  * <script> tag.
  * Can be compiled (processed by Mooltipage) or not (ignored by mooltipage)
  */
-export class ScriptNode extends TagNode {
+export abstract class ScriptNode extends TagNode {
+    protected constructor(compiled: boolean, attributes?: Map<string, unknown>) {
+        super('script', attributes);
+
+        this.setBooleanAttribute('compiled', compiled);
+    }
+
     /**
      * If this <script> is compiled by mooltipage or ignored
      */
-    readonly compiled: boolean;
-    
-    constructor(compiled?: boolean, attributes?: Map<string, unknown>) {
-        super('script', attributes);
-
-        this.compiled = compiled ?? false;
-        this.setBooleanAttribute('compiled', this.compiled);
-    }
-
-    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): ScriptNode {
-        return NodeLogic.cloneScriptNode(this, deep, callback);
+    get compiled(): boolean {
+        return this.hasAttribute('compiled');
     }
 
     /**
@@ -1588,6 +1603,27 @@ export class ScriptNode extends TagNode {
      */
     static isScriptNode(node: Node): node is ScriptNode {
         return TagNode.isTagNode(node) && node.tagName === 'script';
+    }
+}
+
+/**
+ * Script node that will be ignored by Mooltipage
+ */
+export class UncompiledScriptNode extends ScriptNode {
+    constructor(attributes?: Map<string, unknown>) {
+        super(false, attributes);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): UncompiledStyleNode {
+        return NodeLogic.cloneUncompiledScriptNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an UncompiledScriptNode
+     * @param node Node to check
+     */
+    static isUncompiledScriptNode(node: Node): node is UncompiledStyleNode {
+        return ScriptNode.isScriptNode(node) && !node.compiled;
     }
 }
 

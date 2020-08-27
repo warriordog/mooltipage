@@ -1,5 +1,35 @@
 import { Handler, Parser, ParserOptions } from 'htmlparser2/lib/Parser';
-import { DocumentNode, NodeWithChildren, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MVarNode, MFragmentNode, MSlotNode, MContentNode, MImportNode, MIfNode, MScopeNode, MForNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MDataNode, ExternalStyleNode, InternalStyleNode, StyleNodeBind, StyleNode, ScriptNode, ExternalScriptNode, InternalScriptNode } from './node';
+import {
+    DocumentNode,
+    NodeWithChildren,
+    TagNode,
+    TextNode,
+    CommentNode,
+    CDATANode,
+    ProcessingInstructionNode,
+    MVarNode,
+    MFragmentNode,
+    MSlotNode,
+    MContentNode,
+    MImportNode,
+    MIfNode,
+    MScopeNode,
+    MForNode,
+    MForOfNode,
+    MForInNode,
+    MElseNode,
+    MElseIfNode,
+    MDataNode,
+    ExternalStyleNode,
+    InternalStyleNode,
+    StyleNodeBind,
+    StyleNode,
+    ScriptNode,
+    ExternalScriptNode,
+    InternalScriptNode,
+    UncompiledScriptNode,
+    UncompiledStyleNode
+} from './node';
 import { MimeType } from '..';
 
 /**
@@ -301,7 +331,7 @@ export class DomHandler implements Partial<Handler> {
     private static createStyleNode(attributes: Map<string, string | null>): StyleNode {
         // "uncompiled" style nodes should be passed on as-is
         if (!attributes.has('compiled')) {
-            return new StyleNode(false, attributes);
+            return new UncompiledStyleNode(attributes);
         }
 
         // "compiled" style nodes need further processing
@@ -320,7 +350,7 @@ export class DomHandler implements Partial<Handler> {
     private static createScriptNode(attributes: Map<string, string | null>): ScriptNode {
         // "uncompiled" script nodes should be passed on as-is
         if (!attributes.has('compiled')) {
-            return new ScriptNode(false, attributes);
+            return new UncompiledScriptNode(attributes);
         }
 
         // "compiled" script nodes need further processing

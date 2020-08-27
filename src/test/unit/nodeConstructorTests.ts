@@ -17,12 +17,12 @@ import {
     InternalStyleNode,
     StyleNodeBind,
     ExternalStyleNode,
-    StyleNode,
-    ScriptNode,
     InternalScriptNode,
     ExternalScriptNode,
     MImportNode,
-    SlotReferenceNode
+    SlotReferenceNode,
+    UncompiledStyleNode,
+    UncompiledScriptNode
 } from '../../lib';
 
 test('TagNode constructor handles arguments', t => {
@@ -250,18 +250,11 @@ test('MDataNode parses multiple references', t => {
     }
 });
 
-test('StyleNode.compiled works', t => {
-    const node1 = new StyleNode(true);
-    const node2 = new StyleNode(false);
-
-    t.true(node1.compiled);
-    t.false(node2.compiled);
-});
-
-test('StyleNode.compiled default value is populated', t => {
-    const node = new StyleNode();
+test('UncompiledStyleNode.compiled value is correct', t => {
+    const node = new UncompiledStyleNode();
 
     t.false(node.compiled);
+    t.false(node.hasAttribute('compiled'));
 });
 
 test('InternalStyleNode.compiled value is correct', t => {
@@ -339,18 +332,11 @@ test('ExternalStyleNode.src works', t => {
     t.is(node.getRawAttribute('src'), 'new.css');
 });
 
-test('ScriptNode.compiled works', t => {
-    const node1 = new ScriptNode(true);
-    const node2 = new ScriptNode(false);
-
-    t.true(node1.compiled);
-    t.false(node2.compiled);
-});
-
-test('ScriptNode.compiled default value is populated', t => {
-    const node = new ScriptNode();
+test('UncompiledScriptNode.compiled value is populated', t => {
+    const node = new UncompiledScriptNode();
 
     t.false(node.compiled);
+    t.false(node.hasAttribute('compiled'));
 });
 
 test('InternalScriptNode.compiled value is correct', t => {

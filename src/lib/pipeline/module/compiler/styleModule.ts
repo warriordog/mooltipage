@@ -1,5 +1,14 @@
 import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
-import { TagNode, CompiledStyleNode, InternalStyleNode, ExternalStyleNode, TextNode, StyleNodeBind, StyleNode, MimeType } from '../../..';
+import {
+    TagNode,
+    CompiledStyleNode,
+    InternalStyleNode,
+    ExternalStyleNode,
+    TextNode,
+    StyleNodeBind,
+    UncompiledStyleNode,
+    MimeType
+} from '../../..';
 import {resolveResPath} from '../resolvePath';
 
 export class StyleModule implements HtmlCompilerModule {
@@ -32,7 +41,7 @@ export class StyleModule implements HtmlCompilerModule {
 
     compileStyleHead(currentNode: CompiledStyleNode, styleContent: string, htmlContext: HtmlCompilerContext): void {
         // create style node
-        const styleNode = new StyleNode(false);
+        const styleNode = new UncompiledStyleNode();
         const styleText = new TextNode(styleContent);
         styleNode.appendChild(styleText);
 

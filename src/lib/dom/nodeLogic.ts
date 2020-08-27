@@ -1,4 +1,31 @@
-import { Node, NodeWithChildren, DocumentNode, TagNode, TextNode, CommentNode, CDATANode, ProcessingInstructionNode, MFragmentNode, MSlotNode, MContentNode, MVarNode, MScopeNode, MIfNode, MForOfNode, MForInNode, MElseNode, MElseIfNode, MDataNode, InternalStyleNode, ExternalStyleNode, StyleNode, ScriptNode, InternalScriptNode, ExternalScriptNode, MImportNode } from './node';
+import {
+    Node,
+    NodeWithChildren,
+    DocumentNode,
+    TagNode,
+    TextNode,
+    CommentNode,
+    CDATANode,
+    ProcessingInstructionNode,
+    MFragmentNode,
+    MSlotNode,
+    MContentNode,
+    MVarNode,
+    MScopeNode,
+    MIfNode,
+    MForOfNode,
+    MForInNode,
+    MElseNode,
+    MElseIfNode,
+    MDataNode,
+    UncompiledStyleNode,
+    InternalStyleNode,
+    ExternalStyleNode,
+    UncompiledScriptNode,
+    InternalScriptNode,
+    ExternalScriptNode,
+    MImportNode
+} from './node';
 
 /**
  * Detach node and its children from the DOM.
@@ -567,15 +594,15 @@ export function cloneMDataNode(node: MDataNode, deep: boolean, callback?: (oldNo
 }
 
 /**
- * Clones a StyleNode
+ * Clones an UncompiledStyleNode
  * @param node Node to clone
  * @param deep If true, children will be cloned
  * @param callback Optional callback after node is cloned
  */
-export function cloneStyleNode(node: StyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): StyleNode {
+export function cloneUncompiledStyleNode(node: UncompiledStyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): UncompiledStyleNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new StyleNode(node.compiled, newAttrs);
+    const newNode = new UncompiledStyleNode(newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -615,15 +642,15 @@ export function cloneExternalStyleNode(node: ExternalStyleNode, deep: boolean, c
 }
 
 /**
- * Clones a ScriptNode
+ * Clones an UncompiledScriptNode
  * @param node Node to clone
  * @param deep If true, children will be cloned
  * @param callback Optional callback after node is cloned
  */
-export function cloneScriptNode(node: ScriptNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ScriptNode {
+export function cloneUncompiledScriptNode(node: UncompiledScriptNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): UncompiledScriptNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new ScriptNode(node.compiled, newAttrs);
+    const newNode = new UncompiledScriptNode(newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
