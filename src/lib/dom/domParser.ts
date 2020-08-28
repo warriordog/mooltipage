@@ -28,7 +28,11 @@ import {
     ExternalScriptNode,
     InternalScriptNode,
     UncompiledScriptNode,
-    UncompiledStyleNode
+    UncompiledStyleNode,
+    AnchorNode,
+    UncompiledAnchorNode,
+    CompiledAnchorNode,
+    parseAnchorNodeResolve
 } from './node';
 import { MimeType } from '..';
 
@@ -258,6 +262,8 @@ export class DomHandler implements Partial<Handler> {
                 return DomHandler.createStyleNode(attributes);
             case 'script':
                 return DomHandler.createScriptNode(attributes);
+            case 'a':
+                return DomHandler.createAnchorNode(attributes);
             default:
                 return new TagNode(tagName, attributes);
         }
@@ -360,5 +366,19 @@ export class DomHandler implements Partial<Handler> {
         } else {
             return new InternalScriptNode(attributes);
         }
+    }
+
+    private static createAnchorNode(attributes: Map<string, string | null>): AnchorNode {
+        // "uncompiled" anchor nodes should be passed on as-is
+        if (!attributes.has('compiled')) {
+            return new UncompiledAnchorNode(attributes);
+        }
+
+
+        const href = attributes.get('src');
+        if (href == undefined) throw new Error('Parse error: <a> is missing required attribute: href');
+        const resolve = parseAnchorNodeResolve(attributes.get('as') ?? undefined);
+
+        return new CompiledAnchorNode(href, resolve, attributes);
     }
 }

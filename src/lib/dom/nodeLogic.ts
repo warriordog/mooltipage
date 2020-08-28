@@ -24,7 +24,9 @@ import {
     UncompiledScriptNode,
     InternalScriptNode,
     ExternalScriptNode,
-    MImportNode
+    MImportNode,
+    UncompiledAnchorNode,
+    CompiledAnchorNode
 } from './node';
 
 /**
@@ -683,6 +685,38 @@ export function cloneExternalScriptNode(node: ExternalScriptNode, deep: boolean,
     const newAttrs = cloneAttributes(node);
 
     const newNode = new ExternalScriptNode(node.src, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones an UncompiledAnchorNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneUncompiledAnchorNode(node: UncompiledAnchorNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): UncompiledAnchorNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new UncompiledAnchorNode(newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
+/**
+ * Clones an CompiledAnchorNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneCompiledAnchorNode(node: CompiledAnchorNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): CompiledAnchorNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new CompiledAnchorNode(node.href, node.resolve, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 

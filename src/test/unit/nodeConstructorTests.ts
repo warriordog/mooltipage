@@ -1,28 +1,32 @@
-import test from 'ava';
+import test
+    from 'ava';
 import {
-    TagNode,
-    TextNode,
+    AnchorNodeResolve,
     CommentNode,
-    ProcessingInstructionNode,
-    MFragmentNode,
-    MContentNode,
-    MSlotNode,
-    MVarNode,
-    MScopeNode,
-    MIfNode,
-    MForOfNode,
-    MForInNode,
-    MDataNode,
-    MimeType,
-    InternalStyleNode,
-    StyleNodeBind,
+    CompiledAnchorNode,
+    ExternalScriptNode,
     ExternalStyleNode,
     InternalScriptNode,
-    ExternalScriptNode,
+    InternalStyleNode,
+    MContentNode,
+    MDataNode,
+    MForInNode,
+    MForOfNode,
+    MFragmentNode,
+    MIfNode,
+    MimeType,
     MImportNode,
+    MScopeNode,
+    MSlotNode,
+    MVarNode,
+    ProcessingInstructionNode,
     SlotReferenceNode,
-    UncompiledStyleNode,
-    UncompiledScriptNode
+    StyleNodeBind,
+    TagNode,
+    TextNode,
+    UncompiledAnchorNode,
+    UncompiledScriptNode,
+    UncompiledStyleNode
 } from '../../lib';
 
 test('TagNode constructor handles arguments', t => {
@@ -376,4 +380,39 @@ test('ExternalScriptNode.src works', t => {
 
     t.is(node.src, 'new.js');
     t.is(node.getRawAttribute('src'), 'new.js');
+});
+
+test('UncompiledAnchorNode sets compiled', t => {
+    const node = new UncompiledAnchorNode();
+
+    t.false(node.compiled);
+    t.false(node.hasAttribute('compiled'));
+});
+
+test('CompiledAnchorNode sets compiled', t => {
+    const node = new CompiledAnchorNode('href');
+
+    t.true(node.compiled);
+    t.true(node.hasAttribute('compiled'));
+});
+
+test('CompiledAnchorNode sets href', t => {
+    const node = new CompiledAnchorNode('href.html');
+
+    t.is(node.href, 'href.html');
+    t.is(node.getAttribute('href'), 'href.html');
+});
+
+test('CompiledAnchorNode sets resolve', t => {
+    const node = new CompiledAnchorNode('href.html', AnchorNodeResolve.ROOT);
+
+    t.is(node.resolve, AnchorNodeResolve.ROOT);
+    t.is(node.getAttribute('resolve'), AnchorNodeResolve.ROOT);
+});
+
+test('CompiledAnchorNode sets default resolve', t => {
+    const node = new CompiledAnchorNode('href.html');
+
+    t.is(node.resolve, AnchorNodeResolve.NONE);
+    t.is(node.getAttribute('resolve'), AnchorNodeResolve.NONE);
 });

@@ -1718,3 +1718,136 @@ export class ExternalScriptNode extends CompiledScriptNode {
         return CompiledScriptNode.isCompiledScriptNode(node) && node.isExternal;
     }
 }
+
+/**
+ * Abstract base for the anchor tag (<a>)
+ */
+export abstract class AnchorNode extends TagNode {
+    protected constructor(compiled: boolean, attributes?: Map<string, unknown>) {
+        super('a', attributes);
+
+        this.setBooleanAttribute('compiled', compiled);
+    }
+
+    /**
+     * If true, then this anchor tag will be processed by Mooltipage.
+     * If false, then it will be passed on unchanged.
+     */
+    get compiled(): boolean {
+        return this.hasAttribute('compiled');
+    }
+
+    /**
+     * Returns true if a node is an AnchorNode
+     * @param node Node to check
+     */
+    static isAnchorNode(node: Node): node is AnchorNode {
+        return TagNode.isTagNode(node) && node.tagName === 'a';
+    }
+}
+
+/**
+ * AnchorTag that will be ignored by Mooltipage
+ */
+export class UncompiledAnchorNode extends AnchorNode {
+    constructor(attributes?: Map<string, unknown>) {
+        super(false, attributes);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): UncompiledAnchorNode {
+        return NodeLogic.cloneUncompiledAnchorNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an UncompiledAnchorNode
+     * @param node Node to check
+     */
+    static isUncompiledAnchorNode(node: Node): node is UncompiledAnchorNode {
+        return AnchorNode.isAnchorNode(node) && !node.compiled;
+    }
+}
+
+/**
+ * Resolution modes for the anchor tag.
+ * This controls how the "href" attribute is handled.
+ */
+export enum AnchorNodeResolve {
+    /**
+     * Value will be resolved relative to the root fragment or page
+     */
+    ROOT = 'root',
+
+    /**
+     * No compile-time resolution will be performed.
+     * Href will be left unchanged for the browser to handle.
+     */
+    NONE = 'none'
+}
+
+/**
+ * Parses a string value as an {@link AnchorNodeResolve}.
+ * An undefined or null value will be default to {@link AnchorNodeResolve.NONE}.
+ *
+ * @param value String value to pass
+ * @returns Parsed value of {@link value} or default.
+ * @throws If {@link value} is not a valid value for {@link AnchorNodeResolve}.
+ */
+export function parseAnchorNodeResolve(value: string | undefined): AnchorNodeResolve {
+    switch (value) {
+        case 'root':
+            return AnchorNodeResolve.ROOT;
+        case 'none':
+        case undefined:
+        case null:
+            return AnchorNodeResolve.NONE;
+        default:
+            throw new Error(`Invalid value of AnchorNodeResolve: "${ value }"`);
+    }
+}
+
+/**
+ * Anchor node that will be processed by Mooltipage
+ */
+export class CompiledAnchorNode extends AnchorNode {
+    /**
+     * Creates a new CompiledAnchorNode
+     * @param href Value to link to
+     * @param resolve Optional resolution style for {@link href}
+     * @param attributes Optional extra attributes
+     */
+    constructor(href: string, resolve?: AnchorNodeResolve, attributes?: Map<string, unknown>) {
+        super(true, attributes);
+
+        this.setAttribute('href', href);
+        this.setAttribute('resolve', resolve ?? AnchorNodeResolve.NONE);
+    }
+
+    /**
+     * Href value of this anchor node.
+     * Is the URL to link to.
+     */
+    get href(): string {
+        return this.getRequiredValueAttribute('href');
+    }
+
+    /**
+     * Resolution mode to use compiling {@link href}.
+     * Defaults to {@link AnchorNodeResolve.NONE}
+     */
+    get resolve(): AnchorNodeResolve {
+        const resolveValue = this.getOptionalValueAttribute('resolve');
+        return parseAnchorNodeResolve(resolveValue);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): CompiledAnchorNode {
+        return NodeLogic.cloneCompiledAnchorNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an CompiledAnchorNode
+     * @param node Node to check
+     */
+    static isCompiledAnchorNode(node: Node): node is CompiledAnchorNode {
+        return AnchorNode.isAnchorNode(node) && node.compiled;
+    }
+}
