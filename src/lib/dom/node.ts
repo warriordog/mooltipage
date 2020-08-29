@@ -1871,7 +1871,12 @@ export class CompiledAnchorNode extends AnchorNode {
         }));
 
         // create uncompiled instance
-        return new UncompiledAnchorNode(newAttrs);
+        const uncompiled = new UncompiledAnchorNode(newAttrs);
+
+        // copy child nodes
+        uncompiled.appendChildren(this.childNodes);
+
+        return uncompiled;
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): CompiledAnchorNode {
