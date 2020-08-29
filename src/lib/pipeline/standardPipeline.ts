@@ -104,16 +104,17 @@ export class StandardPipeline implements Pipeline {
     }
 
     private compileFragmentOnly(resPath: string, fragmentContext?: FragmentContext): Fragment {
+        // get fragment from cache or htmlSource
+        const fragment: Fragment = this.getOrParseFragment(resPath);
+
         // create usage context if not provided
         if (fragmentContext == undefined) {
             fragmentContext = {
                 slotContents: new Map(),
-                scope: {}
+                scope: {},
+                path: resPath
             };
         }
-
-        // get fragment from cache or htmlSource
-        const fragment: Fragment = this.getOrParseFragment(resPath);
 
         // create pipeline context
         const pipelineContext: PipelineContext = {

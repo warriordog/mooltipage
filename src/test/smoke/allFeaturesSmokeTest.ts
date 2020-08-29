@@ -46,6 +46,8 @@ function createPipeline(): StandardPipeline {
                     <br>
 
                     <button>Click me!</button>
+                    
+                    <a compiled href="index.html" resolve="root">Index</a>
                 </article>
 
                 <![CDATA[

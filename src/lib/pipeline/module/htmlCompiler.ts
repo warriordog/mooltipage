@@ -10,6 +10,7 @@ import { EvalContext } from './evalEngine';
 import { PipelineContext } from '../standardPipeline';
 import { StyleModule } from './compiler/styleModule';
 import {DeduplicateModule} from './compiler/deduplicateModule';
+import {AnchorModule} from './compiler/anchorModule';
 
 /**
  * Provides HTML compilation support to the pipeline.
@@ -50,6 +51,9 @@ export class HtmlCompiler {
 
             // DeduplicateModule removes redundant nodes, like duplicate stylesheets and link tags
             new DeduplicateModule(),
+
+            // AnchorModule compiles anchor tags (<a>)
+            new AnchorModule(),
 
             // FragmentModule resolves <m-fragment> references and replaces them with HTML.
             new FragmentModule()

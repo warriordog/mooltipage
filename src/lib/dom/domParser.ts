@@ -374,10 +374,9 @@ export class DomHandler implements Partial<Handler> {
             return new UncompiledAnchorNode(attributes);
         }
 
-
-        const href = attributes.get('src');
+        const href = attributes.get('href');
         if (href == undefined) throw new Error('Parse error: <a> is missing required attribute: href');
-        const resolve = parseAnchorNodeResolve(attributes.get('as') ?? undefined);
+        const resolve = parseAnchorNodeResolve(attributes.get('resolve') ?? undefined);
 
         return new CompiledAnchorNode(href, resolve, attributes);
     }

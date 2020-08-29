@@ -44,6 +44,16 @@ export interface FragmentContext {
      * Contains mapped fragment params, if applicable.
      */
     readonly scope: ScopeData;
+
+    /**
+     * Path that was used to access this fragment
+     */
+    readonly path: string;
+
+    /**
+     * Context of the fragment where this context originates
+     */
+    readonly parentContext?: FragmentContext;
 }
 
 /**

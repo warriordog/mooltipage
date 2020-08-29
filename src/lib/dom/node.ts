@@ -336,6 +336,7 @@ export abstract class NodeWithChildren extends Node {
     findChildTagByTagName(tagName: 'm-data', deep?: boolean): MDataNode | null;
     findChildTagByTagName(tagName: 'style', deep?: boolean): StyleNode | null;
     findChildTagByTagName(tagName: 'script', deep?: boolean): ScriptNode | null;
+    findChildTagByTagName(tagName: 'a', deep?: boolean): AnchorNode | null;
     findChildTagByTagName(tagName: string, deep?: boolean): TagNode | null;
     findChildTagByTagName(tagName: string, deep = true): TagNode | null {
         return this.findChildTag(tag => tag.tagName === tagName, deep);
@@ -360,6 +361,7 @@ export abstract class NodeWithChildren extends Node {
     findChildTagsByTagName(tagName: 'm-data', deep?: boolean): MDataNode[];
     findChildTagsByTagName(tagName: 'style', deep?: boolean): StyleNode[];
     findChildTagsByTagName(tagName: 'script', deep?: boolean): ScriptNode[];
+    findChildTagsByTagName(tagName: 'a', deep?: boolean): AnchorNode[];
     findChildTagsByTagName(tagName: string, deep?: boolean): TagNode[];
     findChildTagsByTagName(tagName: string, deep = true): TagNode[] {
         return this.findChildTags(tag => tag.tagName === tagName, deep);
@@ -1778,6 +1780,16 @@ export enum AnchorNodeResolve {
     ROOT = 'root',
 
     /**
+     * Value will be resolved based on the relative location of the current fragment
+     */
+    LOCAL = 'local',
+
+    /**
+     * Value will be resolved relative to the base path (inPath) of the project.
+     */
+    BASE = 'base',
+
+    /**
      * No compile-time resolution will be performed.
      * Href will be left unchanged for the browser to handle.
      */
@@ -1793,10 +1805,15 @@ export enum AnchorNodeResolve {
  * @throws If {@link value} is not a valid value for {@link AnchorNodeResolve}.
  */
 export function parseAnchorNodeResolve(value: string | undefined): AnchorNodeResolve {
+    // this is AWFUL but I don't know a better way to do it with how TS implements enums
     switch (value) {
-        case 'root':
+        case AnchorNodeResolve.ROOT:
             return AnchorNodeResolve.ROOT;
-        case 'none':
+        case AnchorNodeResolve.LOCAL:
+            return AnchorNodeResolve.LOCAL;
+        case AnchorNodeResolve.BASE:
+            return AnchorNodeResolve.BASE;
+        case AnchorNodeResolve.NONE:
         case undefined:
         case null:
             return AnchorNodeResolve.NONE;
@@ -1824,10 +1841,12 @@ export class CompiledAnchorNode extends AnchorNode {
 
     /**
      * Href value of this anchor node.
-     * Is the URL to link to.
      */
     get href(): string {
         return this.getRequiredValueAttribute('href');
+    }
+    set href(newHref: string) {
+        this.setAttribute('href', newHref);
     }
 
     /**
@@ -1837,6 +1856,22 @@ export class CompiledAnchorNode extends AnchorNode {
     get resolve(): AnchorNodeResolve {
         const resolveValue = this.getOptionalValueAttribute('resolve');
         return parseAnchorNodeResolve(resolveValue);
+    }
+
+    /**
+     * Converts this {@link CompiledAnchorNode} into an {@link UncompiledAnchorNode}.
+     * The converted node will have the same attributes, excluding mooltipage directives.
+     * @return an {@link UncompiledAnchorNode} matching this node.
+     */
+    toUncompiled(): UncompiledAnchorNode {
+        // clone attributes, but skip special attributes
+        const newAttrs = new Map(Array.from(this.getAttributes().entries()).filter(entry => {
+            const attrName = entry[0];
+            return attrName !== 'resolve' && attrName !== 'compiled';
+        }));
+
+        // create uncompiled instance
+        return new UncompiledAnchorNode(newAttrs);
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): CompiledAnchorNode {

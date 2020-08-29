@@ -28,7 +28,9 @@ export class FragmentModule implements HtmlCompilerModule {
         // create usage context
         const fragmentContext: FragmentContext = {
             slotContents: slotContents,
-            scope: FragmentModule.createFragmentScope(mFragment)
+            scope: FragmentModule.createFragmentScope(mFragment),
+            path: mFragment.src,
+            parentContext: htmlContext.sharedContext.pipelineContext.fragmentContext
         };
 
         // compute path to fragment

@@ -3,7 +3,7 @@ import fs
     from 'fs';
 
 export function fixSep(path: string): string {
-    return path.replace('/', Path.sep);
+    return path.replace(/[/\\]/g, Path.sep);
 }
 
 export function getTestDataPath(offsetPath?: string): string {

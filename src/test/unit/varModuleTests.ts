@@ -27,7 +27,8 @@ function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData = {},
             fragment: testFrag,
             fragmentContext: {
                 slotContents: new Map(),
-                scope: fragmentScope
+                scope: fragmentScope,
+                path: testFrag.path
             }
         },
         uniqueStyles: new Set<string>(),
