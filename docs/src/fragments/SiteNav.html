@@ -1,5 +1,5 @@
 <nav class="site-nav">
-    <m-fragment src="@/layouts/ResponsiveFlexLayout.html" direction="column">
+    <m-fragment src="@/layouts/ResponsiveFlexLayout.html" direction="column" class="site-nav-layout">
         <div class="nav-item">
             <a compiled resolve="base" href="index.html">Home</a>
         </div>
@@ -15,12 +15,17 @@
     }
 
     .site-nav .nav-item {
-        padding-right: 20px;
+        padding-left: 20px;
     }
 
     @media(min-width: 992px) {
         .site-nav .nav-item {
+            padding-left: 0;
             padding-top: 20px;
+        }
+
+        .site-nav .site-nav-layout {
+            align-items: stretch;
         }
     }
 </style>

@@ -2,6 +2,56 @@
  * Shared CSS for documentation project
  */
 
+
+/* Standard color palette */
+:root {
+    /* Semantic colors */
+    --color-error: red;
+    --color-warning: yellow;
+    --color-success: green;
+    --color-active: #0091ff;
+    --color-alert: blue;
+    --color-highlight: purple;
+    --color-primary: black;
+    --color-secondary: dimgrey;
+    --color-light: white;
+
+    /* Background colors */
+    --color-bg-content: white;
+    --color-bg-isolate: #FAFAFA;
+    --color-bg-shadow: lightgrey;
+    --color-bg-aside: lightsteelblue;
+    --color-bg-banner: skyblue;
+}
+
+/* Responsive layout tools */
+:root {
+    /* Switch to large when screen is at least 992px wide (bootstrap "large" breakpoint) */
+    --flow-breakpoint-small: 0px;
+    --flow-breakpoint-large: 992px;
+
+    --flow-flex-direction-small: row;
+    --flow-flex-direction-large: column;
+
+    --flow-padding-small: 10px;
+    --flow-padding-large: 20px;
+
+    /* Default all to small values */
+    --flow-flex-direction: var(--flow-flex-direction-small);
+    --flow-flex-direction-inverse: var(--flow-flex-direction-large);
+    --flow-padding: var(--flow-padding-small);
+    --flow-padding-inverse: var(--flow-padding-large);
+}
+
+@media(min-width: 992px) {
+    :root {
+        --flow-flex-direction: var(--flow-flex-direction-large);
+        --flow-flex-direction-inverse: var(--flow-flex-direction-small);
+        --flow-padding: var(--flow-padding-large);
+        --flow-padding-inverse: var(--flow-padding-small);
+    }
+}
+
 * {
     box-sizing: border-box;
     font-family: Arial, Helvetica, sans-serif;
@@ -46,49 +96,14 @@ ul, ol {
     list-style-position: inside
 }
 
-/* Standard color palette */
-:root {
-    /* Semantic colors */
-    --color-error: red;
-    --color-warning: yellow;
-    --color-success: green;
-    --color-alert: blue;
-    --color-primary: black;
-    --color-secondary: dimgrey;
-    --color-light: white;
-
-    /* Background colors */
-    --color-bg-content: white;
-    --color-bg-isolate: #FAFAFA;
-    --color-bg-shadow: lightgrey;
-    --color-bg-aside: lightsteelblue;
-    --color-bg-banner: skyblue;
+/* Style links */
+a {
+    text-decoration: none;
+    color: var(--color-alert);
 }
-
-/* Responsive layout tools */
-:root {
-    /* Switch to large when screen is at least 992px wide (bootstrap "large" breakpoint) */
-    --flow-breakpoint-small: 0px;
-    --flow-breakpoint-large: 992px;
-
-    --flow-flex-direction-small: row;
-    --flow-flex-direction-large: column;
-
-    --flow-padding-small: 10px;
-    --flow-padding-large: 20px;
-
-    /* Default all to small values */
-    --flow-flex-direction: var(--flow-flex-direction-small);
-    --flow-flex-direction-inverse: var(--flow-flex-direction-large);
-    --flow-padding: var(--flow-padding-small);
-    --flow-padding-inverse: var(--flow-padding-large);
+a:visited {
+    color: var(--color-highlight);
 }
-
-@media(min-width: 992px) {
-    :root {
-        --flow-flex-direction: var(--flow-flex-direction-large);
-        --flow-flex-direction-inverse: var(--flow-flex-direction-small);
-        --flow-padding: var(--flow-padding-large);
-        --flow-padding-inverse: var(--flow-padding-small);
-    }
+a:hover {
+    text-decoration: underline;
 }
