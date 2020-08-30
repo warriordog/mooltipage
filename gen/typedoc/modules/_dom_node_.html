@@ -73,6 +73,7 @@
 						<section class="tsd-index-section ">
 							<h3>Enumerations</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-enum tsd-parent-kind-module"><a href="../enums/_dom_node_.anchornoderesolve.html" class="tsd-kind-icon">Anchor<wbr>Node<wbr>Resolve</a></li>
 								<li class="tsd-kind-enum tsd-parent-kind-module"><a href="../enums/_dom_node_.nodetype.html" class="tsd-kind-icon">Node<wbr>Type</a></li>
 								<li class="tsd-kind-enum tsd-parent-kind-module"><a href="../enums/_dom_node_.stylenodebind.html" class="tsd-kind-icon">Style<wbr>Node<wbr>Bind</a></li>
 							</ul>
@@ -80,8 +81,10 @@
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.anchornode.html" class="tsd-kind-icon">Anchor<wbr>Node</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.cdatanode.html" class="tsd-kind-icon">CDATANode</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.commentnode.html" class="tsd-kind-icon">Comment<wbr>Node</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.compiledanchornode.html" class="tsd-kind-icon">Compiled<wbr>Anchor<wbr>Node</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.compiledscriptnode.html" class="tsd-kind-icon">Compiled<wbr>Script<wbr>Node</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.compiledstylenode.html" class="tsd-kind-icon">Compiled<wbr>Style<wbr>Node</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.conditionalnode.html" class="tsd-kind-icon">Conditional<wbr>Node</a></li>
@@ -112,6 +115,9 @@
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.stylenode.html" class="tsd-kind-icon">Style<wbr>Node</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.tagnode.html" class="tsd-kind-icon">Tag<wbr>Node</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.textnode.html" class="tsd-kind-icon">Text<wbr>Node</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.uncompiledanchornode.html" class="tsd-kind-icon">Uncompiled<wbr>Anchor<wbr>Node</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.uncompiledscriptnode.html" class="tsd-kind-icon">Uncompiled<wbr>Script<wbr>Node</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_node_.uncompiledstylenode.html" class="tsd-kind-icon">Uncompiled<wbr>Style<wbr>Node</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -126,6 +132,12 @@
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="_dom_node_.html#mdatanodetype" class="tsd-kind-icon">MData<wbr>Node<wbr>Type</a></li>
 							</ul>
 						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_dom_node_.html#parseanchornoderesolve" class="tsd-kind-icon">parse<wbr>Anchor<wbr>Node<wbr>Resolve</a></li>
+							</ul>
+						</section>
 					</div>
 				</section>
 			</section>
@@ -137,7 +149,7 @@
 					<div class="tsd-signature tsd-kind-icon">MData<wbr>Node<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/_api_pipeline_.mimetype.html#json" class="tsd-signature-type">JSON</a><span class="tsd-signature-symbol"> | </span><a href="../enums/_api_pipeline_.mimetype.html#text" class="tsd-signature-type">TEXT</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1344">dom/node.ts:1344</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1346">dom/node.ts:1346</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -145,6 +157,47 @@
 							<p>Supported MIME types of data contents</p>
 						</div>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="parseanchornoderesolve" class="tsd-anchor"></a>
+					<h3>parse<wbr>Anchor<wbr>Node<wbr>Resolve</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Anchor<wbr>Node<wbr>Resolve<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../enums/_dom_node_.anchornoderesolve.html" class="tsd-signature-type">AnchorNodeResolve</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1807">dom/node.ts:1807</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Parses a string value as an <a href="../enums/_dom_node_.anchornoderesolve.html">AnchorNodeResolve</a>.
+									An undefined or null value will be default to <a href="../enums/_dom_node_.anchornoderesolve.html#none">AnchorNodeResolve.NONE</a>.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>throws</dt>
+									<dd><p>If {@link value} is not a valid value for <a href="../enums/_dom_node_.anchornoderesolve.html">AnchorNodeResolve</a>.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>value: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>String value to pass</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../enums/_dom_node_.anchornoderesolve.html" class="tsd-signature-type">AnchorNodeResolve</a></h4>
+							<p>Parsed value of {@link value} or default.</p>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -174,6 +227,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="_index_.html">&quot;index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="_pipeline_module_compiler_anchormodule_.html">&quot;pipeline/module/compiler/anchor<wbr>Module&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="_pipeline_module_compiler_deduplicatemodule_.html">&quot;pipeline/module/compiler/deduplicate<wbr>Module&quot;</a>
@@ -231,16 +287,25 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="../enums/_dom_node_.anchornoderesolve.html" class="tsd-kind-icon">Anchor<wbr>Node<wbr>Resolve</a>
+					</li>
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
 						<a href="../enums/_dom_node_.nodetype.html" class="tsd-kind-icon">Node<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
 						<a href="../enums/_dom_node_.stylenodebind.html" class="tsd-kind-icon">Style<wbr>Node<wbr>Bind</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_dom_node_.anchornode.html" class="tsd-kind-icon">Anchor<wbr>Node</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_dom_node_.cdatanode.html" class="tsd-kind-icon">CDATANode</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_dom_node_.commentnode.html" class="tsd-kind-icon">Comment<wbr>Node</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_dom_node_.compiledanchornode.html" class="tsd-kind-icon">Compiled<wbr>Anchor<wbr>Node</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_dom_node_.compiledscriptnode.html" class="tsd-kind-icon">Compiled<wbr>Script<wbr>Node</a>
@@ -332,11 +397,23 @@
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_dom_node_.textnode.html" class="tsd-kind-icon">Text<wbr>Node</a>
 					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_dom_node_.uncompiledanchornode.html" class="tsd-kind-icon">Uncompiled<wbr>Anchor<wbr>Node</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_dom_node_.uncompiledscriptnode.html" class="tsd-kind-icon">Uncompiled<wbr>Script<wbr>Node</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_dom_node_.uncompiledstylenode.html" class="tsd-kind-icon">Uncompiled<wbr>Style<wbr>Node</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_dom_node_.mdatanoderef.html" class="tsd-kind-icon">MData<wbr>Node<wbr>Ref</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="_dom_node_.html#mdatanodetype" class="tsd-kind-icon">MData<wbr>Node<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_dom_node_.html#parseanchornoderesolve" class="tsd-kind-icon">parse<wbr>Anchor<wbr>Node<wbr>Resolve</a>
 					</li>
 				</ul>
 			</nav>

@@ -114,7 +114,6 @@
                         <ul class="tsd-index-list">
                                 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_dom_node_.externalstylenode.html#attributes" class="tsd-kind-icon">attributes</a></li>
                                 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#childnodes" class="tsd-kind-icon">child<wbr>Nodes</a></li>
-                                <li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#compiled" class="tsd-kind-icon">compiled</a></li>
                                 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#isexternal" class="tsd-kind-icon">is<wbr>External</a></li>
                                 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#nextsibling" class="tsd-kind-icon">next<wbr>Sibling</a></li>
                                 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#nodedata" class="tsd-kind-icon">node<wbr>Data</a></li>
@@ -129,6 +128,7 @@
                         <h3>Accessors</h3>
                         <ul class="tsd-index-list">
                                 <li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#bind" class="tsd-kind-icon">bind</a></li>
+                                <li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#compiled" class="tsd-kind-icon">compiled</a></li>
                                 <li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#firstchild" class="tsd-kind-icon">first<wbr>Child</a></li>
                                 <li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#firstchildtag" class="tsd-kind-icon">first<wbr>Child<wbr>Tag</a></li>
                                 <li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="_dom_node_.externalstylenode.html#firstchildtext" class="tsd-kind-icon">first<wbr>Child<wbr>Text</a></li>
@@ -204,7 +204,7 @@
                 <aside class="tsd-sources">
         <p>Overrides <a href="_dom_node_.compiledstylenode.html">CompiledStyleNode</a>.<a href="_dom_node_.compiledstylenode.html#constructor">constructor</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1534">dom/node.ts:1534</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1554">dom/node.ts:1554</a></li>
         </ul>
 </aside>
 
@@ -248,7 +248,7 @@
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#attributes">attributes</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L465">dom/node.ts:465</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L467">dom/node.ts:467</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -272,36 +272,13 @@ Do not modify directly, use attribute API instance methods.</p>
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#childnodes">childNodes</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L150">dom/node.ts:150</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L150">dom/node.ts:150</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
                 <div class="lead">
                     <p>Children of this node.
 Do not modify this directly, use NodeLogic or instance methods.</p>
-
-                </div>
-        </div>
-
-
-    
-
-</section>
-                <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-    <a name="compiled" class="tsd-anchor"></a>
-        <h3><span class="tsd-flag ts-flagReadonly">Readonly</span> compiled</h3>
-
-        <div class="tsd-signature tsd-kind-icon">compiled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-
-<aside class="tsd-sources">
-        <p>Inherited from <a href="_dom_node_.stylenode.html">StyleNode</a>.<a href="_dom_node_.stylenode.html#compiled">compiled</a></p>
-        <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1423">dom/node.ts:1423</a></li>
-        </ul>
-</aside>
-        <div class="tsd-comment tsd-typography">
-                <div class="lead">
-                    <p>If this StyleNode is being processed by Mooltipage</p>
 
                 </div>
         </div>
@@ -319,7 +296,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.compiledstylenode.html">CompiledStyleNode</a>.<a href="_dom_node_.compiledstylenode.html#isexternal">isExternal</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1468">dom/node.ts:1468</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1488">dom/node.ts:1488</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -342,7 +319,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#nextsibling">nextSibling</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L41">dom/node.ts:41</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L41">dom/node.ts:41</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -366,7 +343,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#nodedata">nodeData</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L75">dom/node.ts:75</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L75">dom/node.ts:75</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -390,7 +367,7 @@ This object prototypically inherits from the parent node&#39;s nodeData.</p>
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#nodetags">nodeTags</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L82">dom/node.ts:82</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L82">dom/node.ts:82</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -415,7 +392,7 @@ Meaning is tag-specific.</p>
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#nodetype">nodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L23">dom/node.ts:23</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L23">dom/node.ts:23</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -438,7 +415,7 @@ Meaning is tag-specific.</p>
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#parentnode">parentNode</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L29">dom/node.ts:29</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L29">dom/node.ts:29</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -462,7 +439,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#prevsibling">prevSibling</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L35">dom/node.ts:35</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L35">dom/node.ts:35</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -486,7 +463,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#tagname">tagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L459">dom/node.ts:459</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L461">dom/node.ts:461</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -518,7 +495,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.compiledstylenode.html">CompiledStyleNode</a>.<a href="_dom_node_.compiledstylenode.html#bind">bind</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1480">dom/node.ts:1480</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1500">dom/node.ts:1500</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -538,7 +515,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.compiledstylenode.html">CompiledStyleNode</a>.<a href="_dom_node_.compiledstylenode.html#bind">bind</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1483">dom/node.ts:1483</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1503">dom/node.ts:1503</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -567,6 +544,40 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
 
 </section>
                 <section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+    <a name="compiled" class="tsd-anchor"></a>
+        <h3>compiled</h3>
+
+
+        <ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+            <li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> compiled<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+</ul>
+
+<ul class="tsd-descriptions">
+            <li class="tsd-description">
+                    <aside class="tsd-sources">
+        <p>Inherited from <a href="_dom_node_.stylenode.html">StyleNode</a>.<a href="_dom_node_.stylenode.html#compiled">compiled</a></p>
+        <ul>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1431">dom/node.ts:1431</a></li>
+        </ul>
+</aside>
+        <div class="tsd-comment tsd-typography">
+                <div class="lead">
+                    <p>If this StyleNode is being processed by Mooltipage</p>
+
+                </div>
+        </div>
+
+
+
+    <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+
+
+            </li>
+</ul>
+    
+
+</section>
+                <section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
     <a name="firstchild" class="tsd-anchor"></a>
         <h3>first<wbr>Child</h3>
 
@@ -580,7 +591,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#firstchild">firstChild</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L155">dom/node.ts:155</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L155">dom/node.ts:155</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -614,7 +625,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#firstchildtag">firstChildTag</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L169">dom/node.ts:169</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L169">dom/node.ts:169</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -648,7 +659,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#firstchildtext">firstChildText</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L183">dom/node.ts:183</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L183">dom/node.ts:183</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -682,7 +693,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#lastchild">lastChild</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L162">dom/node.ts:162</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L162">dom/node.ts:162</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -716,7 +727,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#lastchildtag">lastChildTag</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L176">dom/node.ts:176</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L176">dom/node.ts:176</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -750,7 +761,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#lastchildtext">lastChildText</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L190">dom/node.ts:190</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L190">dom/node.ts:190</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -784,7 +795,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#nextsiblingtag">nextSiblingTag</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L53">dom/node.ts:53</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L53">dom/node.ts:53</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -818,7 +829,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#nextsiblingtext">nextSiblingText</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L67">dom/node.ts:67</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L67">dom/node.ts:67</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -852,7 +863,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#prevsiblingtag">prevSiblingTag</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L46">dom/node.ts:46</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L46">dom/node.ts:46</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -886,7 +897,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                     <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#prevsiblingtext">prevSiblingText</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L60">dom/node.ts:60</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L60">dom/node.ts:60</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -920,7 +931,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
             <li class="tsd-description">
                     <aside class="tsd-sources">
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1544">dom/node.ts:1544</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1564">dom/node.ts:1564</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -939,7 +950,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
             <li class="tsd-description">
                     <aside class="tsd-sources">
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1547">dom/node.ts:1547</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1567">dom/node.ts:1567</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -983,7 +994,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#appendchild">appendChild</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L206">dom/node.ts:206</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L206">dom/node.ts:206</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1028,7 +1039,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#appendchildren">appendChildren</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L229">dom/node.ts:229</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L229">dom/node.ts:229</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1073,7 +1084,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#appendsibling">appendSibling</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L96">dom/node.ts:96</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L96">dom/node.ts:96</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1118,7 +1129,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#clear">clear</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L221">dom/node.ts:221</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L221">dom/node.ts:221</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1149,9 +1160,9 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
 <ul class="tsd-descriptions">
         <li class="tsd-description">
                 <aside class="tsd-sources">
-        <p>Overrides <a href="_dom_node_.stylenode.html">StyleNode</a>.<a href="_dom_node_.stylenode.html#clone">clone</a></p>
+        <p>Overrides <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#clone">clone</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1551">dom/node.ts:1551</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1571">dom/node.ts:1571</a></li>
         </ul>
 </aside>
 
@@ -1191,7 +1202,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#createdomfromchildren">createDomFromChildren</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L372">dom/node.ts:372</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L374">dom/node.ts:374</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1226,7 +1237,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#deleteattribute">deleteAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L611">dom/node.ts:611</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L613">dom/node.ts:613</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1271,7 +1282,7 @@ Do not modify this directly, use NodeLogic or instance methods.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnode">findChildNode</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L248">dom/node.ts:248</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L248">dom/node.ts:248</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1360,7 +1371,7 @@ Returns null if no match found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodebynodetype">findChildNodeByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L292">dom/node.ts:292</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L292">dom/node.ts:292</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1404,7 +1415,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodebynodetype">findChildNodeByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L293">dom/node.ts:293</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L293">dom/node.ts:293</a></li>
         </ul>
 </aside>
 
@@ -1431,7 +1442,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodebynodetype">findChildNodeByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L294">dom/node.ts:294</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L294">dom/node.ts:294</a></li>
         </ul>
 </aside>
 
@@ -1458,7 +1469,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodebynodetype">findChildNodeByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L295">dom/node.ts:295</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L295">dom/node.ts:295</a></li>
         </ul>
 </aside>
 
@@ -1485,7 +1496,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodebynodetype">findChildNodeByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L296">dom/node.ts:296</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L296">dom/node.ts:296</a></li>
         </ul>
 </aside>
 
@@ -1512,7 +1523,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodebynodetype">findChildNodeByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L297">dom/node.ts:297</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L297">dom/node.ts:297</a></li>
         </ul>
 </aside>
 
@@ -1539,7 +1550,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodebynodetype">findChildNodeByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L298">dom/node.ts:298</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L298">dom/node.ts:298</a></li>
         </ul>
 </aside>
 
@@ -1579,7 +1590,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodes">findChildNodes</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L259">dom/node.ts:259</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L259">dom/node.ts:259</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1668,7 +1679,7 @@ Returns an empty array if no matches found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodesbynodetype">findChildNodesByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L309">dom/node.ts:309</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L309">dom/node.ts:309</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1711,7 +1722,7 @@ Returns an empty array if no matches found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodesbynodetype">findChildNodesByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L310">dom/node.ts:310</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L310">dom/node.ts:310</a></li>
         </ul>
 </aside>
 
@@ -1738,7 +1749,7 @@ Returns an empty array if no matches found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodesbynodetype">findChildNodesByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L311">dom/node.ts:311</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L311">dom/node.ts:311</a></li>
         </ul>
 </aside>
 
@@ -1765,7 +1776,7 @@ Returns an empty array if no matches found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodesbynodetype">findChildNodesByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L312">dom/node.ts:312</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L312">dom/node.ts:312</a></li>
         </ul>
 </aside>
 
@@ -1792,7 +1803,7 @@ Returns an empty array if no matches found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodesbynodetype">findChildNodesByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L313">dom/node.ts:313</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L313">dom/node.ts:313</a></li>
         </ul>
 </aside>
 
@@ -1819,7 +1830,7 @@ Returns an empty array if no matches found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodesbynodetype">findChildNodesByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L314">dom/node.ts:314</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L314">dom/node.ts:314</a></li>
         </ul>
 </aside>
 
@@ -1846,7 +1857,7 @@ Returns an empty array if no matches found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildnodesbynodetype">findChildNodesByNodeType</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L315">dom/node.ts:315</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L315">dom/node.ts:315</a></li>
         </ul>
 </aside>
 
@@ -1886,7 +1897,7 @@ Returns an empty array if no matches found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtag">findChildTag</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L270">dom/node.ts:270</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L270">dom/node.ts:270</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -1972,6 +1983,7 @@ Returns null if no match found.</p>
         <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tag<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"m-data"</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.mdatanode.html" class="tsd-signature-type">MDataNode</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
         <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tag<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"style"</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.stylenode.html" class="tsd-signature-type">StyleNode</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
         <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tag<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"script"</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.scriptnode.html" class="tsd-signature-type">ScriptNode</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
+        <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tag<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"a"</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.anchornode.html" class="tsd-signature-type">AnchorNode</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
         <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tag<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.tagnode.html" class="tsd-signature-type">TagNode</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></li>
 </ul>
 
@@ -1980,7 +1992,7 @@ Returns null if no match found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L328">dom/node.ts:328</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L328">dom/node.ts:328</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -2025,7 +2037,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L329">dom/node.ts:329</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L329">dom/node.ts:329</a></li>
         </ul>
 </aside>
 
@@ -2052,7 +2064,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L330">dom/node.ts:330</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L330">dom/node.ts:330</a></li>
         </ul>
 </aside>
 
@@ -2079,7 +2091,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L331">dom/node.ts:331</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L331">dom/node.ts:331</a></li>
         </ul>
 </aside>
 
@@ -2106,7 +2118,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L332">dom/node.ts:332</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L332">dom/node.ts:332</a></li>
         </ul>
 </aside>
 
@@ -2133,7 +2145,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L333">dom/node.ts:333</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L333">dom/node.ts:333</a></li>
         </ul>
 </aside>
 
@@ -2160,7 +2172,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L334">dom/node.ts:334</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L334">dom/node.ts:334</a></li>
         </ul>
 </aside>
 
@@ -2187,7 +2199,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L335">dom/node.ts:335</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L335">dom/node.ts:335</a></li>
         </ul>
 </aside>
 
@@ -2214,7 +2226,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L336">dom/node.ts:336</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L336">dom/node.ts:336</a></li>
         </ul>
 </aside>
 
@@ -2241,7 +2253,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L337">dom/node.ts:337</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L337">dom/node.ts:337</a></li>
         </ul>
 </aside>
 
@@ -2268,7 +2280,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L338">dom/node.ts:338</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L338">dom/node.ts:338</a></li>
         </ul>
 </aside>
 
@@ -2295,7 +2307,34 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L339">dom/node.ts:339</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L339">dom/node.ts:339</a></li>
+        </ul>
+</aside>
+
+
+    <h4 class="tsd-parameters-title">Parameters</h4>
+    <ul class="tsd-parameters">
+            <li>
+                <h5>tagName: <span class="tsd-signature-type">"a"</span></h5>
+
+                
+            </li>
+            <li>
+                <h5><span class="tsd-flag ts-flagOptional">Optional</span> deep: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></h5>
+
+                
+            </li>
+    </ul>
+
+    <h4 class="tsd-returns-title">Returns <a href="_dom_node_.anchornode.html" class="tsd-signature-type">AnchorNode</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></h4>
+
+
+        </li>
+        <li class="tsd-description">
+                <aside class="tsd-sources">
+        <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagbytagname">findChildTagByTagName</a></p>
+        <ul>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L340">dom/node.ts:340</a></li>
         </ul>
 </aside>
 
@@ -2335,7 +2374,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtags">findChildTags</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L281">dom/node.ts:281</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L281">dom/node.ts:281</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -2421,6 +2460,7 @@ Returns an empty array if no matches found.</p>
         <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tags<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"m-data"</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.mdatanode.html" class="tsd-signature-type">MDataNode</a><span class="tsd-signature-symbol">[]</span></li>
         <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tags<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"style"</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.stylenode.html" class="tsd-signature-type">StyleNode</a><span class="tsd-signature-symbol">[]</span></li>
         <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tags<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"script"</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.scriptnode.html" class="tsd-signature-type">ScriptNode</a><span class="tsd-signature-symbol">[]</span></li>
+        <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tags<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"a"</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.anchornode.html" class="tsd-signature-type">AnchorNode</a><span class="tsd-signature-symbol">[]</span></li>
         <li class="tsd-signature tsd-kind-icon">find<wbr>Child<wbr>Tags<wbr>ByTag<wbr>Name<span class="tsd-signature-symbol">(</span>tagName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, deep<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dom_node_.tagnode.html" class="tsd-signature-type">TagNode</a><span class="tsd-signature-symbol">[]</span></li>
 </ul>
 
@@ -2429,7 +2469,7 @@ Returns an empty array if no matches found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L352">dom/node.ts:352</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L353">dom/node.ts:353</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -2474,7 +2514,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L353">dom/node.ts:353</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L354">dom/node.ts:354</a></li>
         </ul>
 </aside>
 
@@ -2501,7 +2541,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L354">dom/node.ts:354</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L355">dom/node.ts:355</a></li>
         </ul>
 </aside>
 
@@ -2528,7 +2568,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L355">dom/node.ts:355</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L356">dom/node.ts:356</a></li>
         </ul>
 </aside>
 
@@ -2555,7 +2595,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L356">dom/node.ts:356</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L357">dom/node.ts:357</a></li>
         </ul>
 </aside>
 
@@ -2582,7 +2622,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L357">dom/node.ts:357</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L358">dom/node.ts:358</a></li>
         </ul>
 </aside>
 
@@ -2609,7 +2649,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L358">dom/node.ts:358</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L359">dom/node.ts:359</a></li>
         </ul>
 </aside>
 
@@ -2636,7 +2676,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L359">dom/node.ts:359</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L360">dom/node.ts:360</a></li>
         </ul>
 </aside>
 
@@ -2663,7 +2703,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L360">dom/node.ts:360</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L361">dom/node.ts:361</a></li>
         </ul>
 </aside>
 
@@ -2690,7 +2730,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L361">dom/node.ts:361</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L362">dom/node.ts:362</a></li>
         </ul>
 </aside>
 
@@ -2717,7 +2757,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L362">dom/node.ts:362</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L363">dom/node.ts:363</a></li>
         </ul>
 </aside>
 
@@ -2744,7 +2784,34 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L363">dom/node.ts:363</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L364">dom/node.ts:364</a></li>
+        </ul>
+</aside>
+
+
+    <h4 class="tsd-parameters-title">Parameters</h4>
+    <ul class="tsd-parameters">
+            <li>
+                <h5>tagName: <span class="tsd-signature-type">"a"</span></h5>
+
+                
+            </li>
+            <li>
+                <h5><span class="tsd-flag ts-flagOptional">Optional</span> deep: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></h5>
+
+                
+            </li>
+    </ul>
+
+    <h4 class="tsd-returns-title">Returns <a href="_dom_node_.anchornode.html" class="tsd-signature-type">AnchorNode</a><span class="tsd-signature-symbol">[]</span></h4>
+
+
+        </li>
+        <li class="tsd-description">
+                <aside class="tsd-sources">
+        <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#findchildtagsbytagname">findChildTagsByTagName</a></p>
+        <ul>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L365">dom/node.ts:365</a></li>
         </ul>
 </aside>
 
@@ -2784,7 +2851,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#getattribute">getAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L501">dom/node.ts:501</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L503">dom/node.ts:503</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -2831,7 +2898,7 @@ Returns null if none found.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#getattributes">getAttributes</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L620">dom/node.ts:620</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L622">dom/node.ts:622</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -2867,7 +2934,7 @@ Attributes are exposed raw - not converted to strings.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#getchildtags">getChildTags</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L198">dom/node.ts:198</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L198">dom/node.ts:198</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -2902,7 +2969,7 @@ Attributes are exposed raw - not converted to strings.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#getoptionalvalueattribute">getOptionalValueAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L548">dom/node.ts:548</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L550">dom/node.ts:550</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -2955,7 +3022,7 @@ Throws an exception if attribute value is null.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#getrawattribute">getRawAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L561">dom/node.ts:561</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L563">dom/node.ts:563</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3002,7 +3069,7 @@ Throws an exception if attribute value is null.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#getrequiredattribute">getRequiredAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L514">dom/node.ts:514</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L516">dom/node.ts:516</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3054,7 +3121,7 @@ Throws an exception if attribute value is null.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#getrequiredvalueattribute">getRequiredValueAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L530">dom/node.ts:530</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L532">dom/node.ts:532</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3109,7 +3176,7 @@ Throws an exception if attribute value is null.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#hasattribute">hasAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L483">dom/node.ts:483</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L485">dom/node.ts:485</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3156,7 +3223,7 @@ Throws an exception if attribute value is null.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#hasvalueattribute">hasValueAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L492">dom/node.ts:492</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L494">dom/node.ts:494</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3203,7 +3270,7 @@ Throws an exception if attribute value is null.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#prependchild">prependChild</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L214">dom/node.ts:214</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L214">dom/node.ts:214</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3248,7 +3315,7 @@ Throws an exception if attribute value is null.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#prependchildren">prependChildren</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L237">dom/node.ts:237</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L237">dom/node.ts:237</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3293,7 +3360,7 @@ Throws an exception if attribute value is null.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#prependsibling">prependSibling</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L104">dom/node.ts:104</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L104">dom/node.ts:104</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3339,7 +3406,7 @@ Throws an exception if attribute value is null.</p>
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#removeself">removeSelf</a></p>
         <p>Overrides <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#removeself">removeSelf</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L382">dom/node.ts:382</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L384">dom/node.ts:384</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3386,7 +3453,7 @@ Effectively &quot;promotes&quot; child nodes.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#replaceself">replaceSelf</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L119">dom/node.ts:119</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L119">dom/node.ts:119</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3431,7 +3498,7 @@ Effectively &quot;promotes&quot; child nodes.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#setattribute">setAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L570">dom/node.ts:570</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L572">dom/node.ts:572</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3485,7 +3552,7 @@ Effectively &quot;promotes&quot; child nodes.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#setbooleanattribute">setBooleanAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L590">dom/node.ts:590</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L592">dom/node.ts:592</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3540,7 +3607,7 @@ A boolean attribute has no value, it only exists or does not exist.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#setrawattribute">setRawAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L579">dom/node.ts:579</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L581">dom/node.ts:581</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3594,7 +3661,7 @@ A boolean attribute has no value, it only exists or does not exist.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#setrequiredvalueattribute">setRequiredValueAttribute</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L603">dom/node.ts:603</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L605">dom/node.ts:605</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3648,7 +3715,7 @@ A boolean attribute has no value, it only exists or does not exist.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.node.html">Node</a>.<a href="_dom_node_.node.html#tohtml">toHtml</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L137">dom/node.ts:137</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L137">dom/node.ts:137</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3684,7 +3751,7 @@ Child nodes will be automatically serialize.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.compiledstylenode.html">CompiledStyleNode</a>.<a href="_dom_node_.compiledstylenode.html#iscompiledstylenode">isCompiledStyleNode</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1491">dom/node.ts:1491</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1511">dom/node.ts:1511</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3728,7 +3795,7 @@ Child nodes will be automatically serialize.</p>
         <li class="tsd-description">
                 <aside class="tsd-sources">
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1559">dom/node.ts:1559</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1579">dom/node.ts:1579</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3773,7 +3840,7 @@ Child nodes will be automatically serialize.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.nodewithchildren.html">NodeWithChildren</a>.<a href="_dom_node_.nodewithchildren.html#isnodewithchildren">isNodeWithChildren</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L394">dom/node.ts:394</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L396">dom/node.ts:396</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3818,7 +3885,7 @@ Child nodes will be automatically serialize.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.stylenode.html">StyleNode</a>.<a href="_dom_node_.stylenode.html#isstylenode">isStyleNode</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L1440">dom/node.ts:1440</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L1439">dom/node.ts:1439</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3863,7 +3930,7 @@ Child nodes will be automatically serialize.</p>
                 <aside class="tsd-sources">
         <p>Inherited from <a href="_dom_node_.tagnode.html">TagNode</a>.<a href="_dom_node_.tagnode.html#istagnode">isTagNode</a></p>
         <ul>
-                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/584133f/src/lib/dom/node.ts#L632">dom/node.ts:632</a></li>
+                    <li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3e8010e/src/lib/dom/node.ts#L634">dom/node.ts:634</a></li>
         </ul>
 </aside>
         <div class="tsd-comment tsd-typography">
@@ -3926,6 +3993,9 @@ Child nodes will be automatically serialize.</p>
                 <a href="../modules/_index_.html">&quot;index&quot;</a>
             </li>
                                     <li class=" tsd-kind-module">
+                <a href="../modules/_pipeline_module_compiler_anchormodule_.html">&quot;pipeline/module/compiler/anchor<wbr>Module&quot;</a>
+            </li>
+                                    <li class=" tsd-kind-module">
                 <a href="../modules/_pipeline_module_compiler_deduplicatemodule_.html">&quot;pipeline/module/compiler/deduplicate<wbr>Module&quot;</a>
             </li>
                                     <li class=" tsd-kind-module">
@@ -3981,33 +4051,6 @@ Child nodes will be automatically serialize.</p>
 
             <nav class="tsd-navigation secondary menu-sticky">
                 <ul class="before-current">
-                        <li class=" tsd-kind-enum tsd-parent-kind-module">
-    <a href="../enums/_dom_node_.nodetype.html" class="tsd-kind-icon">Node<wbr>Type</a>
-</li>
-                        <li class=" tsd-kind-enum tsd-parent-kind-module">
-    <a href="../enums/_dom_node_.stylenodebind.html" class="tsd-kind-icon">Style<wbr>Node<wbr>Bind</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.cdatanode.html" class="tsd-kind-icon">CDATANode</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.commentnode.html" class="tsd-kind-icon">Comment<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.compiledscriptnode.html" class="tsd-kind-icon">Compiled<wbr>Script<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.compiledstylenode.html" class="tsd-kind-icon">Compiled<wbr>Style<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.conditionalnode.html" class="tsd-kind-icon">Conditional<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.documentnode.html" class="tsd-kind-icon">Document<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.externalscriptnode.html" class="tsd-kind-icon">External<wbr>Script<wbr>Node</a>
-</li>
                             </ul>
     <ul class="current">
 <li class="current tsd-kind-class tsd-parent-kind-module">
@@ -4021,9 +4064,6 @@ Child nodes will be automatically serialize.</p>
 </li>
                 <li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
     <a href="_dom_node_.externalstylenode.html#childnodes" class="tsd-kind-icon">child<wbr>Nodes</a>
-</li>
-                <li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-    <a href="_dom_node_.externalstylenode.html#compiled" class="tsd-kind-icon">compiled</a>
 </li>
                 <li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
     <a href="_dom_node_.externalstylenode.html#isexternal" class="tsd-kind-icon">is<wbr>External</a>
@@ -4051,6 +4091,9 @@ Child nodes will be automatically serialize.</p>
 </li>
                 <li class=" tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited">
     <a href="_dom_node_.externalstylenode.html#bind" class="tsd-kind-icon">bind</a>
+</li>
+                <li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+    <a href="_dom_node_.externalstylenode.html#compiled" class="tsd-kind-icon">compiled</a>
 </li>
                 <li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
     <a href="_dom_node_.externalstylenode.html#firstchild" class="tsd-kind-icon">first<wbr>Child</a>
@@ -4206,84 +4249,6 @@ Child nodes will be automatically serialize.</p>
 </li>
     </ul>
     <ul class="after-current">
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.internalscriptnode.html" class="tsd-kind-icon">Internal<wbr>Script<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.internalstylenode.html" class="tsd-kind-icon">Internal<wbr>Style<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mcontentnode.html" class="tsd-kind-icon">MContent<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mdatanode.html" class="tsd-kind-icon">MData<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.melseifnode.html" class="tsd-kind-icon">MElse<wbr>IfNode</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.melsenode.html" class="tsd-kind-icon">MElse<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mforinnode.html" class="tsd-kind-icon">MFor<wbr>InNode</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mfornode.html" class="tsd-kind-icon">MFor<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mforofnode.html" class="tsd-kind-icon">MFor<wbr>OfNode</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mfragmentnode.html" class="tsd-kind-icon">MFragment<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mifnode.html" class="tsd-kind-icon">MIf<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mimportnode.html" class="tsd-kind-icon">MImport<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mscopenode.html" class="tsd-kind-icon">MScope<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mslotnode.html" class="tsd-kind-icon">MSlot<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.mvarnode.html" class="tsd-kind-icon">MVar<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.node.html" class="tsd-kind-icon">Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.nodewithchildren.html" class="tsd-kind-icon">Node<wbr>With<wbr>Children</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.nodewithtext.html" class="tsd-kind-icon">Node<wbr>With<wbr>Text</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.processinginstructionnode.html" class="tsd-kind-icon">Processing<wbr>Instruction<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.scriptnode.html" class="tsd-kind-icon">Script<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.slotreferencenode.html" class="tsd-kind-icon">Slot<wbr>Reference<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.stylenode.html" class="tsd-kind-icon">Style<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.tagnode.html" class="tsd-kind-icon">Tag<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-class tsd-parent-kind-module">
-    <a href="_dom_node_.textnode.html" class="tsd-kind-icon">Text<wbr>Node</a>
-</li>
-                        <li class=" tsd-kind-interface tsd-parent-kind-module">
-    <a href="../interfaces/_dom_node_.mdatanoderef.html" class="tsd-kind-icon">MData<wbr>Node<wbr>Ref</a>
-</li>
-                        <li class=" tsd-kind-type-alias tsd-parent-kind-module">
-    <a href="../modules/_dom_node_.html#mdatanodetype" class="tsd-kind-icon">MData<wbr>Node<wbr>Type</a>
-</li>
                 </ul>
             </nav>
         </div>
