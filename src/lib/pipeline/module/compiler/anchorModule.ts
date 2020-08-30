@@ -118,8 +118,14 @@ export function resolveAnchorHrefBase(href: string, fragmentContext: FragmentCon
     const rootFragmentDir = Path.dirname(rootFragmentPath);
 
     // TODO maybe extract?
-    // flatten directory (remove ../)
-    const flattenedDir = rootFragmentDir.replace(/([^/\\\s]+[/\\]|^)\.\.[/\\]/g, '');
+    // normalize and flatten directory (remove ../ and ./)
+    const normalizedDir = Path.normalize(rootFragmentDir);
+    const flattenedDir = normalizedDir.replace(/^\.([/\\]|$)/, '');
+
+    // if the base path is the root, then just use href as is
+    if (flattenedDir === '') {
+        return href;
+    }
 
     // TODO maybe extract?
     // invert directory
@@ -130,7 +136,7 @@ export function resolveAnchorHrefBase(href: string, fragmentContext: FragmentCon
     const trimmedDir = invertedDir.replace(/[/\\]$/, '');
 
     // combine with href
-    return `${ trimmedDir }${ Path.sep }${ href }`;
+    return `${ trimmedDir }/${ href }`;
 }
 
 /**

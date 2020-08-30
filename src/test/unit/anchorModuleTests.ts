@@ -273,6 +273,16 @@ test('AnchorModule.resolveAnchorHrefBase() resolves relative to base path and ro
     t.is(fixSep(resolved), fixSep('../../../path/to/link.html'));
 });
 
+test('AnchorModule.resolveAnchorHrefBase() resolves relative to base path when the root fragment is in the base directory', t => {
+    const resolved = resolveAnchorHrefBase(fixSep('path/to/link.html'), {
+        slotContents: new Map(),
+        scope: {},
+        path: fixSep('index.html')
+    });
+
+    t.is(fixSep(resolved), fixSep('path/to/link.html'));
+});
+
 // findRootPath()
 
 test('AnchorModule.findRootPath() finds the root fragment', t => {
