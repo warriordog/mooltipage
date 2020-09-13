@@ -2,6 +2,13 @@ import Path from 'path';
 import fs
     from 'fs';
 
+/**
+ * Converts the path separators in a path to match the path separator of the current platform.
+ * This allows tests to work cross-platform with minimal overhead.
+ *
+ * @param path Path to convert
+ * @returns {@link path} with all path separators converted to the system path separator.
+ */
 export function fixSep(path: string): string {
     return path.replace(/[/\\]/g, Path.sep);
 }

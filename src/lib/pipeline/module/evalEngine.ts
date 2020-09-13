@@ -1,4 +1,7 @@
-import {ScopeData} from '../..';
+import {
+    Node,
+    ScopeData
+} from '../..';
 import {PipelineContext} from '../standardPipeline';
 
 /**
@@ -163,7 +166,7 @@ export type EvalFunction<T> = ($: ScopeData, $$: EvalContext, require: Mooltipag
 /**
  * Context available to an evaluated script / expression
  */
-export class EvalContext {
+export interface EvalContext {
     /**
      * Current pipeline compilation context
      */
@@ -174,8 +177,9 @@ export class EvalContext {
      */
     readonly scope: ScopeData;
 
-    constructor(pipelineContext: PipelineContext, scope: ScopeData) {
-        this.pipelineContext = pipelineContext;
-        this.scope = scope;
-    }
+    /**
+     * Node that triggered this script execution.
+     * This node can be considered as the "location" of this EvalContext.
+     */
+    readonly sourceNode: Node;
 }

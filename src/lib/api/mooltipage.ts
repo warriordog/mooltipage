@@ -162,12 +162,12 @@ export class NodePipelineInterface implements PipelineInterface {
     /**
      * Path to source directory, if not current working directory.
      */
-    private readonly sourcePath?: string;
+    readonly sourcePath: string;
 
     /**
      * Path to destination directory, if not current working directory.
      */
-    private readonly destinationPath?: string;
+    readonly destinationPath: string;
 
     /**
      * Next available generated resource ID
@@ -175,13 +175,15 @@ export class NodePipelineInterface implements PipelineInterface {
     private nextResIndex = 0;
 
     /**
-     * Creates a new NodePipelineInterface
+     * Creates a new NodePipelineInterface.
+     * If either argument is not set, then it will default to the current working directory.
+     *
      * @param sourcePath Optional path to source directory
      * @param destinationPath Optional path to destination directory
      */
     constructor(sourcePath?: string, destinationPath?: string) {
-        this.sourcePath = sourcePath;
-        this.destinationPath = destinationPath;
+        this.sourcePath = sourcePath ?? process.cwd();
+        this.destinationPath = destinationPath ?? process.cwd();
     }
 
     getResource(type: MimeType, resPath: string): string {
@@ -226,7 +228,7 @@ export class NodePipelineInterface implements PipelineInterface {
 
     /**
      * Creates a unique resource path for a generated resource
-     * // TODO better implementation
+     * TODO better implementation
      * @param type MIME type of the resource to create
      * @returns returns a unique resource path that is acceptable for the specified MIME type
      */

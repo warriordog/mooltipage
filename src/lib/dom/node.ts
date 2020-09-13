@@ -137,6 +137,19 @@ export abstract class Node {
     toHtml(): string {
         return NodeLogic.serializeNode(this);
     }
+
+    /**
+     * Finds the next node that matches a callback.
+     * The next node is defined as the first matching child, sibling, or sibling's child node starting from this node.
+     * This only checks child and sibling nodes, it will not move further up the DOM tree.
+     * To check only sibling nodes, set node to false.
+     * @param matcher Callback to test nodes
+     * @param deep If true or not specified, then child nodes will be checked
+     * @return The first matching node, or null if none found.
+     */
+    findNext(matcher: (node: Node) => boolean, deep = true): Node | null {
+        return NodeLogic.findNextNode(this, matcher, deep);
+    }
 }
 
 /**

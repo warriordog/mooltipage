@@ -75,11 +75,8 @@ export function resolveAnchorHref(href: string, resolve: AnchorNodeResolve, frag
  * @return The final href value
  */
 export function resolveAnchorHrefRoot(href: string, fragmentContext: FragmentContext): string {
-    // get path to root fragment
-    const rootFragmentPath = findRootPath(fragmentContext);
-
     // extract directory name
-    const rootFragmentDir = Path.dirname(rootFragmentPath);
+    const rootFragmentDir = Path.dirname(fragmentContext.rootResPath);
 
     // combine with href
     return `${ rootFragmentDir }${ Path.sep }${ href }`;
@@ -94,7 +91,7 @@ export function resolveAnchorHrefRoot(href: string, fragmentContext: FragmentCon
  */
 export function resolveAnchorHrefLocal(href: string, fragmentContext: FragmentContext): string {
     // get path to current fragment
-    const fragmentPath = fragmentContext.path;
+    const fragmentPath = fragmentContext.fragmentResPath;
 
     // extract directory name
     const fragmentDir = Path.dirname(fragmentPath);
@@ -111,13 +108,9 @@ export function resolveAnchorHrefLocal(href: string, fragmentContext: FragmentCo
  * @return The final href value
  */
 export function resolveAnchorHrefBase(href: string, fragmentContext: FragmentContext): string {
-    // get path to root fragment
-    const rootFragmentPath = findRootPath(fragmentContext);
-
     // extract directory name
-    const rootFragmentDir = Path.dirname(rootFragmentPath);
+    const rootFragmentDir = Path.dirname(fragmentContext.rootResPath);
 
-    // TODO maybe extract?
     // normalize and flatten directory (remove ../ and ./)
     const normalizedDir = Path.normalize(rootFragmentDir);
     const flattenedDir = normalizedDir.replace(/^\.([/\\]|$)/, '');
@@ -127,29 +120,12 @@ export function resolveAnchorHrefBase(href: string, fragmentContext: FragmentCon
         return href;
     }
 
-    // TODO maybe extract?
     // invert directory
     const invertedDir = flattenedDir.replace(/[^/\\]+/g, '..');
 
-    // TODO maybe extract?
     // trim trailing /
     const trimmedDir = invertedDir.replace(/[/\\]$/, '');
 
     // combine with href
     return `${ trimmedDir }/${ href }`;
-}
-
-/**
- * Finds the path to the root fragment.
- * @param fragmentContext Current fragment to start searching from
- * @return the path to the
- */
-export function findRootPath(fragmentContext: FragmentContext): string {
-    // find the root context
-    while (fragmentContext.parentContext !== undefined) {
-        fragmentContext = fragmentContext.parentContext;
-    }
-
-    // get the path
-    return fragmentContext.path;
 }

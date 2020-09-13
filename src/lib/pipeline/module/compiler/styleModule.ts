@@ -9,7 +9,7 @@ import {
     UncompiledStyleNode,
     MimeType
 } from '../../..';
-import {resolveResPath} from '../resolvePath';
+import {resolveResPath} from '../../../fs/pathUtils';
 
 export class StyleModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
@@ -51,8 +51,10 @@ export class StyleModule implements HtmlCompilerModule {
     }
 
     compileStyleLink(currentNode: CompiledStyleNode, src: string, styleContent: string, htmlContext: HtmlCompilerContext): void {
+        const rootResPath = htmlContext.sharedContext.pipelineContext.fragmentContext.rootResPath;
+
         // write external CSS
-        const styleResPath = htmlContext.sharedContext.pipelineContext.pipeline.linkResource(MimeType.CSS, styleContent, src);
+        const styleResPath = htmlContext.sharedContext.pipelineContext.pipeline.linkResource(MimeType.CSS, styleContent, src, rootResPath);
 
         // create link
         const link = new TagNode('link');
@@ -60,7 +62,7 @@ export class StyleModule implements HtmlCompilerModule {
         link.setAttribute('href', styleResPath);
 
         // replace
-        currentNode.replaceSelf([link]);
+        currentNode.replaceSelf([ link ]);
         htmlContext.setDeleted();
     }
 }

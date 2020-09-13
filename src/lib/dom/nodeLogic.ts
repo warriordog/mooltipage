@@ -1072,3 +1072,36 @@ const selfClosingTags: readonly string[] = [
     'track',
     'wbr'
 ];
+
+
+/**
+ * Finds the next node that matches a callback.
+ * The next node is defined as the first matching child, sibling, or sibling's child node starting from {@link root}.
+ * This only checks child and sibling nodes, it will not move further up the DOM tree.
+ * To check only sibling nodes, set node to false.
+ * @param root Node to search from
+ * @param matcher Callback to test nodes
+ * @param deep If true or not specified, then child nodes will be checked
+ * @return The first matching node, or null if none found.
+ */
+export function findNextNode(root: Node, matcher: (node: Node) => boolean, deep: boolean): Node | null {
+    // loop through all siblings at top level
+    for (let currentNode: Node | null = root; currentNode != null; currentNode = currentNode.nextSibling) {
+
+        // if this is not the first node (which can't be the match) then check it
+        if (currentNode !== root && matcher(currentNode)) {
+            return currentNode;
+        }
+
+        // if we are deep checking and this is a parent node, then check children
+        if (deep && NodeWithChildren.isNodeWithChildren(currentNode)) {
+            const childMatch = findChildNode(currentNode, matcher, true);
+            if (childMatch != null) {
+                return childMatch;
+            }
+        }
+    }
+
+    // return null if we didn't match
+    return null;
+}

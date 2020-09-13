@@ -25,9 +25,10 @@ export class MockPipelineContext implements PipelineContext {
             path: ''
         };
         this.fragmentContext = fragmentContex ?? {
-          slotContents: new Map(),
-          scope: {},
-          path: this.fragment.path
+            slotContents: new Map(),
+            scope: {},
+            fragmentResPath: this.fragment.path,
+            rootResPath: this.fragment.path
         };
         this.pipeline = pipeline ?? new MockPipeline();
     }

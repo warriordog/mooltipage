@@ -1,6 +1,6 @@
 import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
 import { InternalScriptNode, ExternalScriptNode, MimeType } from '../../..';
-import {resolveResPath} from '../resolvePath';
+import {resolveResPath} from '../../../fs/pathUtils';
 
 export class ScriptModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
@@ -24,11 +24,8 @@ export class ScriptModule implements HtmlCompilerModule {
     }
 
     compileScript(htmlContext: HtmlCompilerContext, scriptText: string): void {
-        // execute in parent scope, if it exists. Otherwise use local scope
-        const targetCompileData = htmlContext.parentContext ?? htmlContext;
-
-        // create eval context
-        const evalContext = targetCompileData.createEvalContext();
+        // create eval context. This will use parent scope if it exists, or else will fall back to current scope.
+        const evalContext = htmlContext.createParentScopeEvalContext();
 
         // compile and execute
         htmlContext.sharedContext.pipelineContext.pipeline.compileScript(scriptText, evalContext);

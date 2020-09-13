@@ -9,7 +9,6 @@ import {
 } from '../../lib';
 import {
     compileAnchorNode,
-    findRootPath,
     resolveAnchorHref,
     resolveAnchorHrefBase,
     resolveAnchorHrefLocal,
@@ -118,7 +117,8 @@ test('AnchorModule.resolveAnchorHref() resolves AnchorNodeResolve.NONE', t => {
     const resolved = resolveAnchorHref('path/to/link.html', AnchorNodeResolve.NONE, {
         slotContents: new Map(),
         scope: {},
-        path: 'a/child/fragment.html'
+        fragmentResPath: 'a/child/fragment.html',
+        rootResPath: 'a/child/fragment.html'
     });
 
     t.is(fixSep(resolved), fixSep('path/to/link.html'));
@@ -128,7 +128,8 @@ test('AnchorModule.resolveAnchorHref() resolves AnchorNodeResolve.LOCAL', t => {
     const resolved = resolveAnchorHref(fixSep('path/to/link.html'), AnchorNodeResolve.LOCAL, {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('a/child/fragment.html')
+        fragmentResPath: fixSep('a/child/fragment.html'),
+        rootResPath: fixSep('a/child/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('a/child/path/to/link.html'));
@@ -138,12 +139,8 @@ test('AnchorModule.resolveAnchorHref() resolves AnchorNodeResolve.ROOT', t => {
     const resolved = resolveAnchorHref(fixSep('path/to/link.html'), AnchorNodeResolve.ROOT, {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('a/child/fragment.html'),
-        parentContext: {
-            slotContents: new Map(),
-            scope: {},
-            path: fixSep('root/fragment.html')
-        }
+        fragmentResPath: fixSep('a/child/fragment.html'),
+        rootResPath: fixSep('root/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('root/path/to/link.html'));
@@ -153,12 +150,8 @@ test('AnchorModule.resolveAnchorHref() resolves AnchorNodeResolve.BASE', t => {
     const resolved = resolveAnchorHref(fixSep('path/to/link.html'), AnchorNodeResolve.BASE, {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('a/child/fragment.html'),
-        parentContext: {
-            slotContents: new Map(),
-            scope: {},
-            path: fixSep('root/fragment.html')
-        }
+        fragmentResPath: fixSep('a/child/fragment.html'),
+        rootResPath: fixSep('root/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('../path/to/link.html'));
@@ -168,7 +161,8 @@ test('AnchorModule.resolveAnchorHref() throws on invalid AnchorNodeResolve', t =
     t.throws(() => resolveAnchorHref(fixSep('path/to/link.html'), 'invalid' as AnchorNodeResolve, {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('a/child/fragment.html')
+        fragmentResPath: fixSep('a/child/fragment.html'),
+        rootResPath: fixSep('a/child/fragment.html')
     }));
 });
 
@@ -178,12 +172,8 @@ test('AnchorModule.resolveAnchorHrefRoot() resolves relative to root', t => {
     const resolved = resolveAnchorHrefRoot(fixSep('path/to/link.html'), {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('a/child/fragment.html'),
-        parentContext: {
-            slotContents: new Map(),
-            scope: {},
-            path: fixSep('root/fragment.html')
-        }
+        fragmentResPath: fixSep('a/child/fragment.html'),
+        rootResPath: fixSep('root/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('root/path/to/link.html'));
@@ -193,17 +183,8 @@ test('AnchorModule.resolveAnchorHrefRoot() resolves relative to deep root', t =>
     const resolved = resolveAnchorHrefRoot(fixSep('path/to/link.html'), {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('a/child/fragment.html'),
-        parentContext: {
-            slotContents: new Map(),
-            scope: {},
-            path: fixSep('middle/fragment.html'),
-            parentContext: {
-                slotContents: new Map(),
-                scope: {},
-                path: fixSep('root/fragment.html')
-            }
-        }
+        fragmentResPath: fixSep('a/child/fragment.html'),
+        rootResPath: fixSep('root/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('root/path/to/link.html'));
@@ -213,7 +194,8 @@ test('AnchorModule.resolveAnchorHrefRoot() works when current fragment is root',
     const resolved = resolveAnchorHrefRoot(fixSep('path/to/link.html'), {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('the/root/fragment.html')
+        fragmentResPath: fixSep('the/root/fragment.html'),
+        rootResPath: fixSep('the/root/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('the/root/path/to/link.html'));
@@ -225,7 +207,8 @@ test('AnchorModule.resolveAnchorHrefLocal() resolves relative to local', t => {
     const resolved = resolveAnchorHrefLocal(fixSep('path/to/link.html'), {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('the/root/fragment.html')
+        fragmentResPath: fixSep('the/root/fragment.html'),
+        rootResPath: fixSep('the/root/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('the/root/path/to/link.html'));
@@ -235,12 +218,8 @@ test('AnchorModule.resolveAnchorHrefLocal() ignores roots and resolves to local'
     const resolved = resolveAnchorHrefLocal(fixSep('path/to/link.html'), {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('a/child/fragment.html'),
-        parentContext: {
-            slotContents: new Map(),
-            scope: {},
-            path: fixSep('the/root/fragment.html')
-        }
+        fragmentResPath: fixSep('a/child/fragment.html'),
+        rootResPath: fixSep('the/root/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('a/child/path/to/link.html'));
@@ -252,7 +231,8 @@ test('AnchorModule.resolveAnchorHrefBase() resolves relative to base path', t =>
     const resolved = resolveAnchorHrefBase(fixSep('path/to/link.html'), {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('the/root/fragment.html')
+        fragmentResPath: fixSep('the/root/fragment.html'),
+        rootResPath: fixSep('the/root/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('../../path/to/link.html'));
@@ -262,55 +242,31 @@ test('AnchorModule.resolveAnchorHrefBase() resolves relative to base path and ro
     const resolved = resolveAnchorHrefBase(fixSep('path/to/link.html'), {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('a/child/fragment.html'),
-        parentContext: {
-            slotContents: new Map(),
-            scope: {},
-            path: fixSep('the/root/path/fragment.html')
-        }
+        fragmentResPath: fixSep('a/child/fragment.html'),
+        rootResPath: fixSep('the/root/path/fragment.html')
     });
 
     t.is(fixSep(resolved), fixSep('../../../path/to/link.html'));
 });
 
-test('AnchorModule.resolveAnchorHrefBase() resolves relative to base path when the root fragment is in the base directory', t => {
+test('AnchorModule.resolveAnchorHrefBase() resolves correctly when the root fragment is in the base directory', t => {
     const resolved = resolveAnchorHrefBase(fixSep('path/to/link.html'), {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('index.html')
+        fragmentResPath: fixSep('index.html'),
+        rootResPath: fixSep('index.html')
     });
 
     t.is(fixSep(resolved), fixSep('path/to/link.html'));
 });
 
-// findRootPath()
-
-test('AnchorModule.findRootPath() finds the root fragment', t => {
-    const root = findRootPath({
+test('AnchorModule.resolveAnchorHrefBase() resolves correctly when path starts with ./', t => {
+    const resolved = resolveAnchorHrefBase(fixSep('path/to/link.html'), {
         slotContents: new Map(),
         scope: {},
-        path: fixSep('a/child/fragment.html'),
-        parentContext: {
-            slotContents: new Map(),
-            scope: {},
-            path: fixSep('middle/fragment.html'),
-            parentContext: {
-                slotContents: new Map(),
-                scope: {},
-                path: fixSep('root/fragment.html')
-            }
-        }
+        fragmentResPath: fixSep('./index.html'),
+        rootResPath: fixSep('./index.html')
     });
 
-    t.is(fixSep(root), fixSep('root/fragment.html'));
-});
-
-test('AnchorModule.findRootPath() works when current fragment is root', t => {
-    const root = findRootPath({
-        slotContents: new Map(),
-        scope: {},
-        path: fixSep('the/root/fragment.html')
-    });
-
-    t.is(fixSep(root), fixSep('the/root/fragment.html'));
+    t.is(fixSep(resolved), fixSep('path/to/link.html'));
 });

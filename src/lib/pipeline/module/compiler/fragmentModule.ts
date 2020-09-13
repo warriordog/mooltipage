@@ -9,7 +9,7 @@ import {
     ScopeData,
     SlotReferenceNode
 } from '../../..';
-import {resolveResPath} from '../resolvePath';
+import {resolveResPath} from '../../../fs/pathUtils';
 
 /**
  * Resolve <m-fragment> and replace with compiled HTML 
@@ -26,11 +26,12 @@ export class FragmentModule implements HtmlCompilerModule {
         const slotContents: Map<string, DocumentNode> = FragmentModule.extractSlotContents(mFragment);
 
         // create usage context
+        const parentFragmentContext = htmlContext.sharedContext.pipelineContext.fragmentContext;
         const fragmentContext: FragmentContext = {
             slotContents: slotContents,
             scope: FragmentModule.createFragmentScope(mFragment),
-            path: mFragment.src,
-            parentContext: htmlContext.sharedContext.pipelineContext.fragmentContext
+            fragmentResPath: mFragment.src,
+            rootResPath: parentFragmentContext.rootResPath
         };
 
         // compute path to fragment

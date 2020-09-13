@@ -10,7 +10,7 @@ import {
     ScopeData,
     TagNode
 } from '../../..';
-import {resolveResPath} from '../resolvePath';
+import {resolveResPath} from '../../../fs/pathUtils';
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
@@ -85,6 +85,7 @@ export class VarModule implements HtmlCompilerModule {
         // compute path to reference
         const resPath = resolveResPath(reference.resPath, htmlContext.sharedContext.pipelineContext.fragment.path);
 
+        // TODO pass MIME to pipeline
         // get value
         const rawValue = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(resPath, node.type);
 

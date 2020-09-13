@@ -46,14 +46,19 @@ export interface FragmentContext {
     readonly scope: ScopeData;
 
     /**
-     * Path that was used to access this fragment
+     * Path that was used to access this fragment.
+     * This path may not reflect the actual file where this fragment will end up.
+     * If that path is needed, then see {@link rootResPath}.
      */
-    readonly path: string;
+    readonly fragmentResPath: string;
 
     /**
-     * Context of the fragment where this context originates
+     * Path to the "root" fragment or page.
+     * This is the path to the actual file that will be produced in the compilation output.
+     * This path may not point to the current fragment being compiled, if this fragment is included as a reference.
+     * If that path is needed, then see {@link fragmentResPath}.
      */
-    readonly parentContext?: FragmentContext;
+    readonly rootResPath: string;
 }
 
 /**
@@ -136,10 +141,23 @@ export interface PipelineInterface {
      * @param type MIME type of the new resource
      * @param contents File contents
      * @param sourceResPath Resource path of the resource that spawned this resource
+     * @param rootResPath Path to the "root" fragment where this resources will be referenced
      * @param originalResPath The resource path that was produced by the call to createResource()
      * @returns new path to resource, or original if no changes are needed
      */
-    reLinkCreatedResource?(type: MimeType, contents: string, sourceResPath: string, originalResPath: string): string;
+    reLinkCreatedResource?(type: MimeType, contents: string, sourceResPath: string, rootResPath: string, originalResPath: string): string;
+
+    /**
+     * Path to the root of the compilation input.
+     * This should be used when computing paths relative to the source.
+     */
+    sourcePath: string;
+
+    /**
+     * Path to the root of the compilation output.
+     * This should be used when computing paths relative to the destination.
+     */
+    destinationPath: string;
 }
 
 /**

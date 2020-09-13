@@ -6,6 +6,7 @@ import {DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType
 import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript } from './module/evalEngine';
 import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
 import {buildPage} from './module/pageBuilder';
+import {computePathBetween} from '../fs/pathUtils';
 
 /**
  * Primary compilation pipeline.
@@ -112,7 +113,8 @@ export class StandardPipeline implements Pipeline {
             fragmentContext = {
                 slotContents: new Map(),
                 scope: {},
-                path: resPath
+                fragmentResPath: resPath,
+                rootResPath: resPath // current path is also the root path
             };
         }
 
@@ -191,9 +193,10 @@ export class StandardPipeline implements Pipeline {
      * @param type Type of resource
      * @param contents Contents as a UTF-8 string
      * @param sourceResPath Path to the explicit resource that has produced this created resource
+     * @param rootResPath Path to the "root" fragment where this resources will be referenced
      * @returns path to reference linked resource
      */
-    linkResource(type: MimeType, contents: string, sourceResPath: string): string {
+    linkResource(type: MimeType, contents: string, sourceResPath: string, rootResPath: string): string {
         // hash contents
         const contentsHash = this.fastHashContent(contents);
 
@@ -205,10 +208,10 @@ export class StandardPipeline implements Pipeline {
             // allow PI to relink in case type and/or sourceResPath are different, and that matters.
             // default PI implementation does not include this method so nothing will happen
             if (this.pipelineInterface.reLinkCreatedResource != undefined) {
-                return this.pipelineInterface.reLinkCreatedResource(type, contents, sourceResPath, originalResPath);
+                return this.pipelineInterface.reLinkCreatedResource(type, contents, sourceResPath, rootResPath, originalResPath);
             } else {
-                // if PI does not implement relinking, then we can safely reuse the old path
-                return originalResPath;
+                // if PI does not implement relinking, then use basic implementation to adjust path
+                return computePathBetween(this.pipelineInterface.destinationPath, originalResPath, rootResPath);
             }
         }
         

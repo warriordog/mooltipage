@@ -1,6 +1,12 @@
 import { PipelineInterface, MimeType } from '../../lib';
+import {fixSep} from '../_util/testFsUtils';
+import * as Path
+    from 'path';
 
 export class MemoryPipelineInterface implements PipelineInterface {
+    destinationPath = '';
+    sourcePath = '';
+
     sourceContent: Map<string, TestResource> = new Map<string, TestResource>();
     destContent: Map<string, TestResource> = new Map<string, TestResource>();
     createdContent: Map<string, TestResource> = new Map<string, TestResource>();
@@ -14,7 +20,7 @@ export class MemoryPipelineInterface implements PipelineInterface {
     }
 
     setSource(resPath: string, res: TestResource): void {
-        this.sourceContent.set(resPath, res);
+        this.sourceContent.set(normalizeResPath(resPath), res);
     }
     setSourceHtml(resPath: string, html: string): void {
         this.setSource(resPath, {
@@ -23,37 +29,37 @@ export class MemoryPipelineInterface implements PipelineInterface {
         });
     }
     hasSource(resPath: string): boolean {
-        return this.sourceContent.has(resPath);
+        return this.sourceContent.has(normalizeResPath(resPath));
     }
     getSource(resPath: string): TestResource | undefined {
-        return this.sourceContent.get(resPath);
+        return this.sourceContent.get(normalizeResPath(resPath));
     }
     getSourceValue(resPath: string): string | undefined {
-        return this.getSource(resPath)?.content;
+        return this.getSource(normalizeResPath(resPath))?.content;
     }
 
 
     setDestination(resPath: string, res: TestResource): void {
-        this.destContent.set(resPath, res);
+        this.destContent.set(normalizeResPath(resPath), res);
     }
     setDestinationHtml(resPath: string, html: string): void {
-        this.setDestination(resPath, {
+        this.setDestination(normalizeResPath(resPath), {
             content: html,
             type: MimeType.HTML
         });
     }
     hasDestination(resPath: string): boolean {
-        return this.destContent.has(resPath);
+        return this.destContent.has(normalizeResPath(resPath));
     }
     getDestination(resPath: string): TestResource | undefined {
-        return this.destContent.get(resPath);
+        return this.destContent.get(normalizeResPath(resPath));
     }
     getDestinationValue(resPath: string): string | undefined {
-        return this.getDestination(resPath)?.content;
+        return this.getDestination(normalizeResPath(resPath))?.content;
     }
 
     setCreated(resPath: string, res: TestResource): void {
-        this.createdContent.set(resPath, res);
+        this.createdContent.set(normalizeResPath(resPath), res);
     }
     setCreatedHtml(resPath: string, html: string): void {
         this.setCreated(resPath, {
@@ -62,16 +68,18 @@ export class MemoryPipelineInterface implements PipelineInterface {
         });
     }
     hasCreated(resPath: string): boolean {
-        return this.createdContent.has(resPath);
+        return this.createdContent.has(normalizeResPath(resPath));
     }
     getCreated(resPath: string): TestResource | undefined {
-        return this.createdContent.get(resPath);
+        return this.createdContent.get(normalizeResPath(resPath));
     }
     getCreatedValue(resPath: string): string | undefined {
-        return this.getCreated(resPath)?.content;
+        return this.getCreated(normalizeResPath(resPath))?.content;
     }
 
     getResource(type: MimeType, resPath: string): string {
+        resPath = normalizeResPath(resPath);
+
         // generate list of "similar" paths to try - necessary since real FS will resolve the path first
         const testPaths = [ resPath ];
         if (resPath.startsWith('./')) {
@@ -98,7 +106,7 @@ export class MemoryPipelineInterface implements PipelineInterface {
     }
 
     writeResource(type: MimeType, resPath: string, content: string): void {
-       this.destContent.set(resPath, {
+       this.destContent.set(normalizeResPath(resPath), {
            content: content,
            type: type
        });
@@ -120,4 +128,8 @@ export class MemoryPipelineInterface implements PipelineInterface {
 export interface TestResource {
     content: string;
     type: MimeType;
+}
+
+function normalizeResPath(resPath: string): string {
+    return Path.normalize(fixSep(resPath));
 }

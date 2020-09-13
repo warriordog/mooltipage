@@ -624,3 +624,42 @@ test('NodeLogic.getNextText() returns null if none found', t => {
     root.appendSibling(tag);
     t.is(NodeLogic.getPreviousText(root), null);
 });
+
+// findNextNode()
+test('findNextNode() finds immediate next', t => {
+    const first = new TagNode('first');
+    const next = new TagNode('next');
+    new DocumentNode().appendChildren([ first, next ]);
+
+    t.is(first.findNext(node => TagNode.isTagNode(node) && node.tagName === 'next'), next);
+});
+test('findNextNode() skips non-matched', t => {
+    const first = new TagNode('first');
+    const wrong = new TagNode('wrong');
+    const right = new TagNode('right');
+    new DocumentNode().appendChildren([ first, wrong, right ]);
+
+    t.is(first.findNext(node => TagNode.isTagNode(node) && node.tagName === 'right'), right);
+});
+test('findNextNode() ignores self', t => {
+    const first = new TagNode('tag');
+    const right = new TagNode('tag');
+    new DocumentNode().appendChildren([ first, right ]);
+
+    t.is(first.findNext(node => TagNode.isTagNode(node) && node.tagName === 'tag'), right);
+});
+test('findNextNode() ignores previous', t => {
+    const wrong = new TagNode('tag');
+    const first = new TagNode('first');
+    const right = new TagNode('tag');
+    new DocumentNode().appendChildren([ wrong, first, right ]);
+
+    t.is(first.findNext(node => TagNode.isTagNode(node) && node.tagName === 'tag'), right);
+});
+test('findNextNode() returns null on no match', t => {
+    const first = new TagNode('first');
+    const wrong = new TagNode('wrong');
+    new DocumentNode().appendChildren([ first, wrong ]);
+
+    t.is(first.findNext(node => TagNode.isTagNode(node) && node.tagName === 'right'), null);
+});

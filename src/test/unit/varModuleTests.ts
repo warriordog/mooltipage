@@ -28,7 +28,8 @@ function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData = {},
             fragmentContext: {
                 slotContents: new Map(),
                 scope: fragmentScope,
-                path: testFrag.path
+                fragmentResPath: testFrag.path,
+                rootResPath: testFrag.path
             }
         },
         uniqueStyles: new Set<string>(),
@@ -172,7 +173,7 @@ test('VarModule compiles text', t => {
     root.appendChild(mData);
 
     const pipe = new MockPipeline();
-    pipe.mockRawTexts.push(['./text.txt', dataType, dataValue]);
+    pipe.mockRawTexts.push(['text.txt', dataType, dataValue]);
     
     runVarModule(mData, undefined, undefined, pipe);
 
@@ -191,7 +192,7 @@ test('VarModule compiles json', t => {
     root.appendChild(mData);
 
     const pipe = new MockPipeline();
-    pipe.mockRawTexts.push(['./json.json', dataType, dataValue]);
+    pipe.mockRawTexts.push(['json.json', dataType, dataValue]);
     
     runVarModule(mData, undefined, undefined, pipe);
 
@@ -209,8 +210,8 @@ test('VarModule compiles multiple data', t => {
     root.appendChild(mData);
 
     const pipe = new MockPipeline();
-    pipe.mockRawTexts.push(['./test1.json', MimeType.JSON, '{ "testValue": "value1" }']);
-    pipe.mockRawTexts.push(['./test2.json', MimeType.JSON, '{ "testValue": "value2" }']);
+    pipe.mockRawTexts.push(['test1.json', MimeType.JSON, '{ "testValue": "value1" }']);
+    pipe.mockRawTexts.push(['test2.json', MimeType.JSON, '{ "testValue": "value2" }']);
     
     runVarModule(mData, undefined, undefined, pipe);
 

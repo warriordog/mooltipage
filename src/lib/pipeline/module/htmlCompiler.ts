@@ -273,11 +273,37 @@ export class HtmlCompilerContext {
 
     /**
      * Creates an EvalContext that can be used to execute embedded JS in a context matching the current compilation state.
-     * Scope will be initialized from current node data
+     * Scope will be initialized from current node data.
      * @returns an EvalContext bound to the data in this HtmlCompileData and the provided scope
      */
     createEvalContext(): EvalContext {
-        return new EvalContext(this.sharedContext.pipelineContext, this.node.nodeData);
+        return {
+            pipelineContext: this.sharedContext.pipelineContext,
+            scope: this.node.nodeData,
+            sourceNode: this.node
+        };
+    }
+
+    /**
+     * Creates an EvalContext with scope bound to the parent context.
+     * If this is a root EvalContext (ie. there is no parent) then the current context will be used.
+     * In all other respects this is identical to {@link createEvalContext}.
+     *
+     * @returns an EvalContext bound to the parent scope
+     */
+    createParentScopeEvalContext(): EvalContext {
+        // if there is a parent context, then use it for the scope
+        if (this.parentContext != undefined) {
+            // custom eval context with parent scope but everything else local
+            return {
+                pipelineContext: this.sharedContext.pipelineContext,
+                scope: this.parentContext.node.nodeData,
+                sourceNode: this.node
+            };
+        } else {
+            // fall back to current scope if there is no parent
+            return this.createEvalContext();
+        }
     }
 
     /**
