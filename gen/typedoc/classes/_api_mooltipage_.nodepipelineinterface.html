@@ -105,12 +105,12 @@
 								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_api_mooltipage_.nodepipelineinterface.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_api_mooltipage_.nodepipelineinterface.html#destinationpath" class="tsd-kind-icon">destination<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_api_mooltipage_.nodepipelineinterface.html#destinationpath" class="tsd-kind-icon">destination<wbr>Path</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_api_mooltipage_.nodepipelineinterface.html#nextresindex" class="tsd-kind-icon">next<wbr>Res<wbr>Index</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_api_mooltipage_.nodepipelineinterface.html#sourcepath" class="tsd-kind-icon">source<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_api_mooltipage_.nodepipelineinterface.html#sourcepath" class="tsd-kind-icon">source<wbr>Path</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -140,12 +140,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L175">api/mooltipage.ts:175</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L175">api/mooltipage.ts:175</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates a new NodePipelineInterface</p>
+									<p>Creates a new NodePipelineInterface.
+									If either argument is not set, then it will default to the current working directory.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -172,15 +173,16 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="destinationpath" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> destination<wbr>Path</h3>
-					<div class="tsd-signature tsd-kind-icon">destination<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> destination<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">destination<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_api_pipeline_.pipelineinterface.html">PipelineInterface</a>.<a href="../interfaces/_api_pipeline_.pipelineinterface.html#destinationpath">destinationPath</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L170">api/mooltipage.ts:170</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L170">api/mooltipage.ts:170</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -195,7 +197,7 @@
 					<div class="tsd-signature tsd-kind-icon">next<wbr>Res<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L175">api/mooltipage.ts:175</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L175">api/mooltipage.ts:175</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -204,13 +206,14 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="sourcepath" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> source<wbr>Path</h3>
-					<div class="tsd-signature tsd-kind-icon">source<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> source<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">source<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_api_pipeline_.pipelineinterface.html">PipelineInterface</a>.<a href="../interfaces/_api_pipeline_.pipelineinterface.html#sourcepath">sourcePath</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L165">api/mooltipage.ts:165</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L165">api/mooltipage.ts:165</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -232,13 +235,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L233">api/mooltipage.ts:233</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L235">api/mooltipage.ts:235</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Creates a unique resource path for a generated resource
-									// TODO better implementation</p>
+									TODO better implementation</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -265,7 +268,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L200">api/mooltipage.ts:200</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L202">api/mooltipage.ts:202</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -292,7 +295,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_api_pipeline_.pipelineinterface.html">PipelineInterface</a>.<a href="../interfaces/_api_pipeline_.pipelineinterface.html#getresource">getResource</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L187">api/mooltipage.ts:187</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L189">api/mooltipage.ts:189</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -318,7 +321,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L223">api/mooltipage.ts:223</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L225">api/mooltipage.ts:225</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -350,7 +353,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L213">api/mooltipage.ts:213</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L215">api/mooltipage.ts:215</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -383,7 +386,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_api_pipeline_.pipelineinterface.html">PipelineInterface</a>.<a href="../interfaces/_api_pipeline_.pipelineinterface.html#writeresource">writeResource</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L193">api/mooltipage.ts:193</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L195">api/mooltipage.ts:195</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -412,7 +415,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/mooltipage.ts#L243">api/mooltipage.ts:243</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/mooltipage.ts#L245">api/mooltipage.ts:245</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -453,6 +456,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_fs_fsutils_.html">&quot;fs/fs<wbr>Utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_fs_pathutils_.html">&quot;fs/path<wbr>Utils&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_index_.html">&quot;index&quot;</a>
@@ -497,9 +503,6 @@
 						<a href="../modules/_pipeline_module_pagebuilder_.html">&quot;pipeline/module/page<wbr>Builder&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/_pipeline_module_resolvepath_.html">&quot;pipeline/module/resolve<wbr>Path&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="../modules/_pipeline_module_resourceparser_.html">&quot;pipeline/module/resource<wbr>Parser&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -529,13 +532,13 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="_api_mooltipage_.nodepipelineinterface.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_api_mooltipage_.nodepipelineinterface.html#destinationpath" class="tsd-kind-icon">destination<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_api_mooltipage_.nodepipelineinterface.html#nextresindex" class="tsd-kind-icon">next<wbr>Res<wbr>Index</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_api_mooltipage_.nodepipelineinterface.html#sourcepath" class="tsd-kind-icon">source<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -599,6 +602,7 @@
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">

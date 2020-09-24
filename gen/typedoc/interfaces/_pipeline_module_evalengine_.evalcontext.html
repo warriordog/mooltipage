@@ -62,7 +62,7 @@
 					<a href="_pipeline_module_evalengine_.evalcontext.html">EvalContext</a>
 				</li>
 			</ul>
-			<h1>Class EvalContext</h1>
+			<h1>Interface EvalContext</h1>
 		</div>
 	</div>
 </header>
@@ -89,59 +89,25 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_pipeline_module_evalengine_.evalcontext.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_module_evalengine_.evalcontext.html#pipelinecontext" class="tsd-kind-icon">pipeline<wbr>Context</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_module_evalengine_.evalcontext.html#scope" class="tsd-kind-icon">scope</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_pipeline_module_evalengine_.evalcontext.html#pipelinecontext" class="tsd-kind-icon">pipeline<wbr>Context</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_pipeline_module_evalengine_.evalcontext.html#scope" class="tsd-kind-icon">scope</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_pipeline_module_evalengine_.evalcontext.html#sourcenode" class="tsd-kind-icon">source<wbr>Node</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Eval<wbr>Context<span class="tsd-signature-symbol">(</span>pipelineContext<span class="tsd-signature-symbol">: </span><a href="../interfaces/_pipeline_standardpipeline_.pipelinecontext.html" class="tsd-signature-type">PipelineContext</a>, scope<span class="tsd-signature-symbol">: </span><a href="../modules/_api_pipeline_.html#scopedata" class="tsd-signature-type">ScopeData</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_pipeline_module_evalengine_.evalcontext.html" class="tsd-signature-type">EvalContext</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/pipeline/module/evalEngine.ts#L175">pipeline/module/evalEngine.ts:175</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>pipelineContext: <a href="../interfaces/_pipeline_standardpipeline_.pipelinecontext.html" class="tsd-signature-type">PipelineContext</a></h5>
-								</li>
-								<li>
-									<h5>scope: <a href="../modules/_api_pipeline_.html#scopedata" class="tsd-signature-type">ScopeData</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_pipeline_module_evalengine_.evalcontext.html" class="tsd-signature-type">EvalContext</a></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="pipelinecontext" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> pipeline<wbr>Context</h3>
-					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Context<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_pipeline_standardpipeline_.pipelinecontext.html" class="tsd-signature-type">PipelineContext</a></div>
+					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Context<span class="tsd-signature-symbol">:</span> <a href="_pipeline_standardpipeline_.pipelinecontext.html" class="tsd-signature-type">PipelineContext</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/pipeline/module/evalEngine.ts#L170">pipeline/module/evalEngine.ts:170</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/pipeline/module/evalEngine.ts#L173">pipeline/module/evalEngine.ts:173</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -150,18 +116,34 @@
 						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="scope" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> scope</h3>
 					<div class="tsd-signature tsd-kind-icon">scope<span class="tsd-signature-symbol">:</span> <a href="../modules/_api_pipeline_.html#scopedata" class="tsd-signature-type">ScopeData</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/pipeline/module/evalEngine.ts#L175">pipeline/module/evalEngine.ts:175</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/pipeline/module/evalEngine.ts#L178">pipeline/module/evalEngine.ts:178</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Compiled scope instance, with proper shadowing and overloading applied</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="sourcenode" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> source<wbr>Node</h3>
+					<div class="tsd-signature tsd-kind-icon">source<wbr>Node<span class="tsd-signature-symbol">:</span> <a href="../classes/_dom_node_.node.html" class="tsd-signature-type">Node</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/pipeline/module/evalEngine.ts#L184">pipeline/module/evalEngine.ts:184</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Node that triggered this script execution.
+							This node can be considered as the &quot;location&quot; of this EvalContext.</p>
 						</div>
 					</div>
 				</section>
@@ -190,6 +172,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_fs_fsutils_.html">&quot;fs/fs<wbr>Utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_fs_pathutils_.html">&quot;fs/path<wbr>Utils&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_index_.html">&quot;index&quot;</a>
@@ -234,9 +219,6 @@
 						<a href="../modules/_pipeline_module_pagebuilder_.html">&quot;pipeline/module/page<wbr>Builder&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/_pipeline_module_resolvepath_.html">&quot;pipeline/module/resolve<wbr>Path&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="../modules/_pipeline_module_resourceparser_.html">&quot;pipeline/module/resource<wbr>Parser&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -253,21 +235,21 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module tsd-has-type-parameter">
-						<a href="_pipeline_module_evalengine_.evalcontent.html" class="tsd-kind-icon">Eval<wbr>Content</a>
+						<a href="../classes/_pipeline_module_evalengine_.evalcontent.html" class="tsd-kind-icon">Eval<wbr>Content</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-module">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
 						<a href="_pipeline_module_evalengine_.evalcontext.html" class="tsd-kind-icon">Eval<wbr>Context</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_pipeline_module_evalengine_.evalcontext.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_pipeline_module_evalengine_.evalcontext.html#pipelinecontext" class="tsd-kind-icon">pipeline<wbr>Context</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_pipeline_module_evalengine_.evalcontext.html#scope" class="tsd-kind-icon">scope</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_pipeline_module_evalengine_.evalcontext.html#sourcenode" class="tsd-kind-icon">source<wbr>Node</a>
 							</li>
 						</ul>
 					</li>
@@ -321,16 +303,15 @@
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 		</div>
 	</div>

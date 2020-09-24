@@ -91,8 +91,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.fragmentcontext.html#parentcontext" class="tsd-kind-icon">parent<wbr>Context</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.fragmentcontext.html#path" class="tsd-kind-icon">path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.fragmentcontext.html#fragmentrespath" class="tsd-kind-icon">fragment<wbr>Res<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.fragmentcontext.html#rootrespath" class="tsd-kind-icon">root<wbr>Res<wbr>Path</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.fragmentcontext.html#scope" class="tsd-kind-icon">scope</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.fragmentcontext.html#slotcontents" class="tsd-kind-icon">slot<wbr>Contents</a></li>
 							</ul>
@@ -103,32 +103,37 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="parentcontext" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> parent<wbr>Context</h3>
-					<div class="tsd-signature tsd-kind-icon">parent<wbr>Context<span class="tsd-signature-symbol">:</span> <a href="_api_pipeline_.fragmentcontext.html" class="tsd-signature-type">FragmentContext</a></div>
+					<a name="fragmentrespath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> fragment<wbr>Res<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">fragment<wbr>Res<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/pipeline.ts#L56">api/pipeline.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/pipeline.ts#L53">api/pipeline.ts:53</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Context of the fragment where this context originates</p>
+							<p>Path that was used to access this fragment.
+								This path may not reflect the actual file where this fragment will end up.
+							If that path is needed, then see <a href="_api_pipeline_.fragmentcontext.html#rootrespath">rootResPath</a>.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="path" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> path</h3>
-					<div class="tsd-signature tsd-kind-icon">path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="rootrespath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> root<wbr>Res<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">root<wbr>Res<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/pipeline.ts#L51">api/pipeline.ts:51</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/pipeline.ts#L61">api/pipeline.ts:61</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Path that was used to access this fragment</p>
+							<p>Path to the &quot;root&quot; fragment or page.
+								This is the path to the actual file that will be produced in the compilation output.
+								This path may not point to the current fragment being compiled, if this fragment is included as a reference.
+							If that path is needed, then see <a href="_api_pipeline_.fragmentcontext.html#fragmentrespath">fragmentResPath</a>.</p>
 						</div>
 					</div>
 				</section>
@@ -138,7 +143,7 @@
 					<div class="tsd-signature tsd-kind-icon">scope<span class="tsd-signature-symbol">:</span> <a href="../modules/_api_pipeline_.html#scopedata" class="tsd-signature-type">ScopeData</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/pipeline.ts#L46">api/pipeline.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/pipeline.ts#L46">api/pipeline.ts:46</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -155,7 +160,7 @@
 					<div class="tsd-signature tsd-kind-icon">slot<wbr>Contents<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ReadonlyMap</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../classes/_dom_node_.documentnode.html" class="tsd-signature-type">DocumentNode</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/06b891f/src/lib/api/pipeline.ts#L39">api/pipeline.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/efdce7d/src/lib/api/pipeline.ts#L39">api/pipeline.ts:39</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -189,6 +194,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_fs_fsutils_.html">&quot;fs/fs<wbr>Utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_fs_pathutils_.html">&quot;fs/path<wbr>Utils&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_index_.html">&quot;index&quot;</a>
@@ -233,9 +241,6 @@
 						<a href="../modules/_pipeline_module_pagebuilder_.html">&quot;pipeline/module/page<wbr>Builder&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/_pipeline_module_resolvepath_.html">&quot;pipeline/module/resolve<wbr>Path&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="../modules/_pipeline_module_resourceparser_.html">&quot;pipeline/module/resource<wbr>Parser&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -263,10 +268,10 @@
 						<a href="_api_pipeline_.fragmentcontext.html" class="tsd-kind-icon">Fragment<wbr>Context</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_api_pipeline_.fragmentcontext.html#parentcontext" class="tsd-kind-icon">parent<wbr>Context</a>
+								<a href="_api_pipeline_.fragmentcontext.html#fragmentrespath" class="tsd-kind-icon">fragment<wbr>Res<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_api_pipeline_.fragmentcontext.html#path" class="tsd-kind-icon">path</a>
+								<a href="_api_pipeline_.fragmentcontext.html#rootrespath" class="tsd-kind-icon">root<wbr>Res<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_api_pipeline_.fragmentcontext.html#scope" class="tsd-kind-icon">scope</a>
