@@ -1,0 +1,7 @@
+
+    .page-section {
+        padding-top: var(--flow-padding);
+    }
+    .page-section:first-of-type {
+        padding-top: 0;
+    }

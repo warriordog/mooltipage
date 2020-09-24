@@ -15,11 +15,11 @@
     }
 
     @media(min-width: 992px) {
-        .responsive-flex-layout[data-direction="row"] {
+        .responsive-flex-layout[data-direction="row"][data-auto-align="true"] {
             align-items: center;
         }
 
-        .responsive-flex-layout[data-direction="column"] {
+        .responsive-flex-layout[data-direction="column"][data-auto-align="true"] {
             align-items: flex-start;
         }
     }
