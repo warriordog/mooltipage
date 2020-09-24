@@ -944,17 +944,17 @@ function serializeDocument(dom: DocumentNode, html: string[]): void {
 }
 
 function serializeTag(tag: TagNode, html: string[]): void {
-    const tagName = tag.tagName.toLowerCase();
-    validateTagText(tagName);
+    const rawTagName = tag.tagName.toLowerCase();
+    const escapedTagName = escapeNonTextContent(rawTagName);
 
     html.push('<');
-    html.push(tagName);
+    html.push(escapedTagName);
     
     if (tag.getAttributes().size > 0) {
         appendAttributeList(tag.getAttributes(), html);
     }
 
-    if (isSelfClosingTag(tagName)) {
+    if (isSelfClosingTag(escapedTagName)) {
         html.push(' />');
     } else {
         html.push('>');
@@ -962,7 +962,7 @@ function serializeTag(tag: TagNode, html: string[]): void {
         serializeChildNodes(tag, html);
 
         html.push('</');
-        html.push(tagName);
+        html.push(escapedTagName);
         html.push('>');
     }
 }
@@ -1003,10 +1003,10 @@ function serializeProcessingInstruction(pi: ProcessingInstructionNode, html: str
 }
 
 function serializeDoctypePI(pi: ProcessingInstructionNode, html: string[]): void {
-    validateTagText(pi.data);
+    const dataText = escapeNonTextContent(pi.data);
 
     html.push('<');
-    html.push(pi.data);
+    html.push(dataText);
     html.push('>');
 }
 
@@ -1016,14 +1016,18 @@ function serializeChildNodes(parent: NodeWithChildren, html: string[]): void {
     }
 }
 
-function validateTagText(tagName: string): void {
-    if (/[<>"&]+/.test(tagName)) {
-        throw new Error(`Invalid tag name: ${ tagName }`);
-    }
+function escapeNonTextContent(textContent: string): string {
+    return textContent
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/&/g, '&amp;');
 }
 
 function escapeTextContent(textContent: string): string {
-    return textContent.replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('&', '&amp;');
+    return textContent
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
 }
 
 function appendAttributeList(attributeMap: ReadonlyMap<string, unknown>, html: string[]): void {
@@ -1037,12 +1041,11 @@ function appendAttributeList(attributeMap: ReadonlyMap<string, unknown>, html: s
         
         if (value != null) {
             // convert to string, since it could be any type
-            const valueString = String(value);
-
-            validateTagText(valueString);
+            const rawValue = String(value);
+            const escapedValue = escapeNonTextContent(rawValue);
 
             html.push('="');
-            html.push(valueString);
+            html.push(escapedValue);
             html.push('"');
         }
     }
