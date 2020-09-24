@@ -1,0 +1,43 @@
+<m-import src="@/fragments/smartLink.html" as="smart-link"></m-import>
+
+<nav class="nav-section">
+    <m-fragment src="@/layouts/responsiveFlexLayout.html" direction="column" class="nav-section-layout">
+        <m-if ?="{{ $.title !== undefined }}">
+            <div class="nav-item nav-title">
+                ${ $.title }
+            </div>
+        </m-if>
+        <m-for var="link" of="{{ $.links }}">
+            <div class="nav-item">
+                <script compiled src="@/buildScript/copyAttributes.js" target-tag="smart-link" attributes="{{ $.link.attributes }}"></script>
+                <smart-link href="{{ $.link.href }}" match-prefix="{{  $.link.matchPrefix }}">${ $.link.text }</smart-link>
+            </div>
+        </m-for>
+    </m-fragment>
+</nav>
+
+<style compiled bind="link">
+    .nav-section .nav-item:first-child {
+        padding: 0;
+    }
+
+    .nav-section .nav-item {
+        padding-left: 20px;
+    }
+
+    .nav-section .nav-title {
+        font-weight: bold;
+        text-decoration: underline;
+    }
+
+    @media(min-width: 992px) {
+        .nav-section .nav-item {
+            padding-left: 0;
+            padding-top: 20px;
+        }
+
+        .nav-section .nav-section-layout {
+            align-items: stretch;
+        }
+    }
+</style>

@@ -1,0 +1,13 @@
+<m-fragment src="@/layouts/mainLayout.html" page-title="Getting Started - ${ $.pageTitle }">
+    <m-content slot="header">
+        <m-slot slot="header"></m-slot>
+    </m-content>
+
+    <!-- Sidebar for getting started section -->
+    <m-content slot="side-bar">
+        <m-data type="application/json" getting-started-links="@/data/gettingStartedLinks.json" />
+        <m-fragment src="@/fragments/navSection.html" links="{{ $.gettingStartedLinks }}"/>
+    </m-content>
+
+    <m-slot></m-slot>
+</m-fragment>

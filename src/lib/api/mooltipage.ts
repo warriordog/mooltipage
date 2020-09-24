@@ -83,7 +83,7 @@ export class Mooltipage {
      * @param options Configuration options
      */
     constructor(options?: MpOptions) {
-        if (options) {
+        if (options !== undefined) {
             this.options = options;
         } else {
             this.options = new DefaultMpOptions();

@@ -1,0 +1,49 @@
+<!-- Layout that switches between row and column based on screen size -->
+
+<script compiled>
+    const { TagNode } = require('./dom/node');
+
+    // general css class
+    if ($.class !== undefined && $.class !== null && $.class.length > 0) {
+        $.class = `responsive-flex-layout ${ $.class }`;
+    } else {
+        $.class = 'responsive-flex-layout';
+    }
+
+    // remove id attr if not set
+    if ($.id === undefined || $.id === null || $.id.length === 0) {
+        const divNode = $$.sourceNode.findNext(node => TagNode.isTagNode(node) && node.tagName === 'div');
+        divNode.deleteAttribute('id');
+    }
+</script>
+
+<div class="{{ $.class }}" id="{{ $.id }}" data-direction="{{ $.direction || 'row' }}" data-auto-align="${ !!$.autoAlign }">
+    <m-slot></m-slot>
+</div>
+
+<style compiled bind="link">
+    .responsive-flex-layout {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+
+    .responsive-flex-layout[data-direction="row"] {
+        flex-direction: var(--flow-flex-direction-inverse);
+        align-items: flex-start;
+    }
+
+    .responsive-flex-layout[data-direction="column"] {
+        flex-direction: var(--flow-flex-direction);
+        align-items: center;
+    }
+
+    @media(min-width: 992px) {
+        .responsive-flex-layout[data-direction="row"][data-auto-align="true"] {
+            align-items: center;
+        }
+
+        .responsive-flex-layout[data-direction="column"][data-auto-align="true"] {
+            align-items: flex-start;
+        }
+    }
+</style>

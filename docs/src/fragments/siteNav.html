@@ -1,0 +1,6 @@
+<m-import src="@/fragments/smartLink.html" as="smart-link"></m-import>
+
+<nav class="site-nav">
+    <m-data type="application/json" site-nav-links="@/data/commonLinks.json" />
+    <m-fragment src="@/fragments/navSection.html" links="{{ $.siteNavLinks }}" />
+</nav>

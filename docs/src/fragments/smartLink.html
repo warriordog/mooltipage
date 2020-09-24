@@ -1,0 +1,41 @@
+<!-- Link that applies alternate CSS when a link points to the current page -->
+
+<!-- Script needs to be before anchor tag since compilation is progressive -->
+<script compiled>
+    function pathMatches(hrefPath, rootPath, matchPrefix, allowCaseInsensitive) {
+        if (allowCaseInsensitive) {
+            hrefPath = hrefPath.toLowerCase();
+            rootPath = rootPath.toLowerCase();
+        }
+
+        // TODO maybe Path.normalize or some variant of computePathBetween
+        const normalHrefPath = hrefPath.replace(/[/\\]/g, '/');
+        const normalRootPath = rootPath.replace(/[/\\]/g, '/');
+
+        return normalHrefPath === normalRootPath || (matchPrefix !== undefined && normalRootPath.startsWith(matchPrefix));
+
+    }
+
+    this.linkAttributes = Object.entries($$.pipelineContext.fragmentContext.scope)
+        .filter(entry => entry[0] !== 'href' && entry[0] !== 'allowCaseInsensitive' && entry[0] !== 'matchPrefix');
+
+    const linkHref = String(this.href);
+    const rootResPath = $$.pipelineContext.fragmentContext.rootResPath;
+
+    // if link points to the current page, then add class
+    if (pathMatches(linkHref, rootResPath, this.matchPrefix, this.allowCaseInsensitive)) {
+        let classAttr = this.linkAttributes.find(entry => entry[0] === 'class');
+        if (classAttr === undefined) {
+            this.linkAttributes.push([ 'class', 'link-is-current-page' ]);
+        } else {
+            classAttr[1] += ' link-is-current-page';
+        }
+    }
+</script>
+
+<script compiled src="@/buildScript/CopyAttributes.js" target-tag="a" attributes="{{ $.linkAttributes }}"></script>
+<a href="{{ $.href }}" compiled>
+    <m-slot></m-slot>
+</a>
+
+

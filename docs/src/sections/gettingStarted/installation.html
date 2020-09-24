@@ -1,0 +1,37 @@
+<m-import src="@/fragments/pageSection.html" as="page-section" />
+
+<m-fragment src="@/layouts/gettingStartedLayout.html" page-title="Installation">
+    <m-content slot="header">
+        Installing Mooltipage
+    </m-content>
+
+    <page-section>
+        <header><h5>Prerequisites:</h5></header>
+        <p>
+            Mooltipage is based on Node.JS and requires version <strong>12.0</strong> or later to run.
+            If you do not have Node.JS, then you can download it at no cost from <a href="https://nodejs.org" rel="noopener">the Node.JS official website</a>.
+            <br>
+            No other software is required.
+        </p>
+    </page-section>
+
+    <page-section>
+        <header><h5>Installation:</h5></header>
+        <p>
+            Mooltipage is designed to be installed and run through NPM, a package management tool that is included with Node.JS.
+            Follow these steps to install Mooltipage via NPM.
+            If you are installing into an existing NPM project, then skip to step #4.
+        </p>
+        <ol>
+            <li>Create a new folder somewhere on your PC. This is where your web project will be located.</li>
+            <li>Open a Terminal, Command Prompt, or PowerShell window to the newly created folder.</li>
+            <li>Execute the command <code>npm init</code>. Follow the prompts to complete project setup.</li>
+            <li>Execute the command <code>npm install --save-dev mooltipage</code>.</li>
+        </ol>
+        <br>
+        <p>
+            Congratulations, Mooltipage is now installed and ready for use.
+            For basic usage instructions, please proceed to <a href="./cli.html">Getting Started - CLI</a> or <a href="./api.html">Getting Started - JS API</a>.
+        </p>
+    </page-section>
+</m-fragment>

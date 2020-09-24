@@ -1,12 +1,12 @@
-<m-import src="@/layouts/ResponsiveFlexLayout.html" as="responsive" />
-<m-import src="@/fragments/Island.html" as="island" />
+<m-import src="@/layouts/responsiveFlexLayout.html" as="responsive" />
+<m-import src="@/fragments/island.html" as="island" />
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${ $.pageTitle }</title>
+    <title>Mooltipage - ${ $.pageTitle }</title>
     <style compiled src="@/css/common.css" bind="link"></style>
 </head>
 <body>
@@ -21,16 +21,27 @@
         <responsive id="lower-section" direction="row">
             <!-- Side bar -->
             <aside id="side-bar">
+                <!-- site nav menu -->
                 <island>
-                    <responsive direction="column">
-                        <m-fragment src="@/fragments/SiteNav.html"></m-fragment>
-                        <m-slot slot="side-bar"></m-slot>
-                    </responsive>
+                    <m-fragment src="@/fragments/siteNav.html"></m-fragment>
                 </island>
+
+                <!-- page-specific sidebar content -->
+                <m-if ?="{{ $$.pipelineContext.fragmentContext.slotContents.has('side-bar') }}">
+                    <island squish="top">
+                        <m-slot slot="side-bar"></m-slot>
+                    </island>
+                </m-if>
             </aside>
 
             <!-- Main content -->
             <main id="main-content">
+                <header id="main-content-header">
+                    <h2>
+                        <m-slot slot="header"></m-slot>
+                    </h2>
+                </header>
+
                 <m-slot></m-slot>
             </main>
         </responsive>
@@ -69,19 +80,23 @@
         justify-content: stretch;
     }
 
+    #main-content {
+        padding: var(--flow-padding);
+
+        flex: 1;
+    }
+
+    #main-content-header {
+        padding-bottom: var(--flow-padding);
+    }
+
     #side-bar {
         flex: 1 0 100%;
     }
 
     @media(min-width: 992px) {
         #side-bar {
-            flex: 0 0 250px;
+            flex: 0 0 300px;
         }
-    }
-
-    #main-content {
-        padding: var(--flow-padding);
-
-        flex: 1;
     }
 </style>

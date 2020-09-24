@@ -1,0 +1,30 @@
+[
+  {
+    "href": "sections/gettingStarted/home.html",
+    "text": "Getting Started - Home",
+    "attributes": [
+      [ "resolve", "base" ]
+    ]
+  },
+  {
+    "href": "sections/gettingStarted/installation.html",
+    "text": "Getting Started - Installation",
+    "attributes": [
+      [ "resolve", "base" ]
+    ]
+  },
+  {
+    "href": "sections/gettingStarted/cli.html",
+    "text": "Getting Started - CLI",
+    "attributes": [
+      [ "resolve", "base" ]
+    ]
+  },
+  {
+    "href": "sections/gettingStarted/api.html",
+    "text": "Getting Started - JS API",
+    "attributes": [
+      [ "resolve", "base" ]
+    ]
+  }
+]

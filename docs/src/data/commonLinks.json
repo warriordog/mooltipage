@@ -1,0 +1,26 @@
+[
+  {
+    "href": "index.html",
+    "text": "Home",
+    "attributes": [
+      [ "resolve", "base" ]
+    ]
+  },
+  {
+    "href": "sections/gettingStarted/home.html",
+    "text": "Getting Started",
+    "matchPrefix": "sections/gettingStarted/",
+    "attributes": [
+      [ "resolve", "base" ]
+    ]
+  },
+  {
+    "href": "gen/typedoc/index.html",
+    "text": "API Documentation",
+    "attributes": [
+      [ "resolve", "base" ],
+      [ "target", "_blank" ],
+      [ "rel", "noopener" ]
+    ]
+  }
+]

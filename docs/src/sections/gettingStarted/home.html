@@ -1,0 +1,78 @@
+<m-import src="@/fragments/pageSection.html" as="page-section" />
+
+<m-fragment src="@/layouts/gettingStartedLayout.html" page-title="Home">
+    <m-content slot="header">
+        Getting Started with Mooltipage
+    </m-content>
+
+    <page-section>
+        <p>
+            This guide covers the basic installation and usage of Mooltipage for both the CLI and JavaScript API.
+            To jump to a specific topic, use the links in the sidebar.
+        </p>
+    </page-section>
+
+    <page-section>
+        <p>
+            Mooltipage includes two primary modes of operation: the CLI - or command line interface - and the JavaScript API.
+            Before you begin, you must decide which mode you intend to use.
+            Generally, the CLI is faster and easier to set up but the API provides more low level control and advanced functionality.
+
+            <figure>
+                <figcaption>This table highlights the differences in more detail.</figcaption>
+                <table id="mooltipage-modes-table">
+                    <thead>
+                    <tr>
+                        <th>Mode</th>
+                        <th>Functionality</th>
+                        <th>Extensible</th>
+                        <th>Requires Code</th>
+                        <th>Stable Interface</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>CLI</td>
+                        <td>Standard</td>
+                        <td class="mp-mode-neg">No</td>
+                        <td class="mp-mode-neg">No</td>
+                        <td class="mp-mode-pos">No</td>
+                    </tr>
+                    <tr>
+                        <td>API</td>
+                        <td>Advanced</td>
+                        <td class="mp-mode-pos">Yes</td>
+                        <td class="mp-mode-pos">Yes</td>
+                        <td class="mp-mode-neg">Yes</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </figure>
+
+            Once you have decided which Mooltipage mode is right for you, then move on to the <a compiled href="./installation.html">installation</a> section.
+        </p>
+    </page-section>
+</m-fragment>
+
+<style compiled bind="head">
+    #mooltipage-modes-table {
+        border-collapse: collapse;
+    }
+
+    #mooltipage-modes-table td,
+    #mooltipage-modes-table th {
+        padding: calc(var(--flow-padding) / 2);
+        border: 1px solid black;
+    }
+
+    #mooltipage-modes-table th {
+        background-color: var(--color-bg-aside);
+    }
+
+    .mp-mode-neg {
+        color: var(--color-error);
+    }
+    .mp-mode-pos {
+        color: var(--color-success);
+    }
+</style>
