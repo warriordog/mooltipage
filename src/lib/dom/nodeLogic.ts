@@ -1018,10 +1018,10 @@ function serializeChildNodes(parent: NodeWithChildren, html: string[]): void {
 
 function escapeNonTextContent(textContent: string): string {
     return textContent
+        .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/&/g, '&amp;');
+        .replace(/"/g, '&quot;');
 }
 
 function escapeTextContent(textContent: string): string {
