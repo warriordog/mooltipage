@@ -54,6 +54,7 @@ export function resolveResPath(resPath: string, basePath?: string): string {
  * @param basePath Common base directory between sourcePath and targetPath
  * @param targetPath Path to the target resource
  * @param sourcePath Path to the source resource
+ * @returns Relative path from sourcePath to targetPath through basePath
  */
 export function computePathBetween(basePath: string, targetPath: string, sourcePath: string): string {
     const normalBasePath = Path.normalize(`${ basePath }${ Path.sep }`);

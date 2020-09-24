@@ -185,18 +185,7 @@ export class StandardPipeline implements Pipeline {
         return css;
     }
 
-    /**
-     * Links a created resource to the compilation output.
-     * This method ONLY handles saving the contents, it does not compile them or attach them to the actual HTML.
-     * This method is ONLY for created (incidental) resources.
-     * 
-     * @param type Type of resource
-     * @param contents Contents as a UTF-8 string
-     * @param sourceResPath Path to the explicit resource that has produced this created resource
-     * @param rootResPath Path to the "root" fragment where this resources will be referenced
-     * @returns path to reference linked resource
-     */
-    linkResource(type: MimeType, contents: string, sourceResPath: string, rootResPath: string): string {
+    private createLinkableResource(type: MimeType, contents: string, sourceResPath: string, rootResPath: string): string {
         // hash contents
         const contentsHash = this.fastHashContent(contents);
 
@@ -210,11 +199,10 @@ export class StandardPipeline implements Pipeline {
             if (this.pipelineInterface.reLinkCreatedResource != undefined) {
                 return this.pipelineInterface.reLinkCreatedResource(type, contents, sourceResPath, rootResPath, originalResPath);
             } else {
-                // if PI does not implement relinking, then use basic implementation to adjust path
-                return computePathBetween(this.pipelineInterface.destinationPath, originalResPath, rootResPath);
+                return originalResPath;
             }
         }
-        
+
         // if not in cache, then call PI to create resource
         const resPath = this.pipelineInterface.createResource(type, contents, sourceResPath);
 
@@ -222,6 +210,25 @@ export class StandardPipeline implements Pipeline {
         this.cache.storeCreatedResource(contentsHash, resPath);
 
         return resPath;
+    }
+
+    /**
+     * Links a created resource to the compilation output.
+     * This method ONLY handles saving the contents, it does not compile them or attach them to the actual HTML.
+     * This method is ONLY for created (incidental) resources.
+     * 
+     * @param type Type of resource
+     * @param contents Contents as a UTF-8 string
+     * @param sourceResPath Path to the explicit resource that has produced this created resource
+     * @param rootResPath Path to the "root" fragment where this resources will be referenced
+     * @returns path to reference linked resource
+     */
+    linkResource(type: MimeType, contents: string, sourceResPath: string, rootResPath: string): string {
+        // create the resource and get the raw path
+        const rawResPath = this.createLinkableResource(type, contents, sourceResPath, rootResPath);
+
+        // adjust path relative to the output page and directory
+        return computePathBetween(this.pipelineInterface.destinationPath, rawResPath, rootResPath);
     }
 
     /**
