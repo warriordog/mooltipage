@@ -1025,9 +1025,7 @@ function escapeNonTextContent(textContent: string): string {
 }
 
 function escapeTextContent(textContent: string): string {
-    return textContent
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+    return textContent.replace(/</g, '&lt;');
 }
 
 function appendAttributeList(attributeMap: ReadonlyMap<string, unknown>, html: string[]): void {
