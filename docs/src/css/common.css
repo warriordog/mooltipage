@@ -98,6 +98,8 @@ ul, ol {
 /* Style links */
 a {
     text-decoration: none;
+}
+a:link {
     color: var(--color-alert);
 }
 a:visited {
