@@ -1,83 +1,87 @@
 <m-import src="@/fragments/pageSection.html" as="page-section" />
+<m-import src="@/fragments/codeBlock.html" as="code-block" />
 
 <m-fragment src="@/layouts/gettingStartedLayout.html" page-title="CLI">
     <m-content slot="header">
         CLI Usage
     </m-content>
 
-    <page-section>
-        <header><h5>General usage:</h5></header>
+    <page-section title="General usage:">
         <p>
-            If you have installed Mooltipage using npm as described in the previous sections, then all CLI functions can be accessed by the command <code>npx mooltipage</code>.
-            You can execute <code>npx cli --help</code> for a brief listing of available options and command usage.
+            If you have installed Mooltipage using npm as described in the previous sections, then all CLI functions can be accessed by the command "npx mooltipage".
+            You can execute "npx cli --help" for a brief listing of available options and command usage.
         </p>
     </page-section>
 
-    <page-section>
-        <header><h5>Building a single page:</h5></header>
+    <page-section title="Building a single page:">
         <p>
             The simplest usage of Mooltipage is to compile a single page.
             This command will take an input HTML file and overwrite it with the compiled HTML output:
-            <code class="code-block">npx mooltipage path/to/source/page.html</code>
+            <code-block language="javascript" rows="1">
+                npx mooltipage path/to/source/page.html
+            </code-block>
             It is possible to repeatedly call this command with different pages to compile a larger project, but the CLI provided a better solution that will be described next.
             It is also possible to save the generated HTML to an alternate location.
             That will be explained later in this document.
         </p>
     </page-section>
 
-    <page-section>
-        <header><h5>Building multiple pages:</h5></header>
+    <page-section title="Building multiple pages:">
         <p>
             Mooltipage is designed for use in projects involving multiple HTML pages, so the CLI includes support for compiling multiple pages at once.
             When using Mooltipage in this way, the internal cache will be shared between pages.
             This can greatly speed up page compilation, especially in projects with a large number of frequently-used fragments.
             To compile multiple pages, simply provide multiple paths to the CLI.
             Each file will be compiled and overwritten in-place.
-            <code class="code-block">npx mooltipage index.html about.html sales.html</code>
+            <code-block language="javascript" rows="1">
+                npx mooltipage index.html about.html sales.html
+            </code-block>
         </p>
     </page-section>
 
-    <page-section>
-        <header><h5>Building a directory</h5></header>
+    <page-section title="Building a directory:">
         <p>
             To avoid needing to specify all pages in a project, it is possible to target a directory or even multiple directories instead of targeting files directly.
             For each input path that resolves to a directory, Mooltipage will recursively search for and include all HTML files found under that path.
             Any combination of files and directories can be provided.
             For example:
-            <code class="code-block">npx mooltipage index.html pages/</code>
+            <code-block language="javascript" rows="1">
+                npx mooltipage index.html pages/
+            </code-block>
             Be careful, Mooltipage will include ALL files that end with ".html", even if they are not pages.
             When compiling from a directory, make sure to place all non-page HTML (such as fragments) in another location.
         </p>
     </page-section>
 
-    <page-section>
-        <header><h5>Specifying the input path</h5></header>
+    <page-section title="Specifying the input path:">
         <p>
             By default Mooltipage uses the current working directory to resolve external references.
             Fragments, data paths, and script files are all examples of references.
             If the CLI is not executed from the correct directory, or the reference paths were created relative to a different location, then this can result in build errors.
             To avoid this, specify the base input directory using the "--inPath" option.
             To compile a project with the source located in "/src", use the following command:
-            <code class="code-block">npx mooltipage --inPath=src src/index.html src/pages/</code>
+            <code-block language="javascript" rows="1">
+                npx mooltipage --inPath=src src/index.html src/pages/
+            </code-block>
             With the above command, a reference to "styles.css" from index.html will resolve to "src/styles.css", which is the correct path.
             If inPath had not been specified, then the path would have resolved to "styles.css" which is incorrect.
         </p>
     </page-section>
 
-    <page-section>
-        <header><h5>Saving to a different location:</h5></header>
+    <page-section title="Saving to a different location:">
         <p>
             In many cases, it is important or even essential to not overwrite the source files.
             This can be accomplished by providing an output directory and passing the path to Mooltipage.
             The output path for a page will be created by joining the output directory with the relative path from the input directory to that directory.
             For example, with input path "src" and output path "dist/html", the page "src/folder/index.html" will be saved to "dist/html/folder/index.html"
             The command to build that example would be:
-            <code class="code-block">npx mooltipage --inPath=src --outPath=dist/html src/folder/index.html</code>
+            <code-block language="javascript" rows="1">
+                npx mooltipage --inPath=src --outPath=dist/html src/folder/index.html
+            </code-block>
         </p>
     </page-section>
 
-    <page-section>
-        <header><h5>Formatting the output HTML:</h5></header>
+    <page-section title="Formatting the output HTML:">
         <p>
             The Mooltipage compiler does not manipulate whitespace, which typically results in very ugly generated HTML.
             To counter this, Mooltipage includes a basic HTML formatter.
@@ -88,18 +92,18 @@
             The none mode can be used in case of formatting errors, or to improve performance in build pipelines that utilize an external HTML processor.
             <br>
             Either of these commands can be used to build pretty HTML:
-            <code class="code-block">
-                npx mooltipage index.html<br>
+            <code-block language="javascript" rows="2">
+                npx mooltipage index.html
                 npx mooltipage --formatter=pretty index.html
-            </code>
+            </code-block>
             This command will minify the output HTML:
-            <code class="code-block">
+            <code-block language="javascript" rows="1">
                 npx mooltipage --formatter=minimized index.html
-            </code>
+            </code-block>
             And finally, this command will disable formatting:
-            <code class="code-block">
+            <code-block language="javascript" rows="1">
                 npx mooltipage --formatter=none index.html
-            </code>
+            </code-block>
         </p>
     </page-section>
 </m-fragment>

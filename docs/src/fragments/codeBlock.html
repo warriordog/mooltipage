@@ -1,0 +1,45 @@
+<code class="code-block language-${ $.language } cb-${ String($.display).toLowerCase() === 'inline' ? 'inline' : 'block' } cb-scroll-${ !!$.scroll ? $.scroll : 'off' }">
+    <textarea readonly spellcheck="false" rows="${ !!$.rows ? $.rows : 3 }">
+        <m-if ?="{{ !!$.code }}">${ String($.code) }</m-if>
+        <m-else><m-slot></m-slot></m-else>
+    </textarea>
+</code>
+
+<style compiled>
+    code.code-block.cb-inline {
+        display: inline-block;
+    }
+    code.code-block.cb-block {
+        display: block;
+        width: 100%;
+        padding: 2px 0;
+    }
+
+    code.code-block > textarea {
+        background-color: #F9F9EF;
+        color: var(--color-secondary);
+        border: 1px solid var(--color-bg-shadow);
+
+        margin: 0;
+        padding: 3px;
+        font-family: "Lucida Console", Monaco, monospace;
+
+        resize: none;
+        overflow: hidden;
+
+        width: 100%;
+    }
+
+    code.code-block.cb-block > textarea {
+        resize: both;
+    }
+    code.code-block.cb-scroll-x > textarea,
+    code.code-block.cb-scroll-both > textarea {
+        overflow-x: auto;
+    }
+    code.code-block.cb-scroll-y > textarea,
+    code.code-block.cb-scroll-both > textarea {
+        overflow-y: auto;
+    }
+
+</style>
