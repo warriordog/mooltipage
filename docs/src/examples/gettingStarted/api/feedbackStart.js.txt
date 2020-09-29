@@ -1,0 +1,26 @@
+const { Mooltipage } from 'mooltipage';
+
+// create base config object
+const baseConfig = {
+    inPath: './src/',
+    outPath: './dist/',
+    formatter: 'pretty'
+};
+
+// create mooltipage instances
+const mp = new Mooltipage(baseConfig);
+const mpSpecial = new Mooltipage(Object.assign(Object.create(baseConfig), {
+    formatter: 'none'
+});
+
+// compile pages
+mp.processPages([ './index.html', './pages/page1.html', './pages/page2.html' ]);
+mpSpecial.processPage('./pages/special.html');
+
+// compile debug page if not in production
+if (process.env.NODE_ENV !== 'production') {
+    mp.processPage('./pages/debug.html');
+}
+
+// compile extra pages from CLI
+mp.processPages(process.argv.slice(2));

@@ -1,0 +1,10 @@
+interface Page {
+    // Path to the file (relative to inPath)
+    readonly path: string;
+
+    // Root of the Document Object Model (DOM) tree representing the page, can be used to examine the output
+    readonly dom: DocumentNode;
+
+    // Formatted HTML output of the compiled page
+    readonly html: string;
+}

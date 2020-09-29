@@ -1,0 +1,3 @@
+mp.processPage('./index.html');
+mp.processPage('./pages/page1.html');
+mp.processPage('./pages/page2.html');

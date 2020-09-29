@@ -1,6 +1,15 @@
 <m-import src="@/fragments/pageSection.html" as="page-section" />
 <m-import src="@/fragments/codeBlock.html" as="code-block" />
 
+<m-data type="text/plain" ex-directory="@/examples/gettingStarted/cli/directory.js.txt"></m-data>
+<m-data type="text/plain" ex-format-min="@/examples/gettingStarted/cli/formatMin.js.txt"></m-data>
+<m-data type="text/plain" ex-format-none="@/examples/gettingStarted/cli/formatNone.js.txt"></m-data>
+<m-data type="text/plain" ex-format-pretty="@/examples/gettingStarted/cli/formatPretty.js.txt"></m-data>
+<m-data type="text/plain" ex-input-path="@/examples/gettingStarted/cli/inputPath.js.txt"></m-data>
+<m-data type="text/plain" ex-multiple-pages="@/examples/gettingStarted/cli/multiplePages.js.txt"></m-data>
+<m-data type="text/plain" ex-single-page="@/examples/gettingStarted/cli/singlePage.js.txt"></m-data>
+<m-data type="text/plain" ex-output-path="@/examples/gettingStarted/cli/outputPath.js.txt"></m-data>
+
 <m-fragment src="@/layouts/gettingStartedLayout.html" page-title="CLI">
     <m-content slot="header">
         CLI Usage
@@ -17,9 +26,7 @@
         <p>
             The simplest usage of Mooltipage is to compile a single page.
             This command will take an input HTML file and overwrite it with the compiled HTML output:
-            <code-block language="javascript" rows="1">
-                npx mooltipage path/to/source/page.html
-            </code-block>
+            <code-block language="javascript" rows="1" code="{{ $.exSinglePage }}"></code-block>
             It is possible to repeatedly call this command with different pages to compile a larger project, but the CLI provided a better solution that will be described next.
             It is also possible to save the generated HTML to an alternate location.
             That will be explained later in this document.
@@ -33,9 +40,7 @@
             This can greatly speed up page compilation, especially in projects with a large number of frequently-used fragments.
             To compile multiple pages, simply provide multiple paths to the CLI.
             Each file will be compiled and overwritten in-place.
-            <code-block language="javascript" rows="1">
-                npx mooltipage index.html about.html sales.html
-            </code-block>
+            <code-block language="javascript" rows="1" code="{{ $.exMultiplePages }}"></code-block>
         </p>
     </page-section>
 
@@ -45,9 +50,7 @@
             For each input path that resolves to a directory, Mooltipage will recursively search for and include all HTML files found under that path.
             Any combination of files and directories can be provided.
             For example:
-            <code-block language="javascript" rows="1">
-                npx mooltipage index.html pages/
-            </code-block>
+            <code-block language="javascript" rows="1" code="{{ $.exDirectory }}"></code-block>
             Be careful, Mooltipage will include ALL files that end with ".html", even if they are not pages.
             When compiling from a directory, make sure to place all non-page HTML (such as fragments) in another location.
         </p>
@@ -60,9 +63,7 @@
             If the CLI is not executed from the correct directory, or the reference paths were created relative to a different location, then this can result in build errors.
             To avoid this, specify the base input directory using the "--inPath" option.
             To compile a project with the source located in "/src", use the following command:
-            <code-block language="javascript" rows="1">
-                npx mooltipage --inPath=src src/index.html src/pages/
-            </code-block>
+            <code-block language="javascript" rows="1" code="{{ $.exInputPath }}"></code-block>
             With the above command, a reference to "styles.css" from index.html will resolve to "src/styles.css", which is the correct path.
             If inPath had not been specified, then the path would have resolved to "styles.css" which is incorrect.
         </p>
@@ -75,9 +76,7 @@
             The output path for a page will be created by joining the output directory with the relative path from the input directory to that directory.
             For example, with input path "src" and output path "dist/html", the page "src/folder/index.html" will be saved to "dist/html/folder/index.html"
             The command to build that example would be:
-            <code-block language="javascript" rows="1">
-                npx mooltipage --inPath=src --outPath=dist/html src/folder/index.html
-            </code-block>
+            <code-block language="javascript" rows="1" code="{{ $.exOutputPath }}"></code-block>
         </p>
     </page-section>
 
@@ -92,18 +91,11 @@
             The none mode can be used in case of formatting errors, or to improve performance in build pipelines that utilize an external HTML processor.
             <br>
             Either of these commands can be used to build pretty HTML:
-            <code-block language="javascript" rows="2">
-                npx mooltipage index.html
-                npx mooltipage --formatter=pretty index.html
-            </code-block>
+            <code-block language="javascript" rows="2" code="{{ $.exFormatPretty }}"></code-block>
             This command will minify the output HTML:
-            <code-block language="javascript" rows="1">
-                npx mooltipage --formatter=minimized index.html
-            </code-block>
+            <code-block language="javascript" rows="1" code="{{ $.exFormatMin }}"></code-block>
             And finally, this command will disable formatting:
-            <code-block language="javascript" rows="1">
-                npx mooltipage --formatter=none index.html
-            </code-block>
+            <code-block language="javascript" rows="1" code="{{ $.exFormatNone }}"></code-block>
         </p>
     </page-section>
 </m-fragment>

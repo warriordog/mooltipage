@@ -1,0 +1,1 @@
+npx mooltipage --inPath=src --outPath=dist/html src/folder/index.html

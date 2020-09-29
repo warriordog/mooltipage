@@ -1,0 +1,5 @@
+const pages = process.argv.slice(2);
+
+for (const page of pages) {
+    mp.processPage(page);
+}

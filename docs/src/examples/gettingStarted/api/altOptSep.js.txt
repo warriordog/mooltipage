@@ -1,0 +1,9 @@
+const mooltipageConfigNoFormat = {
+    inPath: './src/',
+    outPath: './dist/
+    formatter: 'none'
+};
+
+const mpNoFormat = new Mooltipage(mooltipageConfigNoFormat);
+
+mpNoFormat.processPage('./pages/special.html');

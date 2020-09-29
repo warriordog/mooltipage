@@ -1,6 +1,23 @@
 <m-import src="@/fragments/pageSection.html" as="page-section" />
 <m-import src="@/fragments/codeBlock.html" as="code-block" />
 
+<m-data type="text/plain" ex-create-config="@/examples/gettingStarted/api/createConfig.js.txt"></m-data>
+<m-data type="text/plain" ex-create-full="@/examples/gettingStarted/api/createFull.js.txt"></m-data>
+<m-data type="text/plain" ex-create-import="@/examples/gettingStarted/api/createImport.js.txt"></m-data>
+<m-data type="text/plain" ex-create-instance="@/examples/gettingStarted/api/createInstance.js.txt"></m-data>
+<m-data type="text/plain" ex-single="@/examples/gettingStarted/api/single.js.txt"></m-data>
+<m-data type="text/plain" ex-multiple-manual="@/examples/gettingStarted/api/multipleManual.js.txt"></m-data>
+<m-data type="text/plain" ex-multiple-array="@/examples/gettingStarted/api/multipleArray.js.txt"></m-data>
+<m-data type="text/plain" ex-alt-opt-start="@/examples/gettingStarted/api/altOptStart.js.txt"></m-data>
+<m-data type="text/plain" ex-alt-opt-sep="@/examples/gettingStarted/api/altOptSep.js.txt"></m-data>
+<m-data type="text/plain" ex-alt-opt-full="@/examples/gettingStarted/api/altOptFull.js.txt"></m-data>
+<m-data type="text/plain" ex-dynamic-args="@/examples/gettingStarted/api/dynamicArgs.js.txt"></m-data>
+<m-data type="text/plain" ex-dynamic-env="@/examples/gettingStarted/api/dynamicEnv.js.txt"></m-data>
+<m-data type="text/plain" ex-feedback-full="@/examples/gettingStarted/api/feedbackFull.js.txt"></m-data>
+<m-data type="text/plain" ex-feedback-opts="@/examples/gettingStarted/api/feedbackOpts.js.txt"></m-data>
+<m-data type="text/plain" ex-feedback-page="@/examples/gettingStarted/api/feedbackPage.js.txt"></m-data>
+<m-data type="text/plain" ex-feedback-start="@/examples/gettingStarted/api/feedbackStart.js.txt"></m-data>
+
 <m-fragment src="@/layouts/gettingStartedLayout.html" page-title="JS API">
     <m-content slot="header">
         API Usage
@@ -33,22 +50,14 @@
             <li>
                 Next, open the new file in an editor.
                 Add this line to the top of the file:
-                <code-block language="javascript" rows="1">
-                    const { Mooltipage } from 'mooltipage';
-                </code-block>
+                <code-block language="javascript" rows="1" code="{{ $.exCreateImport }}"></code-block>
                 This will instruct Node.JS to load the main Mooltipage API constructor, and save it to the local constant Mooltipage.
             </li>
             <li>
                 Mooltipage is loaded, but we need an instance before we can use it.
                 To create an instance, we call the Mooltipage() construct and pass it a configuration object.
                 Create a configuration object like this:
-                <code-block language="javascript" rows="5">
-                    const mooltipageConfig = {
-                        inPath: './src/',
-                        outPath: './dist/',
-                        formatter: 'pretty'
-                    };
-                </code-block>
+                <code-block language="javascript" rows="5" code="{{ $.exCreateConfig }}"></code-block>
                 With this config object, Mooltipage will be configured to load inputs from "./src" and save them to "./dist".
                 Additionally, HTML outputs will be formatted with the "pretty" HTML formatter.
                 For more details on these properties and their effects, see the CLI usage section.
@@ -57,31 +66,13 @@
                 Now that we have loaded Mooltipage and have prepared a config object, we can create a Mooltipage instance.
                 We create an instance by invoking the Mooltipage constructor.
                 Add this code to your build script:
-                <code-block language="javascript" rows="1">
-                    const mp = new Mooltipage(mooltipageConfig);
-                </code-block>
+                <code-block language="javascript" rows="1" code="{{ $.exCreateImport }}"></code-block>
                 This instance is immediately ready to use and can be reused for as many pages as desired.
             </li>
         </ol>
         <p>
             At this point, the build script should look like this (comments added for clarity):
-            <code-block language="javascript" rows="15">
-                // import and load mooltipage
-                const { Mooltipage } from 'mooltipage';
-
-                // prepare mooltipage config object
-                const mooltipageConfig = {
-                    // load inputs from "./src" folder
-                    inPath: './src/',
-                    // save outputs to "./dist" folder
-                    outPath: './dist/
-                    // format output HTML for human readability
-                    formatter: 'pretty'
-                };
-
-                // create mooltipage instance
-                const mp = new Mooltipage(mooltipageConfig);
-            </code-block>
+            <code-block language="javascript" rows="15" code="{{ $.exCreateFull }}"></code-block>
             This script is almost done.
             Mooltipage is loaded, configured, and ready to start compiling pages.
             All that is left is to tell Mooltipage which files to process.
@@ -94,9 +85,7 @@
             You simply invoke the processPage function with the path to file.
             The default compilation pipeline will load, compile, and save the file automatically.
             Simple usage looks like this:
-            <code-block language="javascript" rows="1">
-                mp.processPage('./index.html');
-            </code-block>
+            <code-block language="javascript" rows="1" code="{{ $.exSingle }}"></code-block>
             All compilation settings, like the input / output paths and selected formatter, are taken from the configuration values provided earlier.
             If you need to compile a page with different settings, then you can create another Mooltipage instance with new configuration data.
             The instances are completely isolated and will not conflict.
@@ -107,19 +96,12 @@
         <p>
             Compiling a single page is useful, but most projects will include more than one page.
             The obvious way to compile multiple pages is to call processPage multiple times, like this:
-            <code-block language="javascript" rows="3">
-                mp.processPage('./index.html');
-                mp.processPage('./pages/page1.html');
-                mp.processPage('./pages/page2.html');
-            </code-block>
+            <code-block language="javascript" rows="3" code="{{ $.exMultipleManual }}"></code-block>
             This will work, but there is a better way.
             In addition to processPage, the Mooltipage API also exposes the processPages function which compiles multiple pages at once.
             Simply pass in an array containing paths to all of the pages that you want to compile, and they will all be compiled sequentially.
             The above example can be simplified to:
-            <code-block language="javascript" rows="2">
-                const pagePaths = [ './index.html', './pages/page1.html', './pages/page2.html' ];
-                mp.processPages(pagePaths);
-            </code-block>
+            <code-block language="javascript" rows="2" code="{{ $.exMultipleArray }}"></code-block>
         </p>
     </page-section>
 
@@ -129,70 +111,19 @@
             The API, however, is capable of more.
             This and the following sections will demo functionality that is only available through the API.
             If you have followed all the previous sections, then your build script should look something like this (comments added for clarity):
-            <code-block language="javascript" rows="21">
-                // import and load mooltipage
-                const { Mooltipage } from 'mooltipage';
-
-                // prepare mooltipage config object
-                const mooltipageConfig = {
-                    // load inputs from "./src" folder
-                    inPath: './src/',
-                    // save outputs to "./dist" folder
-                    outPath: './dist/
-                    // format output HTML for human readability
-                    formatter: 'pretty'
-                };
-
-                // create mooltipage instance
-                const mp = new Mooltipage(mooltipageConfig);
-
-                // list pages to compiled
-                const pagePaths = [ './index.html', './pages/page1.html', './pages/page2.html' ];
-
-                // compile all pages
-                mp.processPages(pagePaths);
-            </code-block>
+            <code-block language="javascript" rows="21" code="{{ $.exAltOptStart }}"></code-block>
             This build script is perfectly usable, but it does nothing that the CLI can't already do.
             To make it actually useful, lets add support for a special page where HTML formatting must be disabled.
             To do this with the CLI, multiple commands are required.
             With the API, however, there is no such limitation.
             Add the following to the script:
-            <code-block language="javascript" rows="9">
-                const mooltipageConfigNoFormat = {
-                    inPath: './src/',
-                    outPath: './dist/
-                    formatter: 'none'
-                };
-
-                const mpNoFormat = new Mooltipage(mooltipageConfigNoFormat);
-
-                mpNoFormat.processPage('./pages/special.html');
-            </code-block>
+            <code-block language="javascript" rows="9" code="{{ $.exAltOptSep }}"></code-block>
             This code will instruct Mooltipage to compile special.html without an HTML formatter, while the other pages still compile in pretty mode.
             Unfortunately, this is not very compact.
             An additional seven lines of code for one just one page is somewhat excessive.
             To mitigate that, we can rework the script a bit.
             Change the script to look like this:
-            <code-block language="javascript" rows="17">
-                const { Mooltipage } from 'mooltipage';
-
-                // create base config object
-                const baseConfig = {
-                    inPath: './src/',
-                    outPath: './dist/',.
-                    formatter: 'pretty'
-                };
-
-                // create mooltipage instances
-                const mp = new Mooltipage(baseConfig);
-                const mpSpecial = new Mooltipage(Object.assign(Object.create(baseConfig), {
-                    formatter: 'none'
-                });
-
-                // compile pages
-                mp.processPages([ './index.html', './pages/page1.html', './pages/page2.html' ]);
-                mpSpecial.processPage('./pages/special.html');
-            </code-block>
+            <code-block language="javascript" rows="17" code="{{ $.exAltOptFull }}"></code-block>
             This version is smaller and more extensible.
             This works by creating a single "base" configuration object that holds settings common to all configurations used.
             The main "mp" instance uses this directly, while the mpSpecial instance extends baseConfig and overrides the "formatter" property to none.
@@ -208,13 +139,7 @@
             For an example, lets assume that we have a "debug.html" that should only be included in non-production builds.
             We can use the NODE_ENV environment variable to check if this is a production build.
             To support this, add the following to the build script:
-            <code-block language="javascript" rows="5">
-                const isProduction = process.env.NODE_ENV === 'production';
-
-                if (!isProduction) {
-                    mp.processPage('./pages/debug.html');
-                }
-            </code-block>
+            <code-block language="javascript" rows="5" code="{{ $.exDynamicEnv }}"></code-block>
             With this code, debug.html will only be included if Node.JS is NOT running in production mode.
         </p>
         <p>
@@ -223,13 +148,7 @@
             As an example, lets extend the build script to accept a list of pages from the command line.
             In a real-world application, these could be the paths to semi-compiled HTML artifacts produced by an earlier build process.
             This feature could be implemented like this:
-            <code-block language="javascript" rows="5">
-                const pages = process.argv.slice(2);
-
-                for (const page of pages) {
-                    mp.processPage(page);
-                }
-            </code-block>
+            <code-block language="javascript" rows="5" code="{{ $.exDynamicArgs }}"></code-block>
             This will compile any number - including zero - of extra pages passed in via the command line.
         </p>
     </page-section>
@@ -237,34 +156,7 @@
     <page-section title="Advanced Usage - Getting feedback:">
         <p>
             If you've been following all previous sections, then your build script should look like this (with tweaks to minimize boilerplate):
-            <code-block language="javascript" rows="26">
-                const { Mooltipage } from 'mooltipage';
-
-                // create base config object
-                const baseConfig = {
-                    inPath: './src/',
-                    outPath: './dist/',
-                    formatter: 'pretty'
-                };
-
-                // create mooltipage instances
-                const mp = new Mooltipage(baseConfig);
-                const mpSpecial = new Mooltipage(Object.assign(Object.create(baseConfig), {
-                    formatter: 'none'
-                });
-
-                // compile pages
-                mp.processPages([ './index.html', './pages/page1.html', './pages/page2.html' ]);
-                mpSpecial.processPage('./pages/special.html');
-
-                // compile debug page if not in production
-                if (process.env.NODE_ENV !== 'production') {
-                    mp.processPage('./pages/debug.html');
-                }
-
-                // compile extra pages from CLI
-                mp.processPages(process.argv.slice(2));
-            </code-block>
+            <code-block language="javascript" rows="26" code="{{ $.exFeedbackStart }}"></code-block>
             This is a pretty powerful build script.
             It supports compiling pages with differing settings, optionally including pages based on environment, and dynamic pages from external sources.
             But if were to run it, you would notice right away that something is missing.
@@ -273,66 +165,14 @@
             But that wont work for processPages, where multiple pages are passed at once.
             Fortunately, the API accepts a callback that will be invoked whenever a page is compiled.
             You can attach a callback to the config object using one of these syntaxes:
-            <code-block language="javascript" rows="12">
-                // Option 1
-                const config = {
-                    onPageCompiled: (page) => console.log(`Compiled \${page.path}`);
-                }
-
-                // Option 2
-                function pageCompiledCallback(page) {
-                    console.log(`Compiled \${page.path}`)
-                }
-                const config = {
-                    onPageCompiled: pageCompiledCallback
-                }
-            </code-block>
+            <code-block language="javascript" rows="12" code="{{ $.exFeedbackOpts }}"></code-block>
             For this sample build script, we will use Option 1 due to its smaller size.
             Add the onPageCompiled callback to the baseConfig object, and the build script should look like this:
-            <code-block language="javascript" rows="27">
-                const { Mooltipage } from 'mooltipage';
-
-                // create base config object
-                const baseConfig = {
-                    inPath: './src/',
-                    outPath: './dist/',
-                    formatter: 'pretty',
-                    onPageCompiled: (page) => console.log(`Compiled \${page.path}`);
-                };
-
-                // create mooltipage instances
-                const mp = new Mooltipage(baseConfig);
-                const mpSpecial = new Mooltipage(Object.assign(Object.create(baseConfig), {
-                    formatter: 'none'
-                });
-
-                // compile pages
-                mp.processPages([ './index.html', './pages/page1.html', './pages/page2.html' ]);
-                mpSpecial.processPage('./pages/special.html');
-
-                // compile debug page if not in production
-                if (process.env.NODE_ENV !== 'production') {
-                    mp.processPage('./pages/debug.html');
-                }
-
-                // compile extra pages from CLI
-                mp.processPages(process.argv.slice(2));
-            </code-block>
+            <code-block language="javascript" rows="27" code="{{ $.exFeedbackFull }}"></code-block>
             With this change, the build script will now print out a status line each time a page is compiled.
             We won't be using them in this example script, but the page object provided to the callback has more properties than just "path".
             The definition for that object (in TypeScript) is:
-            <code-block language="typescript" rows="10">
-                interface Page {
-                    // Path to the file (relative to inPath)
-                    readonly path: string;
-
-                    // Root of the Document Object Model (DOM) tree representing the page, can be used to examine the output
-                    readonly dom: DocumentNode;
-
-                    // Formatted HTML output of the compiled page
-                    readonly html: string;
-                }
-            </code-block>
+            <code-block language="typescript" rows="10" code="{{ $.exFeedbackPage }}"></code-block>
             For some advanced situations, it can be useful to be able to programmatically example the compiled output.
             The "dom" and "html" properties are exposed for that purpose.
             Be aware, however, that the onPageCompiled callback is called *after* the page is saved.
