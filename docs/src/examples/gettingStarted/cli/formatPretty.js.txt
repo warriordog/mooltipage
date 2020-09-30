@@ -1,2 +1,0 @@
-npx mooltipage index.html
-npx mooltipage --formatter=pretty index.html

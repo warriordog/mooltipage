@@ -1,2 +1,0 @@
-const pagePaths = [ './index.html', './pages/page1.html', './pages/page2.html' ];
-mp.processPages(pagePaths);

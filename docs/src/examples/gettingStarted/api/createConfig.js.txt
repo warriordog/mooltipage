@@ -1,5 +1,0 @@
-const mooltipageConfig = {
-    inPath: './src/',
-    outPath: './dist/',
-    formatter: 'pretty'
-};

@@ -1,1 +1,0 @@
-npx mooltipage index.html about.html sales.html

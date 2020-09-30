@@ -1,0 +1,27 @@
+<script compiled>
+    if (!$.examples) {
+        throw new Error(`exampleCode.html: Parameter 'examples' is required`);
+    }
+    if (!$.section) {
+        throw new Error(`exampleCode.html: Parameter 'section' is required`);
+    }
+    if (!$.ex) {
+        throw new Error(`exampleCode.html: Parameter 'ex' is required`);
+    }
+
+    const section = $.examples.sections[$.section];
+    if (!section) {
+        throw new Error(`exampleCode.html: Invalid section: ${ $.section }`);
+    }
+
+    const example = section[$.ex];
+    if (!example) {
+        throw new Error(`exampleCode.html: Invalid example: ${ $.ex }`);
+    }
+
+    $.exampleLines = example.lines || 1;
+    $.exampleLanguage = example.language || 'text';
+    $.exampleCode = example.code;
+</script>
+
+<m-fragment src="@/fragments/codeBlock.html" language="{{ $.exampleLanguage }}" rows="{{ $.exampleRows }}" code="{{ $.exampleCode }}"></m-fragment>

@@ -1,1 +1,0 @@
-npx mooltipage path/to/source/page.html
