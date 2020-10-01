@@ -16,7 +16,7 @@
 
     const example = section[$.ex];
     if (!example) {
-        throw new Error(`exampleCode.html: Invalid example: ${ $.ex }`);
+        throw new Error(`exampleCode.html: Invalid example: ${ $.section }[${ $.ex }]`);
     }
 
     $.exampleLines = example.lines || 1;

@@ -1,0 +1,150 @@
+<m-import src="@/fragments/pageSection.html" as="page-section" />
+<m-import src="@/fragments/exampleCode.html" as="example-code" />
+
+<script compiled src="@/examples/gettingStarted/developmentExamples.js"></script>
+
+<m-fragment src="@/layouts/gettingStartedLayout.html" page-title="HTML Usage">
+    <m-content slot="header">
+        Creating a Simple Page
+    </m-content>
+
+    <page-section>
+        <p>
+            This section provides an overview of the process of creating a web page that uses Mooltipage.
+            There are brief introductions to some of Mooltipage's most commonly used features, but this is not a complete reference.
+            The examples here are all using HTML5, but older HTML standards are also supported.
+        </p>
+    </page-section>
+
+    <page-section title="Creating a basic HTML page:">
+        <p>
+            To begin, create a normal, empty HTML5 page named "index.html".
+            Start with this template:
+            <example-code examples="{{ $.exampleData }}" section="page" ex="template"></example-code>
+        </p>
+    </page-section>
+
+    <page-section title="Adding content">
+        <p>
+            This page is pretty empty, so let's add some content.
+            Fill in the &lt;title> tag and add some content, like so:
+            <example-code examples="{{ $.exampleData }}" section="pageContent" ex="template"></example-code>
+        </p>
+    </page-section>
+
+    <page-section title="Creating a fragment">
+        <p>
+            We now have a very basic web page with some content.
+            Notice that most of the content is very similar, with just one word replaced.
+            This is the perfect place to use a <strong>fragment</strong>, one of the most core features of Mooltipage.
+            A fragment is an isolated piece of HTML that can be repeated multiple times in different places just by reference.
+            Additionally, fragments can accept parameters or even other pieces of HTML as content, allowing them to produce dynamic output based on content.
+            To create a fragment, save a new HTML file named "hello.html".
+            Enter this as the content:
+            <example-code examples="{{ $.exampleData }}" section="fragment" ex="template"></example-code>
+            As you can see, a fragment does not need to be a full HTML file.
+            It also does not need to have a single element root, as some SPA frameworks require.
+            To use this fragment in the page, replace the &lt;section> tags with &lt;m-fragment> tags.
+            The index.html file should now look like this:
+            <example-code examples="{{ $.exampleData }}" section="fragment" ex="page"></example-code>
+            The m-fragment tag instructs Mooltipage to load a fragment from a provided path (the "src" attribute).
+            All other attributes will be converted to parameters and made available for reference within the fragment.
+            Here, we are providing a name to the "friend" attribute which is then referenced in the fragment from the local scope (the $ variable).
+            When Mooltipage compiles index.html, it will replace all of the m-fragment tags with the fragment contents.
+            It will also replace the interpolated string with the value of the friend variable, which generates the original texts of "Hello, world!", "Hello, dog!", and "Hello, cat!".
+            The final compiled output will be identical to the original input, while the source is smaller, simpler, and has less code duplication.
+        </p>
+    </page-section>
+
+    <page-section title="Modifying a fragment:">
+        <p>
+            The real benefit of using fragments comes when you want to change some frequently-repeated HTML.
+            In a traditional web page, you would have to find and modify all instances of the shared HTML.
+            With a fragment, however, you can make the change in one place and all usages will be updated.
+            Modify hello.html like this:
+            <example-code examples="{{ $.exampleData }}" section="modify" ex="fragment"></example-code>
+            Now all uses of hello.html will include the new &lt;strong> tag without the need to manually update them.
+            While the benefit is minimal for a small example like this, the ability to make a single change apply to multiple pages is extremely helpful in larger apps.
+        </p>
+    </page-section>
+
+    <page-section title="Styling a fragment:">
+        <p>
+            Another benefit of using fragments is selectively including non-HTML resources like CSS.
+            Say we want to add color to our hello fragment.
+            We can update it to use a class, like so:
+            <example-code examples="{{ $.exampleData }}" section="style" ex="useClass"></example-code>
+            The CSS for that class could look like this:
+            <example-code examples="{{ $.exampleData }}" section="style" ex="style"></example-code>
+            Normally, we would need to place that CSS into a common CSS file or &lt;style> tag that is included on all pages.
+            This is wasteful, especially if the hello fragment is rarely used.
+            Fortunately, Mooltipage can help with this.
+            Add a &lt;style> tag somewhere in hello.html, and add the "compiled" attribute.
+            This will tell Mooltipage to process the style tag by moving it to the page header or to an external CSS file if desired.
+            The CSS will only be included on pages where the hello fragment is used, and it will be automatically de-duplicated to avoid repeated copies of the same CSS.
+            Additionally, the CSS can be automatically minimized or formatted along with the page if HTMl formatting is enabled.
+            After adding the inline styles, hello.html should now look like this:
+            <example-code examples="{{ $.exampleData }}" section="style" ex="classAndStyle"></example-code>
+            Now we can safely include hello.html in any page without worrying about the CSS.
+        </p>
+    </page-section>
+
+    <page-section title="Repeating content with m-for:">
+        <p>
+            We've been able to remove a few duplicated lines from index.html, but there is still a fairly large amount of unnecessary repetition.
+            Take a close look at this block of code:
+            <example-code examples="{{ $.exampleData }}" section="repeating" ex="duplicates"></example-code>
+            Despite the fact that most of the markup was extracted to a fragment, this code is still mostly duplicated.
+            The only real difference between any of the lines is the value of the friend parameter.
+            This is great opportunity to use the &lt;m-for> element.
+            As the name suggests, m-for implements a for loop.
+            An array or array-like object is enumerated, and for each value the HTML inside m-for is duplicated and re-compiled with a different array value in scope.
+            Once the array is fully enumerated, the m-for tag is removed and the contents are hoisted to replace it.
+            It is equivalent to Angular's &lt;ng-repeat> or Vue's &lt;v-for>.
+            We can use m-for to reduce duplication in index.html like this:
+            <example-code examples="{{ $.exampleData }}" section="repeating" ex="for"></example-code>
+            With this change, we've removed a few duplicated lines and made it trivial to add more "hello, world" blocks in the future.
+            In fact, lets add a few more values of friend and see how the code changes:
+            <example-code examples="{{ $.exampleData }}" section="repeating" ex="more"></example-code>
+            Even after adding three more friend blocks - which are multiple lines long - the page source is less than one line longer.
+            This is where Mooltipage really shines - removing duplicated and boilerplate code without resorting to a SSR or SPA framework.
+            After compilation, all of the Mooltipage-specific elements will be removed.
+            The output is just plain HTML that can be served by any standard web server and cached as much as desired.
+        </p>
+    </page-section>
+
+    <page-section title="Conditionally including content with m-if:">
+        <p>
+            If you've been paying close attention to the code of index.html, you may have noticed that we introduced a subtle bug when we implemented m-for.
+            The m-for loop will insert an m-fragment and a br tag for each iteration.
+            In the previous code, however, the &lt;br> tags only exist <strong>between</strong> the m-fragments.
+            Fortunately this is easily fixable.
+            The first step is to expose the index counter of the m-for loop.
+            This will be used to determine if we should insert a br tag or not.
+            Update the m-for loop like this:
+            <example-code examples="{{ $.exampleData }}" section="if" ex="index"></example-code>
+            Next, move the br tag to be positioned before the m-fragment.
+            Then replace it with this block:
+            <example-code examples="{{ $.exampleData }}" section="if" ex="br"></example-code>
+            After these changes, the &lt;article> block should look like this:
+            <example-code examples="{{ $.exampleData }}" section="if" ex="full"></example-code>
+            This logic will insert a br tag before each m-fragment only if this is not the first iteration.
+            The result is that all m-fragments will be separated by a line break, but there will be no leading or trailing br to break the page layout.
+        </p>
+    </page-section>
+
+    <page-section title="Example compiled output:">
+        <p>
+            If you've followed all steps in this section, then you should have these two files.<br>
+            index.html:
+            <example-code examples="{{ $.exampleData }}" section="compiled" ex="index"></example-code>
+            hello.html:
+            <example-code examples="{{ $.exampleData }}" section="compiled" ex="hello"></example-code>
+            If you were to compile these files, you would get output similar to this:
+            <example-code examples="{{ $.exampleData }}" section="compiled" ex="out"></example-code>
+            Mooltipage has completely inlined the hello fragment and all special elements are removed.
+            This is plain, valid HTML5 that can be used anywhere that HTML is supported.
+            To learn how to compile Mooltipage HTML, proceed to the <a href="./cli.html">Getting Started - CLI</a> or <a href="./api.html">Getting Started - API</a> sections.
+        </p>
+    </page-section>
+</m-fragment>
