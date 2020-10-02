@@ -54,7 +54,7 @@ $.exampleData = {
                 language: 'html',
                 code:
 `<section>
-    Hello, \${ $.friend }!
+    Hello, \\\${ $.friend }!
 </section>`
             },
             page: {
@@ -86,7 +86,7 @@ $.exampleData = {
                 language: 'html',
                 code:
 `<section>
-    Hello, <strong>\${ $.friend }</strong>!
+    Hello, <strong>\\\${ $.friend }</strong>!
 </section>`
             }
         },
@@ -96,7 +96,7 @@ $.exampleData = {
                 language: 'html',
                 code:
 `<section class="hello">
-    Hello, <strong>\${ $.friend }</strong>!
+    Hello, <strong>\\\${ $.friend }</strong>!
 </section>`
             },
             style: {
@@ -112,7 +112,7 @@ $.exampleData = {
                 language: 'html',
                 code:
 `<section class="hello">
-    Hello, <strong>\${ $.friend }</strong>!
+    Hello, <strong>\\\${ $.friend }</strong>!
 </section>
 <style compiled>
     .hello strong {
@@ -243,7 +243,7 @@ $.exampleData = {
                 language: 'html',
                 code:
 `<section class="hello">
-    Hello, <strong>\${ $.friend }</strong>!
+    Hello, <strong>\\\${ $.friend }</strong>!
 </section>
 <style compiled>
     .hello strong {
