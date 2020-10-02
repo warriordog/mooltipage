@@ -9,13 +9,17 @@ import {
     PrettyFormatterPreset,
     StandardHtmlFormatter
 } from '../../lib/pipeline/module/standardHtmlFormatter';
+import {DocumentNode} from '../../lib';
 
-function testFormat(t: ExecutionContext, input: string, expected: string, options?: FormatterOptions): void {
+function testFormat(t: ExecutionContext, input: string, expected: string, options?: FormatterOptions, postParseCallback?: (dom: DocumentNode) => void): void {
     const parser = new DomParser({
         recognizeCDATA: true
     });
 
     const dom = parser.parseDom(input);
+    if (postParseCallback) {
+        postParseCallback(dom);
+    }
 
     const formatter = new StandardHtmlFormatter(options);
     formatter.formatDom(dom);
@@ -229,3 +233,49 @@ test('HtmlFormatter ignores CDATA in none mode', testFormat,
     `<![CDATA[ CDATA 1 ]]><div><![CDATA[ CDATA 2 ]]><div></div></div><![CDATA[ CDATA 3 ]]>`,
     `<![CDATA[ CDATA 1 ]]><div><![CDATA[ CDATA 2 ]]><div></div></div><![CDATA[ CDATA 3 ]]>`,
     NoneFormatterPreset);
+
+test('HtmlFormatter properly handles whitespace-sensitive style nodes', testFormat,
+`<style compiled skip-format bind="head">
+    .class {
+        --prop: "value"
+    }
+</style>`,
+`<style compiled skip-format bind="head">
+    .class {
+        --prop: "value"
+    }
+</style>`,
+    PrettyFormatterPreset,
+    (dom) => {
+        const styleText = dom.findChildTagByTagName('style')?.firstChildText;
+        if (styleText != null) {
+            styleText.isWhitespaceSensitive = true;
+        }
+    });
+
+test('HtmlFormatter currently indents other HTML with whitespace-sensitive style nodes', testFormat,
+`
+<div>
+        <div></div>
+<style compiled skip-format bind="head">
+    .class {
+        --prop: "value"
+    }
+</style><div></div>
+</div>`,
+`<div>
+    <div></div>
+    <style compiled skip-format bind="head">
+    .class {
+        --prop: "value"
+    }
+</style>
+    <div></div>
+</div>`,
+    PrettyFormatterPreset,
+    (dom) => {
+        const styleText = dom.findChildTagByTagName('style')?.firstChildText;
+        if (styleText != null) {
+            styleText.isWhitespaceSensitive = true;
+        }
+    });

@@ -114,6 +114,11 @@ export class StandardHtmlFormatter implements HtmlFormatter {
     }
 
     private formatTextNode(textNode: TextNode, depth: number): void {
+        // if this text node is whitespace-sensitive, then skip formatting
+        if (textNode.isWhitespaceSensitive) {
+            return;
+        }
+
         // extract actual text from node
         const textContent: string | null = StandardHtmlFormatter.extractTextContent(textNode);
 
@@ -179,6 +184,11 @@ export class StandardHtmlFormatter implements HtmlFormatter {
 
             // steal its text
             newTextParts.push(currentNode.text);
+
+            // if next node is white-space sensitive, then the merged text is too
+            if (currentNode.isWhitespaceSensitive) {
+                textNode.isWhitespaceSensitive = true;
+            }
 
             // remove stolen node
             currentNode.removeSelf();

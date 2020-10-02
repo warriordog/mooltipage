@@ -415,6 +415,13 @@ export abstract class NodeWithChildren extends Node {
  * Parent type for any node that includes textual data
  */
 export abstract class NodeWithText extends Node {
+    /**
+     * Indicates if the text contained by this node is whitespace-sensitive.
+     * If true, then the exact whitespace should be preserved.
+     * This includes leading and trailing newlines
+     */
+    isWhitespaceSensitive = false;
+
     private _text = '';
     private _textContent = '';
     private _hasContent = false;
@@ -449,10 +456,12 @@ export abstract class NodeWithText extends Node {
      * Creates a new NodeWithText
      * @param nodeType Type of node, for Node() constructor
      * @param text Content of this NodeWithText
+     * @param isWhitespaceSensitive If true, whitespace in this node is considered significant. See {@link NodeWithText.isWhitespaceSensitive}.
      */
-    protected constructor(nodeType: NodeType, text: string) {
+    protected constructor(nodeType: NodeType, text: string, isWhitespaceSensitive = false) {
         super(nodeType);
         this.text = text;
+        this.isWhitespaceSensitive = isWhitespaceSensitive;
     }
 
     /**
@@ -656,9 +665,10 @@ export class TextNode extends NodeWithText {
     /**
      * Create a new TextNode
      * @param text Optional text to initialize with. Defaults to an empty string
+     * @param isWhitespaceSensitive {@link See NodeWithText.isWhitespaceSensitive}
      */
-    constructor(text = '') {
-        super(NodeType.Text, text);
+    constructor(text = '', isWhitespaceSensitive?: boolean) {
+        super(NodeType.Text, text, isWhitespaceSensitive);
     }
 
     clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): TextNode {
@@ -681,9 +691,10 @@ export class CommentNode extends NodeWithText {
     /**
      * Create a new comment node
      * @param text Optional comment text to initialize with
+     * @param isWhitespaceSensitive {@link See NodeWithText.isWhitespaceSensitive}
      */
-    constructor(text = '') {
-        super(NodeType.Comment, text);
+    constructor(text = '', isWhitespaceSensitive?: boolean) {
+        super(NodeType.Comment, text, isWhitespaceSensitive);
     }
 
     clone(deep?: boolean, callback?: (oldNode: Node, newNode: Node) => void): CommentNode {
@@ -1500,11 +1511,12 @@ export abstract class CompiledStyleNode extends StyleNode {
      */
     readonly isExternal: boolean;
 
-    protected constructor(isExternal: boolean, bindType?: StyleNodeBind, attributes?: Map<string, unknown>) {
+    protected constructor(isExternal: boolean, bindType = StyleNodeBind.HEAD, skipFormat = false, attributes?: Map<string, unknown>) {
         super(true, attributes);
 
         this.isExternal = isExternal;
-        this.bind = bindType ?? StyleNodeBind.HEAD;
+        this.bind = bindType;
+        this.skipFormat = skipFormat;
     }
 
     /**
@@ -1515,6 +1527,13 @@ export abstract class CompiledStyleNode extends StyleNode {
     }
     set bind(newBindType: StyleNodeBind) {
         this.setAttribute('bind', newBindType);
+    }
+
+    get skipFormat(): boolean {
+        return this.hasAttribute('skip-format');
+    }
+    set skipFormat(newSkipFormat: boolean) {
+        this.setBooleanAttribute('skip-format', newSkipFormat);
     }
 
     /**
@@ -1530,8 +1549,8 @@ export abstract class CompiledStyleNode extends StyleNode {
  * <style> node that is compiled and contains an inline stylesheet
  */
 export class InternalStyleNode extends CompiledStyleNode {
-    constructor(bindType?: StyleNodeBind, attributes?: Map<string, unknown>) {
-        super(false, bindType, attributes);
+    constructor(bindType?: StyleNodeBind, skipFormat?: boolean, attributes?: Map<string, unknown>) {
+        super(false, bindType, skipFormat, attributes);
     }
 
     /**
@@ -1565,8 +1584,8 @@ export class InternalStyleNode extends CompiledStyleNode {
  * <style> node that is compiled and points to an external stylesheet
  */
 export class ExternalStyleNode extends CompiledStyleNode {
-    constructor(src: string, bindType?: StyleNodeBind, attributes?: Map<string, unknown>) {
-        super(true, bindType, attributes);
+    constructor(src: string, bindType?: StyleNodeBind, skipFormat?: boolean, attributes?: Map<string, unknown>) {
+        super(true, bindType, skipFormat, attributes);
 
         this.src = src;
     }

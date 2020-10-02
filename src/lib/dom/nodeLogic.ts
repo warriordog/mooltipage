@@ -343,7 +343,7 @@ export function cloneTagNode(node: TagNode, deep: boolean, callback?: (oldNode: 
  * @param callback Optional callback after node is cloned
  */
 export function cloneTextNode(node: TextNode, callback?: (oldNode: Node, newNode: Node) => void): TextNode {
-    const newNode: TextNode = new TextNode(node.text);
+    const newNode: TextNode = new TextNode(node.text, node.isWhitespaceSensitive);
     
     processClonedNode(node, newNode, callback);
 
@@ -356,7 +356,7 @@ export function cloneTextNode(node: TextNode, callback?: (oldNode: Node, newNode
  * @param callback Optional callback after node is cloned
  */
 export function cloneCommentNode(node: CommentNode, callback?: (oldNode: Node, newNode: Node) => void): CommentNode {
-    const newNode: CommentNode = new CommentNode(node.text);
+    const newNode: CommentNode = new CommentNode(node.text, node.isWhitespaceSensitive);
     
     processClonedNode(node, newNode, callback);
 
@@ -620,7 +620,7 @@ export function cloneUncompiledStyleNode(node: UncompiledStyleNode, deep: boolea
 export function cloneInternalStyleNode(node: InternalStyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): InternalStyleNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new InternalStyleNode(node.bind, newAttrs);
+    const newNode = new InternalStyleNode(node.bind, node.skipFormat, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -636,7 +636,7 @@ export function cloneInternalStyleNode(node: InternalStyleNode, deep: boolean, c
 export function cloneExternalStyleNode(node: ExternalStyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ExternalStyleNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new ExternalStyleNode(node.src, node.bind, newAttrs);
+    const newNode = new ExternalStyleNode(node.src, node.bind, node.skipFormat, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 

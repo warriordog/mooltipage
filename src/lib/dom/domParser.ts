@@ -345,11 +345,14 @@ export class DomHandler implements Partial<Handler> {
         if (bind != undefined && bind != StyleNodeBind.HEAD && bind != StyleNodeBind.LINK) {
             throw new Error(`Parse error: 'style' tag has invalid value for attribute 'bind': '${ bind }'`);
         }
+
+        const skipFormat = attributes.has('skip-format');
+
         const src = attributes.get('src');
         if (src != undefined) {
-            return new ExternalStyleNode(src, bind, attributes);
+            return new ExternalStyleNode(src, bind, skipFormat, attributes);
         } else {
-            return new InternalStyleNode(bind, attributes);
+            return new InternalStyleNode(bind, skipFormat, attributes);
         }
     }
 

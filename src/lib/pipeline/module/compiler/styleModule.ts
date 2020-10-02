@@ -40,9 +40,13 @@ export class StyleModule implements HtmlCompilerModule {
     }
 
     compileStyleHead(currentNode: CompiledStyleNode, styleContent: string, htmlContext: HtmlCompilerContext): void {
+        // create text to hold CSS
+        const styleText = new TextNode(styleContent);
+        // if this formatting should be skipped, then set whitespace sensitivity
+        styleText.isWhitespaceSensitive = currentNode.skipFormat;
+
         // create style node
         const styleNode = new UncompiledStyleNode();
-        const styleText = new TextNode(styleContent);
         styleNode.appendChild(styleText);
 
         // replace compile node
