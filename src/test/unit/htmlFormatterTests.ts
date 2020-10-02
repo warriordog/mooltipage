@@ -279,3 +279,28 @@ test('HtmlFormatter currently indents other HTML with whitespace-sensitive style
             styleText.isWhitespaceSensitive = true;
         }
     });
+
+test('HtmlFormatter should leave space between inline elements in minimized mode', testFormat,
+`<p>
+    This has <span>inline</span> elements.
+</p>`,
+`<p>This has <span>inline</span> elements.</p>`,
+    MinimizedFormatterPreset);
+
+test('HtmlFormatter should not insert space between inline elements in minimized mode', testFormat,
+`<p>
+    This has<span>inline</span>elements.
+</p>`,
+`<p>This has<span>inline</span>elements.</p>`,
+    MinimizedFormatterPreset);
+
+test('HtmlFormatter should leave space between inline elements in pretty mode', testFormat,
+`<p>
+    This has <span>inline</span> elements.
+</p>`,
+`<p>
+    This has
+    <span>inline</span>
+    elements.
+</p>`,
+    PrettyFormatterPreset);

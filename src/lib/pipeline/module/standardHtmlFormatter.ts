@@ -119,11 +119,13 @@ export class StandardHtmlFormatter implements HtmlFormatter {
             return;
         }
 
+        const isMinimizeMode = this.options.formatMode === FormatterMode.MINIMIZED;
+
         // extract actual text from node
-        const textContent: string | null = StandardHtmlFormatter.extractTextContent(textNode);
+        const textContent: string | null = StandardHtmlFormatter.extractTextContent(textNode, isMinimizeMode);
 
         // if this is inline text (or we are in ugly mode), then dont format
-        if (StandardHtmlFormatter.isInlineText(textNode) || this.options.formatMode === FormatterMode.MINIMIZED) {
+        if (isMinimizeMode || StandardHtmlFormatter.isInlineText(textNode)) {
             if (textContent != null) {
                 textNode.text = textContent;
             } else {
@@ -161,14 +163,29 @@ export class StandardHtmlFormatter implements HtmlFormatter {
 
     private static isInlineText(textNode: TextNode): boolean {
         // inline text is a text node with no siblings, and no more than one line of non-whitespace content
-        return textNode.prevSibling == null && textNode.nextSibling == null && /^\s*([^\s]| )+\s*$/g.test(textNode.text);
+        return textNode.prevSibling == null && textNode.nextSibling == null && /^\s*[^\r\n]+\s*$/g.test(textNode.text);
     }
 
-    private static extractTextContent(textNode: TextNode): string | null {
+    private static extractTextContent(textNode: TextNode, isMinimizeMode: boolean): string | null {
         // check if node has text and text is non-empty
         if (textNode.hasContent) {
+            // use trimmed text content only if we are not in minimize mode
+            const textContent = isMinimizeMode ? textNode.text : textNode.textContent;
+
             // compact whitespace in text
-            return textNode.textContent.replace(/\s{2,}/gm, ' ');
+            let compactText = textContent.replace(/\s{2,}|\t|\r|\n/gm, ' ');
+
+            // if this is after an opening tag, then trim the front
+            if (textNode.prevSibling == null) {
+                compactText = compactText.replace(/^\s+/g, '');
+            }
+
+            // if this is before a closing tag, then trim the end
+            if (textNode.nextSibling == null) {
+                compactText = compactText.replace(/\s+$/g, '');
+            }
+
+            return compactText;
         } else {
             return null;
         }
