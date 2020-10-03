@@ -19,7 +19,7 @@ export class PipelineCache {
     getFragment(resPath: string): Fragment {
         const fragment: Fragment | undefined = this.fragmentCache.get(resPath);
 
-        if (fragment == undefined) {
+        if (fragment === undefined) {
             throw new Error(`Fragment not found in cache: ${ resPath }.  Make sure to call hasFragment() before getFragment().`);
         }
 
@@ -39,7 +39,7 @@ export class PipelineCache {
     getExpression(expression: string): EvalContent<unknown> {
         const templateFunc: EvalContent<unknown> | undefined = this.expressionCache.get(expression);
 
-        if (templateFunc == undefined) {
+        if (templateFunc === undefined) {
             throw new Error(`Expression not found in cache: ${ expression }.  Make sure to call hasExpression() before getExpression().`);
         }
 
@@ -59,7 +59,7 @@ export class PipelineCache {
     getScript(script: string): EvalContent<unknown> {
         const scriptFunc: EvalContent<unknown> | undefined = this.scriptCache.get(script);
 
-        if (scriptFunc == undefined) {
+        if (scriptFunc === undefined) {
             throw new Error(`Script not found in cache: ${ script }.  Make sure to call hasScript() before getScript().`);
         }
 
@@ -79,7 +79,7 @@ export class PipelineCache {
     getCreatedResource(hash: string): string {
         const resPath: string | undefined = this.createdResourceCache.get(hash);
 
-        if (resPath == undefined) {
+        if (resPath === undefined) {
             throw new Error(`Created resource not found in cache: ${ hash }.  Make sure to call hasCreatedResource() before getCreatedResource().`);
         }
 

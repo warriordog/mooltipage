@@ -69,7 +69,7 @@ export class FragmentModule implements HtmlCompilerModule {
     static getContentDom(slotMap: Map<string, DocumentNode>, slotName: string): DocumentNode {
         let slotDom: DocumentNode | undefined = slotMap.get(slotName);
 
-        if (slotDom == undefined) {
+        if (slotDom === undefined) {
             slotDom = new DocumentNode();
             slotMap.set(slotName, slotDom);
         }

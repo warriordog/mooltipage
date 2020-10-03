@@ -94,7 +94,7 @@ export class MemoryPipelineInterface implements PipelineInterface {
             if (this.sourceContent.has(testPath)) {
                 const resource = this.sourceContent.get(testPath);
 
-                if (resource == undefined) {
+                if (resource === undefined) {
                     throw new Error(`Stored HTML for resource "${ resPath }" is undefined`);
                 }
 

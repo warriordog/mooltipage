@@ -1252,7 +1252,7 @@ export abstract class MForNode extends TagNode {
 
         this.setAttribute('var', varName);
 
-        if (indexName != undefined) {
+        if (indexName !== undefined) {
             this.setAttribute('index', indexName);
         } else {
             this.deleteAttribute('index');
@@ -1288,7 +1288,7 @@ export abstract class MForNode extends TagNode {
         return this.getOptionalValueAttribute('index');
     }
     set indexName(newIndexName: string | undefined) {
-        if (newIndexName != undefined) {
+        if (newIndexName !== undefined) {
             this.setAttribute('index', newIndexName);
         } else {
             this.deleteAttribute('index');
@@ -1414,7 +1414,7 @@ export class MDataNode extends TagNode {
     get references(): MDataNodeRef[] {
         return Array.from(this.attributes.entries())
             // skip the "type" attribute as it is reserved
-            .filter(entry => entry[0] != 'type')
+            .filter(entry => entry[0] !== 'type')
             
             // convert remaining attributes into MDataNodeRef objects
             .map((entry): MDataNodeRef => {

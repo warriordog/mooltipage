@@ -10,7 +10,7 @@ export function compareFragmentMacro(t: ExecutionContext, fragmentHtml: string, 
     // set up pipeline
     const pi = new MemoryPipelineInterface();
     pi.setSourceHtml('frag.html', fragmentHtml);
-    if (sources != undefined) {
+    if (sources !== undefined) {
         sources.forEach(source => pi.setSourceHtml(source[0], source[1]));
     }
     const pipeline = new StandardPipeline(pi, new StandardHtmlFormatter(MinimizedFormatterPreset));

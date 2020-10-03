@@ -132,7 +132,7 @@ export class HtmlCompiler {
 
         // post-node callback
         for (const module of this.modules) {
-            if (module.exitNode != undefined) {
+            if (module.exitNode !== undefined) {
                 module.exitNode(htmlContext);
 
                 // stop processing if node is deleted
@@ -293,7 +293,7 @@ export class HtmlCompilerContext {
      */
     createParentScopeEvalContext(): EvalContext {
         // if there is a parent context, then use it for the scope
-        if (this.parentContext != undefined) {
+        if (this.parentContext !== undefined) {
             // custom eval context with parent scope but everything else local
             return {
                 pipelineContext: this.sharedContext.pipelineContext,
@@ -341,7 +341,7 @@ export interface ImportDefinition {
 function hasImport(htmlContext: HtmlCompilerContext | undefined, alias: string): boolean {
     const key = alias.toLowerCase();
 
-    while (htmlContext != undefined) {
+    while (htmlContext !== undefined) {
         if (htmlContext.localReferenceImports.has(key)) {
             return true;
         }
@@ -355,7 +355,7 @@ function hasImport(htmlContext: HtmlCompilerContext | undefined, alias: string):
 function getImport(htmlContext: HtmlCompilerContext | undefined, alias: string): ImportDefinition {
     const key = alias.toLowerCase();
 
-    while (htmlContext != undefined) {
+    while (htmlContext !== undefined) {
 
         if (htmlContext.localReferenceImports.has(key)) {
             return htmlContext.localReferenceImports.get(key) as ImportDefinition;

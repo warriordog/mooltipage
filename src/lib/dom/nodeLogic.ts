@@ -298,7 +298,7 @@ export function getLastText(nodes: Node[]): TextNode | null {
 
 // not exported
 function processClonedNode<T extends Node>(oldNode: T, newNode: T, callback?: (oldNode: Node, newNode: Node) => void): void {
-    if (callback != undefined) {
+    if (callback !== undefined) {
         callback(oldNode, newNode);
     }
 }
