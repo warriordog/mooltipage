@@ -86,7 +86,7 @@ export class HtmlCompiler {
 
         // pre-node callback
         for (const module of this.modules) {
-            if (module.enterNode != undefined) {
+            if (module.enterNode !== undefined) {
                 module.enterNode(htmlContext);
 
                 // stop processing if node is deleted

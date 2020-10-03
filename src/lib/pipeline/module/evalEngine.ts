@@ -71,7 +71,7 @@ export function parseExpression(expression: string): EvalContent<unknown> {
  */
 export function parseTemplateString(templateString: string): EvalContent<string> {
     // generate function body for template
-    const functionBody = `return \`${  templateString  }\`;`;
+    const functionBody = `return \`${ templateString }\`;`;
 
     // create content
     return parseScript(functionBody);
@@ -86,7 +86,7 @@ export function parseTemplateString(templateString: string): EvalContent<string>
  */
 export function parseHandlebars(jsString: string): EvalContent<unknown> {
     // generate body for function
-    const functionBody = `return ${  jsString  };`;
+    const functionBody = `return ${ jsString };`;
 
     // create content
     return parseScript(functionBody);

@@ -69,7 +69,7 @@ test('readFile() reads file contents', t => {
 test('readFile() throws on non-file path', t => {
     t.throws(() => readFile(getTestDataPath('testFolder')));
 });
-test('readFile() throws on incorrect path', t  => {
+test('readFile() throws on incorrect path', t => {
     t.throws(() => readFile(getTestDataPath('bad.path')));
 });
 

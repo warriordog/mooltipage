@@ -531,7 +531,7 @@ test('NodeLogic.getLastText() includes the very last node', t => {
 });
 test('NodeLogic.getLastText() finds the last text', t => {
     const text = new TextNode();
-    t.is(NodeLogic.getLastText([  new TextNode(), new TagNode('div'), text, new TagNode('div') ]), text);
+    t.is(NodeLogic.getLastText([ new TextNode(), new TagNode('div'), text, new TagNode('div') ]), text);
 });
 test('NodeLogic.getLastText() returns null if no text found', t => {
     t.is(NodeLogic.getLastText([ new TagNode('div'), new TagNode('div') ]), null);

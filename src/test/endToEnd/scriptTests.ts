@@ -8,7 +8,7 @@ test('ScriptNode executes scripts in correct scope', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
-[[  'script.js',
+[[ 'script.js',
     `$.test = "good";`
 ]]);
 
@@ -17,7 +17,7 @@ test('ScriptNode can override existing vars', compareFragmentMacro,
 <script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
-[[  'script.js',
+[[ 'script.js',
     `$.test = "good";`
 ]]);
 
@@ -25,7 +25,7 @@ test('ScriptNode supports multiple lines', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
-[[  'script.js',
+[[ 'script.js',
     `const foo = [];
     foo.push('g');
     foo.push('o');
@@ -38,7 +38,7 @@ test('ScriptNode supports embedded functions', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="good"></test>`,
-[[  'script.js',
+[[ 'script.js',
     `function getGood() {
         return 'good';
     }
@@ -65,7 +65,7 @@ test('ScriptNode scripts can access pipeline APIs', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
-[[  'script.js',
+[[ 'script.js',
     `$.test = $$.pipelineContext.pipeline !== undefined;`
 ]]);
 
@@ -78,7 +78,7 @@ test('ScriptNode scripts can access NodeJS APIs', compareFragmentMacro,
 `<script compiled src="script.js"></script>
 <test value="\${ $.test }" />`,
 `<test value="true"></test>`,
-[[  'script.js',
+[[ 'script.js',
     `const fs = require('fs');
     $.test = fs !== undefined;`
 ]]);
