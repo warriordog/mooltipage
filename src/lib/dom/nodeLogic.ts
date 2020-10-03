@@ -26,7 +26,8 @@ import {
     ExternalScriptNode,
     MImportNode,
     UncompiledAnchorNode,
-    CompiledAnchorNode
+    CompiledAnchorNode,
+    MWhitespaceNode
 } from './node';
 
 /**
@@ -722,6 +723,23 @@ export function cloneCompiledAnchorNode(node: CompiledAnchorNode, deep: boolean,
 
     return newNode;
 }
+
+/**
+ * Clones an cloneMWhitespaceNode
+ * @param node Node to clone
+ * @param deep If true, children will be cloned
+ * @param callback Optional callback after node is cloned
+ */
+export function cloneMWhitespaceNode(node: MWhitespaceNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): MWhitespaceNode {
+    const newAttrs = cloneAttributes(node);
+
+    const newNode = new MWhitespaceNode(node.mode, newAttrs);
+
+    processClonedParentNode(node, newNode, deep, callback);
+
+    return newNode;
+}
+
 
 /**
  * Finds the first child node that matches a matcher

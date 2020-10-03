@@ -32,7 +32,9 @@ import {
     AnchorNode,
     UncompiledAnchorNode,
     CompiledAnchorNode,
-    parseAnchorNodeResolve
+    parseAnchorNodeResolve,
+    MWhitespaceNode,
+    MWhitespaceNodeMode
 } from './node';
 import { MimeType } from '..';
 
@@ -264,6 +266,8 @@ export class DomHandler implements Partial<Handler> {
                 return DomHandler.createScriptNode(attributes);
             case 'a':
                 return DomHandler.createAnchorNode(attributes);
+            case 'm-whitespace':
+                return DomHandler.createMWhitespaceNode(attributes);
             default:
                 return new TagNode(tagName, attributes);
         }
@@ -382,5 +386,15 @@ export class DomHandler implements Partial<Handler> {
         const resolve = parseAnchorNodeResolve(attributes.get('resolve') ?? undefined);
 
         return new CompiledAnchorNode(href, resolve, attributes);
+    }
+
+    private static createMWhitespaceNode(attributes: Map<string, string | null>): MWhitespaceNode {
+        // parse mode
+        const mode = attributes.get('mode') ?? undefined;
+        if (mode != undefined && mode != MWhitespaceNodeMode.SENSITIVE && mode != MWhitespaceNodeMode.INSENSITIVE) {
+            throw new Error(`Parse error: 'm-whitespace' tag has invalid value for attribute 'bind': '${ mode }'`);
+        }
+
+        return new MWhitespaceNode(mode, attributes);
     }
 }

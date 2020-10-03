@@ -350,6 +350,7 @@ export abstract class NodeWithChildren extends Node {
     findChildTagByTagName(tagName: 'style', deep?: boolean): StyleNode | null;
     findChildTagByTagName(tagName: 'script', deep?: boolean): ScriptNode | null;
     findChildTagByTagName(tagName: 'a', deep?: boolean): AnchorNode | null;
+    findChildTagByTagName(tagName: 'm-whitespace', deep?: boolean): MWhitespaceNode | null;
     findChildTagByTagName(tagName: string, deep?: boolean): TagNode | null;
     findChildTagByTagName(tagName: string, deep = true): TagNode | null {
         return this.findChildTag(tag => tag.tagName === tagName, deep);
@@ -375,6 +376,7 @@ export abstract class NodeWithChildren extends Node {
     findChildTagsByTagName(tagName: 'style', deep?: boolean): StyleNode[];
     findChildTagsByTagName(tagName: 'script', deep?: boolean): ScriptNode[];
     findChildTagsByTagName(tagName: 'a', deep?: boolean): AnchorNode[];
+    findChildTagsByTagName(tagName: 'm-whitespace', deep?: boolean): MWhitespaceNode[];
     findChildTagsByTagName(tagName: string, deep?: boolean): TagNode[];
     findChildTagsByTagName(tagName: string, deep = true): TagNode[] {
         return this.findChildTags(tag => tag.tagName === tagName, deep);
@@ -1921,5 +1923,68 @@ export class CompiledAnchorNode extends AnchorNode {
      */
     static isCompiledAnchorNode(node: Node): node is CompiledAnchorNode {
         return AnchorNode.isAnchorNode(node) && node.compiled;
+    }
+}
+
+/**
+ * Supported whitespace-handling modes for <m-whitespace>
+ */
+export enum MWhitespaceNodeMode {
+    /**
+     * Markup is whitespace-sensitive
+     */
+    SENSITIVE = 'sensitive',
+
+    /**
+     * Markup is not whitespace-sensitive
+     */
+    INSENSITIVE = 'insensitive'
+}
+
+/**
+ * Sets the whitespace handling for all descendent nodes of this node.
+ * See {@link MWhitespaceNodeMode} for available whitespace modes
+ */
+export class MWhitespaceNode extends TagNode {
+    /**
+     * Create a new MWhitespaceNode
+     * @param mode Whitespace handling mode to use
+     * @param attributes Optional attributes
+     */
+    constructor(mode = MWhitespaceNodeMode.SENSITIVE, attributes?: Map<string, unknown>) {
+        super('m-whitespace', attributes);
+
+        this.mode = mode;
+    }
+
+    /**
+     * Whitespace handling mode to apply to descendants of this node
+     */
+    get mode(): MWhitespaceNodeMode {
+        const modeAttr = this.getAttribute('mode')?.toLowerCase();
+        switch (modeAttr) {
+            case MWhitespaceNodeMode.INSENSITIVE: return MWhitespaceNodeMode.INSENSITIVE;
+            case MWhitespaceNodeMode.SENSITIVE:
+            case null:
+            case undefined:
+                return MWhitespaceNodeMode.SENSITIVE;
+            default:
+                throw new Error(`MWhitespaceNode: Invalid value of 'mode' attribute: ${ modeAttr }`);
+        }
+    }
+    set mode(newMode: MWhitespaceNodeMode) {
+        this.setAttribute('mode', newMode);
+    }
+
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): MWhitespaceNode {
+        return NodeLogic.cloneMWhitespaceNode(this, deep, callback);
+    }
+
+    /**
+     * Returns true if a node is an MWhitespaceNode
+     * @param node Node to check
+     */
+    static isMWhitespaceNode(node: Node): node is MWhitespaceNode {
+        return TagNode.isTagNode(node) && node.tagName === 'm-whitespace';
     }
 }

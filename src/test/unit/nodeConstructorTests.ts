@@ -19,6 +19,8 @@ import {
     MScopeNode,
     MSlotNode,
     MVarNode,
+    MWhitespaceNode,
+    MWhitespaceNodeMode,
     ProcessingInstructionNode,
     SlotReferenceNode,
     StyleNodeBind,
@@ -415,4 +417,22 @@ test('CompiledAnchorNode sets default resolve', t => {
 
     t.is(node.resolve, AnchorNodeResolve.NONE);
     t.is(node.getAttribute('resolve'), AnchorNodeResolve.NONE);
+});
+
+test('MWhitespaceNode constructor accepts parameters', t => {
+    const node1 = new MWhitespaceNode(MWhitespaceNodeMode.SENSITIVE);
+    const node2 = new MWhitespaceNode(MWhitespaceNodeMode.INSENSITIVE);
+    
+    t.is(node1.mode, MWhitespaceNodeMode.SENSITIVE);
+    t.is(node2.mode, MWhitespaceNodeMode.INSENSITIVE);
+
+    t.is(node1.getRawAttribute('mode'), MWhitespaceNodeMode.SENSITIVE);
+    t.is(node2.getRawAttribute('mode'), MWhitespaceNodeMode.INSENSITIVE);
+});
+
+test('MWhitespaceNode sets defaults', t => {
+    const node = new MWhitespaceNode();
+
+    t.is(node.mode, MWhitespaceNodeMode.SENSITIVE);
+    t.is(node.getRawAttribute('mode'), MWhitespaceNodeMode.SENSITIVE);
 });
