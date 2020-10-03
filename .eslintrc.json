@@ -56,6 +56,8 @@
     "@typescript-eslint/prefer-for-of": "error",
     "@typescript-eslint/prefer-literal-enum-member": "error",
     "@typescript-eslint/prefer-optional-chain": "error",
-    "@typescript-eslint/type-annotation-spacing": "error"
+    "@typescript-eslint/type-annotation-spacing": "error",
+    "no-multi-spaces": "error",
+    "eqeqeq": ["error", "smart"]
   }
 }
