@@ -29,24 +29,7 @@ test('DomParser handles void tags with explicit closing', testTags, '<div></div>
 test('DomParser handles void tags with explicit closing and space', testTags, '<div></div><br /><meta /><input /><div></div>', ['div', 'br', 'meta', 'input', 'div']);
 test('DomParser handles custom tags used as void', testTags, '<div></div><m-slot /><m-content /><m-var /><div></div>', ['div', 'm-slot', 'm-content', 'm-var', 'div']);
 test('DomParser handles standard tags used as void', testTags, '<div></div><div /><p /><h1 /><div></div>', ['div', 'div', 'p', 'h1', 'div']);
-
-// This is a bug in htmlparser2. It has been fixed upstream, but the latest release does not yet have the patch.
-test.failing('DomParser handles special tags used as void', testTags, '<div></div><script /><style /><title /><div></div>', ['div', 'script', 'style', 'title', 'div']);
-
-test('DomParser allows non-text in <title>', t => {
-    const domParser = new DomParser();
-    const dom = domParser.parseDom('<title><div></div></title>');
-    
-    const title = dom.firstChild;
-    t.truthy(title);
-    t.true(TagNode.isTagNode(title as Node));
-    t.is((title as TagNode).tagName, 'title');
-
-    const div = (title as TagNode).firstChild;
-    t.truthy(div);
-    t.true(TagNode.isTagNode(div as Node));
-    t.is((div as TagNode).tagName, 'div');
-});
+test('DomParser handles special tags used as void', testTags, '<div></div><script /><style /><title /><div></div>', ['div', 'script', 'style', 'title', 'div']);
 
 test('DomParser parses CDATA as CDATANode when CDATA enabled', t => {
     const domParser = new DomParser({
