@@ -39,7 +39,7 @@ export class MockPipeline extends StandardPipeline {
         resPath = normalizeResPath(resPath);
 
         const rawText = this.mockRawTexts.find(text => text[0] === resPath && text[1] === mimeType);
-        if (rawText != undefined) {
+        if (rawText !== undefined) {
             return rawText[2];
         } else {
             throw new Error(`No mock defined for getRawText(resPath="${ resPath }", resourceType="${ mimeType }")`);

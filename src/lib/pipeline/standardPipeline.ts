@@ -109,7 +109,7 @@ export class StandardPipeline implements Pipeline {
         const fragment: Fragment = this.getOrParseFragment(resPath);
 
         // create usage context if not provided
-        if (fragmentContext == undefined) {
+        if (fragmentContext === undefined) {
             fragmentContext = {
                 slotContents: new Map(),
                 scope: {},
@@ -196,7 +196,7 @@ export class StandardPipeline implements Pipeline {
 
             // allow PI to relink in case type and/or sourceResPath are different, and that matters.
             // default PI implementation does not include this method so nothing will happen
-            if (this.pipelineInterface.reLinkCreatedResource != undefined) {
+            if (this.pipelineInterface.reLinkCreatedResource !== undefined) {
                 return this.pipelineInterface.reLinkCreatedResource(type, contents, sourceResPath, rootResPath, originalResPath);
             } else {
                 return originalResPath;

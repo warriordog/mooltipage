@@ -23,7 +23,7 @@ export function resolveResPath(resPath: string, basePath?: string): string {
     }
 
     // if base path is specified, then prefix
-    if (basePath != undefined) {
+    if (basePath !== undefined) {
         // extract directory name from base path
         if (basePath.endsWith('/') || basePath.endsWith('\\')) {
             // for directory paths, strip trailing /

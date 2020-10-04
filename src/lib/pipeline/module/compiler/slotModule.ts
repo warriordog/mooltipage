@@ -11,7 +11,7 @@ export class SlotModule implements HtmlCompilerModule {
             // get contents from context, and clone in case slot is repeated
             const content: DocumentNode | undefined = htmlContext.sharedContext.pipelineContext.fragmentContext.slotContents.get(htmlContext.node.slot)?.clone();
 
-            if (content != undefined) {
+            if (content !== undefined) {
                 // fill content
                 htmlContext.node.replaceSelf(content.childNodes);
             } else {

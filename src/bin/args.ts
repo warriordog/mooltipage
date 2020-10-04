@@ -42,7 +42,7 @@ export function parseArgs(args: string[]): CliArgs {
     };
 
     // print help if no args specified
-    if (args.length == 0) {
+    if (args.length === 0) {
         parseData.isHelp = true;
     } else {
         // parse args
