@@ -34,7 +34,7 @@ jobs:
     - name: Run all tests
       run: npm test
     - name: Lint code
-      run: npm run lint-full
+      run: npm run lint
 
   # Upload artifacts
   # This runs one final build (without a matrix) to produce compiled output, then uploads it.
