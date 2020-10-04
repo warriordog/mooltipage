@@ -238,7 +238,6 @@ export class StandardPipeline implements Pipeline {
      * @param mimeType Type of resource. Defaults to TEXT
      */
     getRawText(resPath: string, mimeType = MimeType.TEXT): string {
-        // TODO maybe cache?
         return this.pipelineInterface.getResource(mimeType, resPath);
     }
 

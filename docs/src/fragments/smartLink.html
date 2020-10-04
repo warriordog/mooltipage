@@ -8,12 +8,10 @@
             rootPath = rootPath.toLowerCase();
         }
 
-        // TODO maybe Path.normalize or some variant of computePathBetween
         const normalHrefPath = hrefPath.replace(/[/\\]/g, '/');
         const normalRootPath = rootPath.replace(/[/\\]/g, '/');
 
         return normalHrefPath === normalRootPath || (matchPrefix !== undefined && normalRootPath.startsWith(matchPrefix));
-
     }
 
     this.linkAttributes = Object.entries($$.pipelineContext.fragmentContext.scope)

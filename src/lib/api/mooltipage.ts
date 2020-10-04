@@ -134,7 +134,6 @@ function createPipeline(options: MpOptions): Pipeline {
 
 /**
  * Creates an HtmlFormatter from the provided options
- * TODO move elsewhere
  * @internal
  * @returns an HtmlFormatter instance configured from {@link options}
  */
@@ -155,7 +154,6 @@ export function createFormatter(options: MpOptions): HtmlFormatter {
 
 /**
  * Pipeline interface that uses Node.JS file APIs
- * TODO move elsewhere
  * @internal
  */
 export class NodePipelineInterface implements PipelineInterface {
@@ -228,7 +226,6 @@ export class NodePipelineInterface implements PipelineInterface {
 
     /**
      * Creates a unique resource path for a generated resource
-     * TODO better implementation
      * @param type MIME type of the resource to create
      * @returns returns a unique resource path that is acceptable for the specified MIME type
      */

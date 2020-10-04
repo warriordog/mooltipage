@@ -85,7 +85,6 @@ export class VarModule implements HtmlCompilerModule {
         // compute path to reference
         const resPath = resolveResPath(reference.resPath, htmlContext.sharedContext.pipelineContext.fragment.path);
 
-        // TODO pass MIME to pipeline
         // get value
         const rawValue = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(resPath, node.type);
 
