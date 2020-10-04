@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "description": "Compile-time framework for creating Multiple-Page Applications",
   "keywords": [
-    "mpa",
     "web",
     "framework",
-    "html"
+    "html",
+    "static site",
+    "ssg"
   ],
   "author": "Christopher Koehler",
   "license": "MIT",
@@ -14,7 +15,9 @@
   "types": "dist/lib/index.d.ts",
   "files": [
     "dist/lib/**/*",
-    "dist/bin/**/*"
+    "dist/bin/**/*",
+    "README.md",
+    "LICENSE"
   ],
   "directories": {
     "bin": "./dist/bin",
@@ -31,7 +34,7 @@
     "docs": "npm run rebuild && npm run coverage && npm run typedoc && npm run makedocs",
     "lint": "eslint --ext .js,.ts src",
     "lint-fix": "npm run lint -- --fix",
-    "prepublishOnly": "npm run rebuild && npm run lint && npm run docs",
+    "prepublishOnly": "npm run rebuild && npm run lint && npm run coverage && npm run typedoc && npm run makedocs",
     "debugtest": "ava --serial --verbose"
   },
   "bin": {
