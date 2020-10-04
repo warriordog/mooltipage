@@ -1,8 +1,5 @@
 <code class="code-block language-${ $.language } cb-${ String($.display).toLowerCase() === 'inline' ? 'inline' : 'block' } cb-scroll-${ !!$.scroll ? $.scroll : 'off' }">
-    <textarea readonly spellcheck="false" rows="${ !!$.rows ? $.rows : 3 }">
-        <m-if ?="{{ !!$.code }}">${ String($.code) }</m-if>
-        <m-else><m-slot></m-slot></m-else>
-    </textarea>
+    <m-whitespace><textarea readonly spellcheck="false" rows="${ !!$.rows ? $.rows : 3 }">${ String($.code) }</textarea></m-whitespace>
 </code>
 
 <style compiled>
@@ -31,7 +28,7 @@
     }
 
     code.code-block.cb-block > textarea {
-        resize: both;
+        resize: vertical;
     }
     code.code-block.cb-scroll-x > textarea,
     code.code-block.cb-scroll-both > textarea {

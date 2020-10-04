@@ -2,7 +2,7 @@ $.exampleData = {
     sections: {
         altOpts: {
             full: {
-                lines: 17,
+                lines: 18,
                 language: 'javascript',
                 code:
 `const { Mooltipage } from 'mooltipage';

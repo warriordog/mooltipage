@@ -20,7 +20,7 @@ $.exampleData = {
         },
         pageContent: {
             template: {
-                lines: 22,
+                lines: 23,
                 language: 'html',
                 code:
                     `<!DOCTYPE html>
@@ -254,7 +254,7 @@ $.exampleData = {
             out: {
                 lines: 40,
                 language: 'html',
-                index:
+                code:
 `<!DOCTYPE html>
 <html lang="en">
 <head>
