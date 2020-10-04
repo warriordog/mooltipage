@@ -38,7 +38,7 @@
     "mooltipage": "./dist/bin/main.js"
   },
   "dependencies": {
-    "htmlparser2": "^4.1.0"
+    "htmlparser2": "^5.0.0"
   },
   "devDependencies": {
     "@ava/typescript": "^1.1.1",
