@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;pipeline/module/compiler/deduplicateModule&quot; | mooltipage - v0.0.1</title>
+	<title>MWhitespaceNodeMode | mooltipage - v0.0.1</title>
 	<meta name="description" content="Documentation for mooltipage - v0.0.1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,50 +56,69 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_pipeline_module_compiler_deduplicatemodule_.html">&quot;pipeline/module/compiler/deduplicateModule&quot;</a>
+					<a href="../modules/_dom_node_.html">&quot;dom/node&quot;</a>
+				</li>
+				<li>
+					<a href="_dom_node_.mwhitespacenodemode.html">MWhitespaceNodeMode</a>
 				</li>
 			</ul>
-			<h1>Module &quot;pipeline/module/compiler/deduplicateModule&quot;</h1>
+			<h1>Enumeration MWhitespaceNodeMode</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Supported whitespace-handling modes for <m-whitespace></p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Classes</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_pipeline_module_compiler_deduplicatemodule_.deduplicatemodule.html" class="tsd-kind-icon">Deduplicate<wbr>Module</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Variables</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="_pipeline_module_compiler_deduplicatemodule_.html#node_tag_is_deduplicated" class="tsd-kind-icon">NODE_<wbr>TAG_<wbr>IS_<wbr>DEDUPLICATED</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_dom_node_.mwhitespacenodemode.html#insensitive" class="tsd-kind-icon">INSENSITIVE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_dom_node_.mwhitespacenodemode.html#sensitive" class="tsd-kind-icon">SENSITIVE</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
-					<a name="node_tag_is_deduplicated" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> NODE_<wbr>TAG_<wbr>IS_<wbr>DEDUPLICATED</h3>
-					<div class="tsd-signature tsd-kind-icon">NODE_<wbr>TAG_<wbr>IS_<wbr>DEDUPLICATED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"DeduplicateModule.IsDeduplicated"</span><span class="tsd-signature-symbol"> = &quot;DeduplicateModule.IsDeduplicated&quot;</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="insensitive" class="tsd-anchor"></a>
+					<h3>INSENSITIVE</h3>
+					<div class="tsd-signature tsd-kind-icon">INSENSITIVE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;insensitive&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3d363d4/src/lib/pipeline/module/compiler/deduplicateModule.ts#L8">pipeline/module/compiler/deduplicateModule.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3d363d4/src/lib/dom/node.ts#L1941">dom/node.ts:1941</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Node tag that indicates that a node has already been processed by DeduplicateModule.
-							Nodes with this tag set will be skipped.</p>
+							<p>Markup is not whitespace-sensitive</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="sensitive" class="tsd-anchor"></a>
+					<h3>SENSITIVE</h3>
+					<div class="tsd-signature tsd-kind-icon">SENSITIVE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;sensitive&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3d363d4/src/lib/dom/node.ts#L1936">dom/node.ts:1936</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Markup is whitespace-sensitive</p>
 						</div>
 					</div>
 				</section>
@@ -112,18 +131,27 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="_pipeline_module_compiler_deduplicatemodule_.html">&quot;pipeline/module/compiler/deduplicate<wbr>Module&quot;</a>
+						<a href="../modules/_dom_node_.html">&quot;dom/node&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_pipeline_module_compiler_deduplicatemodule_.deduplicatemodule.html" class="tsd-kind-icon">Deduplicate<wbr>Module</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-enum tsd-parent-kind-module">
+						<a href="_dom_node_.mwhitespacenodemode.html" class="tsd-kind-icon">MWhitespace<wbr>Node<wbr>Mode</a>
+						<ul>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_dom_node_.mwhitespacenodemode.html#insensitive" class="tsd-kind-icon">INSENSITIVE</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_dom_node_.mwhitespacenodemode.html#sensitive" class="tsd-kind-icon">SENSITIVE</a>
+							</li>
+						</ul>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module">
-						<a href="_pipeline_module_compiler_deduplicatemodule_.html#node_tag_is_deduplicated" class="tsd-kind-icon">NODE_<wbr>TAG_<wbr>IS_<wbr>DEDUPLICATED</a>
-					</li>
+				</ul>
+				<ul class="after-current">
 				</ul>
 			</nav>
 		</div>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;dom/domParser&quot; | mooltipage - v0.0.1</title>
+	<title>&quot;pipeline/module/compiler/whitespaceModule&quot; | mooltipage - v0.0.1</title>
 	<meta name="description" content="Documentation for mooltipage - v0.0.1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_dom_domparser_.html">&quot;dom/domParser&quot;</a>
+					<a href="_pipeline_module_compiler_whitespacemodule_.html">&quot;pipeline/module/compiler/whitespaceModule&quot;</a>
 				</li>
 			</ul>
-			<h1>Module &quot;dom/domParser&quot;</h1>
+			<h1>Module &quot;pipeline/module/compiler/whitespaceModule&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -73,50 +73,74 @@
 						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_domparser_.domhandler.html" class="tsd-kind-icon">Dom<wbr>Handler</a></li>
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_dom_domparser_.domparser.html" class="tsd-kind-icon">Dom<wbr>Parser</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_pipeline_module_compiler_whitespacemodule_.whitespacemodule.html" class="tsd-kind-icon">Whitespace<wbr>Module</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_pipeline_module_compiler_whitespacemodule_.html#node_tag_is_whitespace_processed" class="tsd-kind-icon">NODE_<wbr>TAG_<wbr>IS_<wbr>WHITESPACE_<wbr>PROCESSED</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_dom_domparser_.html#createparseroptions" class="tsd-kind-icon">create<wbr>Parser<wbr>Options</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_pipeline_module_compiler_whitespacemodule_.html#applywhitespacesettings" class="tsd-kind-icon">apply<wbr>Whitespace<wbr>Settings</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+					<a name="node_tag_is_whitespace_processed" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> NODE_<wbr>TAG_<wbr>IS_<wbr>WHITESPACE_<wbr>PROCESSED</h3>
+					<div class="tsd-signature tsd-kind-icon">NODE_<wbr>TAG_<wbr>IS_<wbr>WHITESPACE_<wbr>PROCESSED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"WhitespaceModule.IsWhitespaceProcessed"</span><span class="tsd-signature-symbol"> = &quot;WhitespaceModule.IsWhitespaceProcessed&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3d363d4/src/lib/pipeline/module/compiler/whitespaceModule.ts#L13">pipeline/module/compiler/whitespaceModule.ts:13</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-					<a name="createparseroptions" class="tsd-anchor"></a>
-					<h3>create<wbr>Parser<wbr>Options</h3>
+					<a name="applywhitespacesettings" class="tsd-anchor"></a>
+					<h3>apply<wbr>Whitespace<wbr>Settings</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Parser<wbr>Options<span class="tsd-signature-symbol">(</span>userOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ParserOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ParserOptions</span></li>
+						<li class="tsd-signature tsd-kind-icon">apply<wbr>Whitespace<wbr>Settings<span class="tsd-signature-symbol">(</span>isWhitespaceSensitive<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, nodes<span class="tsd-signature-symbol">: </span><a href="../classes/_dom_node_.node.html" class="tsd-signature-type">Node</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3d363d4/src/lib/dom/domParser.ts#L93">dom/domParser.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/3d363d4/src/lib/pipeline/module/compiler/whitespaceModule.ts#L40">pipeline/module/compiler/whitespaceModule.ts:40</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Creates an instance of ParserOptions.
-									Loads defaults and optionally overrides with a provided instance</p>
+									<p>Applies whitespace sensitivity settings to one or more nodes.
+									This function will also tag each processed node as having been processed for whitespace, and will skip nodes that have already been tagged.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> userOptions: <span class="tsd-signature-type">ParserOptions</span></h5>
+									<h5>isWhitespaceSensitive: <span class="tsd-signature-type">boolean</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>optional options to include</p>
+										<p>If the nodes should be set to</p>
+									</div>
+								</li>
+								<li>
+									<h5>nodes: <a href="../classes/_dom_node_.node.html" class="tsd-signature-type">Node</a><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Nodes to processes, can safely be empty.</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ParserOptions</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -129,20 +153,20 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="_dom_domparser_.html">&quot;dom/dom<wbr>Parser&quot;</a>
+						<a href="_pipeline_module_compiler_whitespacemodule_.html">&quot;pipeline/module/compiler/whitespace<wbr>Module&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_dom_domparser_.domhandler.html" class="tsd-kind-icon">Dom<wbr>Handler</a>
+						<a href="../classes/_pipeline_module_compiler_whitespacemodule_.whitespacemodule.html" class="tsd-kind-icon">Whitespace<wbr>Module</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_dom_domparser_.domparser.html" class="tsd-kind-icon">Dom<wbr>Parser</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_pipeline_module_compiler_whitespacemodule_.html#node_tag_is_whitespace_processed" class="tsd-kind-icon">NODE_<wbr>TAG_<wbr>IS_<wbr>WHITESPACE_<wbr>PROCESSED</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="_dom_domparser_.html#createparseroptions" class="tsd-kind-icon">create<wbr>Parser<wbr>Options</a>
+						<a href="_pipeline_module_compiler_whitespacemodule_.html#applywhitespacesettings" class="tsd-kind-icon">apply<wbr>Whitespace<wbr>Settings</a>
 					</li>
 				</ul>
 			</nav>
