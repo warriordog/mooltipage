@@ -35,7 +35,6 @@ import {
     UncompiledAnchorNode,
     CompiledAnchorNode,
     AnchorNode,
-    MWhitespaceNodeMode,
     MWhitespaceNode
 } from '../../lib';
 

@@ -11,6 +11,7 @@ import { PipelineContext } from '../standardPipeline';
 import { StyleModule } from './compiler/styleModule';
 import {DeduplicateModule} from './compiler/deduplicateModule';
 import {AnchorModule} from './compiler/anchorModule';
+import {WhitespaceModule} from './compiler/whitespaceModule';
 
 /**
  * Provides HTML compilation support to the pipeline.
@@ -54,6 +55,9 @@ export class HtmlCompiler {
 
             // AnchorModule compiles anchor tags (<a>)
             new AnchorModule(),
+
+            // WhitespaceModule processes whitespace and <m-whitespace>
+            new WhitespaceModule(),
 
             // FragmentModule resolves <m-fragment> references and replaces them with HTML.
             new FragmentModule()

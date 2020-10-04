@@ -19,12 +19,12 @@ export class MockPipelineContext implements PipelineContext {
     fragmentContext: FragmentContext;
     pipeline: StandardPipeline;
 
-    constructor(fragment?: Fragment, fragmentContex?: FragmentContext, pipeline?: StandardPipeline) {
+    constructor(fragment?: Fragment, fragmentContext?: FragmentContext, pipeline?: StandardPipeline) {
         this.fragment = fragment ?? {
             dom: new DocumentNode(),
             path: ''
         };
-        this.fragmentContext = fragmentContex ?? {
+        this.fragmentContext = fragmentContext ?? {
             slotContents: new Map(),
             scope: {},
             fragmentResPath: this.fragment.path,
