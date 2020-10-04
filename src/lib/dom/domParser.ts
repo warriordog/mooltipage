@@ -271,7 +271,7 @@ export class DomHandler implements Partial<Handler> {
 
     private static createMFragmentNode(attributes: Map<string, string | null>): MFragmentNode {
         const src = attributes.get('src');
-        if (src === undefined) throw new Error('Parse error: <m-fragment> is missing required attribute: src');
+        if (src === undefined || src === null) throw new Error('Parse error: <m-fragment> is missing required attribute: src');
         return new MFragmentNode(src, attributes);
     }
 
@@ -292,9 +292,9 @@ export class DomHandler implements Partial<Handler> {
 
     private static createMImportNode(attributes: Map<string, string | null>): MImportNode {
         const src = attributes.get('src');
-        if (src === undefined) throw new Error('Parse error: <m-import> is missing required attribute: src');
+        if (src === undefined || src === null) throw new Error('Parse error: <m-import> is missing required attribute: src');
         const as = attributes.get('as');
-        if (as === undefined) throw new Error('Parse error: <m-import> is missing required attribute: as');
+        if (as === undefined || as === null) throw new Error('Parse error: <m-import> is missing required attribute: as');
         return new MImportNode(src, as, attributes);
     }
 
@@ -312,7 +312,7 @@ export class DomHandler implements Partial<Handler> {
 
     private static createMForNode(attributes: Map<string, string | null>): MForNode {
         const varName = attributes.get('var');
-        if (varName === undefined) throw new Error('Parse error: <m-for> is missing required attribute: varName');
+        if (varName === undefined || varName === null) throw new Error('Parse error: <m-for> is missing required attribute: varName');
 
         const indexName = attributes.get('index') ?? undefined;
         const ofExpression = attributes.get('of') ?? undefined;
@@ -349,7 +349,7 @@ export class DomHandler implements Partial<Handler> {
         const skipFormat = attributes.has('skip-format');
 
         const src = attributes.get('src');
-        if (src !== undefined) {
+        if (src) {
             return new ExternalStyleNode(src, bind, skipFormat, attributes);
         } else {
             return new InternalStyleNode(bind, skipFormat, attributes);
@@ -364,7 +364,7 @@ export class DomHandler implements Partial<Handler> {
 
         // "compiled" script nodes need further processing
         const src = attributes.get('src');
-        if (src !== undefined) {
+        if (src) {
             return new ExternalScriptNode(src, attributes);
         } else {
             return new InternalScriptNode(attributes);
@@ -378,7 +378,7 @@ export class DomHandler implements Partial<Handler> {
         }
 
         const href = attributes.get('href');
-        if (href === undefined) throw new Error('Parse error: <a> is missing required attribute: href');
+        if (href === undefined || href === null) throw new Error('Parse error: <a> is missing required attribute: href');
         const resolve = parseAnchorNodeResolve(attributes.get('resolve') ?? undefined);
 
         return new CompiledAnchorNode(href, resolve, attributes);
