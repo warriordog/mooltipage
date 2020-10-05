@@ -14,7 +14,7 @@ Thank you for improving the security of `Mooltipage`. We appreciate your efforts
 responsible disclosure and will make every effort to acknowledge your
 contributions.
 
-Report security bugs by emailing the lead maintainer at EMAIL_HERE.
+Report security bugs by emailing the lead maintainer at [acomputerdog@gmail.com](mailto:acomputerdog@gmail.com)
 
 The lead maintainer will acknowledge your email, and will send a
 more detailed response indicating the next steps in handling
