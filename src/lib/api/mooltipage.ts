@@ -225,7 +225,7 @@ export class NodePipelineInterface implements PipelineInterface {
      * @returns returns a unique resource path that is acceptable for the specified MIME type
      */
     createResPath(type: MimeType, contents: string): string {
-        const contentHash = FsUtils.hashCode(contents);
+        const contentHash = hashMD5(contents);
 
         const extension = getResourceTypeExtension(type);
         const fileName = `${ contentHash }.${ extension }`;
