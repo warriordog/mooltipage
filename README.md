@@ -1,6 +1,7 @@
 # Mooltipage static site generator
 [![build status](https://github.com/warriordog/mooltipage/workflows/Build/badge.svg)](https://github.com/warriordog/mooltipage/actions?query=workflow%3ABuild)
 [![npm version](https://badge.fury.io/js/mooltipage.svg)](https://www.npmjs.com/package/mooltipage)
+[![contributor covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.0%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md) 
 
 Mooltipage is a new static site generator designed to simplify development of large, content-heavy websites.
 Using syntax inspired by popular single-page app frameworks, Mooltipage provides a rich HTML API that enables flow control, greater reusability, and even build-time optimizations directly from your HTML markup.
