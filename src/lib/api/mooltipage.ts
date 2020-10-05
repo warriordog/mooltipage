@@ -1,7 +1,7 @@
 import Path
     from 'path';
 
-import {StandardPipeline} from '../pipeline/standardPipeline';
+import {StandardPipeline, hashMD5} from '../pipeline/standardPipeline';
 import * as FsUtils
     from '../fs/fsUtils';
 import {
