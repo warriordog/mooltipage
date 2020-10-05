@@ -108,4 +108,4 @@ function expandPagePath(pagePath: string, basePath: string, outPaths: string[]):
     }
 
     // other file types (such as links) are currently skipped
-}
+} 
