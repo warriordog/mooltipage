@@ -168,11 +168,6 @@ export class NodePipelineInterface implements PipelineInterface {
     readonly destinationPath: string;
 
     /**
-     * Next available generated resource ID
-     */
-    private nextResIndex = 0;
-
-    /**
      * Creates a new NodePipelineInterface.
      * If either argument is not set, then it will default to the current working directory.
      *
@@ -198,7 +193,7 @@ export class NodePipelineInterface implements PipelineInterface {
 
     // sourceResPath is available as last parameter, if needed
     createResource(type: MimeType, contents: string): string {
-        const resPath = this.createResPath(type);
+        const resPath = this.createResPath(type, contents);
 
         this.writeResource(type, resPath, contents);
 
@@ -229,12 +224,11 @@ export class NodePipelineInterface implements PipelineInterface {
      * @param type MIME type of the resource to create
      * @returns returns a unique resource path that is acceptable for the specified MIME type
      */
-    createResPath(type: MimeType): string {
-        const index = this.nextResIndex;
-        this.nextResIndex++;
+    createResPath(type: MimeType, contents: string): string {
+        const contentHash = FsUtils.hashCode(contents);
 
         const extension = getResourceTypeExtension(type);
-        const fileName = `${ index }.${ extension }`;
+        const fileName = `${ contentHash }.${ extension }`;
 
         return Path.join('resources', fileName);
     }
