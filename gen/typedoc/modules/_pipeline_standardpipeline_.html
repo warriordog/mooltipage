@@ -103,14 +103,17 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/cbece5b/src/lib/pipeline/standardPipeline.ts#L339">pipeline/standardPipeline.ts:339</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/90cd658/src/lib/pipeline/standardPipeline.ts#L321">pipeline/standardPipeline.ts:321</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Calculates the MD5 hash of a UTF8 string using Node.JS crypto APIs.
-									MD5 is an INSECURE hash so this should ONLY be used for non-security-sensitive tasks like caching.</p>
+									<p>Create a NON-CRYPTOGRAPHIC (INSECURE) hash of some pipeline content.
+										Hash algorithm should be strong enough to use for caching, but does not need to be cryptographically secure.
+									This may be called many times by the pipeline, so the algorithm used should be reasonably fast as well.</p>
 								</div>
+								<p>Standard implementation uses MD5 as provided by the Node.JS Crypto module.
+								Override to change implementation</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
