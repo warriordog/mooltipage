@@ -65,18 +65,18 @@ test('NodePipelineInterface.resolveDestinationResource() resolves relative to de
 test('NodePipelineInterface.createResPath() generates unique resource paths', t => {
     const pi = new NodePipelineInterface();
     const paths = new Set<string>();
-    paths.add(pi.createResPath(MimeType.TEXT));
-    paths.add(pi.createResPath(MimeType.TEXT));
-    paths.add(pi.createResPath(MimeType.CSS));
-    paths.add(pi.createResPath(MimeType.CSS));
-    paths.add(pi.createResPath(MimeType.JAVASCRIPT));
-    paths.add(pi.createResPath(MimeType.JAVASCRIPT));
-    t.is(paths.size, 6);
+    paths.add(pi.createResPath(MimeType.TEXT, 'test'));
+    paths.add(pi.createResPath(MimeType.TEXT, 'test'));
+    paths.add(pi.createResPath(MimeType.CSS, 'test'));
+    paths.add(pi.createResPath(MimeType.CSS, 'test'));
+    paths.add(pi.createResPath(MimeType.JAVASCRIPT, 'test'));
+    paths.add(pi.createResPath(MimeType.JAVASCRIPT, 'test'));
+    t.is(paths.size, 3);
 });
 test('NodePipelineInterface.createResPath() attaches correct file extension', t => {
     const pi = new NodePipelineInterface();
     for (const mime of [MimeType.HTML, MimeType.CSS, MimeType.JAVASCRIPT, MimeType.JSON, MimeType.TEXT, 'unknown' as MimeType]) {
-        t.true(pi.createResPath(mime).endsWith(getResourceTypeExtension(mime)));
+        t.true(pi.createResPath(mime, 'test').endsWith(getResourceTypeExtension(mime)));
     }
 });
 test('NodePipelineInterface.getResource() reads relative to source path', t => {
