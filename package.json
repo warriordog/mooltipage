@@ -1,7 +1,9 @@
 {
   "name": "mooltipage",
   "version": "0.0.1",
-  "description": "Compile-time framework for creating Multiple-Page Applications",
+  "description": "Compile-time framework for creating large-scale static HTML websites",
+  "homepage": "https://github.com/warriordog/mooltipage#readme",
+  "repository": "github:warriordog/mooltipage",
   "keywords": [
     "web",
     "framework",
@@ -9,7 +11,12 @@
     "static site",
     "ssg"
   ],
-  "author": "Christopher Koehler",
+  "author": {
+    "name": "Christopher Koehler",
+    "email": "acomputerdog@gmail.com",
+    "url": "https://github.com/warriordog"
+  },
+  "bugs": "https://github.com/warriordog/mooltipage/issues",
   "license": "MIT",
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
@@ -20,7 +27,6 @@
     "LICENSE"
   ],
   "directories": {
-    "bin": "./dist/bin",
     "lib": "./dist/lib"
   },
   "scripts": {
