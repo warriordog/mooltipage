@@ -2,6 +2,23 @@ import fs from 'fs';
 import Path from 'path';
 
 /**
+ * Package.json file object
+ */
+export interface PackageJsonFile {
+  /**
+   * Package name.
+   */
+  name: string;
+
+  /**
+   * Package version.
+   */
+  version: string;
+
+  [key: string]: unknown;
+}
+
+/**
  * Check if a path exists and is a file
  * @param path Path to check
  * @returns True if path points to file, false otherwise
@@ -49,6 +66,24 @@ export function readFile(path: string): string {
     } else {
         throw new Error(`Attempting to read file that does not exist or is not a file: "${ path }"`);
     }
+}
+
+/**
+ * Reads the package.json file at path and returns javascript object.
+ * If path is not given, first package.json found in one of parent directories is used.
+ *
+ * @param path Optional path to package.json file
+ * @returns [[PackageJsonFile]] object
+ * @throws if path does not point to a file
+ */
+export function readPackageJson(path?: string): PackageJsonFile {
+  if (path == null) {
+    path = Path.resolve(__dirname, 'package.json');
+    while (!pathIsFile(path)) {
+      path = Path.resolve(Path.dirname(path), '..', 'package.json');
+    }
+  }
+  return JSON.parse(readFile(path)) as PackageJsonFile;
 }
 
 /**

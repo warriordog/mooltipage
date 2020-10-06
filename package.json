@@ -64,13 +64,12 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": ["lint-staged && npm run build"]
     }
   },
   "lint-staged": {
     "./**/*.ts": [
-      "npm run lint",
-      "npm build"
+      "npm run lint"
     ]
   }
 }
