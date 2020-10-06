@@ -7,7 +7,8 @@ import * as FsUtils
     from '../lib/fs/fsUtils';
 
 export function cliMain(argv: string[], cliConsole: CliConsole): void {
-    cliConsole.log('Mooltipage CLI');
+    const version = FsUtils.readPackageJson().version;
+    cliConsole.log(`Mooltipage CLI ver. ${ version }`);
     cliConsole.log();
 
     // parse arguments
