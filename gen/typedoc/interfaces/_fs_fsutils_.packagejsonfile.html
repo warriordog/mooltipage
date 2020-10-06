@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ImportDefinition | mooltipage - v0.0.1</title>
+	<title>PackageJsonFile | mooltipage - v0.0.1</title>
 	<meta name="description" content="Documentation for mooltipage - v0.0.1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_pipeline_module_htmlcompiler_.html">&quot;pipeline/module/htmlCompiler&quot;</a>
+					<a href="../modules/_fs_fsutils_.html">&quot;fs/fsUtils&quot;</a>
 				</li>
 				<li>
-					<a href="_pipeline_module_htmlcompiler_.importdefinition.html">ImportDefinition</a>
+					<a href="_fs_fsutils_.packagejsonfile.html">PackageJsonFile</a>
 				</li>
 			</ul>
-			<h1>Interface ImportDefinition</h1>
+			<h1>Interface PackageJsonFile</h1>
 		</div>
 	</div>
 </header>
@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>An <m-import> definition</p>
+						<p>Package.json file object</p>
 					</div>
 				</div>
 			</section>
@@ -80,9 +80,18 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ImportDefinition</span>
+						<span class="target">PackageJsonFile</span>
 					</li>
 				</ul>
+			</section>
+			<section class="tsd-panel tsd-kind-interface tsd-parent-kind-module">
+				<h3 class="tsd-before-signature">Indexable</h3>
+				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">unknown</span></div>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Package.json file object</p>
+					</div>
+				</div>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
@@ -91,8 +100,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_pipeline_module_htmlcompiler_.importdefinition.html#alias" class="tsd-kind-icon">alias</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_pipeline_module_htmlcompiler_.importdefinition.html#source" class="tsd-kind-icon">source</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_fs_fsutils_.packagejsonfile.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_fs_fsutils_.packagejsonfile.html#version" class="tsd-kind-icon">version</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,32 +110,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="alias" class="tsd-anchor"></a>
-					<h3>alias</h3>
-					<div class="tsd-signature tsd-kind-icon">alias<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/25fa731/src/lib/pipeline/module/htmlCompiler.ts#L337">pipeline/module/htmlCompiler.ts:337</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/25fa731/src/lib/fs/fsUtils.ts#L11">fs/fsUtils.ts:11</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Alias (tag name) that this ImportDefinition defines</p>
+							<p>Package name.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="source" class="tsd-anchor"></a>
-					<h3>source</h3>
-					<div class="tsd-signature tsd-kind-icon">source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="version" class="tsd-anchor"></a>
+					<h3>version</h3>
+					<div class="tsd-signature tsd-kind-icon">version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/25fa731/src/lib/pipeline/module/htmlCompiler.ts#L342">pipeline/module/htmlCompiler.ts:342</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/25fa731/src/lib/fs/fsUtils.ts#L16">fs/fsUtils.ts:16</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Source path to load import from</p>
+							<p>Package version.</p>
 						</div>
 					</div>
 				</section>
@@ -139,47 +148,50 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_pipeline_module_htmlcompiler_.html">&quot;pipeline/module/html<wbr>Compiler&quot;</a>
+						<a href="../modules/_fs_fsutils_.html">&quot;fs/fs<wbr>Utils&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_pipeline_module_htmlcompiler_.htmlcompiler.html" class="tsd-kind-icon">Html<wbr>Compiler</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_pipeline_module_htmlcompiler_.htmlcompilercontext.html" class="tsd-kind-icon">Html<wbr>Compiler<wbr>Context</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_pipeline_module_htmlcompiler_.htmlcompilermodule.html" class="tsd-kind-icon">Html<wbr>Compiler<wbr>Module</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_pipeline_module_htmlcompiler_.importdefinition.html" class="tsd-kind-icon">Import<wbr>Definition</a>
+						<a href="_fs_fsutils_.packagejsonfile.html" class="tsd-kind-icon">Package<wbr>Json<wbr>File</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_pipeline_module_htmlcompiler_.importdefinition.html#alias" class="tsd-kind-icon">alias</a>
+								<a href="_fs_fsutils_.packagejsonfile.html#name" class="tsd-kind-icon">name</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_pipeline_module_htmlcompiler_.importdefinition.html#source" class="tsd-kind-icon">source</a>
+								<a href="_fs_fsutils_.packagejsonfile.html#version" class="tsd-kind-icon">version</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_pipeline_module_htmlcompiler_.sharedhtmlcompilercontext.html" class="tsd-kind-icon">Shared<wbr>Html<wbr>Compiler<wbr>Context</a>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_fs_fsutils_.html#expandpagepath" class="tsd-kind-icon">expand<wbr>Page<wbr>Path</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_pipeline_module_htmlcompiler_.html#convertattributenametoscopename" class="tsd-kind-icon">convert<wbr>Attribute<wbr>Name<wbr>ToScope<wbr>Name</a>
+						<a href="../modules/_fs_fsutils_.html#expandpagepaths" class="tsd-kind-icon">expand<wbr>Page<wbr>Paths</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_pipeline_module_htmlcompiler_.html#getimport" class="tsd-kind-icon">get<wbr>Import</a>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_fs_fsutils_.html#getdirectorycontents" class="tsd-kind-icon">get<wbr>Directory<wbr>Contents</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_pipeline_module_htmlcompiler_.html#hasimport" class="tsd-kind-icon">has<wbr>Import</a>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_fs_fsutils_.html#pathisdirectory" class="tsd-kind-icon">path<wbr>IsDirectory</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_fs_fsutils_.html#pathisfile" class="tsd-kind-icon">path<wbr>IsFile</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_fs_fsutils_.html#readfile" class="tsd-kind-icon">read<wbr>File</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_fs_fsutils_.html#readpackagejson" class="tsd-kind-icon">read<wbr>Package<wbr>Json</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_fs_fsutils_.html#writefile" class="tsd-kind-icon">write<wbr>File</a>
 					</li>
 				</ul>
 			</nav>
