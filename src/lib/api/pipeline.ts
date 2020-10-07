@@ -5,6 +5,12 @@ import { DocumentNode } from '..';
  */
 export interface Pipeline {
     /**
+     * Page <-> resource dependency tracker.
+     * Tracks all dependencies between pages and other pipeline resources.
+     */
+    readonly dependencyTracker: DependencyTracker;
+
+    /**
      * Compiles a page from start to finish.
      * This entry point should be used with the source HTML is intended to be used as a full HTML page.
      * 
@@ -209,4 +215,39 @@ export enum MimeType {
      * Plain text resource
      */
     TEXT = 'text/plain'
+}
+
+/**
+ * Pipeline module that tracks dependencies between pages and other resources.
+ * A dependency is anything that can affect the compiled output of a page.
+ * Provides a two-way mapping that allows listing all the resources dependencies of a page as well as all of the pages that depend on a particular resource.
+ */
+export interface DependencyTracker {
+    /**
+     * Gets a list of dependencies for a page
+     * @param pageResPath Path to the page
+     * @returns Set of paths to all unique resources that this page depends on. Will be empty for an unknown page
+     */
+    getDependenciesForPage(pageResPath: string): Set<string>;
+
+    /**
+     * Gets a list of pages that depend on a resource
+     * @param resPath Path to the resource
+     * @returns Set of paths to all unique pages that depend on this resource. Will be empty for an unknown resource
+     */
+    getDependentsForResource(resPath: string): Set<string>;
+
+    /**
+     * Checks if a page has been tracked for dependencies
+     * @param pageResPath Path to the page
+     * @returns true if the page has been tracked, even if it has no dependencies. Returns false otherwise.
+     */
+    hasTrackedPage(pageResPath: string): boolean;
+
+    /**
+     * Checks if a resource was identified as a dependency of any tracked page
+     * @param resPath Path to the resource
+     * @returns true if the resource is a dependency of any tracked page. Returns false otherwise.
+     */
+    hasTrackedResource(resPath: string): boolean;
 }

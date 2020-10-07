@@ -2,7 +2,17 @@ import crypto from 'crypto';
 import { PipelineCache } from './pipelineCache';
 import { ResourceParser } from './module/resourceParser';
 import { HtmlCompiler } from './module/htmlCompiler';
-import {DocumentNode, PipelineInterface, HtmlFormatter, Page, Fragment, MimeType, FragmentContext, Pipeline} from '..';
+import {
+    DocumentNode,
+    PipelineInterface,
+    HtmlFormatter,
+    Page,
+    Fragment,
+    MimeType,
+    FragmentContext,
+    Pipeline,
+    DependencyTracker
+} from '..';
 import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript } from './module/evalEngine';
 import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
 import {buildPage} from './module/pageBuilder';
@@ -42,6 +52,8 @@ export class StandardPipeline implements Pipeline {
      */
     readonly htmlCompiler: HtmlCompiler;
 
+    readonly dependencyTracker: PipelineDependencyTracker;
+
     /**
      * Create a new instance of the pipeline
      * @param pipelineInterface Pipeline interface instance
@@ -55,6 +67,7 @@ export class StandardPipeline implements Pipeline {
 
         // required
         this.pipelineInterface = pipelineInterface;
+        this.dependencyTracker = new PipelineDependencyTracker();
 
         // overridable
         this.htmlFormatter = htmlFormatter ?? new StandardHtmlFormatter();
@@ -347,4 +360,69 @@ export interface PipelineContext {
      * Fragment usage context
      */
     readonly fragmentContext: FragmentContext;
+}
+
+/**
+ * Standard implementation of DependencyTracker
+ *
+ * TODO normalize paths after #28 is done
+ */
+export class PipelineDependencyTracker implements DependencyTracker {
+
+    /**
+     * Map of pages to dependencies
+     * @private
+     */
+    private readonly pageDependencies = new Map<string, Set<string>>();
+
+    /**
+     * Map of resources to dependent pages
+     * @private
+     */
+    private readonly resourceDependents = new Map<string, Set<string>>();
+
+    getDependenciesForPage(pageResPath: string): Set<string> {
+        let dependencyList = this.pageDependencies.get(pageResPath);
+        if (dependencyList === undefined) {
+            dependencyList = new Set();
+            this.pageDependencies.set(pageResPath, dependencyList);
+        }
+        return dependencyList;
+    }
+
+    getDependentsForResource(resPath: string): Set<string> {
+        let dependentsList = this.resourceDependents.get(resPath);
+        if (dependentsList === undefined) {
+            dependentsList = new Set();
+            this.resourceDependents.set(resPath, dependentsList);
+        }
+        return dependentsList;
+    }
+
+    hasTrackedPage(pageResPath: string): boolean {
+        return this.pageDependencies.has(pageResPath);
+    }
+
+    hasTrackedResource(resPath: string): boolean {
+        return this.resourceDependents.has(resPath);
+    }
+
+    /**
+     * Records a dependency between a page and a resource.
+     * Both the page -> resource and resource -> page mappings will be updated.
+     * @param pageResPath Path to page
+     * @param resPath Path to resource
+     */
+    recordDependency(pageResPath: string, resPath: string): void {
+        this.getDependenciesForPage(pageResPath).add(resPath);
+        this.getDependentsForResource(resPath).add(pageResPath);
+    }
+
+    /**
+     * Erases all recorded dependencies and resets the change tracker.
+     */
+    clear(): void {
+        this.pageDependencies.clear();
+        this.resourceDependents.clear();
+    }
 }
