@@ -1,7 +1,6 @@
 import test
     from 'ava';
 import {
-    createFormatter,
     DefaultMpOptions,
     getResourceTypeExtension,
     Mooltipage,
@@ -12,7 +11,8 @@ import {
     FormatterMode,
     PrettyFormatterPreset,
     MinimizedFormatterPreset,
-    NoneFormatterPreset
+    NoneFormatterPreset,
+    createStandardHtmlFormatter
 } from '../../lib/pipeline/module/standardHtmlFormatter';
 import {
     getSandboxPath,
@@ -24,29 +24,29 @@ import fs from 'fs';
 import Path from 'path';
 import {PipelineIO} from '../../lib/pipeline/standardPipeline';
 
-// createFormatter()
-test('createFormatter() creates pretty formatter', t => {
-    const formatter = createFormatter({ formatter: FormatterMode.PRETTY });
+// createStandardHtmlFormatter()
+test('createStandardHtmlFormatter() creates pretty formatter', t => {
+    const formatter = createStandardHtmlFormatter(FormatterMode.PRETTY);
     t.true(formatter instanceof StandardHtmlFormatter);
     t.deepEqual((formatter as StandardHtmlFormatter).options, PrettyFormatterPreset);
 });
-test('createFormatter() creates ugly formatter', t => {
-    const formatter = createFormatter({ formatter: FormatterMode.MINIMIZED });
+test('createStandardHtmlFormatter() creates ugly formatter', t => {
+    const formatter = createStandardHtmlFormatter(FormatterMode.MINIMIZED);
     t.true(formatter instanceof StandardHtmlFormatter);
     t.deepEqual((formatter as StandardHtmlFormatter).options, MinimizedFormatterPreset);
 });
-test('createFormatter() creates none formatter', t => {
-    const formatter = createFormatter({ formatter: FormatterMode.NONE });
+test('createStandardHtmlFormatter() creates none formatter', t => {
+    const formatter = createStandardHtmlFormatter(FormatterMode.NONE);
     t.true(formatter instanceof StandardHtmlFormatter);
     t.deepEqual((formatter as StandardHtmlFormatter).options, NoneFormatterPreset);
 });
-test('createFormatter() defaults to none formatter', t => {
-    const formatter = createFormatter({ formatter: undefined });
+test('createStandardHtmlFormatter() defaults to none formatter', t => {
+    const formatter = createStandardHtmlFormatter();
     t.true(formatter instanceof StandardHtmlFormatter);
     t.deepEqual((formatter as StandardHtmlFormatter).options, NoneFormatterPreset);
 });
-test('createFormatter() throws on invalid formatter', t => {
-    t.throws(() => createFormatter({ formatter: 'invalid' }));
+test('createStandardHtmlFormatter() throws on invalid formatter', t => {
+    t.throws(() => createStandardHtmlFormatter('invalid'));
 });
 
 // DefaultMpOptions

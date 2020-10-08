@@ -8,11 +8,8 @@ import {
     Pipeline
 } from '..';
 import {
-    FormatterMode,
-    MinimizedFormatterPreset,
-    NoneFormatterPreset,
-    PrettyFormatterPreset,
-    StandardHtmlFormatter
+    createStandardHtmlFormatter,
+    FormatterMode
 } from '../pipeline/module/standardHtmlFormatter';
 
 /**
@@ -119,7 +116,7 @@ export class Mooltipage {
  */
 function createPipeline(options: MpOptions): Pipeline {
     // create the HTML formatter, if specified
-    const formatter: HtmlFormatter = createFormatter(options);
+    const formatter: HtmlFormatter = createStandardHtmlFormatter(options.formatter);
 
     // pick source / dest directories
     const sourcePath = options.inPath ?? process.cwd();
@@ -127,26 +124,6 @@ function createPipeline(options: MpOptions): Pipeline {
 
     // create pipeline
     return new StandardPipeline(sourcePath, destinationPath, undefined, formatter);
-}
-
-/**
- * Creates an HtmlFormatter from the provided options
- * @internal
- * @returns an HtmlFormatter instance configured from {@link options}
- */
-export function createFormatter(options: MpOptions): HtmlFormatter {
-    switch (options.formatter) {
-        case FormatterMode.PRETTY:
-            return new StandardHtmlFormatter(PrettyFormatterPreset);
-        case FormatterMode.MINIMIZED:
-            return new StandardHtmlFormatter(MinimizedFormatterPreset);
-        case FormatterMode.NONE:
-            return new StandardHtmlFormatter(NoneFormatterPreset);
-        case undefined:
-            return new StandardHtmlFormatter();
-        default:
-            throw new Error(`Unknown HTML formatter: ${ options.formatter }`);
-    }
 }
 
 /**
