@@ -10,8 +10,8 @@ export class MockPipeline extends StandardPipeline {
 
     readonly mockPi: MemoryPipelineInterface;
 
-    constructor(pi?: MemoryPipelineInterface, htmlFormatter?: HtmlFormatter) {
-        super((pi = pi ?? new MemoryPipelineInterface()), htmlFormatter);
+    constructor(pi = new MemoryPipelineInterface(), htmlFormatter?: HtmlFormatter) {
+        super(pi.sourcePath, pi.destinationPath, pi, htmlFormatter);
         this.mockPi = pi;
     }
 

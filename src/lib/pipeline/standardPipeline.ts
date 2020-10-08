@@ -1,22 +1,33 @@
-import crypto from 'crypto';
-import { PipelineCache } from './pipelineCache';
-import { ResourceParser } from './module/resourceParser';
-import { HtmlCompiler } from './module/htmlCompiler';
+import crypto
+    from 'crypto';
+import {PipelineCache} from './pipelineCache';
+import {ResourceParser} from './module/resourceParser';
+import {HtmlCompiler} from './module/htmlCompiler';
 import {
+    DependencyTracker,
     DocumentNode,
-    PipelineInterface,
-    HtmlFormatter,
-    Page,
     Fragment,
-    MimeType,
     FragmentContext,
-    Pipeline,
-    DependencyTracker
+    HtmlFormatter,
+    MimeType,
+    Page,
+    Pipeline
 } from '..';
-import { EvalContext, isExpressionString, EvalContent, parseExpression, parseScript } from './module/evalEngine';
-import { StandardHtmlFormatter } from './module/standardHtmlFormatter';
+import {
+    EvalContent,
+    EvalContext,
+    isExpressionString,
+    parseExpression,
+    parseScript
+} from './module/evalEngine';
+import {StandardHtmlFormatter} from './module/standardHtmlFormatter';
 import {buildPage} from './module/pageBuilder';
 import {computePathBetween} from '../fs/pathUtils';
+import * as FsUtils
+    from '../fs/fsUtils';
+import Path
+    from 'path';
+import {getResourceTypeExtension} from '../api/mooltipage';
 
 /**
  * Primary compilation pipeline.
@@ -27,6 +38,11 @@ import {computePathBetween} from '../fs/pathUtils';
  * Any incidental resources (such as stylesheets) will be fed to the pipeline interface via createResource().
  */
 export class StandardPipeline implements Pipeline {
+
+    readonly sourcePath: string;
+
+    readonly destinationPath: string;
+
     /**
      * Caches reusable data for the pipeline
      */
@@ -35,7 +51,7 @@ export class StandardPipeline implements Pipeline {
     /**
      * Frontend / Backend for the pipeline
      */
-    readonly pipelineInterface: PipelineInterface;
+    readonly pipelineIO: PipelineIO;
     
     /**
      * HTML formatter, if provided
@@ -56,20 +72,24 @@ export class StandardPipeline implements Pipeline {
 
     /**
      * Create a new instance of the pipeline
-     * @param pipelineInterface Pipeline interface instance
-     * @param htmlFormatter Optional HTML formatter to use
-     * @param resourceParser Optional override for standard ResourceParser
-     * @param htmlCompiler Optional override for standard HtmlCompiler
+     * @param sourcePath Path to the source directory root
+     * @param destinationPath Path to the destination directory root
+     * @param pipelineIO? Optional override for standard pipelineIO
+     * @param htmlFormatter? Optional HTML formatter to use
+     * @param resourceParser? Optional override for standard ResourceParser
+     * @param htmlCompiler? Optional override for standard HtmlCompiler
      */
-    constructor(pipelineInterface: PipelineInterface, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
+    constructor(sourcePath: string, destinationPath: string, pipelineIO?: PipelineIO, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
         // internal
         this.cache = new PipelineCache();
 
         // required
-        this.pipelineInterface = pipelineInterface;
+        this.sourcePath = sourcePath;
+        this.destinationPath = destinationPath;
         this.dependencyTracker = new PipelineDependencyTracker();
 
         // overridable
+        this.pipelineIO = pipelineIO ?? new PipelineIO(sourcePath, destinationPath);
         this.htmlFormatter = htmlFormatter ?? new StandardHtmlFormatter();
         this.resourceParser = resourceParser ?? new ResourceParser();
         this.htmlCompiler = htmlCompiler ?? new HtmlCompiler();
@@ -93,7 +113,7 @@ export class StandardPipeline implements Pipeline {
         const formattedHtml: string = this.htmlFormatter.formatHtml(rawHtml);
 
         // write HTML
-        this.pipelineInterface.writeResource(MimeType.HTML, resPath, formattedHtml);
+        this.pipelineIO.writeResource(MimeType.HTML, resPath, formattedHtml);
 
         // create and return page
         return {
@@ -198,26 +218,18 @@ export class StandardPipeline implements Pipeline {
         return css;
     }
 
-    private createLinkableResource(type: MimeType, contents: string, sourceResPath: string, rootResPath: string): string {
+    private createLinkableResource(type: MimeType, contents: string): string {
         // hash contents
         const contentsHash = hashMD5(contents);
 
         // get from cache, if present
         if (this.cache.hasCreatedResource(contentsHash)) {
             // get cached path
-            const originalResPath = this.cache.getCreatedResource(contentsHash);
-
-            // allow PI to relink in case type and/or sourceResPath are different, and that matters.
-            // default PI implementation does not include this method so nothing will happen
-            if (this.pipelineInterface.reLinkCreatedResource !== undefined) {
-                return this.pipelineInterface.reLinkCreatedResource(type, contents, sourceResPath, rootResPath, originalResPath);
-            } else {
-                return originalResPath;
-            }
+            return this.cache.getCreatedResource(contentsHash);
         }
 
         // if not in cache, then call PI to create resource
-        const resPath = this.pipelineInterface.createResource(type, contents, sourceResPath);
+        const resPath = this.pipelineIO.createResource(type, contents);
 
         // store in cache
         this.cache.storeCreatedResource(contentsHash, resPath);
@@ -229,19 +241,18 @@ export class StandardPipeline implements Pipeline {
      * Links a created resource to the compilation output.
      * This method ONLY handles saving the contents, it does not compile them or attach them to the actual HTML.
      * This method is ONLY for created (incidental) resources.
-     * 
+     *
      * @param type Type of resource
      * @param contents Contents as a UTF-8 string
-     * @param sourceResPath Path to the explicit resource that has produced this created resource
      * @param rootResPath Path to the "root" fragment where this resources will be referenced
      * @returns path to reference linked resource
      */
-    linkResource(type: MimeType, contents: string, sourceResPath: string, rootResPath: string): string {
+    linkResource(type: MimeType, contents: string, rootResPath: string): string {
         // create the resource and get the raw path
-        const rawResPath = this.createLinkableResource(type, contents, sourceResPath, rootResPath);
+        const rawResPath = this.createLinkableResource(type, contents);
 
         // adjust path relative to the output page and directory
-        return computePathBetween(this.pipelineInterface.destinationPath, rawResPath, rootResPath);
+        return computePathBetween(this.destinationPath, rawResPath, rootResPath);
     }
 
     /**
@@ -251,7 +262,7 @@ export class StandardPipeline implements Pipeline {
      * @param mimeType Type of resource. Defaults to TEXT
      */
     getRawText(resPath: string, mimeType = MimeType.TEXT): string {
-        return this.pipelineInterface.getResource(mimeType, resPath);
+        return this.pipelineIO.getResource(mimeType, resPath);
     }
 
     reset(): void {
@@ -267,7 +278,7 @@ export class StandardPipeline implements Pipeline {
             fragment = this.cache.getFragment(resPath);
         } else {
             // read HTML
-            const html: string = this.pipelineInterface.getResource(MimeType.HTML, resPath);
+            const html: string = this.pipelineIO.getResource(MimeType.HTML, resPath);
 
             // parse fragment
             const parsedFragment: Fragment = this.resourceParser.parseFragment(resPath, html);
@@ -424,5 +435,116 @@ export class PipelineDependencyTracker implements DependencyTracker {
     clear(): void {
         this.pageDependencies.clear();
         this.resourceDependents.clear();
+    }
+}
+
+/**
+ * Provides file I/O support to the pipeline
+ */
+export class PipelineIO {
+
+    /**
+     * Path to source directory
+     */
+    readonly sourcePath: string;
+
+    /**
+     * Path to destination directory
+     */
+    readonly destinationPath: string;
+    
+    /**
+     * Creates a new NodePipelineInterface.
+     *
+     * @param sourcePath Path to source directory
+     * @param destinationPath Path to destination directory
+     */
+    constructor(sourcePath: string, destinationPath: string) {
+        this.sourcePath = sourcePath;
+        this.destinationPath = destinationPath;
+    }
+
+    /**
+     * Reads a resource of a specified type from the pipeline input.
+     *
+     * @param type Type of resource
+     * @param resPath Relative path to resource (source and destination)
+     * @returns text content of resource
+     */
+    getResource(type: MimeType, resPath: string): string {
+        const htmlPath = this.resolveSourceResource(resPath);
+
+        return FsUtils.readFile(htmlPath);
+    }
+    
+    /**
+     * Writes a resource of a specified type to the pipeline output.
+     * This resource must exist in the pipeline source, for incidentally created resources use createResource()
+     *
+     * @param type Type of resource
+     * @param resPath Relative path to resource (source and destination)
+     * @param contents File contents as a UTF-8 string
+     */
+    writeResource(type: MimeType, resPath: string, contents: string): void {
+        const htmlPath = this.resolveDestinationResource(resPath);
+
+        FsUtils.writeFile(htmlPath, contents, true);
+    }
+    /**
+     * Creates a new output resource and generates a resource path to reference it
+     * This should be used for all incidentally created resources, such as external stylesheets.
+     *
+     * @param type MIME type of the new resource
+     * @param contents File contents
+     * @returns path to resource
+     */
+    createResource(type: MimeType, contents: string): string {
+        const resPath = this.createResPath(type, contents);
+
+        this.writeResource(type, resPath, contents);
+
+        return resPath;
+    }
+
+    /**
+     * Gets the real path to a resource, factoring in {@link sourcePath}.
+     * @param resPath Raw path to resource
+     * @returns Real path to resource
+     */
+    resolveSourceResource(resPath: string): string {
+        return PipelineIO.resolvePath(resPath, this.sourcePath);
+    }
+
+
+    /**
+     * Gets the real path to a resource, factoring in {@link destinationPath}.
+     * @param resPath Raw path to resource
+     * @returns Real path to resource
+     */
+    resolveDestinationResource(resPath: string): string {
+        return PipelineIO.resolvePath(resPath, this.destinationPath);
+    }
+
+    /**
+     * Creates a unique resource path for a generated resource
+     * @param type MIME type of the resource to create
+     * @param contents Contents of the file
+     * @returns returns a unique resource path that is acceptable for the specified MIME type
+     */
+    createResPath(type: MimeType, contents: string): string {
+        const contentHash = hashMD5(contents);
+        const extension = getResourceTypeExtension(type);
+
+        const fileName = `${ contentHash }.${ extension }`;
+
+        return Path.join('resources', fileName);
+    }
+
+    private static resolvePath(resPath: string, directory?: string): string {
+        if (directory != null) {
+            return Path.resolve(directory, resPath);
+        } else {
+            return Path.resolve(resPath);
+        }
     }
 }

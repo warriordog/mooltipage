@@ -1,16 +1,18 @@
-import { PipelineInterface, MimeType } from '../../lib';
+import { MimeType } from '../../lib';
 import {fixSep} from '../_util/testFsUtils';
 import * as Path
     from 'path';
+import {PipelineIO} from '../../lib/pipeline/standardPipeline';
 
-export class MemoryPipelineInterface implements PipelineInterface {
-    destinationPath = '';
-    sourcePath = '';
-
+export class MemoryPipelineInterface extends PipelineIO {
     sourceContent: Map<string, TestResource> = new Map<string, TestResource>();
     destContent: Map<string, TestResource> = new Map<string, TestResource>();
     createdContent: Map<string, TestResource> = new Map<string, TestResource>();
     private nextCreatedContentId = 0;
+
+    constructor() {
+        super('', '');
+    }
 
     reset(): void {
         this.sourceContent = new Map<string, TestResource>();

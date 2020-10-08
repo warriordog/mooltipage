@@ -1,20 +1,16 @@
-import Path
-    from 'path';
-
-import {StandardPipeline, hashMD5} from '../pipeline/standardPipeline';
-import * as FsUtils
-    from '../fs/fsUtils';
+import {
+    StandardPipeline
+} from '../pipeline/standardPipeline';
 import {
     HtmlFormatter,
     MimeType,
     Page,
-    Pipeline,
-    PipelineInterface
+    Pipeline
 } from '..';
 import {
-    NoneFormatterPreset,
     FormatterMode,
     MinimizedFormatterPreset,
+    NoneFormatterPreset,
     PrettyFormatterPreset,
     StandardHtmlFormatter
 } from '../pipeline/module/standardHtmlFormatter';
@@ -125,11 +121,12 @@ function createPipeline(options: MpOptions): Pipeline {
     // create the HTML formatter, if specified
     const formatter: HtmlFormatter = createFormatter(options);
 
-    // create interface
-    const pi = new NodePipelineInterface(options.inPath, options.outPath);
+    // pick source / dest directories
+    const sourcePath = options.inPath ?? process.cwd();
+    const destinationPath = options.outPath ?? process.cwd();
 
     // create pipeline
-    return new StandardPipeline(pi, formatter);
+    return new StandardPipeline(sourcePath, destinationPath, undefined, formatter);
 }
 
 /**
@@ -149,96 +146,6 @@ export function createFormatter(options: MpOptions): HtmlFormatter {
             return new StandardHtmlFormatter();
         default:
             throw new Error(`Unknown HTML formatter: ${ options.formatter }`);
-    }
-}
-
-/**
- * Pipeline interface that uses Node.JS file APIs
- * @internal
- */
-export class NodePipelineInterface implements PipelineInterface {
-    /**
-     * Path to source directory, if not current working directory.
-     */
-    readonly sourcePath: string;
-
-    /**
-     * Path to destination directory, if not current working directory.
-     */
-    readonly destinationPath: string;
-
-    /**
-     * Creates a new NodePipelineInterface.
-     * If either argument is not set, then it will default to the current working directory.
-     *
-     * @param sourcePath Optional path to source directory
-     * @param destinationPath Optional path to destination directory
-     */
-    constructor(sourcePath?: string, destinationPath?: string) {
-        this.sourcePath = sourcePath ?? process.cwd();
-        this.destinationPath = destinationPath ?? process.cwd();
-    }
-
-    getResource(type: MimeType, resPath: string): string {
-        const htmlPath = this.resolveSourceResource(resPath);
-
-        return FsUtils.readFile(htmlPath);
-    }
-
-    writeResource(type: MimeType, resPath: string, content: string): void {
-        const htmlPath = this.resolveDestinationResource(resPath);
-
-        FsUtils.writeFile(htmlPath, content, true);
-    }
-
-    // sourceResPath is available as last parameter, if needed
-    createResource(type: MimeType, contents: string): string {
-        const resPath = this.createResPath(type, contents);
-
-        this.writeResource(type, resPath, contents);
-
-        return resPath;
-    }
-
-    /**
-     * Gets the real path to a resource, factoring in {@link sourcePath}.
-     * @param resPath Raw path to resource
-     * @returns Real path to resource
-     */
-    resolveSourceResource(resPath: string): string {
-        return NodePipelineInterface.resolvePath(resPath, this.sourcePath);
-    }
-
-
-    /**
-     * Gets the real path to a resource, factoring in {@link destinationPath}.
-     * @param resPath Raw path to resource
-     * @returns Real path to resource
-     */
-    resolveDestinationResource(resPath: string): string {
-        return NodePipelineInterface.resolvePath(resPath, this.destinationPath);
-    }
-
-    /**
-     * Creates a unique resource path for a generated resource
-     * @param type MIME type of the resource to create
-     * @returns returns a unique resource path that is acceptable for the specified MIME type
-     */
-    createResPath(type: MimeType, contents: string): string {
-        const contentHash = hashMD5(contents);
-
-        const extension = getResourceTypeExtension(type);
-        const fileName = `${ contentHash }.${ extension }`;
-
-        return Path.join('resources', fileName);
-    }
-
-    private static resolvePath(resPath: string, directory?: string): string {
-        if (directory != null) {
-            return Path.resolve(directory, resPath);
-        } else {
-            return Path.resolve(resPath);
-        }
     }
 }
 

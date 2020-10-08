@@ -58,7 +58,7 @@ export class StyleModule implements HtmlCompilerModule {
         const rootResPath = htmlContext.sharedContext.pipelineContext.fragmentContext.rootResPath;
 
         // write external CSS
-        const styleResPath = htmlContext.sharedContext.pipelineContext.pipeline.linkResource(MimeType.CSS, styleContent, src, rootResPath);
+        const styleResPath = htmlContext.sharedContext.pipelineContext.pipeline.linkResource(MimeType.CSS, styleContent, rootResPath);
 
         // create link
         const link = new TagNode('link');
