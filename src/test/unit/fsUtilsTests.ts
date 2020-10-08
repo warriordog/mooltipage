@@ -1,7 +1,6 @@
 import test from 'ava';
 import fs from 'fs';
 import {
-    expandPagePaths,
     getDirectoryContents,
     pathIsDirectory,
     pathIsFile,
@@ -9,7 +8,6 @@ import {
     writeFile
 } from '../../lib/fs/fsUtils';
 import {
-    fixSep,
     getSandboxPath,
     getTestDataPath,
     useSandboxDirectory
@@ -55,12 +53,6 @@ test('getDirectoryContents() throws on non-directory arguments', t => {
 });
 test('getDirectoryContents() throws on incorrect path', t => {
     t.throws(() => getDirectoryContents(getTestDataPath('bad.path')));
-});
-
-test('expandPagePaths() finds all pages and ignores non-HTML', t => {
-    const paths = [ getTestDataPath('testFolder/subFolder')];
-    const pages = expandPagePaths(paths, getTestDataPath('testFolder'));
-    t.deepEqual(pages, [ fixSep('subFolder/subPage1.html'), fixSep('subFolder/subPage2.html')]);
 });
 
 test('readFile() reads file contents', t => {

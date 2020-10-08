@@ -3,11 +3,13 @@ import {
     parseArgs
 } from './args';
 import {Mooltipage} from '../lib';
-import * as FsUtils
-    from '../lib/fs/fsUtils';
+import {
+    expandPagePaths,
+    readPackageJson
+} from './cliFs';
 
 export function cliMain(argv: string[], cliConsole: CliConsole): void {
-    const version = FsUtils.readPackageJson().version;
+    const version = readPackageJson().version;
     cliConsole.log(`Mooltipage CLI ver. ${ version }`);
     cliConsole.log();
 
@@ -34,7 +36,7 @@ export function runApp(args: CliArgs, cliConsole: CliConsole): void {
 
     // convert page arguments into full list of pages
     const basePath = args.inPath ?? process.cwd();
-    const pages = FsUtils.expandPagePaths(args.pages, basePath);
+    const pages = expandPagePaths(args.pages, basePath);
 
     // print stats
     cliConsole.log(`Source path: [${ args.inPath ?? process.cwd() }]`);
