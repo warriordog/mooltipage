@@ -68,7 +68,7 @@
     }
   },
   "lint-staged": {
-    "./**/*.ts": [
+    "./**/*.{ts,js}": [
       "npm run lint"
     ]
   }
