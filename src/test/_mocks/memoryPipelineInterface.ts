@@ -1,8 +1,8 @@
 import { MimeType } from '../../lib';
-import {fixSep} from '../_util/testFsUtils';
 import * as Path
     from 'path';
 import {PipelineIO} from '../../lib/pipeline/standardPipeline';
+import {fixPathSeparators} from '../../lib/fs/pathUtils';
 
 export class MemoryPipelineInterface extends PipelineIO {
     sourceContent: Map<string, TestResource> = new Map<string, TestResource>();
@@ -133,5 +133,5 @@ export interface TestResource {
 }
 
 function normalizeResPath(resPath: string): string {
-    return Path.normalize(fixSep(resPath));
+    return Path.normalize(fixPathSeparators(resPath));
 }

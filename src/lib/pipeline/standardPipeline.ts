@@ -22,12 +22,14 @@ import {
 } from './module/evalEngine';
 import {StandardHtmlFormatter} from './module/standardHtmlFormatter';
 import {buildPage} from './module/pageBuilder';
-import {computePathBetween} from '../fs/pathUtils';
 import * as FsUtils
     from '../fs/fsUtils';
 import Path
     from 'path';
 import {getResourceTypeExtension} from '../api/mooltipage';
+import {
+    resolveResPath
+} from '../fs/pathUtils';
 
 /**
  * Primary compilation pipeline.
@@ -38,11 +40,6 @@ import {getResourceTypeExtension} from '../api/mooltipage';
  * Any incidental resources (such as stylesheets) will be fed to the pipeline interface via createResource().
  */
 export class StandardPipeline implements Pipeline {
-
-    readonly sourcePath: string;
-
-    readonly destinationPath: string;
-
     /**
      * Caches reusable data for the pipeline
      */
@@ -72,24 +69,20 @@ export class StandardPipeline implements Pipeline {
 
     /**
      * Create a new instance of the pipeline
-     * @param sourcePath Path to the source directory root
-     * @param destinationPath Path to the destination directory root
      * @param pipelineIO? Optional override for standard pipelineIO
-     * @param htmlFormatter? Optional HTML formatter to use
-     * @param resourceParser? Optional override for standard ResourceParser
-     * @param htmlCompiler? Optional override for standard HtmlCompiler
+     * @param htmlFormatter?? Optional HTML formatter to use
+     * @param resourceParser?? Optional override for standard ResourceParser
+     * @param htmlCompiler?? Optional override for standard HtmlCompiler
      */
-    constructor(sourcePath: string, destinationPath: string, pipelineIO?: PipelineIO, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
+    constructor(pipelineIO: PipelineIO, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
         // internal
         this.cache = new PipelineCache();
 
         // required
-        this.sourcePath = sourcePath;
-        this.destinationPath = destinationPath;
+        this.pipelineIO = pipelineIO;
         this.dependencyTracker = new PipelineDependencyTracker();
 
         // overridable
-        this.pipelineIO = pipelineIO ?? new PipelineIO(sourcePath, destinationPath);
         this.htmlFormatter = htmlFormatter ?? new StandardHtmlFormatter();
         this.resourceParser = resourceParser ?? new ResourceParser();
         this.htmlCompiler = htmlCompiler ?? new HtmlCompiler();
@@ -252,7 +245,7 @@ export class StandardPipeline implements Pipeline {
         const rawResPath = this.createLinkableResource(type, contents);
 
         // adjust path relative to the output page and directory
-        return computePathBetween(this.destinationPath, rawResPath, rootResPath);
+        return resolveResPath(rootResPath, rawResPath);
     }
 
     /**

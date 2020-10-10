@@ -1,41 +1,48 @@
 import test from 'ava';
 import {
-    computePathBetween,
+    computeRelativeResPath,
+    fixPathSeparators,
     resolveResPath
 } from '../../lib/fs/pathUtils';
-import {fixSep} from '../_util/testFsUtils';
 
 test('resolveResPath() ignores absolute paths', t => {
-    t.is(resolveResPath(fixSep('/some/path')), fixSep('/some/path'));
+    t.is(resolveResPath(fixPathSeparators('/some/path'), ''), fixPathSeparators('/some/path'));
 });
 
-test('resolveResPath() without base path adds ./', t => {
-    t.is(resolveResPath(fixSep('some/path')), fixSep('./some/path'));
-});
-
-test('resolveResPath() does not add extra ./', t => {
-    t.is(resolveResPath(fixSep('./some/path')), fixSep('./some/path'));
+test('resolveResPath() normalizes path', t => {
+    t.is(resolveResPath(fixPathSeparators('./some/path'), ''), fixPathSeparators('some/path'));
+    t.is(resolveResPath(fixPathSeparators('some/path/../'), ''), fixPathSeparators('some/'));
+    t.is(resolveResPath(fixPathSeparators('./some/./path/./'), ''), fixPathSeparators('some/path/'));
 });
 
 test('resolveResPath() with base path makes relative', t => {
-    t.is(resolveResPath(fixSep('some/path'), fixSep('./another/path/')), fixSep('./another/path/some/path'));
+    t.is(resolveResPath(fixPathSeparators('some/path'), fixPathSeparators('./another/path/')), fixPathSeparators('another/path/some/path'));
 });
 
-test('resolveResPath() take directory name of base path', t => {
-    t.is(resolveResPath(fixSep('child.html'), fixSep('./fragments/frag.html')), fixSep('./fragments/child.html'));
+test('resolveResPath() takes directory name of base path', t => {
+    t.is(resolveResPath(fixPathSeparators('child.html'), fixPathSeparators('./fragments/frag.html')), fixPathSeparators('fragments/child.html'));
 });
 
-test('resolvePath() treats "@" paths as relative to root', t => {
-    t.is(resolveResPath(fixSep('@/some/path')), fixSep('./some/path'));
-    t.is(resolveResPath(fixSep('@/some/path'), fixSep('base/path')), fixSep('./some/path'));
+test('resolveResPath() treats "@" paths as relative to root', t => {
+    t.is(resolveResPath(fixPathSeparators('@/some/path'), ''), fixPathSeparators('some/path'));
+    t.is(resolveResPath(fixPathSeparators('@/some/path'), fixPathSeparators('base/path')), fixPathSeparators('some/path'));
 });
 
-test('computePathBetween() computes relative path', t => {
-    // some/base/path/the/source/path
+test('computeRelativeResPath() computes relative path', t => {
+    const sourcePath = fixPathSeparators('section1/page.html');
+    const targetPath = fixPathSeparators('section2/subsection/page2.html');
+    t.is(computeRelativeResPath(sourcePath, targetPath), fixPathSeparators('../section2/subsection/page2.html'));
+});
 
-    // some/base/path/./the/../target/path
-    // some/base/path/target/path
-    
-    // ../../target/path
-    t.is(computePathBetween(fixSep('some/base/path'), fixSep('./the/../target/path'), fixSep('the/source/path')), fixSep('../../target/path'));
+test('resolveResPath handles forward slashes', t => {
+    t.is(resolveResPath('./subFolder/target.html', './folder/source.html'), fixPathSeparators('folder/subFolder/target.html'));
+});
+test('resolveResPath handles back slashes', t => {
+    t.is(resolveResPath('.\\subFolder\\target.html', '.\\folder\\source.html'), fixPathSeparators('folder/subFolder/target.html'));
+});
+test('computeRelativeResPath handles forward slashes', t => {
+    t.is(computeRelativeResPath('folder1/page.html', 'folder2/page2.html'), fixPathSeparators('../folder2/page2.html'));
+});
+test('computeRelativeResPath handles back slashes', t => {
+    t.is(computeRelativeResPath('folder1\\page.html', 'folder2\\page2.html'), fixPathSeparators('../folder2/page2.html'));
 });

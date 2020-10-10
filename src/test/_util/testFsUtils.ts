@@ -1,32 +1,22 @@
 import Path from 'path';
 import fs
     from 'fs';
-
-/**
- * Converts the path separators in a path to match the path separator of the current platform.
- * This allows tests to work cross-platform with minimal overhead.
- *
- * @param path Path to convert
- * @returns {@link path} with all path separators converted to the system path separator.
- */
-export function fixSep(path: string): string {
-    return path.replace(/[/\\]/g, Path.sep);
-}
+import {fixPathSeparators} from '../../lib/fs/pathUtils';
 
 export function getTestDataPath(offsetPath?: string): string {
     // tests run from compiled root /dist, but the test data is not compiled and exists in /src
     if (offsetPath !== undefined) {
-        return Path.resolve(__dirname, fixSep('../../../src/test/_data'), fixSep(offsetPath));
+        return Path.resolve(__dirname, fixPathSeparators('../../../src/test/_data'), fixPathSeparators(offsetPath));
     } else {
-        return Path.resolve(__dirname, fixSep('../../../src/test/_data'));
+        return Path.resolve(__dirname, fixPathSeparators('../../../src/test/_data'));
     }
 }
 
 export function getSandboxPath(offsetPath?: string): string {
     if (offsetPath !== undefined) {
-        return Path.resolve(__dirname, fixSep('../_data'), fixSep(offsetPath));
+        return Path.resolve(__dirname, fixPathSeparators('../_data'), fixPathSeparators(offsetPath));
     } else {
-        return Path.resolve(__dirname, fixSep('../_data'));
+        return Path.resolve(__dirname, fixPathSeparators('../_data'));
     }
 }
 

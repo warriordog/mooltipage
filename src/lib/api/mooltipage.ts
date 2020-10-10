@@ -1,4 +1,5 @@
 import {
+    PipelineIO,
     StandardPipeline
 } from '../pipeline/standardPipeline';
 import {
@@ -72,7 +73,7 @@ export class Mooltipage {
     /**
      * Constructs a new Mooltipage instance.
      * An options object can be passed to configure the instance.
-     * If no options are provided, then {@ling DefaultMpOptions} will be used.
+     * If no options are provided, then {@link DefaultMpOptions} will be used.
      * @param options Configuration options
      */
     constructor(options?: MpOptions) {
@@ -118,12 +119,13 @@ function createPipeline(options: MpOptions): Pipeline {
     // create the HTML formatter, if specified
     const formatter: HtmlFormatter = createStandardHtmlFormatter(options.formatter);
 
-    // pick source / dest directories
+    // create pipeline IO
     const sourcePath = options.inPath ?? process.cwd();
     const destinationPath = options.outPath ?? process.cwd();
+    const pipelineIO = new PipelineIO(sourcePath, destinationPath);
 
     // create pipeline
-    return new StandardPipeline(sourcePath, destinationPath, undefined, formatter);
+    return new StandardPipeline(pipelineIO, formatter);
 }
 
 /**

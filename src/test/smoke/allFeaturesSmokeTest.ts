@@ -131,5 +131,5 @@ function createPipeline(): StandardPipeline {
     // enable pretty formatting
     const htmlFormatter = new StandardHtmlFormatter(PrettyFormatterPreset);
 
-    return new StandardPipeline(pi.sourcePath, pi.destinationPath, pi, htmlFormatter);
+    return new StandardPipeline(pi, htmlFormatter);
 }

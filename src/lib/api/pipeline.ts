@@ -4,15 +4,6 @@ import { DocumentNode } from '..';
  * Compiles inputs from the project source into plain web resources
  */
 export interface Pipeline {
-    /**
-     * Path to source directory
-     */
-    readonly sourcePath: string;
-
-    /**
-     * Path to destination directory
-     */
-    readonly destinationPath: string;
 
     /**
      * Page <-> resource dependency tracker.

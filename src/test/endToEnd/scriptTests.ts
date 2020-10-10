@@ -54,7 +54,7 @@ test('ScriptNode allows script exceptions to bubble', t => {
         type: MimeType.JAVASCRIPT,
         content: `throw new Error('${ errorMessage }');`
     });
-    const pipeline = new StandardPipeline(pi.sourcePath, pi.destinationPath, pi);
+    const pipeline = new StandardPipeline(pi);
 
     t.throws(() => pipeline.compilePage('page.html'), {
         message: errorMessage

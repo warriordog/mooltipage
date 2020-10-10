@@ -13,15 +13,17 @@ import {resolveResPath} from '../../../fs/pathUtils';
 
 export class StyleModule implements HtmlCompilerModule {
     enterNode(htmlContext: HtmlCompilerContext): void {
+        const pipelineContext = htmlContext.sharedContext.pipelineContext;
+
         if (InternalStyleNode.isInternalStyleNode(htmlContext.node)) {
             // internal (inline) CSS
-            const src = htmlContext.sharedContext.pipelineContext.fragment.path;
+            const src = pipelineContext.fragment.path;
             this.compileStyle(htmlContext.node, htmlContext.node.styleContent, src, htmlContext);
 
         } else if (ExternalStyleNode.isExternalStyleNode(htmlContext.node)) {
             // external CSS
-            const resPath = resolveResPath(htmlContext.node.src, htmlContext.sharedContext.pipelineContext.fragment.path);
-            const styleContent = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(resPath, MimeType.CSS);
+            const resPath = resolveResPath(htmlContext.node.src, pipelineContext.fragment.path);
+            const styleContent = pipelineContext.pipeline.getRawText(resPath, MimeType.CSS);
             this.compileStyle(htmlContext.node, styleContent, htmlContext.node.src, htmlContext);
         }
     }
