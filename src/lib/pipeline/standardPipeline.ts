@@ -131,8 +131,11 @@ export class StandardPipeline implements Pipeline {
     }
 
     private compileFragmentOnly(resPath: string, fragmentContext?: FragmentContext): Fragment {
+        // get the root res path. If there is no context, then this fragment is the root resource.
+        const rootResPath = fragmentContext?.rootResPath ?? resPath;
+
         // get fragment from cache or htmlSource
-        const fragment: Fragment = this.getOrParseFragment(resPath);
+        const fragment: Fragment = this.getOrParseFragment(resPath, rootResPath);
 
         // create usage context if not provided
         if (fragmentContext === undefined) {
@@ -140,7 +143,7 @@ export class StandardPipeline implements Pipeline {
                 slotContents: new Map(),
                 scope: {},
                 fragmentResPath: resPath,
-                rootResPath: resPath // current path is also the root path
+                rootResPath: rootResPath
             };
         }
 
@@ -249,21 +252,25 @@ export class StandardPipeline implements Pipeline {
     }
 
     /**
-     * Gets a raw (uncompiled) text resource
-     * 
+     * Gets a raw (uncompiled) text-based resource
+     *
      * @param resPath Path to resource
-     * @param mimeType Type of resource. Defaults to TEXT
+     * @param mimeType Type of resource.
+     * @param rootResPath Path to the root fragment
      */
-    getRawText(resPath: string, mimeType = MimeType.TEXT): string {
-        return this.pipelineIO.getResource(mimeType, resPath);
+    getRawText(resPath: string, mimeType: MimeType, rootResPath: string): string {
+        return this.getTrackedResource(mimeType, resPath, rootResPath);
     }
 
     reset(): void {
         // clear cache to reset state
         this.cache.clear();
+
+        // erase tracked dependencies
+        this.dependencyTracker.clear();
     }
 
-    private getOrParseFragment(resPath: string): Fragment {
+    private getOrParseFragment(resPath: string, rootResPath: string): Fragment {
         let fragment: Fragment;
 
         if (this.cache.hasFragment(resPath)) {
@@ -271,10 +278,10 @@ export class StandardPipeline implements Pipeline {
             fragment = this.cache.getFragment(resPath);
         } else {
             // read HTML
-            const html: string = this.pipelineIO.getResource(MimeType.HTML, resPath);
+            const html = this.getTrackedResource(MimeType.HTML, resPath, rootResPath);
 
             // parse fragment
-            const parsedFragment: Fragment = this.resourceParser.parseFragment(resPath, html);
+            const parsedFragment = this.resourceParser.parseFragment(resPath, html);
 
             // keep in cache
             this.cache.storeFragment(parsedFragment);
@@ -321,6 +328,14 @@ export class StandardPipeline implements Pipeline {
         }
 
         return scriptFunc;
+    }
+
+    private getTrackedResource(mimeType: MimeType, resPath: string, rootResPath: string): string {
+        // record dependency
+        this.dependencyTracker.recordDependency(rootResPath, resPath);
+
+        // get resource
+        return this.pipelineIO.getResource(mimeType, resPath);
     }
 }
 

@@ -88,7 +88,7 @@ export class VarModule implements HtmlCompilerModule {
         const resPath = resolveResPath(reference.resPath, pipelineContext.fragment.path);
 
         // get value
-        const rawValue = pipelineContext.pipeline.getRawText(resPath, node.type);
+        const rawValue = pipelineContext.pipeline.getRawText(resPath, node.type, pipelineContext.fragmentContext.rootResPath);
 
         // parse as correct type
         switch (node.type) {
