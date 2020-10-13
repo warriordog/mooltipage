@@ -1,5 +1,5 @@
 import {
-    PipelineIO,
+    PipelineIOImpl,
     StandardPipeline
 } from '../pipeline/standardPipeline';
 import {
@@ -90,7 +90,7 @@ export class Mooltipage {
      * Compiles a list of pages.
      * @param pagePaths List paths to pages to compile
      */
-    processPages(pagePaths: string[]): void {
+    processPages(pagePaths: Iterable<string>): void {
         for (const pagePath of pagePaths) {
             this.processPage(pagePath);
         }
@@ -122,7 +122,7 @@ function createPipeline(options: MpOptions): Pipeline {
     // create pipeline IO
     const sourcePath = options.inPath ?? process.cwd();
     const destinationPath = options.outPath ?? process.cwd();
-    const pipelineIO = new PipelineIO(sourcePath, destinationPath);
+    const pipelineIO = new PipelineIOImpl(sourcePath, destinationPath);
 
     // create pipeline
     return new StandardPipeline(pipelineIO, formatter);

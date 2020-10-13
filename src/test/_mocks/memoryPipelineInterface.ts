@@ -1,10 +1,12 @@
 import { MimeType } from '../../lib';
 import * as Path
     from 'path';
-import {PipelineIO} from '../../lib/pipeline/standardPipeline';
+import {
+    PipelineIOImpl
+} from '../../lib/pipeline/standardPipeline';
 import {fixPathSeparators} from '../../lib/fs/pathUtils';
 
-export class MemoryPipelineInterface extends PipelineIO {
+export class MemoryPipelineInterface extends PipelineIOImpl {
     sourceContent: Map<string, TestResource> = new Map<string, TestResource>();
     destContent: Map<string, TestResource> = new Map<string, TestResource>();
     createdContent: Map<string, TestResource> = new Map<string, TestResource>();
@@ -83,7 +85,7 @@ export class MemoryPipelineInterface extends PipelineIO {
         resPath = normalizeResPath(resPath);
 
         // generate list of "similar" paths to try - necessary since real FS will resolve the path first
-        const testPaths = [ resPath ];
+        const testPaths = [resPath];
         if (resPath.startsWith('./')) {
             // remove leading ./
             testPaths.push(resPath.substring(2, resPath.length));
@@ -108,10 +110,10 @@ export class MemoryPipelineInterface extends PipelineIO {
     }
 
     writeResource(type: MimeType, resPath: string, content: string): void {
-       this.destContent.set(normalizeResPath(resPath), {
-           content: content,
-           type: type
-       });
+        this.destContent.set(normalizeResPath(resPath), {
+            content: content,
+            type: type
+        });
     }
 
     createResource(type: MimeType, contents: string): string {

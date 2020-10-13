@@ -1,4 +1,4 @@
-import { DocumentNode } from '..';
+import {DocumentNode} from '..';
 
 /**
  * Compiles inputs from the project source into plain web resources
@@ -10,6 +10,11 @@ export interface Pipeline {
      * Tracks all dependencies between pages and other pipeline resources.
      */
     readonly dependencyTracker: DependencyTracker;
+
+    /**
+     * Frontend / Backend for the pipeline
+     */
+    readonly pipelineIO: PipelineIO;
 
     /**
      * Compiles a page from start to finish.
@@ -187,4 +192,100 @@ export interface DependencyTracker {
      * @returns true if the resource is a dependency of any tracked page. Returns false otherwise.
      */
     hasTrackedResource(resPath: string): boolean;
+
+    /**
+     * Erases all recorded dependencies and resets the change tracker.
+     */
+    clear(): void;
+
+    /**
+     * Gets all unique tracked resources and pages.
+     * @returns Returns a set of unique strings representing all files tracked in this DependencyTracker.
+     */
+    getAllTrackedFiles(): Set<string>;
+}
+
+/**
+ * Provides file I/O support to the pipeline
+ */
+export interface PipelineIO {
+    /**
+     * Path to source directory
+     */
+    readonly sourcePath: string;
+
+    /**
+     * Path to destination directory
+     */
+    readonly destinationPath: string;
+
+    /**
+     * Reads a resource of a specified type from the pipeline input.
+     * Path will be computed by using resPath relative to {@link sourcePath}.
+     * See {@link resolveSourceResource} for details.
+     *
+     * @param type Type of resource
+     * @param resPath Relative path to resource (source and destination)
+     * @returns text content of resource
+     */
+    getResource(type: MimeType, resPath: string): string;
+
+    /**
+     * Writes a resource of a specified type to the pipeline output.
+     * This resource must map directly to a source resource, for generated output use createResource().
+     * Path will be computed by using resPath relative to {@link destinationPath}.
+     * See {@link resolveDestinationResource} for details.
+     *
+     * @param type Type of resource
+     * @param resPath Relative path to resource (source and destination)
+     * @param contents File contents as a UTF-8 string
+     */
+    writeResource(type: MimeType, resPath: string, contents: string): void;
+
+    /**
+     * Creates a new output resource and generates a resource path to reference it
+     * This should be used for all generated resources, such as external stylesheets.
+     * Path will be computed by using resPath relative to {@link destinationPath}.
+     * See {@link resolveDestinationResource} for details.
+     *
+     * @param type MIME type of the new resource
+     * @param contents File contents
+     * @returns path to resource
+     */
+    createResource(type: MimeType, contents: string): string;
+
+    /**
+     * Gets the absolute path to a resource in {@link sourcePath}.
+     * @param resPath Raw path to resource
+     * @returns Real path to resource
+     */
+    resolveSourceResource(resPath: string): string;
+
+    /**
+     * Gets the absolute path to a resource in {@link destinationPath}.
+     * @param resPath Raw path to resource
+     * @returns Real path to resource
+     */
+    resolveDestinationResource(resPath: string): string;
+
+    /**
+     * Generates a unique resource path in {@link destinationPath} that can be used for a generated resource.
+     * This method does not create the file, only reserves the path.
+     * @param type MIME type of the resource to create
+     * @param contents Contents of the file
+     * @returns returns a unique resource path that is acceptable for the specified MIME type
+     */
+    createResPath(type: MimeType, contents: string): string;
+
+    /**
+     * TODO docs, tests
+     * @param rawPath
+     */
+    createSourceResPath(rawPath: string): string;
+
+    /**
+     * TODO docs, tests
+     * @param rawPath
+     */
+    createDestinationResPath(rawPath: string): string;
 }

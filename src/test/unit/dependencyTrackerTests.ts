@@ -91,3 +91,33 @@ test('DependencyTracker can clear all mappings', t => {
     t.deepEqual(depTracker.getDependentsForResource('resource1.html'), new Set());
     t.deepEqual(depTracker.getDependentsForResource('resource2.html'), new Set());
 });
+
+test('DependencyTracker.getAllTrackedFiles returns all deduplicated pages and resources', t => {
+    const depTracker = new PipelineDependencyTracker();
+    depTracker.recordDependency('page1.html', 'resource1.html');
+    depTracker.recordDependency('page1.html', 'resource2.html');
+    depTracker.recordDependency('page2.html', 'resource2.html');
+    depTracker.recordDependency('page2.html', 'resource3.html');
+
+    t.deepEqual(depTracker.getAllTrackedFiles(), new Set([
+        'page1.html',
+        'page2.html',
+        'resource1.html',
+        'resource2.html',
+        'resource3.html'
+    ]));
+});
+
+test('PipelineDependencyTracker.forgetTrackedPage forgets all mappings', t => {
+    const depTracker = new PipelineDependencyTracker();
+    depTracker.recordDependency('page1.html', 'resource1.html');
+    depTracker.recordDependency('page1.html', 'resource2.html');
+    depTracker.recordDependency('page2.html', 'resource2.html');
+
+    depTracker.forgetTrackedPage('page1.html');
+
+    t.deepEqual(depTracker.getDependenciesForPage('page1.html'), new Set());
+    t.deepEqual(depTracker.getDependenciesForPage('page2.html'), new Set([ 'resource2.html' ]));
+    t.deepEqual(depTracker.getDependentsForResource('resource1.html'), new Set());
+    t.deepEqual(depTracker.getDependentsForResource('resource2.html'), new Set([ 'page2.html' ]));
+});

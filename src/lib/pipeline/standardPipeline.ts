@@ -11,7 +11,8 @@ import {
     HtmlFormatter,
     MimeType,
     Page,
-    Pipeline
+    Pipeline,
+    PipelineIO
 } from '..';
 import {
     EvalContent,
@@ -27,9 +28,7 @@ import * as FsUtils
 import Path
     from 'path';
 import {getResourceTypeExtension} from '../api/mooltipage';
-import {
-    resolveResPath
-} from '../fs/pathUtils';
+import {resolveResPath} from '../fs/pathUtils';
 
 /**
  * Primary compilation pipeline.
@@ -48,7 +47,7 @@ export class StandardPipeline implements Pipeline {
     /**
      * Frontend / Backend for the pipeline
      */
-    readonly pipelineIO: PipelineIO;
+    readonly pipelineIO: PipelineIOImpl;
     
     /**
      * HTML formatter, if provided
@@ -74,7 +73,7 @@ export class StandardPipeline implements Pipeline {
      * @param resourceParser?? Optional override for standard ResourceParser
      * @param htmlCompiler?? Optional override for standard HtmlCompiler
      */
-    constructor(pipelineIO: PipelineIO, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
+    constructor(pipelineIO: PipelineIOImpl, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
         // internal
         this.cache = new PipelineCache();
 
@@ -89,6 +88,19 @@ export class StandardPipeline implements Pipeline {
     }
 
     compilePage(resPath: string): Page {
+        // resolve path to page
+        resPath = resolveResPath(resPath);
+
+        // remove this page and all dependencies from the cache, in case this is a recompile
+        this.cache.removeFragment(resPath);
+        for (const dependencyResPath of this.dependencyTracker.getDependenciesForPage(resPath)) {
+            // not all dependencies are fragments, but that's OK because cache will ignore
+            this.cache.removeFragment(dependencyResPath);
+        }
+
+        // reset tracked changes for this page, in case this is a recompile
+        this.dependencyTracker.forgetTrackedPage(resPath);
+
         // compile fragment
         const pageFragment: Fragment = this.compileFragmentOnly(resPath);
         const pageDom: DocumentNode = pageFragment.dom;
@@ -117,6 +129,10 @@ export class StandardPipeline implements Pipeline {
     }
 
     compileFragment(resPath: string, fragmentContext?: FragmentContext): Fragment {
+        // resolve path to fragment
+        resPath = resolveResPath(resPath);
+
+        // compile fragment
         const fragment = this.compileFragmentOnly(resPath, fragmentContext);
 
         // Only format if this fragment is being compiled standalone instead of as part of a page.
@@ -259,7 +275,13 @@ export class StandardPipeline implements Pipeline {
      * @param rootResPath Path to the root fragment
      */
     getRawText(resPath: string, mimeType: MimeType, rootResPath: string): string {
-        return this.getTrackedResource(mimeType, resPath, rootResPath);
+        // resolve path to fragment
+        resPath = resolveResPath(resPath);
+
+        this.dependencyTracker.recordDependency(rootResPath, resPath);
+
+        // get contents
+        return this.pipelineIO.getResource(mimeType, resPath);
     }
 
     reset(): void {
@@ -271,6 +293,8 @@ export class StandardPipeline implements Pipeline {
     }
 
     private getOrParseFragment(resPath: string, rootResPath: string): Fragment {
+        this.dependencyTracker.recordDependency(rootResPath, resPath);
+
         let fragment: Fragment;
 
         if (this.cache.hasFragment(resPath)) {
@@ -278,7 +302,7 @@ export class StandardPipeline implements Pipeline {
             fragment = this.cache.getFragment(resPath);
         } else {
             // read HTML
-            const html = this.getTrackedResource(MimeType.HTML, resPath, rootResPath);
+            const html = this.pipelineIO.getResource(MimeType.HTML, resPath);
 
             // parse fragment
             const parsedFragment = this.resourceParser.parseFragment(resPath, html);
@@ -329,14 +353,6 @@ export class StandardPipeline implements Pipeline {
 
         return scriptFunc;
     }
-
-    private getTrackedResource(mimeType: MimeType, resPath: string, rootResPath: string): string {
-        // record dependency
-        this.dependencyTracker.recordDependency(rootResPath, resPath);
-
-        // get resource
-        return this.pipelineIO.getResource(mimeType, resPath);
-    }
 }
 
 /**
@@ -383,8 +399,6 @@ export interface PipelineContext {
 
 /**
  * Standard implementation of DependencyTracker
- *
- * TODO normalize paths after #28 is done
  */
 export class PipelineDependencyTracker implements DependencyTracker {
 
@@ -438,27 +452,48 @@ export class PipelineDependencyTracker implements DependencyTracker {
     }
 
     /**
-     * Erases all recorded dependencies and resets the change tracker.
+     * Removes a page from all tracked dependency relationships.
+     * Any page -> resource or resource -> page dependency that involves pageResPath will be delete.
+     * @param pageResPath Page to forget.
      */
+    forgetTrackedPage(pageResPath: string): void {
+        const pageDeps = this.pageDependencies.get(pageResPath);
+        if (pageDeps !== undefined) {
+
+            // remove resource -> page mappings
+            for (const resPath of pageDeps) {
+                this.getDependentsForResource(resPath).delete(pageResPath);
+            }
+
+            // delete all page -> resource mappings
+            this.pageDependencies.delete(pageResPath);
+        }
+    }
+
     clear(): void {
         this.pageDependencies.clear();
         this.resourceDependents.clear();
     }
+
+    getAllTrackedFiles(): Set<string> {
+        const allFiles = new Set<string>();
+        for (const page of this.pageDependencies.keys()) {
+            allFiles.add(page);
+        }
+        for (const resource of this.resourceDependents.keys()) {
+            allFiles.add(resource);
+        }
+        return allFiles;
+    }
 }
 
 /**
- * Provides file I/O support to the pipeline
+ * Standard implementation of Pipeline IO.
+ * This uses node.js APIs to access files on the local filesystem.
  */
-export class PipelineIO {
+export class PipelineIOImpl implements PipelineIO {
 
-    /**
-     * Path to source directory
-     */
     readonly sourcePath: string;
-
-    /**
-     * Path to destination directory
-     */
     readonly destinationPath: string;
     
     /**
@@ -472,40 +507,18 @@ export class PipelineIO {
         this.destinationPath = destinationPath;
     }
 
-    /**
-     * Reads a resource of a specified type from the pipeline input.
-     *
-     * @param type Type of resource
-     * @param resPath Relative path to resource (source and destination)
-     * @returns text content of resource
-     */
     getResource(type: MimeType, resPath: string): string {
         const htmlPath = this.resolveSourceResource(resPath);
 
         return FsUtils.readFile(htmlPath);
     }
-    
-    /**
-     * Writes a resource of a specified type to the pipeline output.
-     * This resource must exist in the pipeline source, for incidentally created resources use createResource()
-     *
-     * @param type Type of resource
-     * @param resPath Relative path to resource (source and destination)
-     * @param contents File contents as a UTF-8 string
-     */
+
     writeResource(type: MimeType, resPath: string, contents: string): void {
         const htmlPath = this.resolveDestinationResource(resPath);
 
         FsUtils.writeFile(htmlPath, contents, true);
     }
-    /**
-     * Creates a new output resource and generates a resource path to reference it
-     * This should be used for all incidentally created resources, such as external stylesheets.
-     *
-     * @param type MIME type of the new resource
-     * @param contents File contents
-     * @returns path to resource
-     */
+
     createResource(type: MimeType, contents: string): string {
         const resPath = this.createResPath(type, contents);
 
@@ -514,31 +527,14 @@ export class PipelineIO {
         return resPath;
     }
 
-    /**
-     * Gets the real path to a resource, factoring in {@link sourcePath}.
-     * @param resPath Raw path to resource
-     * @returns Real path to resource
-     */
     resolveSourceResource(resPath: string): string {
-        return PipelineIO.resolvePath(resPath, this.sourcePath);
+        return Path.resolve(this.sourcePath, resPath);
     }
 
-
-    /**
-     * Gets the real path to a resource, factoring in {@link destinationPath}.
-     * @param resPath Raw path to resource
-     * @returns Real path to resource
-     */
     resolveDestinationResource(resPath: string): string {
-        return PipelineIO.resolvePath(resPath, this.destinationPath);
+        return Path.resolve(this.destinationPath, resPath);
     }
 
-    /**
-     * Creates a unique resource path for a generated resource
-     * @param type MIME type of the resource to create
-     * @param contents Contents of the file
-     * @returns returns a unique resource path that is acceptable for the specified MIME type
-     */
     createResPath(type: MimeType, contents: string): string {
         const contentHash = hashMD5(contents);
         const extension = getResourceTypeExtension(type);
@@ -548,11 +544,11 @@ export class PipelineIO {
         return Path.join('resources', fileName);
     }
 
-    private static resolvePath(resPath: string, directory?: string): string {
-        if (directory != null) {
-            return Path.resolve(directory, resPath);
-        } else {
-            return Path.resolve(resPath);
-        }
+    createSourceResPath(rawPath: string): string {
+        return Path.relative(this.sourcePath, rawPath);
+    }
+
+    createDestinationResPath(rawPath: string): string {
+        return Path.relative(this.destinationPath, rawPath);
     }
 }
