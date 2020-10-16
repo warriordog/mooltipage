@@ -278,14 +278,16 @@ export interface PipelineIO {
     createResPath(type: MimeType, contents: string): string;
 
     /**
-     * TODO docs, tests
-     * @param rawPath
+     * Computes the relative path from {@link sourcePath} to rawResPath.
+     * @param rawResPath Target path
+     * @returns returns the relative path to {@link sourcePath}.
      */
-    createSourceResPath(rawPath: string): string;
+    getSourceResPathForAbsolutePath(rawResPath: string): string;
 
     /**
-     * TODO docs, tests
-     * @param rawPath
+     * Computes the relative path from {@link destinationPath} to rawResPath.
+     * @param rawResPath Target path
+     * @returns returns the relative path to {@link destinationPath}.
      */
-    createDestinationResPath(rawPath: string): string;
+    getDestinationResPathForAbsolutePath(rawResPath: string): string;
 }

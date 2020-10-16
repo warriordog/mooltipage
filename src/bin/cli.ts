@@ -116,7 +116,7 @@ function compileStagedChanges(stagedChanges: Set<string>, mooltipage: Mooltipage
     const changedPages = new Set<string>();
     for (const change of stagedChanges) {
         // convert raw path back to res path
-        const resPath = mooltipage.pipeline.pipelineIO.createSourceResPath(change);
+        const resPath = mooltipage.pipeline.pipelineIO.getSourceResPathForAbsolutePath(change);
 
         if (tracker.hasTrackedPage(resPath)) {
             // copy pages directly

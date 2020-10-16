@@ -544,11 +544,11 @@ export class PipelineIOImpl implements PipelineIO {
         return Path.join('resources', fileName);
     }
 
-    createSourceResPath(rawPath: string): string {
+    getSourceResPathForAbsolutePath(rawPath: string): string {
         return Path.relative(this.sourcePath, rawPath);
     }
 
-    createDestinationResPath(rawPath: string): string {
+    getDestinationResPathForAbsolutePath(rawPath: string): string {
         return Path.relative(this.destinationPath, rawPath);
     }
 }
