@@ -22,11 +22,13 @@ export class FragmentModule implements HtmlCompilerModule {
     }
 
     static replaceFragment(mFragment: MFragmentNode, htmlContext: HtmlCompilerContext): void {
+        const pipelineContext = htmlContext.sharedContext.pipelineContext;
+
         // get slot contents
         const slotContents: Map<string, DocumentNode> = FragmentModule.extractSlotContents(mFragment);
 
         // create usage context
-        const parentFragmentContext = htmlContext.sharedContext.pipelineContext.fragmentContext;
+        const parentFragmentContext = pipelineContext.fragmentContext;
         const fragmentContext: FragmentContext = {
             slotContents: slotContents,
             scope: FragmentModule.createFragmentScope(mFragment),
@@ -35,10 +37,10 @@ export class FragmentModule implements HtmlCompilerModule {
         };
 
         // compute path to fragment
-        const fragmentPath = resolveResPath(mFragment.src, htmlContext.sharedContext.pipelineContext.fragment.path);
+        const fragmentPath = resolveResPath(mFragment.src, pipelineContext.fragment.path);
 
         // call pipeline to load reference
-        const fragment: Fragment = htmlContext.sharedContext.pipelineContext.pipeline.compileFragment(fragmentPath, fragmentContext);
+        const fragment: Fragment = pipelineContext.pipeline.compileFragment(fragmentPath, fragmentContext);
 
         // replace with compiled fragment
         mFragment.replaceSelf(fragment.dom.childNodes);

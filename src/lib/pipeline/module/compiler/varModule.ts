@@ -82,11 +82,13 @@ export class VarModule implements HtmlCompilerModule {
     }
 
     private static compileReference(reference: MDataNodeRef, node: MDataNode, htmlContext: HtmlCompilerContext): unknown {
+        const pipelineContext = htmlContext.sharedContext.pipelineContext;
+
         // compute path to reference
-        const resPath = resolveResPath(reference.resPath, htmlContext.sharedContext.pipelineContext.fragment.path);
+        const resPath = resolveResPath(reference.resPath, pipelineContext.fragment.path);
 
         // get value
-        const rawValue = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(resPath, node.type);
+        const rawValue = pipelineContext.pipeline.getRawText(resPath, node.type, pipelineContext.fragmentContext.rootResPath);
 
         // parse as correct type
         switch (node.type) {

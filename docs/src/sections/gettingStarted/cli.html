@@ -91,4 +91,16 @@
             <example-code examples="{{ $.exampleData }}" section="format" ex="noneCmd"></example-code>
         </p>
     </page-section>
+
+    <page-section title="Recompiling pages when changed:">
+        <p>
+            During web development, it is common to make repeated small tweaks to a file until a page looks exactly right.
+            By default, this means rebuilding the entire site for each change.
+            Large projects can take a long time to build which leads to a very slow and uncomfortable development experience.
+            To counter this, Mooltipage includes "watch mode" which will instantly detect and compile changes to any project file.
+            Watch mode preserves internal caches as much as possible and only recompiles the exact pages impacted by a change.
+            To enable watch mode, add the "--watch" parameter to the CLI arguments, like this:
+            <example-code examples="{{ $.exampleData }}" section="watch" ex="cli"></example-code>
+        </p>
+    </page-section>
 </m-fragment>

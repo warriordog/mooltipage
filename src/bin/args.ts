@@ -14,7 +14,7 @@ export interface CliArgs {
     inPath?: string;
 
     /**
-     * If true, then --help was set.
+     * If true, then --help was set
      */
     isHelp?: boolean;
 
@@ -27,6 +27,11 @@ export interface CliArgs {
      * List of all non-option parameters identified
      */
     pages: string[];
+
+    /**
+     * If true, then --watch was set
+     */
+    watch?: boolean;
 }
 
 /**
@@ -100,6 +105,9 @@ export function parseOptions(args: string[], parseData: CliArgs): void {
             case 'formatter':
                 if (!option.value) throw new Error('formatter requires a value');
                 parseData.formatter = option.value;
+                break;
+            case 'watch':
+                parseData.watch = true;
                 break;
             default:
                 throw new Error(`Unknown option: ${ option.label }`);

@@ -18,8 +18,10 @@ export class ScriptModule implements HtmlCompilerModule {
         this.compileScript(htmlContext, node.scriptContent);
     }
     compileExternalScript(node: ExternalScriptNode, htmlContext: HtmlCompilerContext): void {
-        const resPath = resolveResPath(node.src, htmlContext.sharedContext.pipelineContext.fragment.path);
-        const scriptContent = htmlContext.sharedContext.pipelineContext.pipeline.getRawText(resPath, MimeType.JAVASCRIPT);
+        const pipelineContext = htmlContext.sharedContext.pipelineContext;
+
+        const resPath = resolveResPath(node.src, pipelineContext.fragment.path);
+        const scriptContent = pipelineContext.pipeline.getRawText(resPath, MimeType.JAVASCRIPT, pipelineContext.fragmentContext.rootResPath);
         this.compileScript(htmlContext, scriptContent);
     }
 

@@ -36,13 +36,16 @@
     "test": "npm run build && ava",
     "coverage": "npm run build && nyc ava",
     "typedoc": "typedoc src/lib",
-    "makedocs": "node ./dist/bin/main.js --inPath=./docs/src --outPath=./docs/dist --formatter=minimized ./docs/src/index.html ./docs/src/sections",
+    "makedocs": "node ./dist/bin/main.js --inPath=./docs/src/ --outPath=./docs/dist/ --formatter=minimized ./docs/src/index.html ./docs/src/sections",
     "docs": "npm run rebuild && npm run coverage && npm run typedoc && npm run makedocs",
+    "devdocs": "npm run build && npm run makedocs -- --watch",
     "lint": "eslint --ext .js,.ts src",
     "lint-fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run rebuild && npm run lint && npm run coverage && npm run typedoc && npm run makedocs",
     "debugtest": "ava --serial --verbose",
-    "validate": "npm install && npm run rebuild && npm run lint && nyc ava && npm run typedoc && npm run makedocs"
+    "validate": "npm install && npm run rebuild && npm run lint && nyc ava && npm run typedoc && npm run makedocs",
+    "pre_commit_checks": "npm run build && lint-staged",
+    "pre_push_checks": "npm run test"
   },
   "bin": {
     "mooltipage": "./dist/bin/main.js"
@@ -62,17 +65,5 @@
     "nyc": "^15.1.0",
     "typedoc": "^0.19.2",
     "typescript": "^4.0.3"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": [
-        "lint-staged && npm run build"
-      ]
-    }
-  },
-  "lint-staged": {
-    "./**/*.{ts,js}": [
-      "npm run lint"
-    ]
   }
 }

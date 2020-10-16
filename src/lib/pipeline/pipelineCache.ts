@@ -30,6 +30,10 @@ export class PipelineCache {
         this.fragmentCache.set(fragment.path, fragment);
     }
 
+    removeFragment(resPath: string): void {
+        this.fragmentCache.delete(resPath);
+    }
+
     // Expression
 
     hasExpression(expression: string): boolean {
@@ -48,6 +52,10 @@ export class PipelineCache {
 
     storeExpression(expression: string, func: EvalContent<unknown>): void {
         this.expressionCache.set(expression, func);
+    }
+
+    removeExpression(expression: string): void {
+        this.expressionCache.delete(expression);
     }
     
     // Script
@@ -70,6 +78,10 @@ export class PipelineCache {
         this.scriptCache.set(script, func);
     }
 
+    removeScript(script: string): void {
+        this.scriptCache.delete(script);
+    }
+
     // created resource
     
     hasCreatedResource(hash: string): boolean {
@@ -88,6 +100,10 @@ export class PipelineCache {
 
     storeCreatedResource(hash: string, resPath: string): void {
         this.createdResourceCache.set(hash, resPath);
+    }
+
+    removeCreatedResource(hash: string): void {
+        this.createdResourceCache.delete(hash);
     }
 
     // general

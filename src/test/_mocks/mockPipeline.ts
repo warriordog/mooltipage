@@ -1,17 +1,17 @@
 import { MemoryPipelineInterface } from './memoryPipelineInterface';
 import { StandardPipeline } from '../../lib/pipeline/standardPipeline';
 import { Page, Fragment, HtmlFormatter, MimeType } from '../../lib';
-import {fixSep} from '../_util/testFsUtils';
 import Path
     from 'path';
+import {fixPathSeparators} from '../../lib/fs/pathUtils';
 
 export class MockPipeline extends StandardPipeline {
     readonly mockRawTexts: Array<[string, MimeType, string]> = [];
 
     readonly mockPi: MemoryPipelineInterface;
 
-    constructor(pi?: MemoryPipelineInterface, htmlFormatter?: HtmlFormatter) {
-        super((pi = pi ?? new MemoryPipelineInterface()), htmlFormatter);
+    constructor(pi = new MemoryPipelineInterface(), htmlFormatter?: HtmlFormatter) {
+        super(pi, htmlFormatter);
         this.mockPi = pi;
     }
 
@@ -52,5 +52,5 @@ export class MockPipeline extends StandardPipeline {
 }
 
 function normalizeResPath(resPath: string): string {
-    return Path.normalize(fixSep(resPath));
+    return Path.normalize(fixPathSeparators(resPath));
 }

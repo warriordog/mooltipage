@@ -351,3 +351,24 @@ export function createFormatterOptions(options?: Partial<FormatterOptions>, defa
         return defaultOptions;
     }
 }
+
+/**
+ * Creates an HtmlFormatter, optionally using a standard profile name
+ * @internal
+ * @param formatterName Name of the formatter profile to use
+ * @returns an HtmlFormatter instance configured from formatterName
+ */
+export function createStandardHtmlFormatter(formatterName?: string): HtmlFormatter {
+    switch (formatterName) {
+        case FormatterMode.PRETTY:
+            return new StandardHtmlFormatter(PrettyFormatterPreset);
+        case FormatterMode.MINIMIZED:
+            return new StandardHtmlFormatter(MinimizedFormatterPreset);
+        case FormatterMode.NONE:
+            return new StandardHtmlFormatter(NoneFormatterPreset);
+        case undefined:
+            return new StandardHtmlFormatter();
+        default:
+            throw new Error(`Unknown HTML formatter: ${ formatterName }`);
+    }
+}

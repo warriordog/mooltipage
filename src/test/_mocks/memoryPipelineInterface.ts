@@ -1,16 +1,20 @@
-import { PipelineInterface, MimeType } from '../../lib';
-import {fixSep} from '../_util/testFsUtils';
+import { MimeType } from '../../lib';
 import * as Path
     from 'path';
+import {
+    PipelineIOImpl
+} from '../../lib/pipeline/standardPipeline';
+import {fixPathSeparators} from '../../lib/fs/pathUtils';
 
-export class MemoryPipelineInterface implements PipelineInterface {
-    destinationPath = '';
-    sourcePath = '';
-
+export class MemoryPipelineInterface extends PipelineIOImpl {
     sourceContent: Map<string, TestResource> = new Map<string, TestResource>();
     destContent: Map<string, TestResource> = new Map<string, TestResource>();
     createdContent: Map<string, TestResource> = new Map<string, TestResource>();
     private nextCreatedContentId = 0;
+
+    constructor() {
+        super('', '');
+    }
 
     reset(): void {
         this.sourceContent = new Map<string, TestResource>();
@@ -81,7 +85,7 @@ export class MemoryPipelineInterface implements PipelineInterface {
         resPath = normalizeResPath(resPath);
 
         // generate list of "similar" paths to try - necessary since real FS will resolve the path first
-        const testPaths = [ resPath ];
+        const testPaths = [resPath];
         if (resPath.startsWith('./')) {
             // remove leading ./
             testPaths.push(resPath.substring(2, resPath.length));
@@ -106,10 +110,10 @@ export class MemoryPipelineInterface implements PipelineInterface {
     }
 
     writeResource(type: MimeType, resPath: string, content: string): void {
-       this.destContent.set(normalizeResPath(resPath), {
-           content: content,
-           type: type
-       });
+        this.destContent.set(normalizeResPath(resPath), {
+            content: content,
+            type: type
+        });
     }
 
     createResource(type: MimeType, contents: string): string {
@@ -131,5 +135,5 @@ export interface TestResource {
 }
 
 function normalizeResPath(resPath: string): string {
-    return Path.normalize(fixSep(resPath));
+    return Path.normalize(fixPathSeparators(resPath));
 }

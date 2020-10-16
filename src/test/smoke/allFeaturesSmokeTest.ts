@@ -22,8 +22,8 @@ test('Build produces a page and does not crash', t => {
 });
 
 function createPipeline(): StandardPipeline {
-    const pipelineInterface = new MemoryPipelineInterface();
-    pipelineInterface.setSourceHtml('page.html', `
+    const pi = new MemoryPipelineInterface();
+    pi.setSourceHtml('page.html', `
         <!DOCTYPE html>
         <html lang="en">
             <head>
@@ -56,7 +56,7 @@ function createPipeline(): StandardPipeline {
             </body>
         </html>
     `);
-    pipelineInterface.setSourceHtml('mainContent.html', `
+    pi.setSourceHtml('mainContent.html', `
         <m-var name="\${ 'Main' + 'Content' }Page" />
         <m-import component src="section.html" as="custom-section" />
 
@@ -79,10 +79,10 @@ function createPipeline(): StandardPipeline {
             </custom-section>
         </m-for>
     `);
-    pipelineInterface.setSourceHtml('header.html', `
+    pi.setSourceHtml('header.html', `
         <header class="pageTitle \${ $.class || '' }">\${ $.name }</header>
     `);
-    pipelineInterface.setSourceHtml('section.html', `
+    pi.setSourceHtml('section.html', `
         <script compiled>
             if ($.class) {
                 this.sectionClass = $.class;
@@ -103,7 +103,7 @@ function createPipeline(): StandardPipeline {
             </section>
         </template>
     `);
-    pipelineInterface.setSource('section.style.css', {
+    pi.setSource('section.style.css', {
         type: MimeType.CSS,
         content: `
             section.defaultSection {
@@ -111,13 +111,13 @@ function createPipeline(): StandardPipeline {
             }
         `
     });
-    pipelineInterface.setSource('sectionLoader.js', {
+    pi.setSource('sectionLoader.js', {
         type: MimeType.JAVASCRIPT,
         content: `
             $.sectionIds = $.sections.map(s => s.id);
         `
     });
-    pipelineInterface.setSource('sectionData.json', {
+    pi.setSource('sectionData.json', {
         type: MimeType.JSON,
         content: `
         [
@@ -131,5 +131,5 @@ function createPipeline(): StandardPipeline {
     // enable pretty formatting
     const htmlFormatter = new StandardHtmlFormatter(PrettyFormatterPreset);
 
-    return new StandardPipeline(pipelineInterface, htmlFormatter);
+    return new StandardPipeline(pi, htmlFormatter);
 }
