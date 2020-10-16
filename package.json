@@ -41,7 +41,8 @@
     "lint": "eslint --ext .js,.ts src",
     "lint-fix": "npm run lint -- --fix",
     "prepublishOnly": "npm run rebuild && npm run lint && npm run coverage && npm run typedoc && npm run makedocs",
-    "debugtest": "ava --serial --verbose"
+    "debugtest": "ava --serial --verbose",
+    "validate": "npm install && npm run rebuild && npm run lint && nyc ava && npm run typedoc && npm run makedocs"
   },
   "bin": {
     "mooltipage": "./dist/bin/main.js"
