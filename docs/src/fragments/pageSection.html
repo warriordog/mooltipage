@@ -1,12 +1,12 @@
 <section class="page-section">
     <m-if ?="{{ $$.pipelineContext.fragmentContext.slotContents.has('header') }}">
         <header>
-            <h5><m-slot slot="header"></m-slot></h5>
+            <h3><m-slot slot="header"></m-slot></h3>
         </header>
     </m-if>
     <m-else-if ?="{{ $.title !== undefined }}">
         <header>
-            <h5>${ $.title }</h5>
+            <h3>${ $.title }</h3>
         </header>
     </m-else-if>
 

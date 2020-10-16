@@ -1,17 +1,23 @@
 <m-fragment src="@/layouts/mainLayout.html" page-title="Mooltipage Documentation">
+<m-import src="@/fragments/pageSection.html" as="page-section" />
 
     <m-content slot="header">
         This is the work-in-progress official Mooltipage documentation.
     </m-content>
 
-    <p>
-        This file is compiled with Mooltipage itself, and the rendered HTML is served by Github pages.
-    </p>
+    <page-section>
+        <p>
+            This file is compiled with Mooltipage itself, and the rendered HTML is served by Github pages.
+        </p>
+    </page-section>
 
     <br>
-    Auto-generated Reports:
-    <ul>
-        <li><a compiled resolve="base" href="gen/coverage/lcov-report/index.html" target="_blank" rel="noopener">Code Coverage Report</a></li>
-        <li><a compiled resolve="base" href="gen/typedoc/index.html" target="_blank" rel="noopener">TypeDoc Index (JSDocs)</a></li>
-    </ul>
+    
+    <page-section>
+        Auto-generated Reports:
+        <ul>
+            <li><a compiled resolve="base" href="gen/coverage/lcov-report/index.html" target="_blank" rel="noopener">Code Coverage Report</a></li>
+            <li><a compiled resolve="base" href="gen/typedoc/index.html" target="_blank" rel="noopener">TypeDoc Index (JSDocs)</a></li>
+        </ul>
+    </page-section>
 </m-fragment>
