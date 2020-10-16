@@ -53,6 +53,13 @@ npx mooltipage --formatter=pretty index.html`
                 language: 'shell',
                 code: `npx mooltipage index.html about.html sales.html`
             },
+        },
+        watch: {
+            cli: {
+                lines: 1,
+                language: 'shell',
+                code: `npx mooltipage index.html --watch`
+            }
         }
     }
 };
