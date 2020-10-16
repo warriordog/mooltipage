@@ -71,21 +71,12 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_fs_fsutils_.packagejsonfile.html" class="tsd-kind-icon">Package<wbr>Json<wbr>File</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_fs_fsutils_.html#expandpagepath" class="tsd-kind-icon">expand<wbr>Page<wbr>Path</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_fsutils_.html#expandpagepaths" class="tsd-kind-icon">expand<wbr>Page<wbr>Paths</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_fsutils_.html#getdirectorycontents" class="tsd-kind-icon">get<wbr>Directory<wbr>Contents</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_fsutils_.html#pathisdirectory" class="tsd-kind-icon">path<wbr>IsDirectory</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_fsutils_.html#pathisfile" class="tsd-kind-icon">path<wbr>IsFile</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_fsutils_.html#readfile" class="tsd-kind-icon">read<wbr>File</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_fsutils_.html#readpackagejson" class="tsd-kind-icon">read<wbr>Package<wbr>Json</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_fsutils_.html#writefile" class="tsd-kind-icon">write<wbr>File</a></li>
 							</ul>
 						</section>
@@ -94,76 +85,6 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-					<a name="expandpagepath" class="tsd-anchor"></a>
-					<h3>expand<wbr>Page<wbr>Path</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">expand<wbr>Page<wbr>Path<span class="tsd-signature-symbol">(</span>pagePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, basePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, outPaths<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/fsUtils.ts#L126">fs/fsUtils.ts:126</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>pagePath: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>basePath: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>outPaths: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="expandpagepaths" class="tsd-anchor"></a>
-					<h3>expand<wbr>Page<wbr>Paths</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">expand<wbr>Page<wbr>Paths<span class="tsd-signature-symbol">(</span>paths<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, basePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/fsUtils.ts#L116">fs/fsUtils.ts:116</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Scans a list of paths to extract all HTML files.
-										Paths can be any mix of files or directories.
-										Directories will be recursively searched.
-									Returned paths are all relative to basePath.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>paths: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>List of paths to search</p>
-									</div>
-								</li>
-								<li>
-									<h5>basePath: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Base path to compute relative paths</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
-							<p>Array of paths to all HTML files found in paths and subdirectories</p>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
 					<a name="getdirectorycontents" class="tsd-anchor"></a>
 					<h3>get<wbr>Directory<wbr>Contents</h3>
@@ -174,7 +95,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/fsUtils.ts#L47">fs/fsUtils.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/fs/fsUtils.ts#L30">fs/fsUtils.ts:30</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -212,7 +133,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/fsUtils.ts#L35">fs/fsUtils.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/fs/fsUtils.ts#L18">fs/fsUtils.ts:18</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -244,7 +165,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/fsUtils.ts#L26">fs/fsUtils.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/fs/fsUtils.ts#L9">fs/fsUtils.ts:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -276,7 +197,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/fsUtils.ts#L63">fs/fsUtils.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/fs/fsUtils.ts#L46">fs/fsUtils.ts:46</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -305,44 +226,6 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="readpackagejson" class="tsd-anchor"></a>
-					<h3>read<wbr>Package<wbr>Json</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">read<wbr>Package<wbr>Json<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_fs_fsutils_.packagejsonfile.html" class="tsd-signature-type">PackageJsonFile</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/fsUtils.ts#L79">fs/fsUtils.ts:79</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Reads the package.json file at path and returns javascript object.
-									If path is not given, first package.json found in one of parent directories is used.</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>throws</dt>
-									<dd><p>if path does not point to a file</p>
-									</dd>
-								</dl>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> path: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Optional path to package.json file</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_fs_fsutils_.packagejsonfile.html" class="tsd-signature-type">PackageJsonFile</a></h4>
-							<p><a href="../interfaces/_fs_fsutils_.packagejsonfile.html">PackageJsonFile</a> object</p>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
 					<a name="writefile" class="tsd-anchor"></a>
 					<h3>write<wbr>File</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
@@ -352,7 +235,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/fsUtils.ts#L97">fs/fsUtils.ts:97</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/fs/fsUtils.ts#L62">fs/fsUtils.ts:62</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -401,15 +284,6 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_fs_fsutils_.packagejsonfile.html" class="tsd-kind-icon">Package<wbr>Json<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="_fs_fsutils_.html#expandpagepath" class="tsd-kind-icon">expand<wbr>Page<wbr>Path</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_fs_fsutils_.html#expandpagepaths" class="tsd-kind-icon">expand<wbr>Page<wbr>Paths</a>
-					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_fs_fsutils_.html#getdirectorycontents" class="tsd-kind-icon">get<wbr>Directory<wbr>Contents</a>
 					</li>
@@ -421,9 +295,6 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_fs_fsutils_.html#readfile" class="tsd-kind-icon">read<wbr>File</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_fs_fsutils_.html#readpackagejson" class="tsd-kind-icon">read<wbr>Package<wbr>Json</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_fs_fsutils_.html#writefile" class="tsd-kind-icon">write<wbr>File</a>

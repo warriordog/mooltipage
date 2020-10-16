@@ -108,9 +108,10 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_pipeline_standardpipeline_.standardpipeline.html#cache" class="tsd-kind-icon">cache</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_standardpipeline_.standardpipeline.html#dependencytracker" class="tsd-kind-icon">dependency<wbr>Tracker</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_standardpipeline_.standardpipeline.html#htmlcompiler" class="tsd-kind-icon">html<wbr>Compiler</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_standardpipeline_.standardpipeline.html#htmlformatter" class="tsd-kind-icon">html<wbr>Formatter</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_standardpipeline_.standardpipeline.html#pipelineinterface" class="tsd-kind-icon">pipeline<wbr>Interface</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_standardpipeline_.standardpipeline.html#pipelineio" class="tsd-kind-icon">pipelineIO</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_pipeline_standardpipeline_.standardpipeline.html#resourceparser" class="tsd-kind-icon">resource<wbr>Parser</a></li>
 							</ul>
 						</section>
@@ -141,13 +142,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Standard<wbr>Pipeline<span class="tsd-signature-symbol">(</span>pipelineInterface<span class="tsd-signature-symbol">: </span><a href="../interfaces/_api_pipeline_.pipelineinterface.html" class="tsd-signature-type">PipelineInterface</a>, htmlFormatter<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_api_pipeline_.htmlformatter.html" class="tsd-signature-type">HtmlFormatter</a>, resourceParser<span class="tsd-signature-symbol">?: </span><a href="_pipeline_module_resourceparser_.resourceparser.html" class="tsd-signature-type">ResourceParser</a>, htmlCompiler<span class="tsd-signature-symbol">?: </span><a href="_pipeline_module_htmlcompiler_.htmlcompiler.html" class="tsd-signature-type">HtmlCompiler</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_pipeline_standardpipeline_.standardpipeline.html" class="tsd-signature-type">StandardPipeline</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Standard<wbr>Pipeline<span class="tsd-signature-symbol">(</span>pipelineIO<span class="tsd-signature-symbol">: </span><a href="_pipeline_standardpipeline_.pipelineioimpl.html" class="tsd-signature-type">PipelineIOImpl</a>, htmlFormatter<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_api_pipeline_.htmlformatter.html" class="tsd-signature-type">HtmlFormatter</a>, resourceParser<span class="tsd-signature-symbol">?: </span><a href="_pipeline_module_resourceparser_.resourceparser.html" class="tsd-signature-type">ResourceParser</a>, htmlCompiler<span class="tsd-signature-symbol">?: </span><a href="_pipeline_module_htmlcompiler_.htmlcompiler.html" class="tsd-signature-type">HtmlCompiler</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_pipeline_standardpipeline_.standardpipeline.html" class="tsd-signature-type">StandardPipeline</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L43">pipeline/standardPipeline.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L67">pipeline/standardPipeline.ts:67</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -158,36 +159,16 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>pipelineInterface: <a href="../interfaces/_api_pipeline_.pipelineinterface.html" class="tsd-signature-type">PipelineInterface</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Pipeline interface instance</p>
-										</div>
-									</div>
+									<h5>pipelineIO: <a href="_pipeline_standardpipeline_.pipelineioimpl.html" class="tsd-signature-type">PipelineIOImpl</a></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> htmlFormatter: <a href="../interfaces/_api_pipeline_.htmlformatter.html" class="tsd-signature-type">HtmlFormatter</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Optional HTML formatter to use</p>
-										</div>
-									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> resourceParser: <a href="_pipeline_module_resourceparser_.resourceparser.html" class="tsd-signature-type">ResourceParser</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Optional override for standard ResourceParser</p>
-										</div>
-									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> htmlCompiler: <a href="_pipeline_module_htmlcompiler_.htmlcompiler.html" class="tsd-signature-type">HtmlCompiler</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>Optional override for standard HtmlCompiler</p>
-										</div>
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_pipeline_standardpipeline_.standardpipeline.html" class="tsd-signature-type">StandardPipeline</a></h4>
@@ -203,7 +184,7 @@
 					<div class="tsd-signature tsd-kind-icon">cache<span class="tsd-signature-symbol">:</span> <a href="_pipeline_pipelinecache_.pipelinecache.html" class="tsd-signature-type">PipelineCache</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L23">pipeline/standardPipeline.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L45">pipeline/standardPipeline.ts:45</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -213,12 +194,23 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="dependencytracker" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> dependency<wbr>Tracker</h3>
+					<div class="tsd-signature tsd-kind-icon">dependency<wbr>Tracker<span class="tsd-signature-symbol">:</span> <a href="_pipeline_standardpipeline_.pipelinedependencytracker.html" class="tsd-signature-type">PipelineDependencyTracker</a></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_api_pipeline_.pipeline.html">Pipeline</a>.<a href="../interfaces/_api_pipeline_.pipeline.html#dependencytracker">dependencyTracker</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L67">pipeline/standardPipeline.ts:67</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="htmlcompiler" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> html<wbr>Compiler</h3>
 					<div class="tsd-signature tsd-kind-icon">html<wbr>Compiler<span class="tsd-signature-symbol">:</span> <a href="_pipeline_module_htmlcompiler_.htmlcompiler.html" class="tsd-signature-type">HtmlCompiler</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L43">pipeline/standardPipeline.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L65">pipeline/standardPipeline.ts:65</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -233,7 +225,7 @@
 					<div class="tsd-signature tsd-kind-icon">html<wbr>Formatter<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_api_pipeline_.htmlformatter.html" class="tsd-signature-type">HtmlFormatter</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L33">pipeline/standardPipeline.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L55">pipeline/standardPipeline.ts:55</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -243,12 +235,13 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="pipelineinterface" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> pipeline<wbr>Interface</h3>
-					<div class="tsd-signature tsd-kind-icon">pipeline<wbr>Interface<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_api_pipeline_.pipelineinterface.html" class="tsd-signature-type">PipelineInterface</a></div>
+					<a name="pipelineio" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> pipelineIO</h3>
+					<div class="tsd-signature tsd-kind-icon">pipelineIO<span class="tsd-signature-symbol">:</span> <a href="_pipeline_standardpipeline_.pipelineioimpl.html" class="tsd-signature-type">PipelineIOImpl</a></div>
 					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_api_pipeline_.pipeline.html">Pipeline</a>.<a href="../interfaces/_api_pipeline_.pipeline.html#pipelineio">pipelineIO</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L28">pipeline/standardPipeline.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L50">pipeline/standardPipeline.ts:50</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -263,7 +256,7 @@
 					<div class="tsd-signature tsd-kind-icon">resource<wbr>Parser<span class="tsd-signature-symbol">:</span> <a href="_pipeline_module_resourceparser_.resourceparser.html" class="tsd-signature-type">ResourceParser</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L38">pipeline/standardPipeline.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L60">pipeline/standardPipeline.ts:60</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -285,7 +278,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L184">pipeline/standardPipeline.ts:184</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L229">pipeline/standardPipeline.ts:229</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -317,7 +310,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L143">pipeline/standardPipeline.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L188">pipeline/standardPipeline.ts:188</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -358,7 +351,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_api_pipeline_.pipeline.html">Pipeline</a>.<a href="../interfaces/_api_pipeline_.pipeline.html#compilefragment">compileFragment</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L93">pipeline/standardPipeline.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L131">pipeline/standardPipeline.ts:131</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -384,7 +377,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L107">pipeline/standardPipeline.ts:107</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L149">pipeline/standardPipeline.ts:149</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -411,7 +404,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_api_pipeline_.pipeline.html">Pipeline</a>.<a href="../interfaces/_api_pipeline_.pipeline.html#compilepage">compilePage</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L65">pipeline/standardPipeline.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L90">pipeline/standardPipeline.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -434,7 +427,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L168">pipeline/standardPipeline.ts:168</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L213">pipeline/standardPipeline.ts:213</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -468,13 +461,13 @@
 					<a name="createlinkableresource" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> create<wbr>Linkable<wbr>Resource</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Linkable<wbr>Resource<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a>, contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, sourceResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, rootResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Linkable<wbr>Resource<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a>, contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L188">pipeline/standardPipeline.ts:188</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L233">pipeline/standardPipeline.ts:233</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -484,12 +477,6 @@
 								</li>
 								<li>
 									<h5>contents: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>sourceResPath: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>rootResPath: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -506,7 +493,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L275">pipeline/standardPipeline.ts:275</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L323">pipeline/standardPipeline.ts:323</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -523,19 +510,22 @@
 					<a name="getorparsefragment" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>OrParse<wbr>Fragment</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>OrParse<wbr>Fragment<span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_api_pipeline_.fragment.html" class="tsd-signature-type">Fragment</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>OrParse<wbr>Fragment<span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, rootResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_api_pipeline_.fragment.html" class="tsd-signature-type">Fragment</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L249">pipeline/standardPipeline.ts:249</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L295">pipeline/standardPipeline.ts:295</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>resPath: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>rootResPath: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_api_pipeline_.fragment.html" class="tsd-signature-type">Fragment</a></h4>
@@ -552,7 +542,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L292">pipeline/standardPipeline.ts:292</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L340">pipeline/standardPipeline.ts:340</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -569,18 +559,18 @@
 					<a name="getrawtext" class="tsd-anchor"></a>
 					<h3>get<wbr>Raw<wbr>Text</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Raw<wbr>Text<span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mimeType<span class="tsd-signature-symbol">?: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Raw<wbr>Text<span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mimeType<span class="tsd-signature-symbol">: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a>, rootResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L240">pipeline/standardPipeline.ts:240</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L277">pipeline/standardPipeline.ts:277</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Gets a raw (uncompiled) text resource</p>
+									<p>Gets a raw (uncompiled) text-based resource</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -592,9 +582,15 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> mimeType: <a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a><span class="tsd-signature-symbol"> = MimeType.TEXT</span></h5>
+									<h5>mimeType: <a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Type of resource. Defaults to TEXT</p>
+										<p>Type of resource.</p>
+									</div>
+								</li>
+								<li>
+									<h5>rootResPath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Path to the root fragment</p>
 									</div>
 								</li>
 							</ul>
@@ -606,13 +602,13 @@
 					<a name="linkresource" class="tsd-anchor"></a>
 					<h3>link<wbr>Resource</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">link<wbr>Resource<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a>, contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, sourceResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, rootResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">link<wbr>Resource<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a>, contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, rootResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L226">pipeline/standardPipeline.ts:226</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L262">pipeline/standardPipeline.ts:262</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -634,12 +630,6 @@
 									<h5>contents: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Contents as a UTF-8 string</p>
-									</div>
-								</li>
-								<li>
-									<h5>sourceResPath: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Path to the explicit resource that has produced this created resource</p>
 									</div>
 								</li>
 								<li>
@@ -665,7 +655,7 @@
 							<aside class="tsd-sources">
 								<p>Implementation of <a href="../interfaces/_api_pipeline_.pipeline.html">Pipeline</a>.<a href="../interfaces/_api_pipeline_.pipeline.html#reset">reset</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/pipeline/standardPipeline.ts#L244">pipeline/standardPipeline.ts:244</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/pipeline/standardPipeline.ts#L287">pipeline/standardPipeline.ts:287</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -687,6 +677,12 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_pipeline_standardpipeline_.pipelinedependencytracker.html" class="tsd-kind-icon">Pipeline<wbr>Dependency<wbr>Tracker</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_pipeline_standardpipeline_.pipelineioimpl.html" class="tsd-kind-icon">PipelineIOImpl</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
@@ -699,13 +695,16 @@
 								<a href="_pipeline_standardpipeline_.standardpipeline.html#cache" class="tsd-kind-icon">cache</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_pipeline_standardpipeline_.standardpipeline.html#dependencytracker" class="tsd-kind-icon">dependency<wbr>Tracker</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_pipeline_standardpipeline_.standardpipeline.html#htmlcompiler" class="tsd-kind-icon">html<wbr>Compiler</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_pipeline_standardpipeline_.standardpipeline.html#htmlformatter" class="tsd-kind-icon">html<wbr>Formatter</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_pipeline_standardpipeline_.standardpipeline.html#pipelineinterface" class="tsd-kind-icon">pipeline<wbr>Interface</a>
+								<a href="_pipeline_standardpipeline_.standardpipeline.html#pipelineio" class="tsd-kind-icon">pipelineIO</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_pipeline_standardpipeline_.standardpipeline.html#resourceparser" class="tsd-kind-icon">resource<wbr>Parser</a>

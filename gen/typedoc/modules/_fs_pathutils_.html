@@ -70,60 +70,114 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_fs_pathutils_.html#pathsepregex" class="tsd-kind-icon">path<wbr>Sep<wbr>Regex</a></li>
+							</ul>
+						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_pathutils_.html#computepathbetween" class="tsd-kind-icon">compute<wbr>Path<wbr>Between</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_pathutils_.html#computerelativerespath" class="tsd-kind-icon">compute<wbr>Relative<wbr>Res<wbr>Path</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_pathutils_.html#fixpathseparators" class="tsd-kind-icon">fix<wbr>Path<wbr>Separators</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_fs_pathutils_.html#resolverespath" class="tsd-kind-icon">resolve<wbr>Res<wbr>Path</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+					<a name="pathsepregex" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> path<wbr>Sep<wbr>Regex</h3>
+					<div class="tsd-signature tsd-kind-icon">path<wbr>Sep<wbr>Regex<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> = /[/\\]/g</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/fs/pathUtils.ts#L7">fs/pathUtils.ts:7</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Regex that matches on any path separator</p>
+						</div>
+					</div>
+				</section>
+			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="computepathbetween" class="tsd-anchor"></a>
-					<h3>compute<wbr>Path<wbr>Between</h3>
+					<a name="computerelativerespath" class="tsd-anchor"></a>
+					<h3>compute<wbr>Relative<wbr>Res<wbr>Path</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">compute<wbr>Path<wbr>Between<span class="tsd-signature-symbol">(</span>basePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, targetPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, sourcePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">compute<wbr>Relative<wbr>Res<wbr>Path<span class="tsd-signature-symbol">(</span>sourceResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, targetResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/pathUtils.ts#L59">fs/pathUtils.ts:59</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/fs/pathUtils.ts#L76">fs/pathUtils.ts:76</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Recomputes the relative path to targetPath from sourcePath, considering both as relative to basePath.
-									For example, the path from root/pages/page.html to root/css/style.css, when root/ is the basePath, is ../css/style.css.</p>
+									<p>Computes the relative resource path from sourceResPath to targetResPath.
+										Both parameters will be normalized and path separators will be converted the local platform.
+										If sourceResPath points to a directory, then it MUST end with a path separator.
+										Otherwise, it will be treated as a path to a file.
+									When sourceResPath points to a file, then {@link Path.dirname} is used to extract the folder name.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>basePath: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Common base directory between sourcePath and targetPath</p>
-									</div>
-								</li>
-								<li>
-									<h5>targetPath: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Path to the target resource</p>
-									</div>
-								</li>
-								<li>
-									<h5>sourcePath: <span class="tsd-signature-type">string</span></h5>
+									<h5>sourceResPath: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>Path to the source resource</p>
 									</div>
 								</li>
+								<li>
+									<h5>targetResPath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Path to the target resource</p>
+									</div>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-							<p>Relative path from sourcePath to targetPath through basePath</p>
+							<p>Relative path from sourcePath to targetPath</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="fixpathseparators" class="tsd-anchor"></a>
+					<h3>fix<wbr>Path<wbr>Separators</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">fix<wbr>Path<wbr>Separators<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/fs/pathUtils.ts#L14">fs/pathUtils.ts:14</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Converts path separators from either forward slash or backslash to whatever format is preferred by the local filesystem.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>path: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Path to fix</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>path with all separators aligned to the local filesystem</p>
 						</li>
 					</ul>
 				</section>
@@ -131,39 +185,42 @@
 					<a name="resolverespath" class="tsd-anchor"></a>
 					<h3>resolve<wbr>Res<wbr>Path</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Res<wbr>Path<span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, basePath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Res<wbr>Path<span class="tsd-signature-symbol">(</span>targetPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, sourcePath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/fs/pathUtils.ts#L12">fs/pathUtils.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/fs/pathUtils.ts#L31">fs/pathUtils.ts:31</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Computes the canonical resource path from a raw path.
-										If a basePath is provided, then it will be used to prefix the result.
-									Paths starting with &quot;@/&quot; or &quot;@&quot; will be treated as relative to the source input directory (inPath).</p>
+									<p>Resolves the pipeline-local path to targetPath from sourcePath, or the project root if sourcePath is not specified.
+										If targetPath begins with &quot;@/&quot;, then the path will be resolved from the project root even if sourcePath is specified.
+										If targetPath is absolute, then it will not be modified and will be returned as-is.
+										If sourcePath is a directory path, then it will be used as-is.
+									If sourcePath is a file path, then the directory will be extracted and used.</p>
 								</div>
+								<p>This function will normalize &quot;/&quot; and &quot;&quot; to the system path delimiter.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>resPath: <span class="tsd-signature-type">string</span></h5>
+									<h5>targetPath: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Raw path</p>
+										<p>Resource path to resolve</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> basePath: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> sourcePath: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Optional base path</p>
+										<p>Optional relative source</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-							<p>Canonical form of resPath</p>
+							<p>Resolved path to resPath</p>
 						</li>
 					</ul>
 				</section>
@@ -182,8 +239,14 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_fs_pathutils_.html#pathsepregex" class="tsd-kind-icon">path<wbr>Sep<wbr>Regex</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_fs_pathutils_.html#computepathbetween" class="tsd-kind-icon">compute<wbr>Path<wbr>Between</a>
+						<a href="_fs_pathutils_.html#computerelativerespath" class="tsd-kind-icon">compute<wbr>Relative<wbr>Res<wbr>Path</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_fs_pathutils_.html#fixpathseparators" class="tsd-kind-icon">fix<wbr>Path<wbr>Separators</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_fs_pathutils_.html#resolverespath" class="tsd-kind-icon">resolve<wbr>Res<wbr>Path</a>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PipelineInterface | mooltipage - v0.0.1</title>
+	<title>PipelineIO | mooltipage - v0.0.1</title>
 	<meta name="description" content="Documentation for mooltipage - v0.0.1">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_api_pipeline_.html">&quot;api/pipeline&quot;</a>
 				</li>
 				<li>
-					<a href="_api_pipeline_.pipelineinterface.html">PipelineInterface</a>
+					<a href="_api_pipeline_.pipelineio.html">PipelineIO</a>
 				</li>
 			</ul>
-			<h1>Interface PipelineInterface</h1>
+			<h1>Interface PipelineIO</h1>
 		</div>
 	</div>
 </header>
@@ -80,14 +80,14 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">PipelineInterface</span>
+						<span class="target">PipelineIO</span>
 					</li>
 				</ul>
 			</section>
 			<section class="tsd-panel">
 				<h3>Implemented by</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../classes/_api_mooltipage_.nodepipelineinterface.html" class="tsd-signature-type">NodePipelineInterface</a></li>
+					<li><a href="../classes/_pipeline_standardpipeline_.pipelineioimpl.html" class="tsd-signature-type">PipelineIOImpl</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -97,17 +97,21 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineinterface.html#destinationpath" class="tsd-kind-icon">destination<wbr>Path</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineinterface.html#sourcepath" class="tsd-kind-icon">source<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#destinationpath" class="tsd-kind-icon">destination<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#sourcepath" class="tsd-kind-icon">source<wbr>Path</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineinterface.html#createresource" class="tsd-kind-icon">create<wbr>Resource</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineinterface.html#getresource" class="tsd-kind-icon">get<wbr>Resource</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineinterface.html#relinkcreatedresource" class="tsd-kind-icon">re<wbr>Link<wbr>Created<wbr>Resource</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineinterface.html#writeresource" class="tsd-kind-icon">write<wbr>Resource</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#createrespath" class="tsd-kind-icon">create<wbr>Res<wbr>Path</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#createresource" class="tsd-kind-icon">create<wbr>Resource</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#getdestinationrespathforabsolutepath" class="tsd-kind-icon">get<wbr>Destination<wbr>Res<wbr>Path<wbr>For<wbr>Absolute<wbr>Path</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#getresource" class="tsd-kind-icon">get<wbr>Resource</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#getsourcerespathforabsolutepath" class="tsd-kind-icon">get<wbr>Source<wbr>Res<wbr>Path<wbr>For<wbr>Absolute<wbr>Path</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#resolvedestinationresource" class="tsd-kind-icon">resolve<wbr>Destination<wbr>Resource</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#resolvesourceresource" class="tsd-kind-icon">resolve<wbr>Source<wbr>Resource</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_api_pipeline_.pipelineio.html#writeresource" class="tsd-kind-icon">write<wbr>Resource</a></li>
 							</ul>
 						</section>
 					</div>
@@ -117,33 +121,31 @@
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="destinationpath" class="tsd-anchor"></a>
-					<h3>destination<wbr>Path</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> destination<wbr>Path</h3>
 					<div class="tsd-signature tsd-kind-icon">destination<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/api/pipeline.ts#L160">api/pipeline.ts:160</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L220">api/pipeline.ts:220</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Path to the root of the compilation output.
-							This should be used when computing paths relative to the destination.</p>
+							<p>Path to destination directory</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="sourcepath" class="tsd-anchor"></a>
-					<h3>source<wbr>Path</h3>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> source<wbr>Path</h3>
 					<div class="tsd-signature tsd-kind-icon">source<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/api/pipeline.ts#L154">api/pipeline.ts:154</a></li>
+							<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L215">api/pipeline.ts:215</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Path to the root of the compilation input.
-							This should be used when computing paths relative to the source.</p>
+							<p>Path to source directory</p>
 						</div>
 					</div>
 				</section>
@@ -151,22 +153,63 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="createresource" class="tsd-anchor"></a>
-					<h3>create<wbr>Resource</h3>
+					<a name="createrespath" class="tsd-anchor"></a>
+					<h3>create<wbr>Res<wbr>Path</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Resource<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a>, contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, sourceResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Res<wbr>Path<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a>, contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/api/pipeline.ts#L131">api/pipeline.ts:131</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L278">api/pipeline.ts:278</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Generates a unique resource path in <a href="_api_pipeline_.pipelineio.html#destinationpath">destinationPath</a> that can be used for a generated resource.
+									This method does not create the file, only reserves the path.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>type: <a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>MIME type of the resource to create</p>
+									</div>
+								</li>
+								<li>
+									<h5>contents: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Contents of the file</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>returns a unique resource path that is acceptable for the specified MIME type</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="createresource" class="tsd-anchor"></a>
+					<h3>create<wbr>Resource</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Resource<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a>, contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L255">api/pipeline.ts:255</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Creates a new output resource and generates a resource path to reference it
-									This should be used for all incidentally created resources, such as external stylesheets.</p>
+										This should be used for all generated resources, such as external stylesheets.
+										Path will be computed by using resPath relative to <a href="_api_pipeline_.pipelineio.html#destinationpath">destinationPath</a>.
+									See <a href="_api_pipeline_.pipelineio.html#resolvedestinationresource">resolveDestinationResource</a> for details.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -183,15 +226,41 @@
 										<p>File contents</p>
 									</div>
 								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>path to resource</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="getdestinationrespathforabsolutepath" class="tsd-anchor"></a>
+					<h3>get<wbr>Destination<wbr>Res<wbr>Path<wbr>For<wbr>Absolute<wbr>Path</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Destination<wbr>Res<wbr>Path<wbr>For<wbr>Absolute<wbr>Path<span class="tsd-signature-symbol">(</span>rawResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L292">api/pipeline.ts:292</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Computes the relative path from <a href="_api_pipeline_.pipelineio.html#destinationpath">destinationPath</a> to rawResPath.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
 								<li>
-									<h5>sourceResPath: <span class="tsd-signature-type">string</span></h5>
+									<h5>rawResPath: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Resource path of the resource that spawned this resource</p>
+										<p>Target path</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-							<p>path to resource</p>
+							<p>returns the relative path to <a href="_api_pipeline_.pipelineio.html#destinationpath">destinationPath</a>.</p>
 						</li>
 					</ul>
 				</section>
@@ -205,12 +274,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/api/pipeline.ts#L120">api/pipeline.ts:120</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L231">api/pipeline.ts:231</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Reads a resource of a specified type from the pipeline input.</p>
+									<p>Reads a resource of a specified type from the pipeline input.
+										Path will be computed by using resPath relative to <a href="_api_pipeline_.pipelineio.html#sourcepath">sourcePath</a>.
+									See <a href="_api_pipeline_.pipelineio.html#resolvesourceresource">resolveSourceResource</a> for details.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -234,62 +305,98 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="relinkcreatedresource" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> re<wbr>Link<wbr>Created<wbr>Resource</h3>
+					<a name="getsourcerespathforabsolutepath" class="tsd-anchor"></a>
+					<h3>get<wbr>Source<wbr>Res<wbr>Path<wbr>For<wbr>Absolute<wbr>Path</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">re<wbr>Link<wbr>Created<wbr>Resource<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a>, contents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, sourceResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, rootResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, originalResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Source<wbr>Res<wbr>Path<wbr>For<wbr>Absolute<wbr>Path<span class="tsd-signature-symbol">(</span>rawResPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/api/pipeline.ts#L148">api/pipeline.ts:148</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L285">api/pipeline.ts:285</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Called when the pipeline is about to reuse a path that was created by a former call to createResource().
-										The pipeline does not check type or sourceResPath, so if these values are significant to the
-										generated resPath then this method can be overridden to copy, modify, or even create a new
-									resource.</p>
+									<p>Computes the relative path from <a href="_api_pipeline_.pipelineio.html#sourcepath">sourcePath</a> to rawResPath.</p>
 								</div>
-								<p>This method is optional and can be left undefined if not needed.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>type: <a href="../enums/_api_pipeline_.mimetype.html" class="tsd-signature-type">MimeType</a></h5>
+									<h5>rawResPath: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>MIME type of the new resource</p>
-									</div>
-								</li>
-								<li>
-									<h5>contents: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>File contents</p>
-									</div>
-								</li>
-								<li>
-									<h5>sourceResPath: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Resource path of the resource that spawned this resource</p>
-									</div>
-								</li>
-								<li>
-									<h5>rootResPath: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Path to the &quot;root&quot; fragment where this resources will be referenced</p>
-									</div>
-								</li>
-								<li>
-									<h5>originalResPath: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>The resource path that was produced by the call to createResource()</p>
+										<p>Target path</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-							<p>new path to resource, or original if no changes are needed</p>
+							<p>returns the relative path to <a href="_api_pipeline_.pipelineio.html#sourcepath">sourcePath</a>.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="resolvedestinationresource" class="tsd-anchor"></a>
+					<h3>resolve<wbr>Destination<wbr>Resource</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Destination<wbr>Resource<span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L269">api/pipeline.ts:269</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Gets the absolute path to a resource in <a href="_api_pipeline_.pipelineio.html#destinationpath">destinationPath</a>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>resPath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Raw path to resource</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>Real path to resource</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="resolvesourceresource" class="tsd-anchor"></a>
+					<h3>resolve<wbr>Source<wbr>Resource</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Source<wbr>Resource<span class="tsd-signature-symbol">(</span>resPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L262">api/pipeline.ts:262</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Gets the absolute path to a resource in <a href="_api_pipeline_.pipelineio.html#sourcepath">sourcePath</a>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>resPath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Raw path to resource</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<p>Real path to resource</p>
 						</li>
 					</ul>
 				</section>
@@ -303,13 +410,15 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/9b17d29/src/lib/api/pipeline.ts#L111">api/pipeline.ts:111</a></li>
+									<li>Defined in <a href="https://github.com/warriordog/mooltipage/blob/5b9e797/src/lib/api/pipeline.ts#L243">api/pipeline.ts:243</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Writes a resource of a specified type to the pipeline output.
-									This resource must exist in the pipeline source, for incidentally created resources use createResource()</p>
+										This resource must map directly to a source resource, for generated output use createResource().
+										Path will be computed by using resPath relative to <a href="_api_pipeline_.pipelineio.html#destinationpath">destinationPath</a>.
+									See <a href="_api_pipeline_.pipelineio.html#resolvedestinationresource">resolveDestinationResource</a> for details.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -356,6 +465,9 @@
 						<a href="../enums/_api_pipeline_.mimetype.html" class="tsd-kind-icon">Mime<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="_api_pipeline_.dependencytracker.html" class="tsd-kind-icon">Dependency<wbr>Tracker</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="_api_pipeline_.fragment.html" class="tsd-kind-icon">Fragment</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
@@ -373,25 +485,37 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_api_pipeline_.pipelineinterface.html" class="tsd-kind-icon">Pipeline<wbr>Interface</a>
+						<a href="_api_pipeline_.pipelineio.html" class="tsd-kind-icon">PipelineIO</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_api_pipeline_.pipelineinterface.html#destinationpath" class="tsd-kind-icon">destination<wbr>Path</a>
+								<a href="_api_pipeline_.pipelineio.html#destinationpath" class="tsd-kind-icon">destination<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_api_pipeline_.pipelineinterface.html#sourcepath" class="tsd-kind-icon">source<wbr>Path</a>
+								<a href="_api_pipeline_.pipelineio.html#sourcepath" class="tsd-kind-icon">source<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_api_pipeline_.pipelineinterface.html#createresource" class="tsd-kind-icon">create<wbr>Resource</a>
+								<a href="_api_pipeline_.pipelineio.html#createrespath" class="tsd-kind-icon">create<wbr>Res<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_api_pipeline_.pipelineinterface.html#getresource" class="tsd-kind-icon">get<wbr>Resource</a>
+								<a href="_api_pipeline_.pipelineio.html#createresource" class="tsd-kind-icon">create<wbr>Resource</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_api_pipeline_.pipelineinterface.html#relinkcreatedresource" class="tsd-kind-icon">re<wbr>Link<wbr>Created<wbr>Resource</a>
+								<a href="_api_pipeline_.pipelineio.html#getdestinationrespathforabsolutepath" class="tsd-kind-icon">get<wbr>Destination<wbr>Res<wbr>Path<wbr>For<wbr>Absolute<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_api_pipeline_.pipelineinterface.html#writeresource" class="tsd-kind-icon">write<wbr>Resource</a>
+								<a href="_api_pipeline_.pipelineio.html#getresource" class="tsd-kind-icon">get<wbr>Resource</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_api_pipeline_.pipelineio.html#getsourcerespathforabsolutepath" class="tsd-kind-icon">get<wbr>Source<wbr>Res<wbr>Path<wbr>For<wbr>Absolute<wbr>Path</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_api_pipeline_.pipelineio.html#resolvedestinationresource" class="tsd-kind-icon">resolve<wbr>Destination<wbr>Resource</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_api_pipeline_.pipelineio.html#resolvesourceresource" class="tsd-kind-icon">resolve<wbr>Source<wbr>Resource</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_api_pipeline_.pipelineio.html#writeresource" class="tsd-kind-icon">write<wbr>Resource</a>
 							</li>
 						</ul>
 					</li>
