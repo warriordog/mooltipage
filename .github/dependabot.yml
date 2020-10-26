@@ -9,11 +9,11 @@ updates:
     directory: "/"
     # Check the npm registry for updates once per week
     schedule:
-      interval: "daily"
+      interval: "weekly"
       
   # Enable version updates for github actions
   # Based on example from https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/keeping-your-actions-up-to-date-with-github-dependabot
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
