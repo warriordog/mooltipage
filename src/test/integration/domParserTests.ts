@@ -3,6 +3,7 @@ import { DomParser } from '../../lib/dom/domParser';
 import {
     CDATANode,
     CommentNode,
+    MImportNode,
     Node,
     TagNode,
     TextNode
@@ -50,4 +51,24 @@ test('DomParser parses CDATA as CommentNode when CDATA disabled', t => {
     t.truthy(dom.firstChild);
     t.true(CommentNode.isCommentNode(dom.firstChild as Node));
     t.is((dom.firstChild as CommentNode).text, '[CDATA[cdata contents]]');
+});
+
+test('DomParser handles MImportNode without "as" parameter', t => {
+    const dom = new DomParser().parseDom(`
+        <m-import id="1" src="frag.html" />
+        <m-import id="2" src="fragWithCamelCase.html" />
+        <m-import id="3" src="path/frag.html" />
+        <m-import id="4" src="long/path/fragWithCamelCase.html" />
+        <m-import id="5" src="fragWith.multiple.extensions.html" />
+    `);
+    const mi1 = dom.findChildNode(node => TagNode.isTagNode(node) && MImportNode.isMImportNode(node) && node.getAttribute('id') === '1') as MImportNode;
+    const mi2 = dom.findChildNode(node => TagNode.isTagNode(node) && MImportNode.isMImportNode(node) && node.getAttribute('id') === '2') as MImportNode;
+    const mi3 = dom.findChildNode(node => TagNode.isTagNode(node) && MImportNode.isMImportNode(node) && node.getAttribute('id') === '3') as MImportNode;
+    const mi4 = dom.findChildNode(node => TagNode.isTagNode(node) && MImportNode.isMImportNode(node) && node.getAttribute('id') === '4') as MImportNode;
+    const mi5 = dom.findChildNode(node => TagNode.isTagNode(node) && MImportNode.isMImportNode(node) && node.getAttribute('id') === '5') as MImportNode;
+    t.is(mi1.as, 'frag');
+    t.is(mi2.as, 'frag-with-camel-case');
+    t.is(mi3.as, 'frag');
+    t.is(mi4.as, 'frag-with-camel-case');
+    t.is(mi5.as, 'frag-with');
 });

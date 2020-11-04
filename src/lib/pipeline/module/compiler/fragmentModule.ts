@@ -1,4 +1,4 @@
-import {HtmlCompilerModule, HtmlCompilerContext, convertAttributeNameToScopeName} from '../htmlCompiler';
+import {HtmlCompilerModule, HtmlCompilerContext} from '../htmlCompiler';
 import {
     MFragmentNode,
     DocumentNode,
@@ -10,6 +10,7 @@ import {
     SlotReferenceNode
 } from '../../..';
 import {resolveResPath} from '../../../fs/pathUtils';
+import {convertSnakeCaseToCamelCase} from '../../../util/caseUtils';
 
 /**
  * Resolve <m-fragment> and replace with compiled HTML 
@@ -102,7 +103,7 @@ export class FragmentModule implements HtmlCompilerModule {
             .map(param => param[0])
 
             // convert parameter / attribute names to scope names
-            .map(parameterName => convertAttributeNameToScopeName(parameterName))
+            .map(parameterName => convertSnakeCaseToCamelCase(parameterName))
 
             // copy all data from MFragmentNode scope to new fragment scope
             .reduce<ScopeData>((fragmentScope, scopeName) => {

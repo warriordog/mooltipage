@@ -1,14 +1,19 @@
-import { ExpressionModule } from './compiler/expressionModule';
-import { VarModule } from './compiler/varModule';
-import { ScriptModule } from './compiler/scriptModule';
-import { SlotModule } from './compiler/slotModule';
-import { DomLogicModule } from './compiler/domLogicModule';
-import { ImportModule } from './compiler/importModule';
-import { FragmentModule } from './compiler/fragmentModule';
-import { Fragment, Node, DocumentNode, NodeWithChildren } from '../..';
-import { EvalContext } from './evalEngine';
-import { PipelineContext } from '../standardPipeline';
-import { StyleModule } from './compiler/styleModule';
+import {ExpressionModule} from './compiler/expressionModule';
+import {VarModule} from './compiler/varModule';
+import {ScriptModule} from './compiler/scriptModule';
+import {SlotModule} from './compiler/slotModule';
+import {DomLogicModule} from './compiler/domLogicModule';
+import {ImportModule} from './compiler/importModule';
+import {FragmentModule} from './compiler/fragmentModule';
+import {
+    DocumentNode,
+    Fragment,
+    Node,
+    NodeWithChildren
+} from '../..';
+import {EvalContext} from './evalEngine';
+import {PipelineContext} from '../standardPipeline';
+import {StyleModule} from './compiler/styleModule';
 import {DeduplicateModule} from './compiler/deduplicateModule';
 import {AnchorModule} from './compiler/anchorModule';
 import {WhitespaceModule} from './compiler/whitespaceModule';
@@ -371,20 +376,3 @@ function getImport(htmlContext: HtmlCompilerContext | undefined, alias: string):
     throw new Error(`Alias ${ key } is not defined. Always call hasImport() before getImport()`);
 }
 
-/**
- * Converts an attribute name in snake-case to a JS-compatible scope name in camelCase.
- *
- * @param attributeName Attribute name to convert
- * @returns Attribute name in camelCase
- * @throws if attribute name is an empty string
- */
-export function convertAttributeNameToScopeName(attributeName: string): string {
-    // Make sure that name is long enough to process
-    if (attributeName.length === 0) {
-        throw new Error('Invalid attribute name: must be at least one character long');
-    }
-
-    // convert all substrings of the form "-n" to "-N".
-    // in other words, remove dashes and capitalize the next letter
-    return attributeName.replace(/-([a-zA-Z0-9])/g, (matchToReplace, letterToCapitalize: string) => letterToCapitalize.toUpperCase());
-}

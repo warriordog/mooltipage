@@ -37,6 +37,7 @@ import {
     MWhitespaceNodeMode
 } from './node';
 import { MimeType } from '..';
+import {convertCamelCaseToSnakeCase} from '../util/caseUtils';
 
 /**
  * Parses HTML into a dom using htmlparser2
@@ -297,8 +298,21 @@ export class DomHandler implements Partial<Handler> {
     private static createMImportNode(attributes: Map<string, string | null>): MImportNode {
         const src = attributes.get('src');
         if (src === undefined || src === null) throw new Error('Parse error: <m-import> is missing required attribute: src');
-        const as = attributes.get('as');
-        if (as === undefined || as === null) throw new Error('Parse error: <m-import> is missing required attribute: as');
+        
+        // default "as" if not specified
+        let as = attributes.get('as');
+        if (as === undefined || as === null) {
+            // extract file name (find the section of text between the last slash or start-of-input and the next period or end of input).
+            const srcFileNameMatch = src.match(/([\\/]|^)([^\\/\r\n.]+)[^\\/\r\n]*$/);
+            if (srcFileNameMatch === null) {
+                throw new Error(`Parse error: attribute 'as' not specified for <m-import>, and it could not be inferred from the value of "src"`);
+            }
+            const srcFileName = srcFileNameMatch[2].trim();
+            
+            // convert to attribute case and use as "as"
+            as = convertCamelCaseToSnakeCase(srcFileName);
+        }
+        
         return new MImportNode(src, as, attributes);
     }
 

@@ -1,21 +1,21 @@
 import test from 'ava';
-import {convertAttributeNameToScopeName} from '../../lib/pipeline/module/htmlCompiler';
+import {convertSnakeCaseToCamelCase} from '../../lib/util/caseUtils';
 
 test('HtmlCompiler.convertAttributeNameToScopeName() preserves all lowercase names', t => {
-    t.is(convertAttributeNameToScopeName('lower'), 'lower');
+    t.is(convertSnakeCaseToCamelCase('lower'), 'lower');
 });
 
 test('HtmlCompiler.convertAttributeNameToScopeName() converts snake case', t => {
-    t.is(convertAttributeNameToScopeName('snake-case'), 'snakeCase');
-    t.is(convertAttributeNameToScopeName('var-name'), 'varName');
+    t.is(convertSnakeCaseToCamelCase('snake-case'), 'snakeCase');
+    t.is(convertSnakeCaseToCamelCase('var-name'), 'varName');
 });
 
 test('HtmlCompiler.convertAttributeNameToScopeName() converts snake case with multiple hyphens', t => {
-    t.is(convertAttributeNameToScopeName('snake-case-name'), 'snakeCaseName');
-    t.is(convertAttributeNameToScopeName('this-is-a-very-long-name'), 'thisIsAVeryLongName');
+    t.is(convertSnakeCaseToCamelCase('snake-case-name'), 'snakeCaseName');
+    t.is(convertSnakeCaseToCamelCase('this-is-a-very-long-name'), 'thisIsAVeryLongName');
 });
 
 test('HtmlCompiler.convertAttributeNameToScopeName() supports hyphen followed by a number', t => {
-    t.is(convertAttributeNameToScopeName('var-1'), 'var1');
-    t.is(convertAttributeNameToScopeName('this-is-a-number-2'), 'thisIsANumber2');
+    t.is(convertSnakeCaseToCamelCase('var-1'), 'var1');
+    t.is(convertSnakeCaseToCamelCase('this-is-a-number-2'), 'thisIsANumber2');
 });

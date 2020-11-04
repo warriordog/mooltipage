@@ -1,4 +1,4 @@
-import {convertAttributeNameToScopeName, HtmlCompilerContext, HtmlCompilerModule} from '../htmlCompiler';
+import {HtmlCompilerContext, HtmlCompilerModule} from '../htmlCompiler';
 import {
     DocumentNode,
     MDataNode,
@@ -11,6 +11,7 @@ import {
     TagNode
 } from '../../..';
 import {resolveResPath} from '../../../fs/pathUtils';
+import {convertSnakeCaseToCamelCase} from '../../../util/caseUtils';
 
 /**
  * Compile module that implements <m-var> and <m-scope> parsing
@@ -129,7 +130,7 @@ export class VarModule implements HtmlCompilerModule {
      */
     public static saveCompiledAttributeToScope(scope: ScopeData, attributeName: string, compiledValue: unknown): void {
         // convert snake-case attribute name to camelCase scope name
-        const scopeName: string = convertAttributeNameToScopeName(attributeName);
+        const scopeName: string = convertSnakeCaseToCamelCase(attributeName);
 
         // save to scope
         scope[scopeName] = compiledValue;
