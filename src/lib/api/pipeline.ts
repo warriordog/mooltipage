@@ -1,9 +1,16 @@
-import {DocumentNode} from '..';
+import {
+    DocumentNode,
+    PipelineCache
+} from '..';
 
 /**
  * Compiles inputs from the project source into plain web resources
  */
 export interface Pipeline {
+    /**
+     * Caches reusable data for the pipeline
+     */
+    readonly cache: PipelineCache;
 
     /**
      * Page <-> resource dependency tracker.
@@ -15,6 +22,11 @@ export interface Pipeline {
      * Frontend / Backend for the pipeline
      */
     readonly pipelineIO: PipelineIO;
+
+    /**
+     * HTML formatter, if provided
+     */
+    readonly htmlFormatter: HtmlFormatter;
 
     /**
      * Compiles a page from start to finish.

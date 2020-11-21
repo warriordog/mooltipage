@@ -42,19 +42,12 @@ import {StandardPipelineCache} from './pipelineCache';
  * Any incidental resources (such as stylesheets) will be fed to the pipeline interface via createResource().
  */
 export class StandardPipeline implements Pipeline {
-    /**
-     * Caches reusable data for the pipeline
-     */
-    private readonly cache: PipelineCache;
+    readonly cache: PipelineCache;
 
-    /**
-     * Frontend / Backend for the pipeline
-     */
     readonly pipelineIO: PipelineIOImpl;
-    
-    /**
-     * HTML formatter, if provided
-     */
+
+    readonly dependencyTracker: PipelineDependencyTracker;
+
     readonly htmlFormatter: HtmlFormatter;
 
     /**
@@ -67,7 +60,6 @@ export class StandardPipeline implements Pipeline {
      */
     readonly htmlCompiler: HtmlCompiler;
 
-    readonly dependencyTracker: PipelineDependencyTracker;
 
     /**
      * Create a new instance of the pipeline
