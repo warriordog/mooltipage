@@ -1,8 +1,16 @@
-import {
-    Node,
-    ScopeData
-} from '../..';
-import {PipelineContext} from '../standardPipeline';
+/**
+ * Invoke an EvalFunc in the specified EvalContext.
+ *
+ * @param evalFunction Function to invoke
+ * @param evalContext Context to execute within
+ * @returns The return value of evalFunction
+ */
+import {EvalContext, EvalFunction} from '../..';
+
+export function invokeEvalFunc<T>(evalFunction: EvalFunction<T>, evalContext: EvalContext): T {
+    // execute the function
+    return evalFunction.call(evalContext.scope, evalContext.scope, evalContext, requireFromRoot);
+}
 
 /**
  * regular expression to detect a JS template string literal
@@ -37,12 +45,12 @@ export function isExpressionString(expression: string): boolean {
 /**
  * Compiles JS code embedded within a string, and then returns a callable function that will return the output of that code.
  * Result object is stateless and can be safely cached and reused.
- * 
+ *
  * @param expression The string to compile.
- * @returns an EvalContent that will return the result of the expression
+ * @returns an EvalFunction that will return the result of the expression
  * @throws if the provided string contains no expressions
  */
-export function parseExpression(expression: string): EvalContent<unknown> {
+export function parseExpression(expression: string): EvalFunction<unknown> {
     // value is template string
     if (templateTextRegex.test(expression)) {
         // parse into function
@@ -64,12 +72,12 @@ export function parseExpression(expression: string): EvalContent<unknown> {
 
 /**
  * Parse an ES6 template literal
- * 
+ *
  * @param templateString Contents of the template string, excluding the backticks
- * @returns EvalContent that will execute the template string and return a standard string
+ * @returns EvalFunction that will execute the template string and return a standard string
  * @throws If the template literal cannot be parsed
  */
-export function parseTemplateString(templateString: string): EvalContent<string> {
+export function parseTemplateString(templateString: string): EvalFunction<string> {
     // generate function body for template
     const functionBody = `return \`${ templateString }\`;`;
 
@@ -79,12 +87,12 @@ export function parseTemplateString(templateString: string): EvalContent<string>
 
 /**
  * Parse a handlebars expression.  Ex. {{ foo() }}
- * 
+ *
  * @param jsString Contents of the handlebars expression, excluding the braces
- * @returns EvalContent that will execute the expression and return the resulting object.
+ * @returns EvalFunction that will execute the expression and return the resulting object.
  * @throws If the script code cannot be parsed
  */
-export function parseHandlebars(jsString: string): EvalContent<unknown> {
+export function parseHandlebars(jsString: string): EvalFunction<unknown> {
     // generate body for function
     const functionBody = `return ${ jsString };`;
 
@@ -96,44 +104,19 @@ export function parseHandlebars(jsString: string): EvalContent<unknown> {
  * Parse arbitrary JS code in a function context.
  * All JS features are available, provided that they are valid for use within a function body.
  * The function can optionally return a value, but return values are not type checked.
- * 
+ *
  * @param functionBody JS code to execute
- * @returns EvalContent that will execute the expression and return the result of the function, if any.
+ * @returns EvalFunction that will execute the expression and return the result of the function, if any.
  * @throws If the JS code cannot be parsed
  */
-export function parseScript<T>(functionBody: string): EvalContent<T> {
+export function parseScript<T>(functionBody: string): EvalFunction<T> {
     try {
         // Parse function body into callable function.
         // This is inherently not type-safe, as the purpose is to run unknown JS code.
         // eslint-disable-next-line @typescript-eslint/no-implied-eval
-        const functionObj = new Function('$', '$$', 'require', functionBody) as EvalFunction<T>;
-
-        return new EvalContent(functionObj);
+        return new Function('$', '$$', 'require', functionBody) as EvalFunction<T>;
     } catch (error) {
         throw new Error(`Parse error in function: ${ error }. Function body: ${ functionBody }`);
-    }
-}
-
-/**
- * A parsed, executable JS expression that can be called with a provided evaluation context to produce the result of the expression.
- * Can be safely cached or reused.
- */
-export class EvalContent<T> {
-    private readonly evalFunction: EvalFunction<T>;
-
-    constructor(evalFunction: EvalFunction<T>) {
-        this.evalFunction = evalFunction;
-    }
-
-    /**
-     * Invoke the expression in the specified content.
-     * 
-     * @param evalContext Context to execute within
-     * @returns The object produced by the expression
-     */
-    invoke(evalContext: EvalContext): T {
-        // execute the function
-        return this.evalFunction.call(evalContext.scope, evalContext.scope, evalContext, requireFromRoot);
     }
 }
 
@@ -151,35 +134,4 @@ export function requireFromRoot(path: string): unknown {
     // explicit use of require() is necessary here
     // eslint-disable-next-line @typescript-eslint/no-require-imports,@typescript-eslint/no-var-requires
     return require(path) as unknown;
-}
-
-/**
- * Loads a module using require() relative from the Mooltipage code root
- */
-export type MooltipageRequire = (path: string) => unknown;
-
-/**
- * A function-based expression
- */
-export type EvalFunction<T> = ($: ScopeData, $$: EvalContext, require: MooltipageRequire) => T;
-
-/**
- * Context available to an evaluated script / expression
- */
-export interface EvalContext {
-    /**
-     * Current pipeline compilation context
-     */
-    readonly pipelineContext: PipelineContext;
-
-    /**
-     * Compiled scope instance, with proper shadowing and overloading applied
-     */
-    readonly scope: ScopeData;
-
-    /**
-     * Node that triggered this script execution.
-     * This node can be considered as the "location" of this EvalContext.
-     */
-    readonly sourceNode: Node;
 }

@@ -1,6 +1,5 @@
 import {HtmlCompilerContext, HtmlCompilerModule} from '../htmlCompiler';
-import {TagNode, TextNode} from '../../..';
-import {EvalContext} from '../evalEngine';
+import {EvalContext, TagNode, TextNode} from '../../..';
 
 /**
  * Compile module that detects and evaluates embedded JS expressions in attributes and text nodes

@@ -10,12 +10,12 @@ import {
     TagNode,
     TextNode
 } from '../../lib';
-import {PipelineContext} from '../../lib/pipeline/standardPipeline';
 import {compareFragmentMacro} from '../_util/htmlCompare';
+import {StandardPipelineContext} from '../../lib/pipeline/standardPipeline';
 
 function createHtmlContext(node: Node): HtmlCompilerContext {
     return new HtmlCompilerContext({
-        pipelineContext: {} as unknown as PipelineContext,
+        pipelineContext: {} as unknown as StandardPipelineContext,
         uniqueStyles: new Set<string>(),
         uniqueLinks: new Set<string>()
     }, node);

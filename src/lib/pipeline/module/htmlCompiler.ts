@@ -6,17 +6,16 @@ import {DomLogicModule} from './compiler/domLogicModule';
 import {ImportModule} from './compiler/importModule';
 import {FragmentModule} from './compiler/fragmentModule';
 import {
-    DocumentNode,
+    DocumentNode, EvalContext,
     Fragment,
     Node,
     NodeWithChildren
 } from '../..';
-import {EvalContext} from './evalEngine';
-import {PipelineContext} from '../standardPipeline';
 import {StyleModule} from './compiler/styleModule';
 import {DeduplicateModule} from './compiler/deduplicateModule';
 import {AnchorModule} from './compiler/anchorModule';
 import {WhitespaceModule} from './compiler/whitespaceModule';
+import {StandardPipelineContext} from '../standardPipeline';
 
 /**
  * Provides HTML compilation support to the pipeline.
@@ -77,7 +76,7 @@ export class HtmlCompiler {
      * @param fragment Fragment to compile
      * @param pipelineContext Current usage context
      */
-    compileFragment(fragment: Fragment, pipelineContext: PipelineContext): void {
+    compileFragment(fragment: Fragment, pipelineContext: StandardPipelineContext): void {
         // create root context
         const htmlContext = new HtmlCompilerContext({
             pipelineContext: pipelineContext,
@@ -182,7 +181,7 @@ export interface SharedHtmlCompilerContext {
     /**
      * Current usage context
      */
-    readonly pipelineContext: PipelineContext;
+    readonly pipelineContext: StandardPipelineContext;
 
     /**
      * Set of all unique CSS styles that have been found during compilation.

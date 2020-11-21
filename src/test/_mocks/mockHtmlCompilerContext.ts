@@ -2,15 +2,14 @@ import {
     DocumentNode,
     Fragment,
     FragmentContext,
-    Node
+    Node, PipelineContext
 } from '../../lib';
 import {
     HtmlCompilerContext,
     SharedHtmlCompilerContext
 } from '../../lib/pipeline/module/htmlCompiler';
 import {
-    PipelineContext,
-    StandardPipeline
+    StandardPipeline, StandardPipelineContext
 } from '../../lib/pipeline/standardPipeline';
 import {MockPipeline} from './mockPipeline';
 
@@ -35,11 +34,11 @@ export class MockPipelineContext implements PipelineContext {
 }
 
 export class MockSharedHtmlCompilerContext implements SharedHtmlCompilerContext {
-    pipelineContext: PipelineContext;
+    pipelineContext: StandardPipelineContext;
     uniqueLinks = new Set<string>();
     uniqueStyles = new Set<string>();
 
-    constructor(pipelineContext?: PipelineContext) {
+    constructor(pipelineContext?: StandardPipelineContext) {
         this.pipelineContext = pipelineContext ?? new MockPipelineContext();
     }
 }

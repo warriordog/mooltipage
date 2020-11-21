@@ -1,6 +1,5 @@
 import crypto
     from 'crypto';
-import {PipelineCache} from './pipelineCache';
 import {ResourceParser} from './module/resourceParser';
 import {HtmlCompiler} from './module/htmlCompiler';
 import {
@@ -12,11 +11,14 @@ import {
     MimeType,
     Page,
     Pipeline,
-    PipelineIO
+    PipelineCache,
+    PipelineContext,
+    PipelineIO,
+    EvalContext,
+    EvalFunction
 } from '..';
 import {
-    EvalContent,
-    EvalContext,
+    invokeEvalFunc,
     isExpressionString,
     parseExpression,
     parseScript
@@ -29,6 +31,7 @@ import Path
     from 'path';
 import {getResourceTypeExtension} from '../api/mooltipage';
 import {resolveResPath} from '../fs/pathUtils';
+import {StandardPipelineCache} from './pipelineCache';
 
 /**
  * Primary compilation pipeline.
@@ -75,7 +78,7 @@ export class StandardPipeline implements Pipeline {
      */
     constructor(pipelineIO: PipelineIOImpl, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
         // internal
-        this.cache = new PipelineCache();
+        this.cache = new StandardPipelineCache();
 
         // required
         this.pipelineIO = pipelineIO;
@@ -92,10 +95,10 @@ export class StandardPipeline implements Pipeline {
         resPath = resolveResPath(resPath);
 
         // remove this page and all dependencies from the cache, in case this is a recompile
-        this.cache.removeFragment(resPath);
+        this.cache.fragmentCache.remove(resPath);
         for (const dependencyResPath of this.dependencyTracker.getDependenciesForPage(resPath)) {
             // not all dependencies are fragments, but that's OK because cache will ignore
-            this.cache.removeFragment(dependencyResPath);
+            this.cache.fragmentCache.remove(dependencyResPath);
         }
 
         // reset tracked changes for this page, in case this is a recompile
@@ -164,7 +167,7 @@ export class StandardPipeline implements Pipeline {
         }
 
         // create pipeline context
-        const pipelineContext: PipelineContext = {
+        const pipelineContext: StandardPipelineContext = {
             pipeline: this,
             fragment: fragment,
             fragmentContext: fragmentContext
@@ -194,7 +197,7 @@ export class StandardPipeline implements Pipeline {
             const expressionFunc = this.getOrParseExpression(expression);
             
             // execute it
-            return expressionFunc.invoke(evalContext);
+            return invokeEvalFunc(expressionFunc, evalContext);
         }
 
         // value is plain string
@@ -217,7 +220,7 @@ export class StandardPipeline implements Pipeline {
         const scriptFunc = this.getOrParseScript(scriptText);
         
         // execute it
-        return scriptFunc.invoke(evalContext);
+        return invokeEvalFunc(scriptFunc, evalContext);
     }
 
     /**
@@ -235,16 +238,16 @@ export class StandardPipeline implements Pipeline {
         const contentsHash = hashMD5(contents);
 
         // get from cache, if present
-        if (this.cache.hasCreatedResource(contentsHash)) {
+        if (this.cache.createdResourceCache.has(contentsHash)) {
             // get cached path
-            return this.cache.getCreatedResource(contentsHash);
+            return this.cache.createdResourceCache.get(contentsHash);
         }
 
         // if not in cache, then call PI to create resource
         const resPath = this.pipelineIO.createResource(type, contents);
 
         // store in cache
-        this.cache.storeCreatedResource(contentsHash, resPath);
+        this.cache.createdResourceCache.store(contentsHash, resPath);
 
         return resPath;
     }
@@ -297,9 +300,9 @@ export class StandardPipeline implements Pipeline {
 
         let fragment: Fragment;
 
-        if (this.cache.hasFragment(resPath)) {
+        if (this.cache.fragmentCache.has(resPath)) {
             // use cached fragment
-            fragment = this.cache.getFragment(resPath);
+            fragment = this.cache.fragmentCache.get(resPath);
         } else {
             // read HTML
             const html = this.pipelineIO.getResource(MimeType.HTML, resPath);
@@ -308,7 +311,7 @@ export class StandardPipeline implements Pipeline {
             const parsedFragment = this.resourceParser.parseFragment(resPath, html);
 
             // keep in cache
-            this.cache.storeFragment(parsedFragment);
+            this.cache.fragmentCache.store(parsedFragment.path, parsedFragment);
 
             fragment = parsedFragment;
         }
@@ -320,35 +323,35 @@ export class StandardPipeline implements Pipeline {
         };
     }
 
-    private getOrParseExpression(expression: string): EvalContent<unknown> {
-        let expressionFunc: EvalContent<unknown>;
+    private getOrParseExpression(expression: string): EvalFunction<unknown> {
+        let expressionFunc: EvalFunction<unknown>;
 
         // get from cache, if present
-        if (this.cache.hasExpression(expression)) {
-            expressionFunc = this.cache.getExpression(expression);
+        if (this.cache.expressionCache.has(expression)) {
+            expressionFunc = this.cache.expressionCache.get(expression);
         } else {
             // compile text
             expressionFunc = parseExpression(expression);
 
             // store in cache
-            this.cache.storeExpression(expression, expressionFunc);
+            this.cache.expressionCache.store(expression, expressionFunc);
         }
 
         return expressionFunc;
     }
 
-    private getOrParseScript(script: string): EvalContent<unknown> {
-        let scriptFunc: EvalContent<unknown>;
+    private getOrParseScript(script: string): EvalFunction<unknown> {
+        let scriptFunc: EvalFunction<unknown>;
 
         // get from cache, if present
-        if (this.cache.hasScript(script)) {
-            scriptFunc = this.cache.getScript(script);
+        if (this.cache.scriptCache.has(script)) {
+            scriptFunc = this.cache.scriptCache.get(script);
         } else {
             // compile script
             scriptFunc = parseScript(script);
 
             // store in cache
-            this.cache.storeScript(script, scriptFunc);
+            this.cache.scriptCache.store(script, scriptFunc);
         }
 
         return scriptFunc;
@@ -378,23 +381,10 @@ export function hashMD5(content: string): string {
 }
 
 /**
- * State data for the current unit of compilation in the pipeline
+ * Extension of {@link PipelineContext} that narrows the pipeline to a StandardPipeline
  */
-export interface PipelineContext {
-    /**
-     * Current pipeline instance
-     */
+export interface StandardPipelineContext extends PipelineContext {
     readonly pipeline: StandardPipeline;
-
-    /**
-     * Fragment that is currently being compiled
-     */
-    readonly fragment: Fragment;
-
-    /**
-     * Fragment usage context
-     */
-    readonly fragmentContext: FragmentContext;
 }
 
 /**

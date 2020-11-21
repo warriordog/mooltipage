@@ -10,4 +10,4 @@ export default {
         '!src/test/_util/**/*',
         '!src/test/_data/**/*'
     ]
-}
+};

@@ -41,6 +41,27 @@ export interface Pipeline {
     reset(): void;
 }
 
+
+/**
+ * State data for the current unit of compilation in the pipeline
+ */
+export interface PipelineContext {
+    /**
+     * Current pipeline instance
+     */
+    readonly pipeline: Pipeline;
+
+    /**
+     * Fragment that is currently being compiled
+     */
+    readonly fragment: Fragment;
+
+    /**
+     * Fragment usage context
+     */
+    readonly fragmentContext: FragmentContext;
+}
+
 /**
  * Usage data for the current fragment
  */

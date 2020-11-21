@@ -1,211 +1,175 @@
 import test from 'ava';
-import { DocumentNode, Fragment } from '../../lib';
-import { PipelineCache } from '../../lib/pipeline/pipelineCache';
-import { EvalContent } from '../../lib/pipeline/module/evalEngine';
+import {DocumentNode, EvalFunction, Fragment} from '../../lib';
+import {StandardPipelineCache} from '../../lib/pipeline/pipelineCache';
 
-/*
- * Fragment
- */
+test('PipelineCache.fragmentCache works correctly', t => {
+    const pc = new StandardPipelineCache();
 
-test('PipelineCache.hasFragment() returns true when object is cached', t => {
-    const cache = new PipelineCache();
+    // setting values
+    const value1: Fragment = { path: 'key1', dom: new DocumentNode() };
+    const value2: Fragment = { path: 'key2', dom: new DocumentNode() };
+    pc.fragmentCache.store('key1', value1);
+    pc.fragmentCache.store('key2', value2);
 
-    cache.storeFragment({
-        path: 'foo',
-        dom: new DocumentNode()
-    });
+    // checking for existing
+    t.true(pc.fragmentCache.has('key1'));
+    t.true(pc.fragmentCache.has('key2'));
 
-    t.true(cache.hasFragment('foo'));
+    // checking for non-existing
+    t.false(pc.fragmentCache.has('key3'));
+
+    // getting existing
+    t.is(pc.fragmentCache.get('key1'), value1);
+    t.is(pc.fragmentCache.get('key2'), value2);
+
+    // getting non existing
+    t.throws(() => pc.fragmentCache.get('key3'));
+
+    // overwriting
+    const value1b: Fragment = { path: 'key1', dom: new DocumentNode() };
+    pc.fragmentCache.store('key1', value1b);
+    t.is(pc.fragmentCache.get('key1'), value1b);
+    t.not(pc.fragmentCache.get('key1'), value1);
+
+    // deleting
+    pc.fragmentCache.remove('key1');
+    t.false(pc.fragmentCache.has('key1'));
+    t.throws(() => pc.fragmentCache.get('key1'));
+
+    // clearing
+    pc.fragmentCache.clear();
+    t.false(pc.fragmentCache.has('key2'));
 });
 
-test('PipelineCache.hasFragment() returns false when object is not cached', t => {
-    const cache = new PipelineCache();
+test('PipelineCache.expressionCache works correctly', t => {
+    const pc = new StandardPipelineCache();
 
-    t.false(cache.hasFragment('foo'));
+    // setting values
+    const value1: EvalFunction<unknown> = () => undefined;
+    const value2: EvalFunction<unknown> = () => undefined;
+    pc.expressionCache.store('key1', value1);
+    pc.expressionCache.store('key2', value2);
+
+    // checking for existing
+    t.true(pc.expressionCache.has('key1'));
+    t.true(pc.expressionCache.has('key2'));
+
+    // checking for non-existing
+    t.false(pc.expressionCache.has('key3'));
+
+    // getting existing
+    t.is(pc.expressionCache.get('key1'), value1);
+    t.is(pc.expressionCache.get('key2'), value2);
+
+    // getting non existing
+    t.throws(() => pc.expressionCache.get('key3'));
+
+    // overwriting
+    const value1b: EvalFunction<unknown> = () => undefined;
+    pc.expressionCache.store('key1', value1b);
+    t.is(pc.expressionCache.get('key1'), value1b);
+    t.not(pc.expressionCache.get('key1'), value1);
+
+    // deleting
+    pc.expressionCache.remove('key1');
+    t.false(pc.expressionCache.has('key1'));
+    t.throws(() => pc.expressionCache.get('key1'));
+
+    // clearing
+    pc.expressionCache.clear();
+    t.false(pc.expressionCache.has('key2'));
 });
 
-test('PipelineCache.getFragment() returns cached object when present', t => {
-    const cache = new PipelineCache();
-    const fragment: Fragment = {
-        path: 'foo',
-        dom: new DocumentNode()
-    };
+test('PipelineCache.scriptCache works correctly', t => {
+    const pc = new StandardPipelineCache();
 
-    cache.storeFragment(fragment);
+    // setting values
+    const value1: EvalFunction<unknown> = () => undefined;
+    const value2: EvalFunction<unknown> = () => undefined;
+    pc.scriptCache.store('key1', value1);
+    pc.scriptCache.store('key2', value2);
 
-    t.is(cache.getFragment('foo'), fragment);
+    // checking for existing
+    t.true(pc.scriptCache.has('key1'));
+    t.true(pc.scriptCache.has('key2'));
+
+    // checking for non-existing
+    t.false(pc.scriptCache.has('key3'));
+
+    // getting existing
+    t.is(pc.scriptCache.get('key1'), value1);
+    t.is(pc.scriptCache.get('key2'), value2);
+
+    // getting non existing
+    t.throws(() => pc.scriptCache.get('key3'));
+
+    // overwriting
+    const value1b: EvalFunction<unknown> = () => undefined;
+    pc.scriptCache.store('key1', value1b);
+    t.is(pc.scriptCache.get('key1'), value1b);
+    t.not(pc.scriptCache.get('key1'), value1);
+
+    // deleting
+    pc.scriptCache.remove('key1');
+    t.false(pc.scriptCache.has('key1'));
+    t.throws(() => pc.scriptCache.get('key1'));
+
+    // clearing
+    pc.scriptCache.clear();
+    t.false(pc.scriptCache.has('key2'));
 });
 
-test('PipelineCache.getFragment() throws when object is not cached', t => {
-    const cache = new PipelineCache();
+test('PipelineCache.createdResourceCache works correctly', t => {
+    const pc = new StandardPipelineCache();
 
-    t.throws(() => cache.getFragment('foo'));
+    // setting values
+    const value1 = 'value1';
+    const value2 = 'value2';
+    pc.createdResourceCache.store('key1', value1);
+    pc.createdResourceCache.store('key2', value2);
+
+    // checking for existing
+    t.true(pc.createdResourceCache.has('key1'));
+    t.true(pc.createdResourceCache.has('key2'));
+
+    // checking for non-existing
+    t.false(pc.createdResourceCache.has('key3'));
+
+    // getting existing
+    t.is(pc.createdResourceCache.get('key1'), value1);
+    t.is(pc.createdResourceCache.get('key2'), value2);
+
+    // getting non existing
+    t.throws(() => pc.createdResourceCache.get('key3'));
+
+    // overwriting
+    const value1b = 'value1b';
+    pc.createdResourceCache.store('key1', value1b);
+    t.is(pc.createdResourceCache.get('key1'), value1b);
+    t.not(pc.createdResourceCache.get('key1'), value1);
+
+    // deleting
+    pc.createdResourceCache.remove('key1');
+    t.false(pc.createdResourceCache.has('key1'));
+    t.throws(() => pc.createdResourceCache.get('key1'));
+
+    // clearing
+    pc.createdResourceCache.clear();
+    t.false(pc.createdResourceCache.has('key2'));
 });
-
-test('PipelineCache.storeFragment() can overwrite an existing entry', t => {
-    const cache = new PipelineCache();
-    const fragment1: Fragment = {
-        path: 'foo',
-        dom: new DocumentNode()
-    };
-    const fragment2: Fragment = {
-        path: 'foo',
-        dom: new DocumentNode()
-    };
-
-    cache.storeFragment(fragment1);
-    cache.storeFragment(fragment2);
-
-    t.is(cache.getFragment('foo'), fragment2);
-});
-
-/*
- * Expression
- */
-
-test('PipelineCache.hasExpression() returns true when object is cached', t => {
-    const cache = new PipelineCache();
-
-    cache.storeExpression('foo', new EvalContent(() => 'foo'));
-
-    t.true(cache.hasExpression('foo'));
-});
-
-test('PipelineCache.hasExpression() returns false when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.false(cache.hasExpression('foo'));
-});
-
-test('PipelineCache.getExpression() returns cached object when present', t => {
-    const cache = new PipelineCache();
-    const expression = new EvalContent(() => 'foo');
-
-    cache.storeExpression('foo', expression);
-
-    t.is(cache.getExpression('foo'), expression);
-});
-
-test('PipelineCache.getExpression() throws when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.throws(() => cache.getExpression('foo'));
-});
-
-test('PipelineCache.storeExpression() can overwrite an existing entry', t => {
-    const cache = new PipelineCache();
-    const expression1 = new EvalContent(() => 'foo');
-    const expression2 = new EvalContent(() => 'foo');
-
-    cache.storeExpression('foo', expression1);
-    cache.storeExpression('foo', expression2);
-
-    t.is(cache.getExpression('foo'), expression2);
-});
-/*
- * Script
- */
-
-test('PipelineCache.hasScript() returns true when object is cached', t => {
-    const cache = new PipelineCache();
-
-    cache.storeScript('foo', new EvalContent(() => 'foo'));
-
-    t.true(cache.hasScript('foo'));
-});
-
-test('PipelineCache.hasScript() returns false when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.false(cache.hasScript('foo'));
-});
-
-test('PipelineCache.getScript() returns cached object when present', t => {
-    const cache = new PipelineCache();
-    const script = new EvalContent(() => 'foo');
-
-    cache.storeScript('foo', script);
-
-    t.is(cache.getScript('foo'), script);
-});
-
-test('PipelineCache.getScript() throws when object is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.throws(() => cache.getScript('foo'));
-});
-
-test('PipelineCache.storeScript() can overwrite an existing entry', t => {
-    const cache = new PipelineCache();
-    const script1 = new EvalContent(() => 'foo');
-    const script2 = new EvalContent(() => 'foo');
-
-    cache.storeScript('foo', script1);
-    cache.storeScript('foo', script2);
-
-    t.is(cache.getScript('foo'), script2);
-});
-
-/*
- * CreatedResource
- */
-
-test('PipelineCache.hasCreatedResource() returns true when resource is cached', t => {
-    const cache = new PipelineCache();
-
-    cache.storeCreatedResource('hash', 'path');
-
-    t.true(cache.hasCreatedResource('hash'));
-});
-
-test('PipelineCache.hasCreatedResource() returns false when resource is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.false(cache.hasCreatedResource('hash'));
-});
-
-test('PipelineCache.getCreatedResource() returns cached resource when present', t => {
-    const cache = new PipelineCache();
-
-    cache.storeCreatedResource('hash', 'path');
-
-    t.is(cache.getCreatedResource('hash'), 'path');
-});
-
-test('PipelineCache.getCreatedResource() throws when resource is not cached', t => {
-    const cache = new PipelineCache();
-
-    t.throws(() => cache.getCreatedResource('hash'));
-});
-
-test('PipelineCache.storeCreatedResource() can overwrite an existing entry', t => {
-    const cache = new PipelineCache();
-
-    cache.storeCreatedResource('hash', 'path1');
-    cache.storeCreatedResource('hash', 'path2');
-
-    t.is(cache.getCreatedResource('hash'), 'path2');
-});
-
-/*
- * General
- */
 
 test('PipelineCache.clear() clears all caches', t => {
-    const cache = new PipelineCache();
+    const pc = new StandardPipelineCache();
 
-    cache.storeFragment({
-        path: 'foo',
-        dom: new DocumentNode()
-    });
-    cache.storeExpression('foo', new EvalContent(() => 'foo'));
-    cache.storeCreatedResource('foo', 'foo');
-    cache.storeScript('foo', new EvalContent<boolean>(() => true));
-    
-    cache.clear();
+    pc.fragmentCache.store('key1', { path: 'key1', dom: new DocumentNode() });
+    pc.expressionCache.store('key1', () => undefined);
+    pc.scriptCache.store('key1', () => undefined);
+    pc.createdResourceCache.store('key1', 'value1');
 
-    t.false(cache.hasFragment('foo'));
-    t.false(cache.hasExpression('foo'));
-    t.false(cache.hasCreatedResource('foo'));
-    t.false(cache.hasScript('foo'));
+    pc.clear();
+
+    t.false(pc.fragmentCache.has('key1'));
+    t.false(pc.expressionCache.has('key1'));
+    t.false(pc.scriptCache.has('key1'));
+    t.false(pc.createdResourceCache.has('key1'));
 });
