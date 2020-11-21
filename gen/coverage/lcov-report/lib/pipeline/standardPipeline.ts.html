@@ -600,22 +600,15 @@
 <a name='L541'></a><a href='#L541'>541</a>
 <a name='L542'></a><a href='#L542'>542</a>
 <a name='L543'></a><a href='#L543'>543</a>
-<a name='L544'></a><a href='#L544'>544</a>
-<a name='L545'></a><a href='#L545'>545</a>
-<a name='L546'></a><a href='#L546'>546</a>
-<a name='L547'></a><a href='#L547'>547</a>
-<a name='L548'></a><a href='#L548'>548</a>
-<a name='L549'></a><a href='#L549'>549</a>
-<a name='L550'></a><a href='#L550'>550</a>
-<a name='L551'></a><a href='#L551'>551</a>
-<a name='L552'></a><a href='#L552'>552</a>
-<a name='L553'></a><a href='#L553'>553</a>
-<a name='L554'></a><a href='#L554'>554</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">27x</span>
+<a name='L544'></a><a href='#L544'>544</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -632,13 +625,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -999,19 +992,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1165,7 +1145,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import crypto
     from 'crypto';
-import {PipelineCache} from './pipelineCache';
 import {ResourceParser} from './module/resourceParser';
 import {HtmlCompiler} from './module/htmlCompiler';
 import {
@@ -1177,11 +1156,14 @@ import {
     MimeType,
     Page,
     Pipeline,
-    PipelineIO
+    PipelineCache,
+    PipelineContext,
+    PipelineIO,
+    EvalContext,
+    EvalFunction
 } from '..';
 import {
-    EvalContent,
-    EvalContext,
+    invokeEvalFunc,
     isExpressionString,
     parseExpression,
     parseScript
@@ -1194,6 +1176,7 @@ import Path
     from 'path';
 import {getResourceTypeExtension} from '../api/mooltipage';
 import {resolveResPath} from '../fs/pathUtils';
+import {StandardPipelineCache} from './pipelineCache';
 &nbsp;
 /**
  * Primary compilation pipeline.
@@ -1240,7 +1223,7 @@ export class StandardPipeline implements Pipeline {
      */
     constructor(pipelineIO: PipelineIOImpl, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
         // internal
-        this.cache = new PipelineCache();
+        this.cache = new StandardPipelineCache();
 &nbsp;
         // required
         this.pipelineIO = pipelineIO;
@@ -1257,10 +1240,10 @@ export class StandardPipeline implements Pipeline {
         resPath = resolveResPath(resPath);
 &nbsp;
         // remove this page and all dependencies from the cache, in case this is a recompile
-        this.cache.removeFragment(resPath);
+        this.cache.fragmentCache.remove(resPath);
         for (const dependencyResPath of this.dependencyTracker.getDependenciesForPage(resPath)) {
             // not all dependencies are fragments, but that's OK because cache will ignore
-<span class="cstat-no" title="statement not covered" >            this.cache.removeFragment(dependencyResPath);</span>
+<span class="cstat-no" title="statement not covered" >            this.cache.fragmentCache.remove(dependencyResPath);</span>
         }
 &nbsp;
         // reset tracked changes for this page, in case this is a recompile
@@ -1329,7 +1312,7 @@ export class StandardPipeline implements Pipeline {
         }
 &nbsp;
         // create pipeline context
-        const pipelineContext: PipelineContext = {
+        const pipelineContext: StandardPipelineContext = {
             pipeline: this,
             fragment: fragment,
             fragmentContext: fragmentContext
@@ -1359,7 +1342,7 @@ export class StandardPipeline implements Pipeline {
             const expressionFunc = this.getOrParseExpression(expression);
             
             // execute it
-            return expressionFunc.invoke(evalContext);
+            return invokeEvalFunc(expressionFunc, evalContext);
         }
 &nbsp;
         // value is plain string
@@ -1382,7 +1365,7 @@ export class StandardPipeline implements Pipeline {
         const scriptFunc = this.getOrParseScript(scriptText);
         
         // execute it
-        return scriptFunc.invoke(evalContext);
+        return invokeEvalFunc(scriptFunc, evalContext);
     }
 &nbsp;
     /**
@@ -1400,16 +1383,16 @@ export class StandardPipeline implements Pipeline {
         const contentsHash = <span class="cstat-no" title="statement not covered" >hashMD5(contents);</span>
 &nbsp;
         // get from cache, if present
-<span class="cstat-no" title="statement not covered" >        if (this.cache.hasCreatedResource(contentsHash)) {</span>
+<span class="cstat-no" title="statement not covered" >        if (this.cache.createdResourceCache.has(contentsHash)) {</span>
             // get cached path
-<span class="cstat-no" title="statement not covered" >            return this.cache.getCreatedResource(contentsHash);</span>
+<span class="cstat-no" title="statement not covered" >            return this.cache.createdResourceCache.get(contentsHash);</span>
         }
 &nbsp;
         // if not in cache, then call PI to create resource
         const resPath = <span class="cstat-no" title="statement not covered" >this.pipelineIO.createResource(type, contents);</span>
 &nbsp;
         // store in cache
-<span class="cstat-no" title="statement not covered" >        this.cache.storeCreatedResource(contentsHash, resPath);</span>
+<span class="cstat-no" title="statement not covered" >        this.cache.createdResourceCache.store(contentsHash, resPath);</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >        return resPath;</span>
     }
@@ -1462,9 +1445,9 @@ export class StandardPipeline implements Pipeline {
 &nbsp;
         let fragment: Fragment;
 &nbsp;
-        if (this.cache.hasFragment(resPath)) {
+        if (this.cache.fragmentCache.has(resPath)) {
             // use cached fragment
-            fragment = this.cache.getFragment(resPath);
+            fragment = this.cache.fragmentCache.get(resPath);
         } else {
             // read HTML
             const html = this.pipelineIO.getResource(MimeType.HTML, resPath);
@@ -1473,7 +1456,7 @@ export class StandardPipeline implements Pipeline {
             const parsedFragment = this.resourceParser.parseFragment(resPath, html);
 &nbsp;
             // keep in cache
-            this.cache.storeFragment(parsedFragment);
+            this.cache.fragmentCache.store(parsedFragment.path, parsedFragment);
 &nbsp;
             fragment = parsedFragment;
         }
@@ -1485,35 +1468,35 @@ export class StandardPipeline implements Pipeline {
         };
     }
 &nbsp;
-    private getOrParseExpression(expression: string): EvalContent&lt;unknown&gt; {
-        let expressionFunc: EvalContent&lt;unknown&gt;;
+    private getOrParseExpression(expression: string): EvalFunction&lt;unknown&gt; {
+        let expressionFunc: EvalFunction&lt;unknown&gt;;
 &nbsp;
         // get from cache, if present
-        if (this.cache.hasExpression(expression)) {
-            expressionFunc = this.cache.getExpression(expression);
+        if (this.cache.expressionCache.has(expression)) {
+            expressionFunc = this.cache.expressionCache.get(expression);
         } else {
             // compile text
             expressionFunc = parseExpression(expression);
 &nbsp;
             // store in cache
-            this.cache.storeExpression(expression, expressionFunc);
+            this.cache.expressionCache.store(expression, expressionFunc);
         }
 &nbsp;
         return expressionFunc;
     }
 &nbsp;
-    private getOrParseScript(script: string): EvalContent&lt;unknown&gt; {
-        let scriptFunc: EvalContent&lt;unknown&gt;;
+    private getOrParseScript(script: string): EvalFunction&lt;unknown&gt; {
+        let scriptFunc: EvalFunction&lt;unknown&gt;;
 &nbsp;
         // get from cache, if present
-        if (this.cache.hasScript(script)) {
-            scriptFunc = this.cache.getScript(script);
+        if (this.cache.scriptCache.has(script)) {
+            scriptFunc = this.cache.scriptCache.get(script);
         } else {
             // compile script
             scriptFunc = parseScript(script);
 &nbsp;
             // store in cache
-            this.cache.storeScript(script, scriptFunc);
+            this.cache.scriptCache.store(script, scriptFunc);
         }
 &nbsp;
         return scriptFunc;
@@ -1543,23 +1526,10 @@ export function hashMD5(content: string): string {
 }
 &nbsp;
 /**
- * State data for the current unit of compilation in the pipeline
+ * Extension of {@link PipelineContext} that narrows the pipeline to a StandardPipeline
  */
-export interface PipelineContext {
-    /**
-     * Current pipeline instance
-     */
+export interface StandardPipelineContext extends PipelineContext {
     readonly pipeline: StandardPipeline;
-&nbsp;
-    /**
-     * Fragment that is currently being compiled
-     */
-    readonly fragment: Fragment;
-&nbsp;
-    /**
-     * Fragment usage context
-     */
-    readonly fragmentContext: FragmentContext;
 }
 &nbsp;
 /**
@@ -1723,7 +1693,7 @@ export class PipelineIOImpl implements PipelineIO {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Nov 20 2020 17:10:17 GMT+0000 (Coordinated Universal Time)
+                at Sat Nov 21 2020 01:55:43 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>
