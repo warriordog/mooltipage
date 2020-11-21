@@ -20,11 +20,15 @@ import os
 class TestCliConsole implements CliConsole {
     logs: string[] = [];
 
-    log(message?: string): void {
+    log(message?: unknown): void {
         if (message === undefined) {
             message = os.EOL;
         }
-        this.logs.push(message);
+        this.logs.push(String(message));
+    }
+
+    error(message?: unknown): void {
+        this.log(message);
     }
 }
 test('runApp() compiles test project', t => {

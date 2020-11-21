@@ -6,7 +6,8 @@ import {
     HtmlFormatter,
     MimeType,
     Page,
-    Pipeline
+    Pipeline,
+    PipelineIO
 } from '..';
 import {
     createStandardHtmlFormatter,
@@ -31,10 +32,16 @@ export interface MpOptions {
     readonly inPath?: string;
 
     /**
-     * Optional path to place output files
+     * Optional path to place output files.
      * Defaults to current working directory.
      */
     readonly outPath?: string;
+
+    /**
+     * Optional custom pipeline IO to use.
+     * The implementation MUST be configured to use the same values of {@link inPath} and {@link outPath}, if applicable.
+     */
+    readonly pipelineIO?: PipelineIO;
 
     /**
      * Optional name of the HTML formatter to use.
@@ -120,12 +127,21 @@ function createPipeline(options: MpOptions): Pipeline {
     const formatter: HtmlFormatter = createStandardHtmlFormatter(options.formatter);
 
     // create pipeline IO
-    const sourcePath = options.inPath ?? process.cwd();
-    const destinationPath = options.outPath ?? process.cwd();
-    const pipelineIO = new PipelineIOImpl(sourcePath, destinationPath);
+    const pipelineIO = createPipelineIO(options);
 
     // create pipeline
     return new StandardPipeline(pipelineIO, formatter);
+}
+
+function createPipelineIO(options: MpOptions): PipelineIO {
+    if (options.pipelineIO !== undefined) {
+        return options.pipelineIO;
+
+    } else {
+        const sourcePath = options.inPath ?? process.cwd();
+        const destinationPath = options.outPath ?? process.cwd();
+        return new PipelineIOImpl(sourcePath, destinationPath);
+    }
 }
 
 /**

@@ -3,7 +3,6 @@ import crypto
 import {ResourceParser} from './module/resourceParser';
 import {HtmlCompiler} from './module/htmlCompiler';
 import {
-    DependencyTracker,
     DocumentNode,
     Fragment,
     FragmentContext,
@@ -46,8 +45,6 @@ export class StandardPipeline implements Pipeline {
 
     readonly pipelineIO: PipelineIOImpl;
 
-    readonly dependencyTracker: PipelineDependencyTracker;
-
     readonly htmlFormatter: HtmlFormatter;
 
     /**
@@ -69,14 +66,10 @@ export class StandardPipeline implements Pipeline {
      * @param htmlCompiler?? Optional override for standard HtmlCompiler
      */
     constructor(pipelineIO: PipelineIOImpl, htmlFormatter?: HtmlFormatter, resourceParser?: ResourceParser, htmlCompiler?: HtmlCompiler) {
-        // internal
         this.cache = new StandardPipelineCache();
 
-        // required
         this.pipelineIO = pipelineIO;
-        this.dependencyTracker = new PipelineDependencyTracker();
 
-        // overridable
         this.htmlFormatter = htmlFormatter ?? new StandardHtmlFormatter();
         this.resourceParser = resourceParser ?? new ResourceParser();
         this.htmlCompiler = htmlCompiler ?? new HtmlCompiler();
@@ -85,16 +78,6 @@ export class StandardPipeline implements Pipeline {
     compilePage(resPath: string): Page {
         // resolve path to page
         resPath = resolveResPath(resPath);
-
-        // remove this page and all dependencies from the cache, in case this is a recompile
-        this.cache.fragmentCache.remove(resPath);
-        for (const dependencyResPath of this.dependencyTracker.getDependenciesForPage(resPath)) {
-            // not all dependencies are fragments, but that's OK because cache will ignore
-            this.cache.fragmentCache.remove(dependencyResPath);
-        }
-
-        // reset tracked changes for this page, in case this is a recompile
-        this.dependencyTracker.forgetTrackedPage(resPath);
 
         // compile fragment
         const pageFragment: Fragment = this.compileFragmentOnly(resPath);
@@ -146,7 +129,7 @@ export class StandardPipeline implements Pipeline {
         const rootResPath = fragmentContext?.rootResPath ?? resPath;
 
         // get fragment from cache or htmlSource
-        const fragment: Fragment = this.getOrParseFragment(resPath, rootResPath);
+        const fragment: Fragment = this.getOrParseFragment(resPath);
 
         // create usage context if not provided
         if (fragmentContext === undefined) {
@@ -267,13 +250,10 @@ export class StandardPipeline implements Pipeline {
      *
      * @param resPath Path to resource
      * @param mimeType Type of resource.
-     * @param rootResPath Path to the root fragment
      */
-    getRawText(resPath: string, mimeType: MimeType, rootResPath: string): string {
+    getRawText(resPath: string, mimeType: MimeType): string {
         // resolve path to fragment
         resPath = resolveResPath(resPath);
-
-        this.dependencyTracker.recordDependency(rootResPath, resPath);
 
         // get contents
         return this.pipelineIO.getResource(mimeType, resPath);
@@ -282,14 +262,9 @@ export class StandardPipeline implements Pipeline {
     reset(): void {
         // clear cache to reset state
         this.cache.clear();
-
-        // erase tracked dependencies
-        this.dependencyTracker.clear();
     }
 
-    private getOrParseFragment(resPath: string, rootResPath: string): Fragment {
-        this.dependencyTracker.recordDependency(rootResPath, resPath);
-
+    private getOrParseFragment(resPath: string): Fragment {
         let fragment: Fragment;
 
         if (this.cache.fragmentCache.has(resPath)) {
@@ -377,96 +352,6 @@ export function hashMD5(content: string): string {
  */
 export interface StandardPipelineContext extends PipelineContext {
     readonly pipeline: StandardPipeline;
-}
-
-/**
- * Standard implementation of DependencyTracker
- */
-export class PipelineDependencyTracker implements DependencyTracker {
-
-    /**
-     * Map of pages to dependencies
-     * @private
-     */
-    private readonly pageDependencies = new Map<string, Set<string>>();
-
-    /**
-     * Map of resources to dependent pages
-     * @private
-     */
-    private readonly resourceDependents = new Map<string, Set<string>>();
-
-    getDependenciesForPage(pageResPath: string): Set<string> {
-        let dependencyList = this.pageDependencies.get(pageResPath);
-        if (dependencyList === undefined) {
-            dependencyList = new Set();
-            this.pageDependencies.set(pageResPath, dependencyList);
-        }
-        return dependencyList;
-    }
-
-    getDependentsForResource(resPath: string): Set<string> {
-        let dependentsList = this.resourceDependents.get(resPath);
-        if (dependentsList === undefined) {
-            dependentsList = new Set();
-            this.resourceDependents.set(resPath, dependentsList);
-        }
-        return dependentsList;
-    }
-
-    hasTrackedPage(pageResPath: string): boolean {
-        return this.pageDependencies.has(pageResPath);
-    }
-
-    hasTrackedResource(resPath: string): boolean {
-        return this.resourceDependents.has(resPath);
-    }
-
-    /**
-     * Records a dependency between a page and a resource.
-     * Both the page -> resource and resource -> page mappings will be updated.
-     * @param pageResPath Path to page
-     * @param resPath Path to resource
-     */
-    recordDependency(pageResPath: string, resPath: string): void {
-        this.getDependenciesForPage(pageResPath).add(resPath);
-        this.getDependentsForResource(resPath).add(pageResPath);
-    }
-
-    /**
-     * Removes a page from all tracked dependency relationships.
-     * Any page -> resource or resource -> page dependency that involves pageResPath will be delete.
-     * @param pageResPath Page to forget.
-     */
-    forgetTrackedPage(pageResPath: string): void {
-        const pageDeps = this.pageDependencies.get(pageResPath);
-        if (pageDeps !== undefined) {
-
-            // remove resource -> page mappings
-            for (const resPath of pageDeps) {
-                this.getDependentsForResource(resPath).delete(pageResPath);
-            }
-
-            // delete all page -> resource mappings
-            this.pageDependencies.delete(pageResPath);
-        }
-    }
-
-    clear(): void {
-        this.pageDependencies.clear();
-        this.resourceDependents.clear();
-    }
-
-    getAllTrackedFiles(): Set<string> {
-        const allFiles = new Set<string>();
-        for (const page of this.pageDependencies.keys()) {
-            allFiles.add(page);
-        }
-        for (const resource of this.resourceDependents.keys()) {
-            allFiles.add(resource);
-        }
-        return allFiles;
-    }
 }
 
 /**

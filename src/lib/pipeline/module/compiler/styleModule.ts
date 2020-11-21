@@ -23,7 +23,7 @@ export class StyleModule implements HtmlCompilerModule {
         } else if (ExternalStyleNode.isExternalStyleNode(htmlContext.node)) {
             // external CSS
             const resPath = resolveResPath(htmlContext.node.src, pipelineContext.fragment.path);
-            const styleContent = pipelineContext.pipeline.getRawText(resPath, MimeType.CSS, pipelineContext.fragmentContext.rootResPath);
+            const styleContent = pipelineContext.pipeline.getRawText(resPath, MimeType.CSS);
             this.compileStyle(htmlContext.node, styleContent, htmlContext.node.src, htmlContext);
         }
     }

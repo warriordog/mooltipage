@@ -21,7 +21,7 @@ export class ScriptModule implements HtmlCompilerModule {
         const pipelineContext = htmlContext.sharedContext.pipelineContext;
 
         const resPath = resolveResPath(node.src, pipelineContext.fragment.path);
-        const scriptContent = pipelineContext.pipeline.getRawText(resPath, MimeType.JAVASCRIPT, pipelineContext.fragmentContext.rootResPath);
+        const scriptContent = pipelineContext.pipeline.getRawText(resPath, MimeType.JAVASCRIPT);
         this.compileScript(htmlContext, scriptContent);
     }
 

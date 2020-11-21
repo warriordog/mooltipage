@@ -9,28 +9,28 @@ export class StandardPipelineCache {
      * Paths are not normalized or converted in any way.
      * If fuzzy / equivalent matching is needed, then the caller is responsible for pre-processing the path key.
      */
-    readonly fragmentCache: Cache<string, Fragment> = new MapCache<string, Fragment>();
+    fragmentCache: Cache<string, Fragment> = new MapCache<string, Fragment>();
 
     /**
      * Cache that maps expression strings to parsed functions.
      * Key strings are not normalized or converted in any way.
      * If fuzzy / equivalent matching is needed, then the caller is responsible for pre-processing the key.
      */
-    readonly expressionCache: Cache<string, EvalFunction<unknown>> = new MapCache<string, EvalFunction<unknown>>();
+    expressionCache: Cache<string, EvalFunction<unknown>> = new MapCache<string, EvalFunction<unknown>>();
 
     /**
      * Cache that maps JS code to parsed functions.
      * Key strings are not normalized or converted in any way.
      * If fuzzy / equivalent matching is needed, then the caller is responsible for pre-processing the key.
      */
-    readonly scriptCache: Cache<string, EvalFunction<unknown>> = new MapCache<string, EvalFunction<unknown>>();
+    scriptCache: Cache<string, EvalFunction<unknown>> = new MapCache<string, EvalFunction<unknown>>();
 
     /**
      * Cache that maps hashes of created resources to the resource path where that resource is saved.
      * Neither hash keys nor resource paths are normalized or converted in any way.
      * If fuzzy / equivalent matching is needed, then the caller is responsible for pre-processing the hash and value.
      */
-    readonly createdResourceCache: Cache<string, string> = new MapCache<string, string>();
+    createdResourceCache: Cache<string, string> = new MapCache<string, string>();
 
     /**
      * Removes all stored data from all caches

@@ -2,13 +2,22 @@ import {
     CliArgs,
     parseArgs
 } from './args';
-import {Mooltipage} from '../lib';
+import {
+    Mooltipage,
+    PipelineIO
+} from '../lib';
 import {
     expandPagePaths,
     readPackageJson
 } from './cliFs';
-import {FileWatcher} from './fileWatcher';
+import { PipelineIOImpl } from '../lib/pipeline/standardPipeline';
 import Timeout = NodeJS.Timeout;
+import {DependencyTracker} from './watch/dependencyTracker';
+import {
+    TrackingCache,
+    TrackingPipelineIO
+} from './watch/trackers';
+import {FileWatcher} from './watch/fileWatcher';
 
 export function cliMain(argv: string[], cliConsole: CliConsole): void {
     const version = readPackageJson().version;
@@ -28,6 +37,15 @@ export function cliMain(argv: string[], cliConsole: CliConsole): void {
 }
 
 export function runApp(args: CliArgs, cliConsole: CliConsole): void {
+    if (args.watch) {
+        runAppWatch(args, cliConsole);
+        
+    } else {
+        runAppSingle(args, cliConsole);
+    }
+}
+
+function runAppSingle(args: CliArgs, cliConsole: CliConsole): void {
     // create mooltipage instance
     const mooltipage = new Mooltipage({
         inPath: args.inPath,
@@ -35,7 +53,56 @@ export function runApp(args: CliArgs, cliConsole: CliConsole): void {
         formatter: args.formatter,
         onPageCompiled: page => cliConsole.log(`Compiled [${ page.path }].`)
     });
+    
+    // compile pages
+    runAppCommon(args, cliConsole, mooltipage);
+}
 
+function runAppWatch(args: CliArgs, cliConsole: CliConsole): void {
+    // initialize tracking data
+    const dependencyTracker = new DependencyTracker();
+    const currentDependencies = new Set<string>();
+
+    // create shared callback to collect dependencies from all shared trackers
+    const trackerCallback = function(resPath: string): void {
+        currentDependencies.add(resPath);
+    };
+
+    // we are in watch mode, so create a tracking pipeline IO
+    const inPath = args.inPath ?? process.cwd();
+    const outPath = args.outPath ?? process.cwd();
+    const realIO = new PipelineIOImpl(inPath, outPath);
+    const trackingIO = new TrackingPipelineIO(realIO, trackerCallback);
+    
+    // create mooltipage instance
+    const mooltipage = new Mooltipage({
+        inPath: args.inPath,
+        outPath: args.outPath,
+        pipelineIO: trackingIO,
+        formatter: args.formatter,
+        onPageCompiled: page => {
+            // update dependencies for page
+            dependencyTracker.setPageDependencies(page.path, currentDependencies);
+
+            // reset tracker
+            currentDependencies.clear();
+
+            cliConsole.log(`Compiled [${ page.path }].`);
+        }
+    });
+
+    // inject tracking cache
+    mooltipage.pipeline.cache.fragmentCache = new TrackingCache(mooltipage.pipeline.cache.fragmentCache, trackerCallback);
+    
+    // run initial round of compilation
+    runAppCommon(args, cliConsole, mooltipage);
+    
+    // enter watch mode
+    cliConsole.log('Entering watch mode - modified files will be rebuilt automatically.');
+    enterWatchMode(mooltipage, dependencyTracker, cliConsole);
+}
+
+function runAppCommon(args: CliArgs, cliConsole: CliConsole, mooltipage: Mooltipage): void {
     // convert page arguments into full list of pages
     const basePath = args.inPath ?? process.cwd();
     const pages = expandPagePaths(args.pages, basePath);
@@ -52,15 +119,9 @@ export function runApp(args: CliArgs, cliConsole: CliConsole): void {
     // we are done
     cliConsole.log();
     cliConsole.log('Done.');
-
-    // enter watch mode, if enabled
-    if (args.watch) {
-        console.log('Entering watch mode - changes to any project files will trigger a recompile of the affected pages.');
-        enterWatchMode(mooltipage);
-    }
 }
 
-function enterWatchMode(mooltipage: Mooltipage): void {
+function enterWatchMode(mooltipage: Mooltipage, tracker: DependencyTracker, cliConsole: CliConsole): void {
     // queue up modified files to avoid recompiling partial changes
     const stagedChanges = new Set<string>();
 
@@ -88,12 +149,12 @@ function enterWatchMode(mooltipage: Mooltipage): void {
                 stagedChanges.clear();
 
                 // compile changes
-                compileStagedChanges(filesToRecompile, mooltipage);
+                compileStagedChanges(filesToRecompile, mooltipage, tracker);
 
                 // reset watched files
-                watchCurrentFiles(fileWatcher, mooltipage);
+                watchCurrentFiles(fileWatcher, mooltipage.pipeline.pipelineIO, tracker);
             } catch (e) {
-                console.error(e);
+                cliConsole.error(e);
 
             } finally {
                 stagedChanges.clear();
@@ -103,44 +164,46 @@ function enterWatchMode(mooltipage: Mooltipage): void {
     }, 250);
 
     // watch files
-    watchCurrentFiles(fileWatcher, mooltipage);
+    watchCurrentFiles(fileWatcher, mooltipage.pipeline.pipelineIO, tracker);
 
     // enable
     fileWatcher.start();
 }
 
-function compileStagedChanges(stagedChanges: Set<string>, mooltipage: Mooltipage): void {
-    const tracker = mooltipage.pipeline.dependencyTracker;
-
-    // get list of pages for changes
+function compileStagedChanges(stagedChanges: Set<string>, mooltipage: Mooltipage, tracker: DependencyTracker): void {
+    // list of pages with changes
     const changedPages = new Set<string>();
-    for (const change of stagedChanges) {
+
+    // find pages impacted by each changed file
+    for (const stagedChange of stagedChanges) {
         // convert raw path back to res path
-        const resPath = mooltipage.pipeline.pipelineIO.getSourceResPathForAbsolutePath(change);
+        const stagedChangePath = mooltipage.pipeline.pipelineIO.getSourceResPathForAbsolutePath(stagedChange);
 
-        if (tracker.hasTrackedPage(resPath)) {
-            // copy pages directly
-            changedPages.add(resPath);
+        // if this is a page, then add directly
+        if (tracker.hasPage(stagedChangePath)) {
+            changedPages.add(stagedChangePath);
         }
 
-        if (tracker.hasTrackedResource(resPath)) {
-            // for resources, find and add all dependent pages
-            for (const dependentPage of tracker.getDependentsForResource(resPath)) {
-                changedPages.add(dependentPage);
-            }
+        // find and add all pages that depend on this
+        const dependentPages = tracker.getDependentsForResource(stagedChangePath);
+        for (const dependentPage of dependentPages) {
+            changedPages.add(dependentPage);
         }
+
+        // clear cache for staged changes (including resources, not just pages)
+        mooltipage.pipeline.cache.fragmentCache.remove(stagedChangePath);
     }
 
     // compile changes
     mooltipage.processPages(changedPages);
 }
 
-function watchCurrentFiles(fileWatcher: FileWatcher, mooltipage: Mooltipage): void {
+function watchCurrentFiles(fileWatcher: FileWatcher, pipelineIO: PipelineIO, tracker: DependencyTracker): void {
     // get list of absolute paths to all files
-    const allFiles = new Set(
-        Array.from(mooltipage.pipeline.dependencyTracker.getAllTrackedFiles())
-            .map(resPath => mooltipage.pipeline.pipelineIO.resolveSourceResource(resPath))
-    );
+    const allFiles = new Set<string>();
+    for (const trackedFile of tracker.getAllTrackedFiles()) {
+        allFiles.add(pipelineIO.resolveSourceResource(trackedFile));
+    }
 
     // watch all files
     fileWatcher.setWatchedFiles(allFiles);
@@ -167,8 +230,18 @@ export function printHelp(cliConsole: CliConsole): void {
  */
 export interface CliConsole {
     /**
-     * Receives a console message.
+     * Receives a console message at "log" level.
+     * Should function exactly the same as {@link console.log}.
      * @param message Message to log
+     * @param optionalParams Optional parameters to attach to the message.
      */
-    log(message?: string): void;
+    log(message?: unknown, ...optionalParams: unknown[]): void;
+
+    /**
+     * Receives a console message at "error" level.
+     * Should function exactly the same as {@link console.error}.
+     * @param message Message to log
+     * @param optionalParams Optional parameters to attach to the message.
+     */
+    error(message?: unknown, ...optionalParams: unknown[]): void;
 }
