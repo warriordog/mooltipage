@@ -43,9 +43,8 @@ jobs:
       - name: Merge doc components into final package
         run: cp -r ./docs/dist/. ./docs/gh-pages/
       - name: Upload to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+        uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: docs/gh-pages
-          CLEAN: true
+          branch: gh-pages
+          folder: docs/gh-pages
+          clean: true
