@@ -1,5 +1,6 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+npm run check_lockfile
 npm run build
 npx --no-install lint-staged
