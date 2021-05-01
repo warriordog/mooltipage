@@ -1,5 +1,8 @@
 {
+    "entryPoints": [
+        "src/lib/index.ts",
+        "src/bin/index.ts"
+    ],
     "out": "./docs/dist/gen/typedoc",
-    "mode": "modules",
     "includeVersion": true
 }

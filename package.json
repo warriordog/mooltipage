@@ -35,16 +35,15 @@
     "rebuild": "npm run clean && npm run build",
     "test": "npm run build && ava",
     "coverage": "npm run build && nyc ava",
-    "typedoc": "typedoc src/lib",
     "makedocs": "node ./dist/bin/main.js --inPath=./docs/src/ --outPath=./docs/dist/ --formatter=minimized ./docs/src/index.html ./docs/src/sections",
-    "docs": "npm run rebuild && npm run coverage && npm run typedoc && npm run makedocs",
+    "docs": "npm run rebuild && npm run coverage && npx typedoc && npm run makedocs",
     "devdocs": "npm run build && npm run makedocs -- --watch",
     "lint": "eslint --ext .js,.ts src",
     "lint-fix": "npm run lint -- --fix",
-    "prepublishOnly": "npm run rebuild && npm run lint && npm run coverage && npm run typedoc && npm run makedocs",
+    "prepublishOnly": "npm run rebuild && npm run lint && npm run coverage && npx typedoc && npm run makedocs",
     "debugtest": "ava --serial --verbose",
     "check_lockfile": "npx lockfile-lint -p package-lock.json -a npm ",
-    "validate": "npm run check_lockfile && npm install && npm run rebuild && npm run lint && nyc ava && npm run typedoc && npm run makedocs",
+    "validate": "npm run check_lockfile && npm install && npm run rebuild && npm run lint && nyc ava && npx typedoc && npm run makedocs",
     "pre_commit_checks": "npm run build && lint-staged",
     "pre_push_checks": "npm run test"
   },
@@ -65,7 +64,7 @@
     "lint-staged": "^10.5.4",
     "lockfile-lint": "^4.3.7",
     "nyc": "^15.1.0",
-    "typedoc": "^0.19.2",
+    "typedoc": "^0.20.36",
     "typescript": "^4.1.5"
   }
 }
