@@ -45,7 +45,7 @@ test('ScriptNode supports embedded functions', compareFragmentMacro,
     $.test = getGood();`
 ]]);
 
-test('ScriptNode allows script exceptions to bubble', t => {
+test('ScriptNode allows script exceptions to bubble', async t => {
     const errorMessage = 'test error';
 
     const pi = new MemoryPipelineInterface();
@@ -56,7 +56,7 @@ test('ScriptNode allows script exceptions to bubble', t => {
     });
     const pipeline = new StandardPipeline(pi);
 
-    t.throws(() => pipeline.compilePage('page.html'), {
+    await t.throwsAsync(async () => await pipeline.compilePage('page.html'), {
         message: errorMessage
     });
 });

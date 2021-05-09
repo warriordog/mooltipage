@@ -76,7 +76,7 @@ export class HtmlCompiler {
      * @param fragment Fragment to compile
      * @param pipelineContext Current usage context
      */
-    compileFragment(fragment: Fragment, pipelineContext: StandardPipelineContext): void {
+    async compileFragment(fragment: Fragment, pipelineContext: StandardPipelineContext): Promise<void> {
         // create root context
         const htmlContext = new HtmlCompilerContext({
             pipelineContext: pipelineContext,
@@ -85,17 +85,19 @@ export class HtmlCompiler {
         }, fragment.dom);
 
         // run modules
-        this.runModulesAt(fragment.dom, htmlContext);
+        await this.runModulesAt(fragment.dom, htmlContext);
     }
 
-    private runModulesAt(node: Node, parentHtmlContext: HtmlCompilerContext): void {
+    private async runModulesAt(node: Node, parentHtmlContext: HtmlCompilerContext): Promise<void> {
         // create node data
         const htmlContext = parentHtmlContext.createChildData(node);
 
         // pre-node callback
         for (const module of this.modules) {
             if (module.enterNode !== undefined) {
-                module.enterNode(htmlContext);
+                // Invoke "enter node" callback, and possibly await it
+                const enterPromiseOrVoid = module.enterNode(htmlContext);
+                if (enterPromiseOrVoid) await enterPromiseOrVoid;
 
                 // stop processing if node is deleted
                 if (htmlContext.isDeleted) {
@@ -116,7 +118,7 @@ export class HtmlCompiler {
                 const savedPrevSibling: Node | null = currentChild.prevSibling;
     
                 // process the child
-                this.runModulesAt(currentChild, htmlContext);
+                await this.runModulesAt(currentChild, htmlContext);
     
                 // Move on to the next node.
                 // To do this correctly, we need to detect if the current node was removed or replaced.
@@ -141,7 +143,9 @@ export class HtmlCompiler {
         // post-node callback
         for (const module of this.modules) {
             if (module.exitNode !== undefined) {
-                module.exitNode(htmlContext);
+                // Invoke "exit node" callback, and possibly await it
+                const exitPromiseOrVoid = module.exitNode(htmlContext);
+                if (exitPromiseOrVoid) await exitPromiseOrVoid;
 
                 // stop processing if node is deleted
                 if (htmlContext.isDeleted) {
@@ -162,7 +166,7 @@ export interface HtmlCompilerModule {
      * 
      * @param htmlContext Current semi-stateful compilation data
      */
-    enterNode?(htmlContext: HtmlCompilerContext): void;
+    enterNode?(htmlContext: HtmlCompilerContext): void | Promise<void>;
 
     /**
      * Called when the HTML Compiler is finished compiling a node and its children.
@@ -170,7 +174,7 @@ export interface HtmlCompilerModule {
      * 
      * @param htmlContext Current semi-stateful compilation data
      */
-    exitNode?(htmlContext: HtmlCompilerContext): void;
+    exitNode?(htmlContext: HtmlCompilerContext): void | Promise<void>;
 }
 
 /**

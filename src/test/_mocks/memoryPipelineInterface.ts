@@ -81,7 +81,7 @@ export class MemoryPipelineInterface extends PipelineIOImpl {
         return this.getCreated(normalizeResPath(resPath))?.content;
     }
 
-    getResource(type: MimeType, resPath: string): string {
+    getResource(type: MimeType, resPath: string): Promise<string> {
         resPath = normalizeResPath(resPath);
 
         // generate list of "similar" paths to try - necessary since real FS will resolve the path first
@@ -102,21 +102,22 @@ export class MemoryPipelineInterface extends PipelineIOImpl {
                     throw new Error(`Stored HTML for resource "${ resPath }" is undefined`);
                 }
 
-                return resource.content;
+                return Promise.resolve(resource.content);
             }
         }
 
         throw new Error(`Unable to resolve HTML resource "${ resPath }"`);
     }
 
-    writeResource(type: MimeType, resPath: string, content: string): void {
+    writeResource(type: MimeType, resPath: string, content: string): Promise<void> {
         this.destContent.set(normalizeResPath(resPath), {
             content: content,
             type: type
         });
+        return Promise.resolve();
     }
 
-    createResource(type: MimeType, contents: string): string {
+    createResource(type: MimeType, contents: string): Promise<string> {
         const resPath = String(this.nextCreatedContentId);
         this.nextCreatedContentId++;
 
@@ -125,7 +126,7 @@ export class MemoryPipelineInterface extends PipelineIOImpl {
             type: type
         });
 
-        return resPath;
+        return Promise.resolve(resPath);
     }
 }
 

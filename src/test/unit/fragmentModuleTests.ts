@@ -1,5 +1,10 @@
 import test from 'ava';
-import { FragmentModule } from '../../lib/pipeline/module/compiler/fragmentModule';
+import {
+    convertNodeToContent,
+    createFragmentScope,
+    extractSlotContents,
+    getContentTargetName
+} from '../../lib/pipeline/module/compiler/fragmentModule';
 import {MContentNode, TagNode, MFragmentNode, DocumentNode, SlotReferenceNode} from '../../lib';
 
 test('FragmentModule.extractSlotContents() handles default slot', t => {
@@ -8,7 +13,7 @@ test('FragmentModule.extractSlotContents() handles default slot', t => {
     const child2 = new TagNode('div');
     frag.appendChildren([ child1, child2 ]);
 
-    const contents = FragmentModule.extractSlotContents(frag);
+    const contents = extractSlotContents(frag);
     t.is(contents.size, 1);
     t.true(contents.has(SlotReferenceNode.DefaultSlotName));
 
@@ -25,7 +30,7 @@ test('FragmentModule.extractSlotContents() handles named slots', t => {
     mContents.appendChildren([ child1, child2 ]);
     frag.appendChild(mContents);
 
-    const contents = FragmentModule.extractSlotContents(frag);
+    const contents = extractSlotContents(frag);
     t.is(contents.size, 1);
 
     t.true(contents.has('slot1'));
@@ -45,7 +50,7 @@ test('FragmentModule.extractSlotContents() handles multiple slots', t => {
     const child3 = new TagNode('div');
     frag.appendChildren([ contents1, contents2, child3 ]);
 
-    const contents = FragmentModule.extractSlotContents(frag);
+    const contents = extractSlotContents(frag);
     t.is(contents.size, 3);
 
     t.true(contents.has('slot1'));
@@ -69,7 +74,7 @@ test('FragmentModule.convertNodeToContent() handles <m-content>', t => {
     const child = new TagNode('div');
     node.appendChild(child);
 
-    const contents = FragmentModule.convertNodeToContent(node);
+    const contents = convertNodeToContent(node);
     t.is(contents.length, 1);
     t.is(contents[0], child);
 });
@@ -77,7 +82,7 @@ test('FragmentModule.convertNodeToContent() handles <m-content>', t => {
 test('FragmentModule.convertNodeToContent() handles other node types', t => {
     const node = new TagNode('div');
 
-    const contents = FragmentModule.convertNodeToContent(node);
+    const contents = convertNodeToContent(node);
     t.is(contents.length, 1);
     t.is(contents[0], node);
 });
@@ -85,19 +90,19 @@ test('FragmentModule.convertNodeToContent() handles other node types', t => {
 test('FragmentModule.getContentTargetName() handles <m-content>', t => {
     const node = new MContentNode('test');
 
-    t.is(FragmentModule.getContentTargetName(node), 'test');
+    t.is(getContentTargetName(node), 'test');
 });
 
 test('FragmentModule.getContentTargetName() handles other node types', t => {
     const node = new TagNode('div');
 
-    t.is(FragmentModule.getContentTargetName(node), SlotReferenceNode.DefaultSlotName);
+    t.is(getContentTargetName(node), SlotReferenceNode.DefaultSlotName);
 });
 
 test('FragmentModule.createFragmentScope ignores src', t => {
     const node = new MFragmentNode('foo.html');
 
-    const scope = FragmentModule.createFragmentScope(node);
+    const scope = createFragmentScope(node);
 
     t.is(scope.src, undefined);
 });
@@ -109,7 +114,7 @@ test('FragmentModule.createFragmentScope copies all params', t => {
     node.nodeData.key1 = 'value1';
     node.nodeData.key2 = 'value2';
 
-    const scope = FragmentModule.createFragmentScope(node);
+    const scope = createFragmentScope(node);
 
     t.is(scope.key1, 'value1');
     t.is(scope.key2, 'value2');
@@ -122,7 +127,7 @@ test('FragmentModule.createFragmentScope preserves non-string values', t => {
     node.nodeData.key1 = 123;
     node.nodeData.key2 = 456;
 
-    const scope = FragmentModule.createFragmentScope(node);
+    const scope = createFragmentScope(node);
 
     t.is(scope.key1, 123);
     t.is(scope.key2, 456);
@@ -135,7 +140,7 @@ test('FragmentModule.createFragmentScope converts parameter names', t => {
     node.nodeData.keyName1 = 'value1';
     node.nodeData.keyName2 = 'value2';
 
-    const scope = FragmentModule.createFragmentScope(node);
+    const scope = createFragmentScope(node);
 
     t.is(scope.keyName1, 'value1');
     t.is(scope.keyName2, 'value2');

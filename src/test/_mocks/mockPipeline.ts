@@ -15,11 +15,11 @@ export class MockPipeline extends StandardPipeline {
         this.mockPi = pi;
     }
 
-    compilePage(): Page {
+    compilePage(): Promise<Page> {
         throw new Error('Not implemented');
     }
 
-    compileFragment(): Fragment {
+    compileFragment(): Promise<Fragment> {
         throw new Error('Not implemented');
     }
 
@@ -31,16 +31,16 @@ export class MockPipeline extends StandardPipeline {
         throw new Error('Not implemented');
     }
 
-    linkResource(): string {
+    linkResource(): Promise<string> {
         throw new Error('Not implemented');
     }
     
-    getRawText(resPath: string, mimeType: MimeType): string {
+    getRawText(resPath: string, mimeType: MimeType): Promise<string> {
         resPath = normalizeResPath(resPath);
 
         const rawText = this.mockRawTexts.find(text => text[0] === resPath && text[1] === mimeType);
         if (rawText !== undefined) {
-            return rawText[2];
+            return Promise.resolve(rawText[2]);
         } else {
             throw new Error(`No mock defined for getRawText(resPath="${ resPath }", resourceType="${ mimeType }")`);
         }

@@ -75,12 +75,12 @@ export class StandardPipeline implements Pipeline {
         this.htmlCompiler = htmlCompiler ?? new HtmlCompiler();
     }
 
-    compilePage(resPath: string): Page {
+    async compilePage(resPath: string): Promise<Page> {
         // resolve path to page
         resPath = resolveResPath(resPath);
 
         // compile fragment
-        const pageFragment: Fragment = this.compileFragmentOnly(resPath);
+        const pageFragment: Fragment = await this.compileFragmentOnly(resPath);
         const pageDom: DocumentNode = pageFragment.dom;
 
         // compile as page
@@ -96,7 +96,7 @@ export class StandardPipeline implements Pipeline {
         const formattedHtml: string = this.htmlFormatter.formatHtml(rawHtml);
 
         // write HTML
-        this.pipelineIO.writeResource(MimeType.HTML, resPath, formattedHtml);
+        await this.pipelineIO.writeResource(MimeType.HTML, resPath, formattedHtml);
 
         // create and return page
         return {
@@ -106,12 +106,12 @@ export class StandardPipeline implements Pipeline {
         };
     }
 
-    compileFragment(resPath: string, fragmentContext?: FragmentContext): Fragment {
+    async compileFragment(resPath: string, fragmentContext?: FragmentContext): Promise<Fragment> {
         // resolve path to fragment
         resPath = resolveResPath(resPath);
 
         // compile fragment
-        const fragment = this.compileFragmentOnly(resPath, fragmentContext);
+        const fragment = await this.compileFragmentOnly(resPath, fragmentContext);
 
         // Only format if this fragment is being compiled standalone instead of as part of a page.
         // If this fragment is being used elsewhere, then it will be formatted there.
@@ -124,12 +124,12 @@ export class StandardPipeline implements Pipeline {
         return fragment;
     }
 
-    private compileFragmentOnly(resPath: string, fragmentContext?: FragmentContext): Fragment {
+    private async compileFragmentOnly(resPath: string, fragmentContext?: FragmentContext): Promise<Fragment> {
         // get the root res path. If there is no context, then this fragment is the root resource.
         const rootResPath = fragmentContext?.rootResPath ?? resPath;
 
         // get fragment from cache or htmlSource
-        const fragment: Fragment = this.getOrParseFragment(resPath);
+        const fragment = await this.getOrParseFragment(resPath);
 
         // create usage context if not provided
         if (fragmentContext === undefined) {
@@ -149,7 +149,7 @@ export class StandardPipeline implements Pipeline {
         };
 
         // compile under current context
-        this.htmlCompiler.compileFragment(fragment, pipelineContext);
+        await this.htmlCompiler.compileFragment(fragment, pipelineContext);
 
         return fragment;
     }
@@ -208,7 +208,7 @@ export class StandardPipeline implements Pipeline {
         return css;
     }
 
-    private createLinkableResource(type: MimeType, contents: string): string {
+    private async createLinkableResource(type: MimeType, contents: string): Promise<string> {
         // hash contents
         const contentsHash = hashMD5(contents);
 
@@ -219,7 +219,7 @@ export class StandardPipeline implements Pipeline {
         }
 
         // if not in cache, then call PI to create resource
-        const resPath = this.pipelineIO.createResource(type, contents);
+        const resPath = await this.pipelineIO.createResource(type, contents);
 
         // store in cache
         this.cache.createdResourceCache.store(contentsHash, resPath);
@@ -237,9 +237,9 @@ export class StandardPipeline implements Pipeline {
      * @param rootResPath Path to the "root" fragment where this resources will be referenced
      * @returns path to reference linked resource
      */
-    linkResource(type: MimeType, contents: string, rootResPath: string): string {
+    async linkResource(type: MimeType, contents: string, rootResPath: string): Promise<string> {
         // create the resource and get the raw path
-        const rawResPath = this.createLinkableResource(type, contents);
+        const rawResPath = await this.createLinkableResource(type, contents);
 
         // adjust path relative to the output page and directory
         return resolveResPath(rootResPath, rawResPath);
@@ -251,12 +251,12 @@ export class StandardPipeline implements Pipeline {
      * @param resPath Path to resource
      * @param mimeType Type of resource.
      */
-    getRawText(resPath: string, mimeType: MimeType): string {
+    async getRawText(resPath: string, mimeType: MimeType): Promise<string> {
         // resolve path to fragment
         resPath = resolveResPath(resPath);
 
         // get contents
-        return this.pipelineIO.getResource(mimeType, resPath);
+        return await this.pipelineIO.getResource(mimeType, resPath);
     }
 
     reset(): void {
@@ -264,15 +264,16 @@ export class StandardPipeline implements Pipeline {
         this.cache.clear();
     }
 
-    private getOrParseFragment(resPath: string): Fragment {
+    private async getOrParseFragment(resPath: string): Promise<Fragment> {
         let fragment: Fragment;
 
         if (this.cache.fragmentCache.has(resPath)) {
             // use cached fragment
             fragment = this.cache.fragmentCache.get(resPath);
+
         } else {
             // read HTML
-            const html = this.pipelineIO.getResource(MimeType.HTML, resPath);
+            const html = await this.pipelineIO.getResource(MimeType.HTML, resPath);
 
             // parse fragment
             const parsedFragment = this.resourceParser.parseFragment(resPath, html);
@@ -374,22 +375,22 @@ export class PipelineIOImpl implements PipelineIO {
         this.destinationPath = destinationPath;
     }
 
-    getResource(type: MimeType, resPath: string): string {
+    async getResource(type: MimeType, resPath: string): Promise<string> {
         const htmlPath = this.resolveSourceResource(resPath);
 
-        return FsUtils.readFileSync(htmlPath);
+        return await FsUtils.readFile(htmlPath);
     }
 
-    writeResource(type: MimeType, resPath: string, contents: string): void {
+    async writeResource(type: MimeType, resPath: string, contents: string): Promise<void> {
         const htmlPath = this.resolveDestinationResource(resPath);
 
-        FsUtils.writeFileSync(htmlPath, contents, true);
+        await FsUtils.writeFile(htmlPath, contents, true);
     }
 
-    createResource(type: MimeType, contents: string): string {
+    async createResource(type: MimeType, contents: string): Promise<string> {
         const resPath = this.createResPath(type, contents);
 
-        this.writeResource(type, resPath, contents);
+        await this.writeResource(type, resPath, contents);
 
         return resPath;
     }

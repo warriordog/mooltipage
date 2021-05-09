@@ -29,18 +29,18 @@ export class TrackingPipelineIO implements PipelineIO {
         return this.realIO.sourcePath;
     }
 
-    createResource(type: MimeType, contents: string): string {
-        return this.realIO.createResource(type, contents);
+    async createResource(type: MimeType, contents: string): Promise<string> {
+        return await this.realIO.createResource(type, contents);
     }
 
-    getResource(type: MimeType, resPath: string): string {
+    async getResource(type: MimeType, resPath: string): Promise<string> {
         this.trackerCallback(resPath);
         
-        return this.realIO.getResource(type, resPath);
+        return await this.realIO.getResource(type, resPath);
     }
 
-    writeResource(type: MimeType, resPath: string, contents: string): void {
-        return this.realIO.writeResource(type, resPath, contents);
+    async writeResource(type: MimeType, resPath: string, contents: string): Promise<void> {
+        await this.realIO.writeResource(type, resPath, contents);
     }
 
     createResPath(type: MimeType, contents: string): string {

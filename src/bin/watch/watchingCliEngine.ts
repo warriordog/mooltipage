@@ -143,7 +143,7 @@ export class WatchingCliEngine extends CliEngine {
         }
 
         // compile changes
-        this.mooltipage.processPages(changedPages);
+        await this.mooltipage.processPages(changedPages);
     }
 
     private watchCurrentFiles(fileWatcher: FSWatcher): void {

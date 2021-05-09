@@ -97,9 +97,9 @@ export class Mooltipage {
      * Compiles a list of pages.
      * @param pagePaths List paths to pages to compile
      */
-    processPages(pagePaths: Iterable<string>): void {
+    async processPages(pagePaths: Iterable<string>): Promise<void> {
         for (const pagePath of pagePaths) {
-            this.processPage(pagePath);
+            await this.processPage(pagePath);
         }
     }
 
@@ -107,9 +107,9 @@ export class Mooltipage {
      * Compiles a single page.
      * @param pagePath Path to page to compile
      */
-    processPage(pagePath: string): void {
+    async processPage(pagePath: string): Promise<void> {
         // compile page
-        const page = this.pipeline.compilePage(pagePath);
+        const page = await this.pipeline.compilePage(pagePath);
 
         // callback
         if (this.options.onPageCompiled) {

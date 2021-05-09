@@ -6,7 +6,7 @@ import {
     MinimizedFormatterPreset
 } from '../../lib/pipeline/module/standardHtmlFormatter';
 
-export function compareFragmentMacro(t: ExecutionContext, fragmentHtml: string, expectedHtml: string, sources?: Array<[string, string]>): void {
+export async function compareFragmentMacro(t: ExecutionContext, fragmentHtml: string, expectedHtml: string, sources?: Array<[string, string]>): Promise<void> {
     // set up pipeline
     const pi = new MemoryPipelineInterface();
     pi.setSourceHtml('frag.html', fragmentHtml);
@@ -16,7 +16,7 @@ export function compareFragmentMacro(t: ExecutionContext, fragmentHtml: string, 
     const pipeline = new StandardPipeline(pi, new StandardHtmlFormatter(MinimizedFormatterPreset));
 
     // run build
-    const fragment = pipeline.compileFragment('frag.html');
+    const fragment = await pipeline.compileFragment('frag.html');
     const html = fragment.dom.toHtml();
 
     // check output

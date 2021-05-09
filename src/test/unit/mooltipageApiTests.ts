@@ -80,18 +80,18 @@ test('PipelineIOImpl.createResPath() attaches correct file extension', t => {
         t.true(pi.createResPath(mime, 'test').endsWith(getResourceTypeExtension(mime)));
     }
 });
-test('PipelineIOImpl.getResource() reads relative to source path', t => {
+test('PipelineIOImpl.getResource() reads relative to source path', async t => {
     const pi = new PipelineIOImpl(getTestDataPath('testFolder'), process.cwd());
-    const css = pi.getResource(MimeType.CSS, 'styleContent.css');
+    const css = await pi.getResource(MimeType.CSS, 'styleContent.css');
     t.is(css, '.class { }');
-    const text = pi.getResource(MimeType.TEXT, 'textContent.txt');
+    const text = await pi.getResource(MimeType.TEXT, 'textContent.txt');
     t.is(text, 'This is text');
 });
 test('PipelineIOImpl.writeResource() writes relative to destination path', async t => {
     await useSandboxDirectory(async (sandboxPath) => {
         fs.mkdirSync(join(sandboxPath, 'outFolder'));
         const pi = new PipelineIOImpl(getTestDataPath('testFolder/subFolder'), join(sandboxPath, 'outFolder'));
-        pi.writeResource(MimeType.TEXT, 'test.txt', 'This is a test file.');
+        await pi.writeResource(MimeType.TEXT, 'test.txt', 'This is a test file.');
         t.true(fs.existsSync(join(sandboxPath, 'outFolder/test.txt')));
     });
 });
@@ -100,7 +100,7 @@ test('PipelineIOImpl.createResource() writes relative to destination path', asyn
         const outFolderPath = join(sandboxPath, 'outFolder');
         fs.mkdirSync(outFolderPath);
         const pi = new PipelineIOImpl(getTestDataPath('testFolder/subFolder'), outFolderPath);
-        const createdPath = pi.createResource(MimeType.TEXT, 'This is a test file.');
+        const createdPath = await pi.createResource(MimeType.TEXT, 'This is a test file.');
         t.true(fs.existsSync(join(outFolderPath, createdPath)));
     });
 });
@@ -108,7 +108,7 @@ test('PipelineIOImpl.createResource() applies correct file extension', async t =
     await useSandboxDirectory(async(sandboxPath) => {
         const pi = new PipelineIOImpl(getTestDataPath('testFolder/subFolder'), join(sandboxPath, 'outFolder'));
         for (const mime of [MimeType.HTML, MimeType.CSS, MimeType.JAVASCRIPT, MimeType.JSON, MimeType.TEXT, 'unknown' as MimeType]) {
-            t.true(pi.createResource(mime, 'content').endsWith(getResourceTypeExtension(mime)));
+            t.true((await pi.createResource(mime, 'content')).endsWith(getResourceTypeExtension(mime)));
         }
     });
 });
@@ -133,7 +133,7 @@ test('Mooltipage.processPage() compiles a page', async t => {
             inPath: getTestDataPath('./'),
             outPath: join(sandboxPath, 'out')
         });
-        mp.processPage('testPage.html');
+        await mp.processPage('testPage.html');
         t.true(fs.existsSync(join(sandboxPath, 'out/testPage.html')));
     });
 });
@@ -143,7 +143,7 @@ test('Mooltipage.processPages() compiles multiple pages', async t => {
             inPath: getTestDataPath('testFolder'),
             outPath: join(sandboxPath, 'out')
         });
-        mp.processPages([ 'subFolder/subPage1.html', 'subFolder/subPage2.html' ]);
+        await mp.processPages([ 'subFolder/subPage1.html', 'subFolder/subPage2.html' ]);
         t.true(fs.existsSync(join(sandboxPath, 'out/subFolder/subPage1.html')));
         t.true(fs.existsSync(join(sandboxPath, 'out/subFolder/subPage2.html')));
     });

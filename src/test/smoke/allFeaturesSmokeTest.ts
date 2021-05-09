@@ -7,12 +7,12 @@ import {
     PrettyFormatterPreset
 } from '../../lib/pipeline/module/standardHtmlFormatter';
 
-test('Build produces a page and does not crash', t => {
+test('Build produces a page and does not crash', async t => {
     // set up pipeline
     const pipeline = createPipeline();
 
     // run build
-    const result = pipeline.compilePage('page.html');
+    const result = await pipeline.compilePage('page.html');
 
     // check output
     t.truthy(result);

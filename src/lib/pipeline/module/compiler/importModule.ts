@@ -9,40 +9,40 @@ export class ImportModule implements HtmlCompilerModule {
         
         if (MImportNode.isMImportNode(htmlContext.node)) {
             // if this is m-import, then process it
-            ImportModule.registerImport(htmlContext.node, htmlContext);
+            registerImport(htmlContext.node, htmlContext);
 
         } else if (TagNode.isTagNode(htmlContext.node) && htmlContext.hasImport(htmlContext.node.tagName)) {
             // else if this is a replacement node, then replace it
-            ImportModule.replaceImport(htmlContext.node, htmlContext);
+            replaceImport(htmlContext.node, htmlContext);
         }
     }
+}
 
-    private static registerImport(mImport: MImportNode, htmlContext: HtmlCompilerContext): void {
-        // imports are registered into the parent scope. Fall back to current scope in case this is the root
-        const targetNodeData = htmlContext.parentContext ?? htmlContext;
+function registerImport(mImport: MImportNode, htmlContext: HtmlCompilerContext): void {
+    // imports are registered into the parent scope. Fall back to current scope in case this is the root
+    const targetNodeData = htmlContext.parentContext ?? htmlContext;
 
-        // create import definition and register in compile data
-        targetNodeData.defineImport({
-            alias: mImport.as,
-            source: mImport.src
-        });
+    // create import definition and register in compile data
+    targetNodeData.defineImport({
+        alias: mImport.as,
+        source: mImport.src
+    });
 
-        // delete node
-        mImport.removeSelf();
-        htmlContext.setDeleted();
-    }
+    // delete node
+    mImport.removeSelf();
+    htmlContext.setDeleted();
+}
 
-    private static replaceImport(tag: TagNode, htmlContext: HtmlCompilerContext): void {
-        // get import definition
-        const importDefinition = htmlContext.getImport(tag.tagName);
+function replaceImport(tag: TagNode, htmlContext: HtmlCompilerContext): void {
+    // get import definition
+    const importDefinition = htmlContext.getImport(tag.tagName);
 
-        // create replacement
-        const attributes = new Map(tag.getAttributes().entries());
-        const replacementTag = new MFragmentNode(importDefinition.source, attributes);
+    // create replacement
+    const attributes = new Map(tag.getAttributes().entries());
+    const replacementTag = new MFragmentNode(importDefinition.source, attributes);
 
-        // replace tag
-        replacementTag.appendChildren(tag.childNodes);
-        tag.replaceSelf([ replacementTag ]);
-        htmlContext.setDeleted();
-    }
+    // replace tag
+    replacementTag.appendChildren(tag.childNodes);
+    tag.replaceSelf([ replacementTag ]);
+    htmlContext.setDeleted();
 }

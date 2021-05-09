@@ -27,7 +27,7 @@ export class CliEngine {
         this.cliConsole.log();
 
         // compile each page
-        this.mooltipage.processPages(pages);
+        await this.mooltipage.processPages(pages);
 
         // we are done
         this.cliConsole.log();

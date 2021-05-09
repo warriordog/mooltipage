@@ -17,14 +17,14 @@ import {convertSnakeCaseToCamelCase} from '../../../util/caseUtils';
  * Compile module that implements <m-var> and <m-scope> parsing
  */
 export class VarModule implements HtmlCompilerModule {
-    enterNode(htmlContext: HtmlCompilerContext): void {
+    async enterNode(htmlContext: HtmlCompilerContext): Promise<void> {
         if (DocumentNode.isDocumentNode(htmlContext.node)) {
             // if document, then bind root scope and we are done
             htmlContext.node.setRootScope(htmlContext.sharedContext.pipelineContext.fragmentContext.scope);
 
         } else if (MVarNode.isMVarNode(htmlContext.node)) {
             // process m-var
-            VarModule.bindAttributeDataToScope(htmlContext.node, htmlContext, true, htmlContext.node.getAttributes().entries());
+            bindAttributeDataToScope(htmlContext.node, htmlContext, true, htmlContext.node.getAttributes().entries());
 
             // delete when done
             htmlContext.node.removeSelf();
@@ -32,15 +32,15 @@ export class VarModule implements HtmlCompilerModule {
 
         } else if (MScopeNode.isMScopeNode(htmlContext.node)) {
             // process m-scope, but leave until later to cleanup
-            VarModule.bindAttributeDataToScope(htmlContext.node, htmlContext, false, htmlContext.node.getAttributes().entries());
+            bindAttributeDataToScope(htmlContext.node, htmlContext, false, htmlContext.node.getAttributes().entries());
 
         } else if (MDataNode.isMDataNode(htmlContext.node)) {
             // process m-data
-            VarModule.processMData(htmlContext.node, htmlContext);
+            await processMData(htmlContext.node, htmlContext);
 
         } else if (MFragmentNode.isMFragmentNode(htmlContext.node)) {
             // process m-fragment
-            VarModule.bindAttributeDataToScope(htmlContext.node, htmlContext, false, htmlContext.node.parameters);
+            bindAttributeDataToScope(htmlContext.node, htmlContext, false, htmlContext.node.parameters);
         }
     }
 
@@ -52,87 +52,88 @@ export class VarModule implements HtmlCompilerModule {
             htmlContext.setDeleted();
         }
     }
+}
 
-    private static bindAttributeDataToScope(node: TagNode, htmlContext: HtmlCompilerContext, useParentScope: boolean, attributes: Iterable<[string, unknown]>): void {
-        // m-var writes into its parent's scope instead of using its own
-        const targetScope = VarModule.getTargetScope(node, htmlContext, useParentScope);
 
-        // promote variables to scope
-        for (const variable of attributes) {
-            // copy value to scope
-            VarModule.saveCompiledAttributeToScope(targetScope, variable[0], variable[1]);
-        }
+export function bindAttributeDataToScope(node: TagNode, htmlContext: HtmlCompilerContext, useParentScope: boolean, attributes: Iterable<[string, unknown]>): void {
+    // m-var writes into its parent's scope instead of using its own
+    const targetScope = getTargetScope(node, htmlContext, useParentScope);
+
+    // promote variables to scope
+    for (const variable of attributes) {
+        // copy value to scope
+        saveCompiledAttributeToScope(targetScope, variable[0], variable[1]);
+    }
+}
+
+export async function processMData(node: MDataNode, htmlContext: HtmlCompilerContext): Promise<void> {
+    // get target scope - this writes into the containing scope rather than its own
+    const targetScope = getTargetScope(node, htmlContext, true);
+
+    // process each reference
+    for (const reference of node.references) {
+        // compile content
+        const compiledContent: unknown = await compileReference(reference, node, htmlContext);
+
+        // bind to scope
+        saveCompiledAttributeToScope(targetScope, reference.varName, compiledContent);
     }
 
-    private static processMData(node: MDataNode, htmlContext: HtmlCompilerContext): void {
-        // get target scope - this writes into the containing scope rather than its own
-        const targetScope = VarModule.getTargetScope(node, htmlContext, true);
+    // delete node
+    node.removeSelf();
+    htmlContext.setDeleted();
+}
 
-        // process each reference
-        for (const reference of node.references) {
-            // compile content
-            const compiledContent: unknown = VarModule.compileReference(reference, node, htmlContext);
+export async function compileReference(reference: MDataNodeRef, node: MDataNode, htmlContext: HtmlCompilerContext): Promise<unknown> {
+    const pipelineContext = htmlContext.sharedContext.pipelineContext;
 
-            // bind to scope
-            VarModule.saveCompiledAttributeToScope(targetScope, reference.varName, compiledContent);
-        }
+    // compute path to reference
+    const resPath = resolveResPath(reference.resPath, pipelineContext.fragment.path);
 
-        // delete node
-        node.removeSelf();
-        htmlContext.setDeleted();
+    // get value
+    const rawValue = await pipelineContext.pipeline.getRawText(resPath, node.type);
+
+    // parse as correct type
+    switch (node.type) {
+        case MimeType.JSON:
+            // JSON data
+            return JSON.parse(rawValue) as unknown;
+        case MimeType.TEXT:
+            // text data
+            return String(rawValue);
+        default:
+            // pass unknown types as-is
+            return rawValue;
+    }
+}
+
+export function getTargetScope(node: Node, htmlContext: HtmlCompilerContext, useParentScope: boolean): ScopeData {
+    // if not using the parent scope, then we can take current node's data and use that as scope
+    if (!useParentScope) {
+        return node.nodeData;
     }
 
-    private static compileReference(reference: MDataNodeRef, node: MDataNode, htmlContext: HtmlCompilerContext): unknown {
-        const pipelineContext = htmlContext.sharedContext.pipelineContext;
-
-        // compute path to reference
-        const resPath = resolveResPath(reference.resPath, pipelineContext.fragment.path);
-
-        // get value
-        const rawValue = pipelineContext.pipeline.getRawText(resPath, node.type);
-
-        // parse as correct type
-        switch (node.type) {
-            case MimeType.JSON:
-                // JSON data
-                return JSON.parse(rawValue) as unknown;
-            case MimeType.TEXT:
-                // text data
-                return String(rawValue);
-            default:
-                // pass unknown types as-is
-                return rawValue;
-        }
+    // if we are using the parent scope and there is a parent node, then use that scope
+    if (node.parentNode != null) {
+        return node.parentNode.nodeData;
     }
 
-    private static getTargetScope(node: Node, htmlContext: HtmlCompilerContext, useParentScope: boolean): ScopeData {
-        // if not using the parent scope, then we can take current node's data and use that as scope
-        if (!useParentScope) {
-            return node.nodeData;
-        }
+    // if we are using the parent scope but there is no parent node, then fall back to root scope
+    return htmlContext.sharedContext.pipelineContext.fragmentContext.scope;
+}
 
-        // if we are using the parent scope and there is a parent node, then use that scope
-        if (node.parentNode != null) {
-            return node.parentNode.nodeData;
-        }
+/**
+ * Binds a compiled data attribute to a scope object.
+ * Performs case-conversion on the attribute name
+ *
+ * @param scope Scope object to save to
+ * @param attributeName Attribute name
+ * @param compiledValue Value of the attribute
+ */
+export function saveCompiledAttributeToScope(scope: ScopeData, attributeName: string, compiledValue: unknown): void {
+    // convert snake-case attribute name to camelCase scope name
+    const scopeName: string = convertSnakeCaseToCamelCase(attributeName);
 
-        // if we are using the parent scope but there is no parent node, then fall back to root scope
-        return htmlContext.sharedContext.pipelineContext.fragmentContext.scope;
-    }
-
-    /**
-     * Binds a compiled data attribute to a scope object.
-     * Performs case-conversion on the attribute name
-     *
-     * @param scope Scope object to save to
-     * @param attributeName Attribute name
-     * @param compiledValue Value of the attribute
-     */
-    public static saveCompiledAttributeToScope(scope: ScopeData, attributeName: string, compiledValue: unknown): void {
-        // convert snake-case attribute name to camelCase scope name
-        const scopeName: string = convertSnakeCaseToCamelCase(attributeName);
-
-        // save to scope
-        scope[scopeName] = compiledValue;
-    }
+    // save to scope
+    scope[scopeName] = compiledValue;
 }
