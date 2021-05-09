@@ -377,13 +377,13 @@ export class PipelineIOImpl implements PipelineIO {
     getResource(type: MimeType, resPath: string): string {
         const htmlPath = this.resolveSourceResource(resPath);
 
-        return FsUtils.readFile(htmlPath);
+        return FsUtils.readFileSync(htmlPath);
     }
 
     writeResource(type: MimeType, resPath: string, contents: string): void {
         const htmlPath = this.resolveDestinationResource(resPath);
 
-        FsUtils.writeFile(htmlPath, contents, true);
+        FsUtils.writeFileSync(htmlPath, contents, true);
     }
 
     createResource(type: MimeType, contents: string): string {

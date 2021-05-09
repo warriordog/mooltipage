@@ -20,7 +20,7 @@
     "grouped-accessor-pairs": "warn",
     "no-eval": "error",
     "no-lone-blocks": "error",
-    "no-return-assign": "error",
+    "no-return-assign": [ "error", "except-parens" ],
     "no-self-compare": "error",
     "no-sequences": "error",
     "no-throw-literal": "warn",

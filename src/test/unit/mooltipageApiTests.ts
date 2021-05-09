@@ -15,13 +15,12 @@ import {
     createStandardHtmlFormatter
 } from '../../lib/pipeline/module/standardHtmlFormatter';
 import {
-    getSandboxPath,
     getTestDataPath,
     useSandboxDirectory
 } from '../_util/testFsUtils';
 import {MimeType} from '../../lib';
 import fs from 'fs';
-import Path from 'path';
+import {join} from 'path';
 import {PipelineIOImpl} from '../../lib/pipeline/standardPipeline';
 
 // createStandardHtmlFormatter()
@@ -58,9 +57,11 @@ test('PipelineIOImpl.resolveSourceResource() resolves relative to source path', 
     const pi = new PipelineIOImpl(getTestDataPath('testFolder'), process.cwd());
     t.is(pi.resolveSourceResource('testPage.html'), getTestDataPath('testFolder/testPage.html'));
 });
-test('PipelineIOImpl.resolveDestinationResource() resolves relative to destination path', t => {
-    const pi = new PipelineIOImpl(getTestDataPath('testFolder'), getSandboxPath('outFolder'));
-    t.is(pi.resolveDestinationResource('testPage.html'), getSandboxPath('outFolder/testPage.html'));
+test('PipelineIOImpl.resolveDestinationResource() resolves relative to destination path', async t => {
+    await useSandboxDirectory(async (sandboxPath) => {
+        const pi = new PipelineIOImpl(getTestDataPath('testFolder'), join(sandboxPath, 'outFolder'));
+        t.is(pi.resolveDestinationResource('testPage.html'), join(sandboxPath, 'outFolder/testPage.html'));
+    });
 });
 test('PipelineIOImpl.createResPath() generates unique resource paths', t => {
     const pi = new PipelineIOImpl(process.cwd(), process.cwd());
@@ -86,26 +87,26 @@ test('PipelineIOImpl.getResource() reads relative to source path', t => {
     const text = pi.getResource(MimeType.TEXT, 'textContent.txt');
     t.is(text, 'This is text');
 });
-test.serial('PipelineIOImpl.writeResource() writes relative to destination path', t => {
-    useSandboxDirectory(() => {
-        fs.mkdirSync(getSandboxPath('outFolder'));
-        const pi = new PipelineIOImpl(getTestDataPath('testFolder/subFolder'), getSandboxPath('outFolder'));
+test('PipelineIOImpl.writeResource() writes relative to destination path', async t => {
+    await useSandboxDirectory(async (sandboxPath) => {
+        fs.mkdirSync(join(sandboxPath, 'outFolder'));
+        const pi = new PipelineIOImpl(getTestDataPath('testFolder/subFolder'), join(sandboxPath, 'outFolder'));
         pi.writeResource(MimeType.TEXT, 'test.txt', 'This is a test file.');
-        t.true(fs.existsSync(getSandboxPath('outFolder/test.txt')));
+        t.true(fs.existsSync(join(sandboxPath, 'outFolder/test.txt')));
     });
 });
-test.serial('PipelineIOImpl.createResource() writes relative to destination path', t => {
-    useSandboxDirectory(() => {
-        const outFolderPath = getSandboxPath('outFolder');
+test('PipelineIOImpl.createResource() writes relative to destination path', async t => {
+    await useSandboxDirectory(async (sandboxPath) => {
+        const outFolderPath = join(sandboxPath, 'outFolder');
         fs.mkdirSync(outFolderPath);
         const pi = new PipelineIOImpl(getTestDataPath('testFolder/subFolder'), outFolderPath);
         const createdPath = pi.createResource(MimeType.TEXT, 'This is a test file.');
-        t.true(fs.existsSync(Path.join(outFolderPath, createdPath)));
+        t.true(fs.existsSync(join(outFolderPath, createdPath)));
     });
 });
-test.serial('PipelineIOImpl.createResource() applies correct file extension', t => {
-    useSandboxDirectory(() => {
-        const pi = new PipelineIOImpl(getTestDataPath('testFolder/subFolder'), getSandboxPath('outFolder'));
+test('PipelineIOImpl.createResource() applies correct file extension', async t => {
+    await useSandboxDirectory(async(sandboxPath) => {
+        const pi = new PipelineIOImpl(getTestDataPath('testFolder/subFolder'), join(sandboxPath, 'outFolder'));
         for (const mime of [MimeType.HTML, MimeType.CSS, MimeType.JAVASCRIPT, MimeType.JSON, MimeType.TEXT, 'unknown' as MimeType]) {
             t.true(pi.createResource(mime, 'content').endsWith(getResourceTypeExtension(mime)));
         }
@@ -126,24 +127,24 @@ test('Mooltipage constructor applies default options', t => {
 test('Mooltipage constructor creates pipeline', t => {
     t.truthy(new Mooltipage().pipeline);
 });
-test.serial('Mooltipage.processPage() compiles a page', t => {
-    useSandboxDirectory(() => {
+test('Mooltipage.processPage() compiles a page', async t => {
+    await useSandboxDirectory(async (sandboxPath) => {
         const mp = new Mooltipage({
             inPath: getTestDataPath('./'),
-            outPath: getSandboxPath('out')
+            outPath: join(sandboxPath, 'out')
         });
         mp.processPage('testPage.html');
-        t.true(fs.existsSync(getSandboxPath('out/testPage.html')));
+        t.true(fs.existsSync(join(sandboxPath, 'out/testPage.html')));
     });
 });
-test.serial('Mooltipage.processPages() compiles multiple pages', t => {
-    useSandboxDirectory(() => {
+test('Mooltipage.processPages() compiles multiple pages', async t => {
+    await useSandboxDirectory(async (sandboxPath) => {
         const mp = new Mooltipage({
             inPath: getTestDataPath('testFolder'),
-            outPath: getSandboxPath('out')
+            outPath: join(sandboxPath, 'out')
         });
         mp.processPages([ 'subFolder/subPage1.html', 'subFolder/subPage2.html' ]);
-        t.true(fs.existsSync(getSandboxPath('out/subFolder/subPage1.html')));
-        t.true(fs.existsSync(getSandboxPath('out/subFolder/subPage2.html')));
+        t.true(fs.existsSync(join(sandboxPath, 'out/subFolder/subPage1.html')));
+        t.true(fs.existsSync(join(sandboxPath, 'out/subFolder/subPage2.html')));
     });
 });

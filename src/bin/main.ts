@@ -2,4 +2,8 @@
 
 import {cliMain} from './cli';
 
-cliMain(process.argv.slice(2), console);
+async function main(): Promise<void> {
+    await cliMain(process.argv.slice(2), console);
+}
+
+main().catch(err => console.error(err));
