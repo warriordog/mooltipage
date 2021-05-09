@@ -11,7 +11,7 @@ Data-binding is easily implemented using JavaScript expressions within classic h
 Mooltipage is currently considered "in-development" and should not be used for production web projects.
 
 ### Requirements:
-- Node.JS 12.x or newer
+- Node.JS 14.x or newer
 - Windows, Linux, or Mac OS
 
 ### More Information:
