@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/10</span>
+                <span class='fraction'>7/8</span>
             </div>
         
             
@@ -113,28 +113,29 @@
 <span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1561x</span>
+<span class="cline-any cline-yes">1584x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1558x</span>
+<span class="cline-any cline-yes">1581x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -150,7 +151,6 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
 import { MImportNode, TagNode, MFragmentNode } from '../../..';
 &nbsp;
@@ -162,42 +162,42 @@ export class ImportModule implements HtmlCompilerModule {
         
         if (MImportNode.isMImportNode(htmlContext.node)) {
             // if this is m-import, then process it
-            ImportModule.registerImport(htmlContext.node, htmlContext);
+            registerImport(htmlContext.node, htmlContext);
 &nbsp;
         } else if (TagNode.isTagNode(htmlContext.node) &amp;&amp; htmlContext.hasImport(htmlContext.node.tagName)) {
             // else if this is a replacement node, then replace it
-            ImportModule.replaceImport(htmlContext.node, htmlContext);
+            replaceImport(htmlContext.node, htmlContext);
         }
     }
+}
 &nbsp;
-    private static registerImport(mImport: MImportNode, htmlContext: HtmlCompilerContext): void {
-        // imports are registered into the parent scope. Fall back to current scope in case this is the root
-        const targetNodeData = htmlContext.parentContext ?? <span class="branch-1 cbranch-no" title="branch not covered" >htmlContext;</span>
+function registerImport(mImport: MImportNode, htmlContext: HtmlCompilerContext): void {
+    // imports are registered into the parent scope. Fall back to current scope in case this is the root
+    const targetNodeData = htmlContext.parentContext ?? <span class="branch-1 cbranch-no" title="branch not covered" >htmlContext;</span>
 &nbsp;
-        // create import definition and register in compile data
-        targetNodeData.defineImport({
-            alias: mImport.as,
-            source: mImport.src
-        });
+    // create import definition and register in compile data
+    targetNodeData.defineImport({
+        alias: mImport.as,
+        source: mImport.src
+    });
 &nbsp;
-        // delete node
-        mImport.removeSelf();
-        htmlContext.setDeleted();
-    }
+    // delete node
+    mImport.removeSelf();
+    htmlContext.setDeleted();
+}
 &nbsp;
-    private static replaceImport(tag: TagNode, htmlContext: HtmlCompilerContext): void {
-        // get import definition
-        const importDefinition = htmlContext.getImport(tag.tagName);
+function replaceImport(tag: TagNode, htmlContext: HtmlCompilerContext): void {
+    // get import definition
+    const importDefinition = htmlContext.getImport(tag.tagName);
 &nbsp;
-        // create replacement
-        const attributes = new Map(tag.getAttributes().entries());
-        const replacementTag = new MFragmentNode(importDefinition.source, attributes);
+    // create replacement
+    const attributes = new Map(tag.getAttributes().entries());
+    const replacementTag = new MFragmentNode(importDefinition.source, attributes);
 &nbsp;
-        // replace tag
-        replacementTag.appendChildren(tag.childNodes);
-        tag.replaceSelf([ replacementTag ]);
-        htmlContext.setDeleted();
-    }
+    // replace tag
+    replacementTag.appendChildren(tag.childNodes);
+    tag.replaceSelf([ replacementTag ]);
+    htmlContext.setDeleted();
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -205,7 +205,7 @@ export class ImportModule implements HtmlCompilerModule {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu May 06 2021 16:16:37 GMT+0000 (Coordinated Universal Time)
+                at Sun May 09 2021 21:03:57 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -146,14 +146,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1550x</span>
+<span class="cline-any cline-yes">1573x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1550x</span>
+<span class="cline-any cline-yes">1573x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1548x</span>
+<span class="cline-any cline-yes">1571x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -162,6 +162,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -178,10 +179,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -189,6 +186,10 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -203,7 +204,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
 import {
@@ -219,65 +219,65 @@ import {
 import {resolveResPath} from '../../../fs/pathUtils';
 &nbsp;
 export class StyleModule implements HtmlCompilerModule {
-    enterNode(htmlContext: HtmlCompilerContext): void {
+    async enterNode(htmlContext: HtmlCompilerContext): Promise&lt;void&gt; {
         const pipelineContext = htmlContext.sharedContext.pipelineContext;
 &nbsp;
         if (InternalStyleNode.isInternalStyleNode(htmlContext.node)) {
             // internal (inline) CSS
             const src = pipelineContext.fragment.path;
-            this.compileStyle(htmlContext.node, htmlContext.node.styleContent, src, htmlContext);
+            await compileStyle(htmlContext.node, htmlContext.node.styleContent, src, htmlContext);
 &nbsp;
         } else if (ExternalStyleNode.isExternalStyleNode(htmlContext.node)) {
             // external CSS
             const resPath = resolveResPath(htmlContext.node.src, pipelineContext.fragment.path);
-            const styleContent = pipelineContext.pipeline.getRawText(resPath, MimeType.CSS);
-            this.compileStyle(htmlContext.node, styleContent, htmlContext.node.src, htmlContext);
+            const styleContent = await pipelineContext.pipeline.getRawText(resPath, MimeType.CSS);
+            await compileStyle(htmlContext.node, styleContent, htmlContext.node.src, htmlContext);
         }
     }
+}
 &nbsp;
-    compileStyle(node: CompiledStyleNode, styleContent: string, src: string, htmlContext: HtmlCompilerContext): void {
-        switch (node.bind) {
-            case StyleNodeBind.HEAD:
-                this.compileStyleHead(node, styleContent, htmlContext);
-                break;
-<span class="branch-1 cbranch-no" title="branch not covered" >            case StyleNodeBind.LINK: </span>
-<span class="cstat-no" title="statement not covered" >                this.compileStyleLink(node, src, styleContent, htmlContext);</span>
-<span class="cstat-no" title="statement not covered" >                break;</span>
-<span class="branch-2 cbranch-no" title="branch not covered" >            default:</span>
-<span class="cstat-no" title="statement not covered" >                throw new Error(`Unknown StyleNodeBind value: '${ node.bind }'`);</span>
+async function compileStyle(node: CompiledStyleNode, styleContent: string, src: string, htmlContext: HtmlCompilerContext): Promise&lt;void&gt; {
+    switch (node.bind) {
+        case StyleNodeBind.HEAD:
+            compileStyleHead(node, styleContent, htmlContext);
+            break;
+<span class="branch-1 cbranch-no" title="branch not covered" >        case StyleNodeBind.LINK:</span>
+<span class="cstat-no" title="statement not covered" >            await compileStyleLink(node, src, styleContent, htmlContext);</span>
+<span class="cstat-no" title="statement not covered" >            break;</span>
+<span class="branch-2 cbranch-no" title="branch not covered" >        default:</span>
+<span class="cstat-no" title="statement not covered" >            throw new Error(`Unknown StyleNodeBind value: '${ node.bind }'`);</span>
         }
-    }
+}
 &nbsp;
-    compileStyleHead(currentNode: CompiledStyleNode, styleContent: string, htmlContext: HtmlCompilerContext): void {
-        // create text to hold CSS
-        const styleText = new TextNode(styleContent);
-        // if this formatting should be skipped, then set whitespace sensitivity
-        styleText.isWhitespaceSensitive = currentNode.skipFormat;
+function compileStyleHead(currentNode: CompiledStyleNode, styleContent: string, htmlContext: HtmlCompilerContext): void {
+    // create text to hold CSS
+    const styleText = new TextNode(styleContent);
+    // if this formatting should be skipped, then set whitespace sensitivity
+    styleText.isWhitespaceSensitive = currentNode.skipFormat;
 &nbsp;
-        // create style node
-        const styleNode = new UncompiledStyleNode();
-        styleNode.appendChild(styleText);
+    // create style node
+    const styleNode = new UncompiledStyleNode();
+    styleNode.appendChild(styleText);
 &nbsp;
-        // replace compile node
-        currentNode.replaceSelf([ styleNode ]);
-        htmlContext.setDeleted();
-    }
+    // replace compile node
+    currentNode.replaceSelf([ styleNode ]);
+    htmlContext.setDeleted();
+}
 &nbsp;
-<span class="fstat-no" title="function not covered" >    compileStyleLink(</span>currentNode: CompiledStyleNode, src: string, styleContent: string, htmlContext: HtmlCompilerContext): void {
-        const rootResPath = <span class="cstat-no" title="statement not covered" >htmlContext.sharedContext.pipelineContext.fragmentContext.rootResPath;</span>
+async function <span class="fstat-no" title="function not covered" >compileStyleLink(</span>currentNode: CompiledStyleNode, src: string, styleContent: string, htmlContext: HtmlCompilerContext): Promise&lt;void&gt; {
+    const rootResPath = <span class="cstat-no" title="statement not covered" >htmlContext.sharedContext.pipelineContext.fragmentContext.rootResPath;</span>
 &nbsp;
-        // write external CSS
-        const styleResPath = <span class="cstat-no" title="statement not covered" >htmlContext.sharedContext.pipelineContext.pipeline.linkResource(MimeType.CSS, styleContent, rootResPath);</span>
+    // write external CSS
+    const styleResPath = <span class="cstat-no" title="statement not covered" >await htmlContext.sharedContext.pipelineContext.pipeline.linkResource(MimeType.CSS, styleContent, rootResPath);</span>
 &nbsp;
-        // create link
-        const link = <span class="cstat-no" title="statement not covered" >new TagNode('link');</span>
-<span class="cstat-no" title="statement not covered" >        link.setAttribute('rel', 'stylesheet');</span>
-<span class="cstat-no" title="statement not covered" >        link.setAttribute('href', styleResPath);</span>
+    // create link
+    const link = <span class="cstat-no" title="statement not covered" >new TagNode('link');</span>
+<span class="cstat-no" title="statement not covered" >    link.setAttribute('rel', 'stylesheet');</span>
+<span class="cstat-no" title="statement not covered" >    link.setAttribute('href', styleResPath);</span>
 &nbsp;
-        // replace
-<span class="cstat-no" title="statement not covered" >        currentNode.replaceSelf([ link ]);</span>
-<span class="cstat-no" title="statement not covered" >        htmlContext.setDeleted();</span>
-    }
+    // replace
+<span class="cstat-no" title="statement not covered" >    currentNode.replaceSelf([ link ]);</span>
+<span class="cstat-no" title="statement not covered" >    htmlContext.setDeleted();</span>
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -286,7 +286,7 @@ export class StyleModule implements HtmlCompilerModule {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu May 06 2021 16:16:37 GMT+0000 (Coordinated Universal Time)
+                at Sun May 09 2021 21:03:57 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

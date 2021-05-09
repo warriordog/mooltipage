@@ -200,20 +200,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -223,10 +223,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import Path
@@ -235,7 +235,7 @@ import {
     getDirectoryContents,
     pathIsDirectory,
     pathIsFile,
-    readFile
+    readFile,
 } from '../lib/fs/fsUtils';
 &nbsp;
 /**
@@ -263,15 +263,15 @@ export interface PackageJsonFile {
  * @returns PackageJsonFile Parsed data from package.json
  * @throws if path does not point to a file
  */
-export function readPackageJson(path?: string): PackageJsonFile {
+export async function readPackageJson(path?: string): Promise&lt;PackageJsonFile&gt; {
     <span class="missing-if-branch" title="else path not taken" >E</span>if (path === undefined) {
         path = Path.resolve(__dirname, 'package.json');
-        while (!pathIsFile(path)) {
+        while (!await pathIsFile(path)) {
             path = Path.resolve(Path.dirname(path), '..', 'package.json');
         }
     }
 &nbsp;
-    const packageJsonText = readFile(path);
+    const packageJsonText = await readFile(path);
     return JSON.parse(packageJsonText);
 }
 &nbsp;
@@ -285,31 +285,31 @@ export function readPackageJson(path?: string): PackageJsonFile {
  * @param basePath Base path to compute relative paths
  * @returns Array of paths to all HTML files found in paths and subdirectories
  */
-export function expandPagePaths(paths: string[], basePath: string): string[] {
+export async function expandPagePaths(paths: readonly string[], basePath: string): Promise&lt;string[]&gt; {
     const outPages: string[] = [];
 &nbsp;
     for (const rawPath of paths) {
-        expandPagePath(rawPath, basePath, outPages);
+        await expandPagePath(rawPath, basePath, outPages);
     }
 &nbsp;
     return outPages;
 }
 &nbsp;
-function expandPagePath(pagePath: string, basePath: string, outPaths: string[]): void {
+async function expandPagePath(pagePath: string, basePath: string, outPaths: string[]): Promise&lt;void&gt; {
     const realPath = Path.resolve(pagePath);
 &nbsp;
     // directories need to be recursively searched
-    if (pathIsDirectory(realPath)) {
-        for (const subFile of getDirectoryContents(realPath)) {
+    if (await pathIsDirectory(realPath)) {
+        for (const subFile of (await getDirectoryContents(realPath))) {
             const subFilePath = Path.join(pagePath, subFile);
 &nbsp;
             // recurse with each directory content
-            expandPagePath(subFilePath, basePath, outPaths);
+           await expandPagePath(subFilePath, basePath, outPaths);
         }
     }
 &nbsp;
     // Add all HTML files
-    if (pathIsFile(realPath) &amp;&amp; realPath.toLowerCase().endsWith('.html')) {
+    if ((await pathIsFile(realPath)) &amp;&amp; realPath.toLowerCase().endsWith('.html')) {
         // computer and save relative path
         const relativePath = Path.relative(basePath, pagePath);
         outPaths.push(relativePath);
@@ -322,7 +322,7 @@ function expandPagePath(pagePath: string, basePath: string, outPaths: string[]):
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu May 06 2021 16:16:37 GMT+0000 (Coordinated Universal Time)
+                at Sun May 09 2021 21:03:57 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../prettify.js"></script>
