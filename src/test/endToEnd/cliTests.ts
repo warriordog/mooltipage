@@ -17,6 +17,7 @@ import {join} from 'path';
 import {TestCliConsole} from '../_util/testCliConsole';
 
 test('CLI responds to file changes and deletions in watch mode', async t => {
+    t.timeout(3000);
     await useSandboxDirectory(async sandboxPath => {
         // Compute file paths
         const outputPath = join(sandboxPath, 'output');
@@ -32,11 +33,12 @@ test('CLI responds to file changes and deletions in watch mode', async t => {
         const args: CliArgs = {
             inPath: inputPath,
             outPath: outputPath,
-            formatter: 'minimized',
+            formatter: 'none',
             pages: [ inputTestPage ],
             watch: true
         };
 
+        // Run initial compile
         await runApp(args, cliConsole);
 
         // Wait for update (this is first in case the watcher responds before writeFile returns

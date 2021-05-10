@@ -69,7 +69,8 @@ export class WatchingCliEngine extends CliEngine {
         const fileWatcher = new FSWatcher({
             disableGlobbing: true,
             persistent: true,
-            ignoreInitial: true
+            ignoreInitial: true,
+            useFsEvents: true
         });
 
         // create timer to apply changes
