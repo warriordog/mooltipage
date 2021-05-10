@@ -35,6 +35,8 @@ export class DeduplicateModule implements HtmlCompilerModule {
  * If the contents of the style are unique, then it is preserved and the contents are remembered.
  * If the contents are not unique, then the node is removed.
  *
+ * TODO keep duplicates if they have different MIME types
+ *
  * @param styleNode Style node to process
  * @param htmlContext current context
  */

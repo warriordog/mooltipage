@@ -171,6 +171,16 @@ export enum MimeType {
     CSS = 'text/css',
 
     /**
+     * SCSS (CSS variant) resource
+     */
+    SCSS = 'text/scss',
+
+    /**
+     * SASS (CSS variant) resource
+     */
+    SASS = 'text/sass',
+
+    /**
      * JavaScript resource
      */
     JAVASCRIPT = 'text/javascript',
@@ -184,6 +194,25 @@ export enum MimeType {
      * Plain text resource
      */
     TEXT = 'text/plain'
+}
+
+/**
+ * Gets the filename extension to use for a specified resource type.
+ * Defaults to "dat" for unknown resource types.
+ * @param resourceType Resource type to get extension for
+ * @returns filename extension, without the dot.
+ */
+export function getResourceTypeExtension(resourceType: MimeType): string {
+    switch (resourceType) {
+        case MimeType.HTML: return 'html';
+        case MimeType.CSS: return 'css';
+        case MimeType.SASS: return 'sass';
+        case MimeType.SCSS: return 'scss';
+        case MimeType.JAVASCRIPT: return 'js';
+        case MimeType.JSON: return 'json';
+        case MimeType.TEXT: return 'txt';
+        default: return 'dat';
+    }
 }
 
 /**

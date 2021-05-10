@@ -605,7 +605,7 @@ export function cloneMDataNode(node: MDataNode, deep: boolean, callback?: (oldNo
 export function cloneUncompiledStyleNode(node: UncompiledStyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): UncompiledStyleNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new UncompiledStyleNode(newAttrs);
+    const newNode = new UncompiledStyleNode(node.lang, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -621,7 +621,7 @@ export function cloneUncompiledStyleNode(node: UncompiledStyleNode, deep: boolea
 export function cloneInternalStyleNode(node: InternalStyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): InternalStyleNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new InternalStyleNode(node.bind, node.skipFormat, newAttrs);
+    const newNode = new InternalStyleNode(node.bind, node.skipFormat, node.lang, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 
@@ -637,7 +637,7 @@ export function cloneInternalStyleNode(node: InternalStyleNode, deep: boolean, c
 export function cloneExternalStyleNode(node: ExternalStyleNode, deep: boolean, callback?: (oldNode: Node, newNode: Node) => void): ExternalStyleNode {
     const newAttrs = cloneAttributes(node);
 
-    const newNode = new ExternalStyleNode(node.src, node.bind, node.skipFormat, newAttrs);
+    const newNode = new ExternalStyleNode(node.src, node.bind, node.skipFormat, node.lang, newAttrs);
 
     processClonedParentNode(node, newNode, deep, callback);
 

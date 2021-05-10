@@ -235,12 +235,12 @@ test('HtmlFormatter ignores CDATA in none mode', testFormat,
     NoneFormatterPreset);
 
 test('HtmlFormatter properly handles whitespace-sensitive style nodes', testFormat,
-`<style compiled skip-format bind="head">
+`<style compiled skip-format bind="head" lang="text/css">
     .class {
         --prop: "value"
     }
 </style>`,
-`<style compiled skip-format bind="head">
+`<style compiled skip-format bind="head" lang="text/css">
     .class {
         --prop: "value"
     }
@@ -253,11 +253,11 @@ test('HtmlFormatter properly handles whitespace-sensitive style nodes', testForm
         }
     });
 
-test('HtmlFormatter currently indents other HTML with whitespace-sensitive style nodes', testFormat,
+test('HtmlFormatter correctly indents other HTML with whitespace-sensitive style nodes', testFormat,
 `
 <div>
         <div></div>
-<style compiled skip-format bind="head">
+<style compiled skip-format bind="head" lang="text/css">
     .class {
         --prop: "value"
     }
@@ -265,7 +265,7 @@ test('HtmlFormatter currently indents other HTML with whitespace-sensitive style
 </div>`,
 `<div>
     <div></div>
-    <style compiled skip-format bind="head">
+    <style compiled skip-format bind="head" lang="text/css">
     .class {
         --prop: "value"
     }

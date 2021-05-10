@@ -2,10 +2,11 @@ import test
     from 'ava';
 import {
     DefaultMpOptions,
-    getResourceTypeExtension,
     Mooltipage,
-    MpOptions
-} from '../../lib/api/mooltipage';
+    MpOptions,
+    getResourceTypeExtension,
+    MimeType
+} from '../../lib';
 import {
     StandardHtmlFormatter,
     FormatterMode,
@@ -18,7 +19,6 @@ import {
     getTestDataPath,
     useSandboxDirectory
 } from '../_util/testFsUtils';
-import {MimeType} from '../../lib';
 import fs from 'fs';
 import {join} from 'path';
 import {PipelineIOImpl} from '../../lib/pipeline/standardPipeline';

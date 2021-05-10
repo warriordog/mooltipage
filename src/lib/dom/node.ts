@@ -1,5 +1,5 @@
 import * as NodeLogic from './nodeLogic';
-import { MimeType } from '..';
+import {MimeType} from '../api/pipeline';
 
 /**
  * Recognized node types
@@ -595,6 +595,19 @@ export class TagNode extends NodeWithChildren {
      */
     setAttribute(name: string, value: string | null): void {
         this.setRawAttribute(name, value);
+    }
+
+    /**
+     * Sets the value of an attribute, or deletes it if undefined.
+     * @param name Name of the attribute.
+     * @param value Value to set, or undefined to delete
+     */
+    setOptionalValueAttribute(name: string, value: string | undefined): void {
+        if (value === undefined) {
+            this.deleteAttribute(name);
+        } else {
+            this.setRawAttribute(name, value);
+        }
     }
 
     /**
@@ -1445,10 +1458,11 @@ export class MDataNode extends TagNode {
  * May be compiled (processed by mooltipage) or not (ignored by mooltipage)
  */
 export abstract class StyleNode extends TagNode {
-    protected constructor(compiled: boolean, attributes?: Map<string, unknown>) {
+    protected constructor(compiled: boolean, lang?: string, attributes?: Map<string, unknown>) {
         super('style', attributes);
 
         this.setBooleanAttribute('compiled', compiled);
+        this.setOptionalValueAttribute('lang', lang);
     }
 
     /**
@@ -1456,6 +1470,16 @@ export abstract class StyleNode extends TagNode {
      */
     get compiled(): boolean {
         return this.hasAttribute('compiled');
+    }
+
+    /**
+     * Language of this style tag.
+     */
+    get lang(): string | undefined {
+        return this.getOptionalValueAttribute('lang');
+    }
+    set lang(newLang: string | undefined) {
+        this.setOptionalValueAttribute('lang', newLang);
     }
 
     /**
@@ -1471,8 +1495,8 @@ export abstract class StyleNode extends TagNode {
  * Style node that will be ignored by Mooltipage
  */
 export class UncompiledStyleNode extends StyleNode {
-    constructor(attributes?: Map<string, unknown>) {
-        super(false, attributes);
+    constructor(lang?: string, attributes?: Map<string, unknown>) {
+        super(false, lang, attributes);
     }
 
     clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): UncompiledStyleNode {
@@ -1513,8 +1537,8 @@ export abstract class CompiledStyleNode extends StyleNode {
      */
     readonly isExternal: boolean;
 
-    protected constructor(isExternal: boolean, bindType = StyleNodeBind.HEAD, skipFormat = false, attributes?: Map<string, unknown>) {
-        super(true, attributes);
+    protected constructor(isExternal: boolean, bindType = StyleNodeBind.HEAD, skipFormat = false, lang?: string, attributes?: Map<string, unknown>) {
+        super(true, lang, attributes);
 
         this.isExternal = isExternal;
         this.bind = bindType;
@@ -1551,8 +1575,8 @@ export abstract class CompiledStyleNode extends StyleNode {
  * <style> node that is compiled and contains an inline stylesheet
  */
 export class InternalStyleNode extends CompiledStyleNode {
-    constructor(bindType?: StyleNodeBind, skipFormat?: boolean, attributes?: Map<string, unknown>) {
-        super(false, bindType, skipFormat, attributes);
+    constructor(bindType?: StyleNodeBind, skipFormat?: boolean, lang?: string, attributes?: Map<string, unknown>) {
+        super(false, bindType, skipFormat, lang, attributes);
     }
 
     /**
@@ -1586,8 +1610,8 @@ export class InternalStyleNode extends CompiledStyleNode {
  * <style> node that is compiled and points to an external stylesheet
  */
 export class ExternalStyleNode extends CompiledStyleNode {
-    constructor(src: string, bindType?: StyleNodeBind, skipFormat?: boolean, attributes?: Map<string, unknown>) {
-        super(true, bindType, skipFormat, attributes);
+    constructor(src: string, bindType?: StyleNodeBind, skipFormat?: boolean, lang?: string, attributes?: Map<string, unknown>) {
+        super(true, bindType, skipFormat, lang, attributes);
 
         this.src = src;
     }
@@ -1650,7 +1674,7 @@ export class UncompiledScriptNode extends ScriptNode {
         super(false, attributes);
     }
 
-    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): UncompiledStyleNode {
+    clone(deep = true, callback?: (oldNode: Node, newNode: Node) => void): UncompiledScriptNode {
         return NodeLogic.cloneUncompiledScriptNode(this, deep, callback);
     }
 
@@ -1658,7 +1682,7 @@ export class UncompiledScriptNode extends ScriptNode {
      * Returns true if a node is an UncompiledScriptNode
      * @param node Node to check
      */
-    static isUncompiledScriptNode(node: Node): node is UncompiledStyleNode {
+    static isUncompiledScriptNode(node: Node): node is UncompiledScriptNode {
         return ScriptNode.isScriptNode(node) && !node.compiled;
     }
 }

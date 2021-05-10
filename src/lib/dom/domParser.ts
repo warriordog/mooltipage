@@ -36,7 +36,7 @@ import {
     MWhitespaceNode,
     MWhitespaceNodeMode
 } from './node';
-import { MimeType } from '..';
+import {MimeType} from '..';
 import {convertCamelCaseToSnakeCase} from '../util/caseUtils';
 
 /**
@@ -353,9 +353,12 @@ export class DomHandler implements Partial<Handler> {
     }
 
     private static createStyleNode(attributes: Map<string, string | null>): StyleNode {
+        // Get lang
+        const lang = attributes.get('lang') ?? undefined;
+
         // "uncompiled" style nodes should be passed on as-is
         if (!attributes.has('compiled')) {
-            return new UncompiledStyleNode(attributes);
+            return new UncompiledStyleNode(lang, attributes);
         }
 
         // "compiled" style nodes need further processing
@@ -368,9 +371,9 @@ export class DomHandler implements Partial<Handler> {
 
         const src = attributes.get('src');
         if (src) {
-            return new ExternalStyleNode(src, bind, skipFormat, attributes);
+            return new ExternalStyleNode(src, bind, skipFormat, lang, attributes);
         } else {
-            return new InternalStyleNode(bind, skipFormat, attributes);
+            return new InternalStyleNode(bind, skipFormat, lang, attributes);
         }
     }
 

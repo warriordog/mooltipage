@@ -1,13 +1,13 @@
-import { HtmlCompilerModule, HtmlCompilerContext } from '../htmlCompiler';
+import {HtmlCompilerContext, HtmlCompilerModule} from '../htmlCompiler';
 import {
-    TagNode,
     CompiledStyleNode,
-    InternalStyleNode,
     ExternalStyleNode,
-    TextNode,
+    InternalStyleNode,
+    MimeType,
     StyleNodeBind,
-    UncompiledStyleNode,
-    MimeType
+    TagNode,
+    TextNode,
+    UncompiledStyleNode
 } from '../../..';
 import {resolveResPath} from '../../../fs/pathUtils';
 
@@ -49,7 +49,7 @@ function compileStyleHead(currentNode: CompiledStyleNode, styleContent: string, 
     styleText.isWhitespaceSensitive = currentNode.skipFormat;
 
     // create style node
-    const styleNode = new UncompiledStyleNode();
+    const styleNode = new UncompiledStyleNode(currentNode.lang);
     styleNode.appendChild(styleText);
 
     // replace compile node
@@ -57,11 +57,20 @@ function compileStyleHead(currentNode: CompiledStyleNode, styleContent: string, 
     htmlContext.setDeleted();
 }
 
+function getMimeTypeForLang(lang: string | undefined): MimeType {
+    switch (lang) {
+        case 'sass': return MimeType.SASS;
+        case 'scss': return MimeType.SCSS;
+        default: return MimeType.CSS;
+    }
+}
+
 async function compileStyleLink(currentNode: CompiledStyleNode, src: string, styleContent: string, htmlContext: HtmlCompilerContext): Promise<void> {
     const rootResPath = htmlContext.sharedContext.pipelineContext.fragmentContext.rootResPath;
 
     // write external CSS
-    const styleResPath = await htmlContext.sharedContext.pipelineContext.pipeline.linkResource(MimeType.CSS, styleContent, rootResPath);
+    const mimeType = getMimeTypeForLang(currentNode.lang);
+    const styleResPath = await htmlContext.sharedContext.pipelineContext.pipeline.linkResource(mimeType, styleContent, rootResPath);
 
     // create link
     const link = new TagNode('link');

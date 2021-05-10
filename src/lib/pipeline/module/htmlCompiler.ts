@@ -190,12 +190,14 @@ export interface SharedHtmlCompilerContext {
     /**
      * Set of all unique CSS styles that have been found during compilation.
      * This set is inherited and shared by all nodes within the same compilation unit.
+     * TODO remove this from global state
      */
     readonly uniqueStyles: Set<string>;
 
     /**
      * Set of all unique HTML link node targets that have been found during compilation.
      * This set is inherited and shared by all nodes within the same compilation unit.
+     * TODO remove this from global scope
      */
     readonly uniqueLinks: Set<string>;
 }

@@ -1,18 +1,6 @@
-import {
-    PipelineIOImpl,
-    StandardPipeline
-} from '../pipeline/standardPipeline';
-import {
-    HtmlFormatter,
-    MimeType,
-    Page,
-    Pipeline,
-    PipelineIO
-} from '..';
-import {
-    createStandardHtmlFormatter,
-    FormatterMode
-} from '../pipeline/module/standardHtmlFormatter';
+import {PipelineIOImpl, StandardPipeline} from '../pipeline/standardPipeline';
+import {HtmlFormatter, Page, Pipeline, PipelineIO} from '..';
+import {createStandardHtmlFormatter, FormatterMode} from '../pipeline/module/standardHtmlFormatter';
 
 /**
  * Called whenever a page is compiled.
@@ -141,22 +129,5 @@ function createPipelineIO(options: MpOptions): PipelineIO {
         const sourcePath = options.inPath ?? process.cwd();
         const destinationPath = options.outPath ?? process.cwd();
         return new PipelineIOImpl(sourcePath, destinationPath);
-    }
-}
-
-/**
- * Gets the filename extension to use for a specified resource type.
- * Defaults to "dat" for unknown resource types.
- * @param resourceType Resource type to get extension for
- * @returns filename extension, without the dot.
- */
-export function getResourceTypeExtension(resourceType: MimeType): string {
-    switch (resourceType) {
-        case MimeType.HTML: return 'html';
-        case MimeType.CSS: return 'css';
-        case MimeType.JAVASCRIPT: return 'js';
-        case MimeType.JSON: return 'json';
-        case MimeType.TEXT: return 'txt';
-        default: return 'dat';
     }
 }
