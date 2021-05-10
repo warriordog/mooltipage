@@ -75,7 +75,7 @@ export class WatchingCliEngine extends CliEngine {
         });
 
         // create timer to apply changes
-        const applyChangesTimer = setTimeout(() => this.checkAndApplyStagedChanges(fileWatcher), 250);
+        const applyChangesTimer = setTimeout(() => this.checkAndApplyStagedChanges(fileWatcher), 300);
 
         // watch files
         this.watchCurrentFiles(fileWatcher);

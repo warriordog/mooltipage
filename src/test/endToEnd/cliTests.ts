@@ -17,7 +17,7 @@ import {join} from 'path';
 import {TestCliConsole} from '../_util/testCliConsole';
 
 test('CLI responds to file changes and deletions in watch mode', async t => {
-    t.timeout(10000);
+    t.timeout(20000);
     await useSandboxDirectory(async sandboxPath => {
         // Compute file paths
         const outputPath = join(sandboxPath, 'output');
