@@ -26,7 +26,7 @@ import * as FsUtils
     from '../fs/fsUtils';
 import Path
     from 'path';
-import {resolveResPath} from '../fs/pathUtils';
+import {computeRelativeResPath, resolveResPath} from '../fs/pathUtils';
 import {StandardPipelineCache} from './pipelineCache';
 import {hashMD5} from '../util/encodingUtils';
 
@@ -222,7 +222,8 @@ export class StandardPipeline implements Pipeline {
         // store in cache
         this.cache.createdResourceCache.store(contentsHash, resPath);
 
-        return resPath;
+        // Append "root-relative" prefix
+        return `@${ Path.sep }${ resPath }`;
     }
 
     /**
@@ -240,7 +241,10 @@ export class StandardPipeline implements Pipeline {
         const rawResPath = await this.createLinkableResource(type, contents);
 
         // adjust path relative to the output page and directory
-        return resolveResPath(rawResPath, rootResPath);
+        const resolvedResPath = resolveResPath(rawResPath, rootResPath);
+
+        // Compute path relative from root
+        return computeRelativeResPath(rootResPath, resolvedResPath);
     }
 
     /**
