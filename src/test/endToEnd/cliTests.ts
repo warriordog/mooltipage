@@ -41,6 +41,9 @@ test('CLI responds to file changes and deletions in watch mode', async t => {
         // Run initial compile
         await runApp(args, cliConsole);
 
+        // Check that initial run succeeded (and reset the timeout so that the next part gets the full time)
+        t.true(cliConsole.logs.some(msg => String(msg).includes('testPage.html')));
+
         // Wait for update (this is first in case the watcher responds before writeFile returns
         const waitPromise = cliConsole.waitForLog((msg => String(msg).includes('testPage.html')));
 
