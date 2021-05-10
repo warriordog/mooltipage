@@ -8,6 +8,7 @@ import {
 } from './trackers';
 import {FSWatcher} from 'chokidar';
 import {
+    createReadyFSWatcher,
     onAny,
     setWatched
 } from './FSWatcherUtils';
@@ -22,7 +23,7 @@ export class WatchingCliEngine extends CliEngine {
         await super.runApp();
 
         // enter watch mode
-        this.enterWatchMode();
+        await this.enterWatchMode();
         this.cliConsole.log('Entering watch mode - modified files will be rebuilt automatically.');
     }
 
@@ -64,9 +65,9 @@ export class WatchingCliEngine extends CliEngine {
         return mooltipage;
     }
 
-    private enterWatchMode(): void {
+    private async enterWatchMode(): Promise<void> {
         // create file watcher
-        const fileWatcher = new FSWatcher({
+        const fileWatcher = await createReadyFSWatcher({
             disableGlobbing: true,
             persistent: true,
             ignoreInitial: true,
