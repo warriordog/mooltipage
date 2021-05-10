@@ -240,7 +240,7 @@ export class StandardPipeline implements Pipeline {
         const rawResPath = await this.createLinkableResource(type, contents);
 
         // adjust path relative to the output page and directory
-        return resolveResPath(rootResPath, rawResPath);
+        return resolveResPath(rawResPath, rootResPath);
     }
 
     /**

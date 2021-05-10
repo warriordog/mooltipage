@@ -39,7 +39,7 @@ async function compileStyle(node: CompiledStyleNode, styleContent: string, src: 
             break;
         default:
             throw new Error(`Unknown StyleNodeBind value: '${ node.bind }'`);
-        }
+    }
 }
 
 function compileStyleHead(currentNode: CompiledStyleNode, styleContent: string, htmlContext: HtmlCompilerContext): void {
