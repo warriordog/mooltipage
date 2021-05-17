@@ -12,7 +12,7 @@ Mooltipage is currently considered "in-development" and should not be used for p
 
 ### Requirements:
 - Node.JS 14.x or newer
-- Windows, Linux, or Mac OS
+- Windows, Linux, or Mac OS. **Important Note: Watch mode on Mac OS is currently unstable. Please avoid watch mode or use another OS if possible.**
 
 ### More Information:
 Check out the [Getting Started Guide](https://warriordog.github.io/mooltipage/sections/gettingStarted/home.html) to quickly learn the basics of Mooltipage.
