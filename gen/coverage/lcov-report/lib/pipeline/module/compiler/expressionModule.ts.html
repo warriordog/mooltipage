@@ -102,40 +102,41 @@
 <a name='L43'></a><a href='#L43'>43</a>
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">25x</span>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1682x</span>
-<span class="cline-any cline-yes">1038x</span>
+<span class="cline-any cline-yes">1685x</span>
+<span class="cline-any cline-yes">1039x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">644x</span>
-<span class="cline-any cline-yes">529x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">646x</span>
+<span class="cline-any cline-yes">530x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1038x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1038x</span>
+<span class="cline-any cline-yes">1039x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1038x</span>
+<span class="cline-any cline-yes">1039x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1039x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">529x</span>
+<span class="cline-any cline-yes">530x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">529x</span>
+<span class="cline-any cline-yes">530x</span>
 <span class="cline-any cline-yes">515x</span>
 <span class="cline-any cline-yes">515x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -143,41 +144,42 @@
 <span class="cline-any cline-yes">515x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">474x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">474x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {HtmlCompilerContext, HtmlCompilerModule} from '../htmlCompiler';
-import {EvalContext, TagNode, TextNode} from '../../..';
+import {TagNode, TextNode} from '../../..';
 &nbsp;
 /**
  * Compile module that detects and evaluates embedded JS expressions in attributes and text nodes
  */
 export class ExpressionModule implements HtmlCompilerModule {
-    enterNode(htmlContext: HtmlCompilerContext): void {
+    async enterNode(htmlContext: HtmlCompilerContext): Promise&lt;void&gt; {
         if (TextNode.isTextNode(htmlContext.node)) {
-            processTextNode(htmlContext, htmlContext.node);
+            await processTextNode(htmlContext, htmlContext.node);
 &nbsp;
         } else if (TagNode.isTagNode(htmlContext.node)) {
-            processTagNode(htmlContext, htmlContext.node);
+            await processTagNode(htmlContext, htmlContext.node);
         }
     }
 }
 &nbsp;
-function processTextNode(htmlContext: HtmlCompilerContext, node: TextNode): void {
+async function processTextNode(htmlContext: HtmlCompilerContext, node: TextNode): Promise&lt;void&gt; {
     // create eval context from the current scope
-    const evalContext: EvalContext = htmlContext.createEvalContext();
+    const evalContext = htmlContext.createEvalContext();
 &nbsp;
     // compile text
-    const textValue: unknown = htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(node.text, evalContext);
+    const textValue = await htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(node.text, evalContext);
 &nbsp;
     // save back to node
     node.text = (textValue !== null &amp;&amp; textValue !== undefined) ? String(textValue) : <span class="branch-1 cbranch-no" title="branch not covered" >'';</span>
 }
 &nbsp;
-function processTagNode(htmlContext: HtmlCompilerContext, node: TagNode): void {
+async function processTagNode(htmlContext: HtmlCompilerContext, node: TagNode): Promise&lt;void&gt; {
     // create eval context from the current scope
-    const evalContext: EvalContext = htmlContext.createEvalContext();
+    const evalContext = htmlContext.createEvalContext();
 &nbsp;
     // loop through each attribute and compile it
     for (const entry of Array.from(node.getAttributes().entries())) {
@@ -187,9 +189,10 @@ function processTagNode(htmlContext: HtmlCompilerContext, node: TagNode): void {
         // only process strings, anything else must already be compiled
         if (typeof value === 'string') {
             // compile the value, preserving the raw output and not converting to a string
-            const result: unknown = htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(value, evalContext);
+            const result = htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(value, evalContext);
 &nbsp;
-            node.setRawAttribute(key, result);
+            // Set attribute
+            node.setRawAttribute(key, await result);
         }
     }
 }</pre></td></tr></table></pre>
@@ -199,7 +202,7 @@ function processTagNode(htmlContext: HtmlCompilerContext, node: TagNode): void {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon May 17 2021 13:36:34 GMT+0000 (Coordinated Universal Time)
+                at Wed May 19 2021 16:37:47 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
