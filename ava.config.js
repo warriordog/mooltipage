@@ -9,5 +9,6 @@ export default {
         '!src/test/_mocks/**/*',
         '!src/test/_util/**/*',
         '!src/test/_data/**/*'
-    ]
+    ],
+    compile: false
 };

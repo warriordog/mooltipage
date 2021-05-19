@@ -43,7 +43,7 @@
     "prepublishOnly": "npm run rebuild && npm run lint && npm run coverage && npx typedoc && npm run makedocs",
     "debugtest": "ava --serial --verbose",
     "check_lockfile": "npx lockfile-lint -p package-lock.json -a npm -s",
-    "validate": "npm run check_lockfile && npm install && npm run rebuild && npm run lint && nyc ava && npx typedoc && npm run makedocs",
+    "validate": "npm run check_lockfile && npm ci && npm run rebuild && npm run lint && nyc ava && npx typedoc && npm run makedocs",
     "prepare": "husky install"
   },
   "bin": {
