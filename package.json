@@ -1,6 +1,6 @@
 {
   "name": "mooltipage",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Compile-time framework for creating large-scale static HTML websites",
   "homepage": "https://github.com/warriordog/mooltipage#readme",
   "repository": "github:warriordog/mooltipage",
