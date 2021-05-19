@@ -13,7 +13,9 @@ During the initial development phase (version 0.x), major and breaking changes m
 
 ### Requirements:
 - Node.JS 14.x or newer
-- Windows, Linux, or Mac OS. **Important Note: Watch mode on Mac OS is currently unstable. Please avoid watch mode or use another OS if possible.**
+- Windows, Linux, or ~~Mac OS~~.
+  
+**Important Note**: Watch mode on Mac OS is currently unstable. Mac systems are currently not tested in CI and support is not guaranteed.
 
 ### More Information:
 Check out the [Getting Started Guide](https://warriordog.github.io/mooltipage/sections/gettingStarted/home.html) to quickly learn the basics of Mooltipage.
