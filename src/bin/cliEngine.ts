@@ -39,7 +39,7 @@ export class CliEngine {
             inPath: this.args.inPath,
             outPath: this.args.outPath,
             formatter: this.args.formatter,
-            onPageCompiled: page => this.cliConsole.log(`Compiled [${ page.path }].`)
+            onPageCompiled: async page => this.cliConsole.log(`Compiled [${ page.path }].`)
         });
     }
 }

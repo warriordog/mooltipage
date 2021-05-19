@@ -18,6 +18,32 @@ import {WhitespaceModule} from './compiler/whitespaceModule';
 import {StandardPipelineContext} from '../standardPipeline';
 
 /**
+ * Custom tagged template handler to allow promises inside a template string.
+ * This should only be called natively by the JS runtime to handle a tagged template.
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#tagged_templates
+ * @param stringParts Array of "plain" strings from template literal
+ * @param dataParts Array of values from interpolated sections of template literal
+ */
+export async function interpolateEvalTemplateString(stringParts: TemplateStringsArray, ...dataParts: unknown[]): Promise<string> {
+    // Append the first string part
+    const outParts = [ stringParts[0] ];
+
+    // Append data and text in alternation
+    for (let i = 1; i < stringParts.length; i ++) {
+        const rawData = dataParts[i - 1]; // dataParts indexes are -1 from stringParts
+        const dataValue = (rawData instanceof Promise) ? (await rawData) : rawData;
+        const dataString = String(dataValue);
+
+        // Append data and next string
+        outParts.push(dataString);
+        outParts.push(stringParts[i]);
+    }
+
+    // Build string
+    return outParts.join('');
+}
+
+/**
  * Provides HTML compilation support to the pipeline.
  */
 export class HtmlCompiler {
@@ -294,7 +320,8 @@ export class HtmlCompilerContext {
         return {
             pipelineContext: this.sharedContext.pipelineContext,
             scope: this.node.nodeData,
-            sourceNode: this.node
+            sourceNode: this.node,
+            expressionTagger: interpolateEvalTemplateString
         };
     }
 
@@ -312,7 +339,8 @@ export class HtmlCompilerContext {
             return {
                 pipelineContext: this.sharedContext.pipelineContext,
                 scope: this.parentContext.node.nodeData,
-                sourceNode: this.node
+                sourceNode: this.node,
+                expressionTagger: interpolateEvalTemplateString
             };
         } else {
             // fall back to current scope if there is no parent

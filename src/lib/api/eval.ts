@@ -24,9 +24,15 @@ export interface EvalContext {
      * This node can be considered as the "location" of this EvalContext.
      */
     readonly sourceNode: Node;
+
+    /**
+     * ES6 template tagging function that will resolve promises in the template.
+     * Used internally to implement async template literals.
+     */
+    readonly expressionTagger: (stringParts: TemplateStringsArray, ...dataParts: unknown[]) => string | Promise<string>;
 }
 
 /**
  * A function-based expression
  */
-export type EvalFunction<T> = ($: ScopeData, $$: EvalContext, require: MooltipageRequire) => T;
+export type EvalFunction<T> = ($: ScopeData, $$: EvalContext, require: MooltipageRequire) => T | Promise<T>;

@@ -48,7 +48,7 @@ export class WatchingCliEngine extends CliEngine {
             outPath: this.args.outPath,
             pipelineIO: trackingIO,
             formatter: this.args.formatter,
-            onPageCompiled: page => {
+            onPageCompiled: async page => {
                 // update dependencies for page
                 this.dependencyTracker.setPageDependencies(page.path, currentDependencies);
 

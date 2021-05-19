@@ -9,6 +9,7 @@ Build-time scripts can utilize the full power of Node.JS and access Mooltipage's
 Data-binding is easily implemented using JavaScript expressions within classic handlebars / moustache syntax or ES2015-inspired templated strings.
 
 Mooltipage is currently considered "in-development" and should not be used for production web projects.
+During the initial development phase (version 0.x), major and breaking changes may be released at any time with a minor or patch version increase.
 
 ### Requirements:
 - Node.JS 14.x or newer

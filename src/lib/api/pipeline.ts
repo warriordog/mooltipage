@@ -141,7 +141,6 @@ export type ScopeData = Record<ScopeKey, unknown>;
 export interface HtmlFormatter {
     /**
      * Formats a DOM tree before serialization.
-     * Optional.
      * 
      * @param dom DOM tree to format
      */
@@ -149,7 +148,6 @@ export interface HtmlFormatter {
 
     /**
      * Formats serialized HTML before being exported from the pipeline.
-     * Optional.
      * 
      * @param html HTML to format.
      */

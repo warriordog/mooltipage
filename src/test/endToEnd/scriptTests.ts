@@ -94,3 +94,8 @@ test('ScriptNode supports inline scripts', compareFragmentMacro,
 <test value="\${ $.value }" />`,
 '<test value="good"></test>'
 );
+
+test('Async scripts are awaited', compareFragmentMacro,
+    `<span>\${ Promise.resolve('test') }</span>`,
+    `<span>test</span>`
+);

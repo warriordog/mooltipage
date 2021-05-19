@@ -161,7 +161,7 @@ export class StandardPipeline implements Pipeline {
      * @param evalContext Current compilation context
      * @returns compiled value of the input value
      */
-    compileExpression(value: string, evalContext: EvalContext): unknown {
+    async compileExpression(value: string, evalContext: EvalContext): Promise<unknown> {
         // check if this text contains JS code to evaluate
         if (isExpressionString(value)) {
             const expression = value.trim();
@@ -170,7 +170,7 @@ export class StandardPipeline implements Pipeline {
             const expressionFunc = this.getOrParseExpression(expression);
             
             // execute it
-            return invokeEvalFunc(expressionFunc, evalContext);
+            return await invokeEvalFunc(expressionFunc, evalContext);
         }
 
         // value is plain string
@@ -186,14 +186,14 @@ export class StandardPipeline implements Pipeline {
      * @param evalContext Context to execute in
      * @returns The return value of the script, if any.
      */
-    compileScript(script: string, evalContext: EvalContext): unknown {
+    async compileScript(script: string, evalContext: EvalContext): Promise<unknown> {
         const scriptText = script.trim();
 
         // get function for script
         const scriptFunc = this.getOrParseScript(scriptText);
         
         // execute it
-        return invokeEvalFunc(scriptFunc, evalContext);
+        return await invokeEvalFunc(scriptFunc, evalContext);
     }
 
     /**

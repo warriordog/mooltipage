@@ -7,9 +7,18 @@
  */
 import {EvalContext, EvalFunction} from '../..';
 
-export function invokeEvalFunc<T>(evalFunction: EvalFunction<T>, evalContext: EvalContext): T {
+export async function invokeEvalFunc<T>(evalFunction: EvalFunction<T>, evalContext: EvalContext): Promise<T> {
     // execute the function
-    return evalFunction.call(evalContext.scope, evalContext.scope, evalContext, requireFromRoot);
+    const returnOrPromise = evalFunction.call(evalContext.scope, evalContext.scope, evalContext, requireFromRoot);
+
+    if (returnOrPromise instanceof Promise) {
+        // If its a promise, await it
+        return await returnOrPromise;
+
+    } else {
+        // If not a promise, then return directly
+        return returnOrPromise;
+    }
 }
 
 /**
@@ -79,7 +88,7 @@ export function parseExpression(expression: string): EvalFunction<unknown> {
  */
 export function parseTemplateString(templateString: string): EvalFunction<string> {
     // generate function body for template
-    const functionBody = `return \`${ templateString }\`;`;
+    const functionBody = `return $$.expressionTagger\`${ templateString }\`;`;
 
     // create content
     return parseScript(functionBody);

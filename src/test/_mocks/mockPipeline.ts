@@ -23,7 +23,7 @@ export class MockPipeline extends StandardPipeline {
         throw new Error('Not implemented');
     }
 
-    compileExpression(): unknown {
+    compileExpression(): Promise<unknown> {
         throw new Error('Not implemented');
     }
 

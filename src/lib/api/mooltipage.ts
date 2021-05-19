@@ -6,7 +6,7 @@ import {createStandardHtmlFormatter, FormatterMode} from '../pipeline/module/sta
  * Called whenever a page is compiled.
  * @param page Compiled Page object
  */
-export type PageCompiledCallback = (page: Page) => void;
+export type PageCompiledCallback = (page: Page) => Promise<void>;
 
 /**
  * Options recognized by Mooltipage
@@ -101,7 +101,7 @@ export class Mooltipage {
 
         // callback
         if (this.options.onPageCompiled) {
-            this.options.onPageCompiled(page);
+            await this.options.onPageCompiled(page);
         }
     }
 }
