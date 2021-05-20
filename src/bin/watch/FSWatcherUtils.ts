@@ -10,7 +10,6 @@ export async function createReadyFSWatcher(options?: WatchOptions): Promise<FSWa
     // Flag to stop keep-alive timer after watcher is ready.
     // Otherwise, Node.JS would never exit.
     let isReady = false;
-    watcher.add(__dirname);
 
     // Keep-alive timer to stop Node.JS from shutting down before watcher is ready.
     // Apparently the "persistent" property does not kick in until *after* the initial scan / ready event.

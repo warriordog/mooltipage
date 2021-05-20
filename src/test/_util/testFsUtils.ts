@@ -88,7 +88,7 @@ async function getRandomSandboxPath(): Promise<string> {
     let sandboxPath: string;
 
     do {
-        const randomSuffix = String(100000 * Math.random());
+        const randomSuffix = String(Math.random());
         const sandboxName = join('..', '_temp', `sandbox${ randomSuffix }`);
 
         sandboxPath = resolve(__dirname, sandboxName);

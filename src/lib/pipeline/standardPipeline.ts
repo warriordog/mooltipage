@@ -212,18 +212,18 @@ export class StandardPipeline implements Pipeline {
 
         // get from cache, if present
         if (this.cache.createdResourceCache.has(contentsHash)) {
-            // get cached path
             return this.cache.createdResourceCache.get(contentsHash);
         }
 
         // if not in cache, then call PI to create resource
-        const resPath = await this.pipelineIO.createResource(type, contents);
+        const createdResourcePath = await this.pipelineIO.createResource(type, contents);
+        const resPath = `@${ Path.sep }${ createdResourcePath }`;
 
         // store in cache
         this.cache.createdResourceCache.store(contentsHash, resPath);
 
         // Append "root-relative" prefix
-        return `@${ Path.sep }${ resPath }`;
+        return resPath;
     }
 
     /**
