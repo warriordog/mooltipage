@@ -440,35 +440,7 @@
 <a name='L381'></a><a href='#L381'>381</a>
 <a name='L382'></a><a href='#L382'>382</a>
 <a name='L383'></a><a href='#L383'>383</a>
-<a name='L384'></a><a href='#L384'>384</a>
-<a name='L385'></a><a href='#L385'>385</a>
-<a name='L386'></a><a href='#L386'>386</a>
-<a name='L387'></a><a href='#L387'>387</a>
-<a name='L388'></a><a href='#L388'>388</a>
-<a name='L389'></a><a href='#L389'>389</a>
-<a name='L390'></a><a href='#L390'>390</a>
-<a name='L391'></a><a href='#L391'>391</a>
-<a name='L392'></a><a href='#L392'>392</a>
-<a name='L393'></a><a href='#L393'>393</a>
-<a name='L394'></a><a href='#L394'>394</a>
-<a name='L395'></a><a href='#L395'>395</a>
-<a name='L396'></a><a href='#L396'>396</a>
-<a name='L397'></a><a href='#L397'>397</a>
-<a name='L398'></a><a href='#L398'>398</a>
-<a name='L399'></a><a href='#L399'>399</a>
-<a name='L400'></a><a href='#L400'>400</a>
-<a name='L401'></a><a href='#L401'>401</a>
-<a name='L402'></a><a href='#L402'>402</a>
-<a name='L403'></a><a href='#L403'>403</a>
-<a name='L404'></a><a href='#L404'>404</a>
-<a name='L405'></a><a href='#L405'>405</a>
-<a name='L406'></a><a href='#L406'>406</a>
-<a name='L407'></a><a href='#L407'>407</a>
-<a name='L408'></a><a href='#L408'>408</a>
-<a name='L409'></a><a href='#L409'>409</a>
-<a name='L410'></a><a href='#L410'>410</a>
-<a name='L411'></a><a href='#L411'>411</a>
-<a name='L412'></a><a href='#L412'>412</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">26x</span>
+<a name='L384'></a><a href='#L384'>384</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-yes">26x</span>
@@ -476,6 +448,7 @@
 <span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-yes">26x</span>
 <span class="cline-any cline-yes">26x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -577,10 +550,6 @@
 <span class="cline-any cline-yes">103x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">103x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -646,31 +615,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4602x</span>
 <span class="cline-any cline-yes">71x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -887,7 +831,8 @@ import {DomLogicModule} from './compiler/domLogicModule';
 import {ImportModule} from './compiler/importModule';
 import {FragmentModule} from './compiler/fragmentModule';
 import {
-    DocumentNode, EvalContext,
+    DocumentNode,
+    EvalContext,
     Fragment,
     Node,
     NodeWithChildren
@@ -985,11 +930,7 @@ export class HtmlCompiler {
      */
     async compileFragment(fragment: Fragment, pipelineContext: StandardPipelineContext): Promise&lt;void&gt; {
         // create root context
-        const htmlContext = new HtmlCompilerContext({
-            pipelineContext: pipelineContext,
-            uniqueLinks: new Set(),
-            uniqueStyles: new Set()
-        }, fragment.dom);
+        const htmlContext = new HtmlCompilerContext(pipelineContext, fragment.dom);
 &nbsp;
         // run modules
         await this.runModulesAt(fragment.dom, htmlContext);
@@ -1085,39 +1026,14 @@ export interface HtmlCompilerModule {
 }
 &nbsp;
 /**
- * Context for the current pipeline-level unit of work.
- * This is common for all nodes within a single fragment.
- */
-export interface SharedHtmlCompilerContext {
-    /**
-     * Current usage context
-     */
-    readonly pipelineContext: StandardPipelineContext;
-&nbsp;
-    /**
-     * Set of all unique CSS styles that have been found during compilation.
-     * This set is inherited and shared by all nodes within the same compilation unit.
-     * TODO remove this from global state
-     */
-    readonly uniqueStyles: Set&lt;string&gt;;
-&nbsp;
-    /**
-     * Set of all unique HTML link node targets that have been found during compilation.
-     * This set is inherited and shared by all nodes within the same compilation unit.
-     * TODO remove this from global scope
-     */
-    readonly uniqueLinks: Set&lt;string&gt;;
-}
-&nbsp;
-/**
  * Context for the current node-level unit or work.
  * This is unique for each node being processed.
  */
 export class HtmlCompilerContext {
     /**
-     * Pipeline-level shared state
+     * Current usage context
      */
-    readonly sharedContext: SharedHtmlCompilerContext;
+    readonly pipelineContext: StandardPipelineContext;
 &nbsp;
     /**
      * HTML Compile data for the parent node, if this node has a parent.
@@ -1145,12 +1061,12 @@ export class HtmlCompilerContext {
 &nbsp;
     /**
      * Creates a new HTML compile data instance that optionally inherits from a parent
-     * @param sharedContext Shared context for this entire unit of work
+     * @param pipelineContext Pipeline-level shared context
      * @param node Node being compiled
      * @param parentContext Optional parent HtmlCompileData to inherit from
      */
-    constructor(sharedContext: SharedHtmlCompilerContext, node: Node, parentContext?: HtmlCompilerContext) {
-        this.sharedContext = sharedContext;
+    constructor(pipelineContext: StandardPipelineContext, node: Node, parentContext?: HtmlCompilerContext) {
+        this.pipelineContext = pipelineContext;
         this.node = node;
         this.parentContext = parentContext;
     }
@@ -1199,7 +1115,7 @@ export class HtmlCompilerContext {
      */
     createEvalContext(): EvalContext {
         return {
-            pipelineContext: this.sharedContext.pipelineContext,
+            pipelineContext: this.pipelineContext,
             scope: this.node.nodeData,
             sourceNode: this.node,
             expressionTagger: interpolateEvalTemplateString
@@ -1218,7 +1134,7 @@ export class HtmlCompilerContext {
         <span class="missing-if-branch" title="else path not taken" >E</span>if (this.parentContext !== undefined) {
             // custom eval context with parent scope but everything else local
             return {
-                pipelineContext: this.sharedContext.pipelineContext,
+                pipelineContext: this.pipelineContext,
                 scope: this.parentContext.node.nodeData,
                 sourceNode: this.node,
                 expressionTagger: interpolateEvalTemplateString
@@ -1235,7 +1151,7 @@ export class HtmlCompilerContext {
      * @returns new HtmlCompileData instance
      */
     createChildData(node: Node): HtmlCompilerContext {
-        return new HtmlCompilerContext(this.sharedContext, node, this);
+        return new HtmlCompilerContext(this.pipelineContext, node, this);
     }
 &nbsp;
     /**
@@ -1297,7 +1213,7 @@ function getImport(htmlContext: HtmlCompilerContext | undefined, alias: string):
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu May 20 2021 22:42:58 GMT+0000 (Coordinated Universal Time)
+                at Sun May 23 2021 19:38:17 GMT+0000 (Coordinated Universal Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>
