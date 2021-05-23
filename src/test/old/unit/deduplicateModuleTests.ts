@@ -17,8 +17,8 @@ import {StandardPipelineContext} from '../../../lib/pipeline/standardPipeline';
 
 function createHtmlContext(node: Node): HtmlCompilerContext {
     return new HtmlCompilerContext({
-        uniqueStyles: new Set<string>(),
-        uniqueLinks: new Set<string>()
+        stylesInPage: new Set<string>(),
+        linksInPage: new Set<string>()
     } as unknown as StandardPipelineContext, node);
 }
 
