@@ -13,7 +13,7 @@ import {resolveResPath} from '../../../fs/pathUtils';
 
 export class StyleModule implements HtmlCompilerModule {
     async enterNode(htmlContext: HtmlCompilerContext): Promise<void> {
-        const pipelineContext = htmlContext.sharedContext.pipelineContext;
+        const pipelineContext = htmlContext.pipelineContext;
 
         if (InternalStyleNode.isInternalStyleNode(htmlContext.node)) {
             // internal (inline) CSS
@@ -66,11 +66,11 @@ function getMimeTypeForLang(lang: string | undefined): MimeType {
 }
 
 async function compileStyleLink(currentNode: CompiledStyleNode, src: string, styleContent: string, htmlContext: HtmlCompilerContext): Promise<void> {
-    const rootResPath = htmlContext.sharedContext.pipelineContext.fragmentContext.rootResPath;
+    const rootResPath = htmlContext.pipelineContext.fragmentContext.rootResPath;
 
     // write external CSS
     const mimeType = getMimeTypeForLang(currentNode.lang);
-    const styleResPath = await htmlContext.sharedContext.pipelineContext.pipeline.linkResource(mimeType, styleContent, rootResPath);
+    const styleResPath = await htmlContext.pipelineContext.pipeline.linkResource(mimeType, styleContent, rootResPath);
 
     // create link
     const link = new TagNode('link');

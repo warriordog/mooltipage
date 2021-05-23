@@ -20,7 +20,7 @@ export class VarModule implements HtmlCompilerModule {
     async enterNode(htmlContext: HtmlCompilerContext): Promise<void> {
         if (DocumentNode.isDocumentNode(htmlContext.node)) {
             // if document, then bind root scope and we are done
-            htmlContext.node.setRootScope(htmlContext.sharedContext.pipelineContext.fragmentContext.scope);
+            htmlContext.node.setRootScope(htmlContext.pipelineContext.fragmentContext.scope);
 
         } else if (MVarNode.isMVarNode(htmlContext.node)) {
             // process m-var
@@ -85,7 +85,7 @@ export async function processMData(node: MDataNode, htmlContext: HtmlCompilerCon
 }
 
 export async function compileReference(reference: MDataNodeRef, node: MDataNode, htmlContext: HtmlCompilerContext): Promise<unknown> {
-    const pipelineContext = htmlContext.sharedContext.pipelineContext;
+    const pipelineContext = htmlContext.pipelineContext;
 
     // compute path to reference
     const resPath = resolveResPath(reference.resPath, pipelineContext.fragment.path);
@@ -119,7 +119,7 @@ export function getTargetScope(node: Node, htmlContext: HtmlCompilerContext, use
     }
 
     // if we are using the parent scope but there is no parent node, then fall back to root scope
-    return htmlContext.sharedContext.pipelineContext.fragmentContext.scope;
+    return htmlContext.pipelineContext.fragmentContext.scope;
 }
 
 /**

@@ -30,7 +30,7 @@ export class AnchorModule implements HtmlCompilerModule {
  */
 export function compileAnchorNode(anchorNode: CompiledAnchorNode, htmlContext: HtmlCompilerContext): void {
     // resolve href
-    anchorNode.href = resolveAnchorHref(anchorNode.href, anchorNode.resolve, htmlContext.sharedContext.pipelineContext.fragmentContext);
+    anchorNode.href = resolveAnchorHref(anchorNode.href, anchorNode.resolve, htmlContext.pipelineContext.fragmentContext);
 
     // replace with uncompiled
     const uncompiledAnchor = anchorNode.toUncompiled();

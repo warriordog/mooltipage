@@ -143,7 +143,9 @@ export class StandardPipeline implements Pipeline {
         const pipelineContext: StandardPipelineContext = {
             pipeline: this,
             fragment: fragment,
-            fragmentContext: fragmentContext
+            fragmentContext: fragmentContext,
+            linksInPage: new Set(),
+            stylesInPage: new Set()
         };
 
         // compile under current context

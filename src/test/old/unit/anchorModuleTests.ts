@@ -16,8 +16,7 @@ import {
 } from '../../../lib/pipeline/module/compiler/anchorModule';
 import {
     MockHtmlCompilerContext,
-    MockPipelineContext,
-    MockSharedHtmlCompilerContext
+    MockPipelineContext
 } from '../../_mocks/mockHtmlCompilerContext';
 import {fixPathSeparators} from '../../../lib/fs/pathUtils';
 
@@ -59,10 +58,10 @@ test('AnchorModule.compileAnchorNode() resolves AnchorNodeResolve.LOCAL', t => {
     const anchor = new CompiledAnchorNode('path.html', AnchorNodeResolve.LOCAL);
     root.appendChild(anchor);
 
-    const htmlContext = new MockHtmlCompilerContext(anchor, new MockSharedHtmlCompilerContext(new MockPipelineContext({
+    const htmlContext = new MockHtmlCompilerContext(anchor, new MockPipelineContext({
         dom: new DocumentNode(),
         path: fixPathSeparators('root/fragment.html')
-    })));
+    }));
     compileAnchorNode(anchor, htmlContext);
 
     t.truthy(root.firstChild);
@@ -78,10 +77,10 @@ test('AnchorModule.compileAnchorNode() resolves AnchorNodeResolve.ROOT', t => {
     const anchor = new CompiledAnchorNode('path.html', AnchorNodeResolve.ROOT);
     root.appendChild(anchor);
 
-    const htmlContext = new MockHtmlCompilerContext(anchor, new MockSharedHtmlCompilerContext(new MockPipelineContext({
+    const htmlContext = new MockHtmlCompilerContext(anchor, new MockPipelineContext({
         dom: new DocumentNode(),
         path: fixPathSeparators('root/fragment.html')
-    })));
+    }));
     compileAnchorNode(anchor, htmlContext);
 
     t.truthy(root.firstChild);
@@ -97,10 +96,10 @@ test('AnchorModule.compileAnchorNode() resolves AnchorNodeResolve.BASE', t => {
     const anchor = new CompiledAnchorNode('path.html', AnchorNodeResolve.BASE);
     root.appendChild(anchor);
 
-    const htmlContext = new MockHtmlCompilerContext(anchor, new MockSharedHtmlCompilerContext(new MockPipelineContext({
+    const htmlContext = new MockHtmlCompilerContext(anchor, new MockPipelineContext({
         dom: new DocumentNode(),
         path: fixPathSeparators('root/fragment.html')
-    })));
+    }));
     compileAnchorNode(anchor, htmlContext);
 
     t.truthy(root.firstChild);

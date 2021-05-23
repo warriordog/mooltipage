@@ -46,9 +46,9 @@ export function dedupeStyle(styleNode: StyleNode, htmlContext: HtmlCompilerConte
     const styleTextNode = styleNode.firstChildText;
 
     // check if it contains unique styles
-    if (styleTextNode?.hasContent && !htmlContext.sharedContext.uniqueStyles.has(styleTextNode.textContent)) {
+    if (styleTextNode?.hasContent && !htmlContext.pipelineContext.stylesInPage.has(styleTextNode.textContent)) {
         // this style is unique, so save it
-        htmlContext.sharedContext.uniqueStyles.add(styleTextNode.textContent);
+        htmlContext.pipelineContext.stylesInPage.add(styleTextNode.textContent);
     } else {
         // if not unique, then cull;
         styleNode.removeSelf();
@@ -70,13 +70,14 @@ export function dedupeLink(linkNode: TagNode, htmlContext: HtmlCompilerContext):
         const href = linkNode.getRequiredValueAttribute('href');
 
         // check if we have seen this link before
-        if (htmlContext.sharedContext.uniqueLinks.has(href)) {
+        if (htmlContext.pipelineContext.linksInPage.has(href)) {
             // duplicate, so cull it
             linkNode.removeSelf();
             htmlContext.setDeleted();
+
         } else {
             // unique link, so save it
-            htmlContext.sharedContext.uniqueLinks.add(href);
+            htmlContext.pipelineContext.linksInPage.add(href);
         }
     }
 }

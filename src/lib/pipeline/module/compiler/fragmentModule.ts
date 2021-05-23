@@ -23,7 +23,7 @@ export class FragmentModule implements HtmlCompilerModule {
 }
 
 export async function replaceFragment(mFragment: MFragmentNode, htmlContext: HtmlCompilerContext): Promise<void> {
-    const pipelineContext = htmlContext.sharedContext.pipelineContext;
+    const pipelineContext = htmlContext.pipelineContext;
 
     // get slot contents
     const slotContents: Map<string, DocumentNode> = extractSlotContents(mFragment);

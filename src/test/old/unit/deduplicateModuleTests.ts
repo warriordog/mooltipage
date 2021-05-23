@@ -17,10 +17,9 @@ import {StandardPipelineContext} from '../../../lib/pipeline/standardPipeline';
 
 function createHtmlContext(node: Node): HtmlCompilerContext {
     return new HtmlCompilerContext({
-        pipelineContext: {} as unknown as StandardPipelineContext,
         uniqueStyles: new Set<string>(),
         uniqueLinks: new Set<string>()
-    }, node);
+    } as unknown as StandardPipelineContext, node);
 }
 
 // dedupeLink()
@@ -42,7 +41,7 @@ test('DeduplicateModule.dedupeLink() skips invalid links', t => {
     dedupeLink(linkNode, htmlContext);
 
     t.false(htmlContext.isDeleted);
-    t.is(htmlContext.sharedContext.uniqueLinks.size, 0);
+    t.is(htmlContext.pipelineContext.linksInPage.size, 0);
 });
 
 test('DeduplicateModule.dedupeLink() remembers unique links', t => {
@@ -53,21 +52,21 @@ test('DeduplicateModule.dedupeLink() remembers unique links', t => {
     dedupeLink(linkNode, htmlContext);
 
     t.false(htmlContext.isDeleted);
-    t.is(htmlContext.sharedContext.uniqueLinks.size, 1);
-    t.true(htmlContext.sharedContext.uniqueLinks.has('style.css'));
+    t.is(htmlContext.pipelineContext.linksInPage.size, 1);
+    t.true(htmlContext.pipelineContext.linksInPage.has('style.css'));
 });
 
 test('DeduplicateModule.dedupeLink() removes duplicate links', t => {
     const linkNode = new TagNode('link');
     linkNode.setAttribute('href', 'style.css');
     const htmlContext = createHtmlContext(linkNode);
-    htmlContext.sharedContext.uniqueLinks.add('style.css');
+    htmlContext.pipelineContext.linksInPage.add('style.css');
 
     dedupeLink(linkNode, htmlContext);
 
     t.true(htmlContext.isDeleted);
-    t.is(htmlContext.sharedContext.uniqueLinks.size, 1);
-    t.true(htmlContext.sharedContext.uniqueLinks.has('style.css'));
+    t.is(htmlContext.pipelineContext.linksInPage.size, 1);
+    t.true(htmlContext.pipelineContext.linksInPage.has('style.css'));
 });
 
 // dedupeStyle
@@ -91,7 +90,7 @@ test('DeduplicateModule.dedupeStyle() deletes empty styles', t => {
     dedupeStyle(styleNode, htmlContext);
 
     t.true(htmlContext.isDeleted);
-    t.is(htmlContext.sharedContext.uniqueStyles.size, 0);
+    t.is(htmlContext.pipelineContext.stylesInPage.size, 0);
 });
 
 test('DeduplicateModule.dedupeStyle() remembers unique styles', t => {
@@ -104,8 +103,8 @@ test('DeduplicateModule.dedupeStyle() remembers unique styles', t => {
     dedupeStyle(styleNode, htmlContext);
 
     t.false(htmlContext.isDeleted);
-    t.is(htmlContext.sharedContext.uniqueStyles.size, 1);
-    t.true(htmlContext.sharedContext.uniqueStyles.has(css));
+    t.is(htmlContext.pipelineContext.stylesInPage.size, 1);
+    t.true(htmlContext.pipelineContext.stylesInPage.has(css));
 });
 
 test('DeduplicateModule.dedupeStyle() removes duplicate styles', t => {
@@ -114,13 +113,13 @@ test('DeduplicateModule.dedupeStyle() removes duplicate styles', t => {
     const textNode = new TextNode(css);
     styleNode.appendChild(textNode);
     const htmlContext = createHtmlContext(styleNode);
-    htmlContext.sharedContext.uniqueStyles.add(css);
+    htmlContext.pipelineContext.stylesInPage.add(css);
 
     dedupeStyle(styleNode, htmlContext);
 
     t.true(htmlContext.isDeleted);
-    t.is(htmlContext.sharedContext.uniqueStyles.size, 1);
-    t.true(htmlContext.sharedContext.uniqueStyles.has(css));
+    t.is(htmlContext.pipelineContext.stylesInPage.size, 1);
+    t.true(htmlContext.pipelineContext.stylesInPage.has(css));
 });
 
 test('DeduplicateModule.dedupeStyle() ignores whitespace', t => {
@@ -130,13 +129,13 @@ test('DeduplicateModule.dedupeStyle() ignores whitespace', t => {
     const textNode = new TextNode(cssSpace);
     styleNode.appendChild(textNode);
     const htmlContext = createHtmlContext(styleNode);
-    htmlContext.sharedContext.uniqueStyles.add(css);
+    htmlContext.pipelineContext.stylesInPage.add(css);
 
     dedupeStyle(styleNode, htmlContext);
 
     t.true(htmlContext.isDeleted);
-    t.is(htmlContext.sharedContext.uniqueStyles.size, 1);
-    t.true(htmlContext.sharedContext.uniqueStyles.has(css));
+    t.is(htmlContext.pipelineContext.stylesInPage.size, 1);
+    t.true(htmlContext.pipelineContext.stylesInPage.has(css));
 });
 
 test('DeduplicateModule.enterNode() skips nodes with tag set', t => {
@@ -146,14 +145,14 @@ test('DeduplicateModule.enterNode() skips nodes with tag set', t => {
     const textNode = new TextNode(css);
     styleNode.appendChild(textNode);
     const htmlContext = createHtmlContext(styleNode);
-    htmlContext.sharedContext.uniqueStyles.add(css);
+    htmlContext.pipelineContext.stylesInPage.add(css);
 
     const dedupeModule = new DeduplicateModule();
     dedupeModule.enterNode(htmlContext);
 
     t.false(htmlContext.isDeleted);
-    t.is(htmlContext.sharedContext.uniqueStyles.size, 1);
-    t.true(htmlContext.sharedContext.uniqueStyles.has(css));
+    t.is(htmlContext.pipelineContext.stylesInPage.size, 1);
+    t.true(htmlContext.pipelineContext.stylesInPage.has(css));
 });
 
 test('DeduplicateModule works if style is nested multiple slots deep', compareFragmentMacro, `

@@ -20,7 +20,7 @@ async function processTextNode(htmlContext: HtmlCompilerContext, node: TextNode)
     const evalContext = htmlContext.createEvalContext();
 
     // compile text
-    const textValue = await htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(node.text, evalContext);
+    const textValue = await htmlContext.pipelineContext.pipeline.compileExpression(node.text, evalContext);
 
     // save back to node
     node.text = (textValue !== null && textValue !== undefined) ? String(textValue) : '';
@@ -38,7 +38,7 @@ async function processTagNode(htmlContext: HtmlCompilerContext, node: TagNode): 
         // only process strings, anything else must already be compiled
         if (typeof value === 'string') {
             // compile the value, preserving the raw output and not converting to a string
-            const result = htmlContext.sharedContext.pipelineContext.pipeline.compileExpression(value, evalContext);
+            const result = htmlContext.pipelineContext.pipeline.compileExpression(value, evalContext);
 
             // Set attribute
             node.setRawAttribute(key, await result);

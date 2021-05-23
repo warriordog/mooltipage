@@ -20,7 +20,7 @@ async function compileInternalScript(node: InternalScriptNode, htmlContext: Html
 }
 
 async function compileExternalScript(node: ExternalScriptNode, htmlContext: HtmlCompilerContext): Promise<void> {
-    const pipelineContext = htmlContext.sharedContext.pipelineContext;
+    const pipelineContext = htmlContext.pipelineContext;
 
     const resPath = resolveResPath(node.src, pipelineContext.fragment.path);
     const scriptContent = await pipelineContext.pipeline.getRawText(resPath, MimeType.JAVASCRIPT);
@@ -32,7 +32,7 @@ async function compileScript(htmlContext: HtmlCompilerContext, scriptText: strin
     const evalContext = htmlContext.createParentScopeEvalContext();
 
     // compile and execute
-    await htmlContext.sharedContext.pipelineContext.pipeline.compileScript(scriptText, evalContext);
+    await htmlContext.pipelineContext.pipeline.compileScript(scriptText, evalContext);
 
     // remove when done
     htmlContext.node.removeSelf();

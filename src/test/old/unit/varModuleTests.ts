@@ -24,8 +24,8 @@ async function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData
         dom: new DocumentNode()
     };
 
-    const htmlContext = new HtmlCompilerContext({
-        pipelineContext: {
+    const htmlContext = new HtmlCompilerContext(
+        {
             pipeline: pipeline,
             fragment: testFrag,
             fragmentContext: {
@@ -33,11 +33,10 @@ async function runVarModule(node: Node, cleanup = true, fragmentScope: ScopeData
                 scope: fragmentScope,
                 fragmentResPath: testFrag.path,
                 rootResPath: testFrag.path
-            }
-        },
-        uniqueStyles: new Set<string>(),
-        uniqueLinks: new Set<string>()
-    }, node);
+            },
+            stylesInPage: new Set(),
+            linksInPage: new Set()
+        }, node);
     const varModule = new VarModule();
 
     await varModule.enterNode(htmlContext);

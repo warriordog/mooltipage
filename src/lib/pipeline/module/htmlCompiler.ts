@@ -6,7 +6,8 @@ import {DomLogicModule} from './compiler/domLogicModule';
 import {ImportModule} from './compiler/importModule';
 import {FragmentModule} from './compiler/fragmentModule';
 import {
-    DocumentNode, EvalContext,
+    DocumentNode,
+    EvalContext,
     Fragment,
     Node,
     NodeWithChildren
@@ -104,11 +105,7 @@ export class HtmlCompiler {
      */
     async compileFragment(fragment: Fragment, pipelineContext: StandardPipelineContext): Promise<void> {
         // create root context
-        const htmlContext = new HtmlCompilerContext({
-            pipelineContext: pipelineContext,
-            uniqueLinks: new Set(),
-            uniqueStyles: new Set()
-        }, fragment.dom);
+        const htmlContext = new HtmlCompilerContext(pipelineContext, fragment.dom);
 
         // run modules
         await this.runModulesAt(fragment.dom, htmlContext);
@@ -204,39 +201,14 @@ export interface HtmlCompilerModule {
 }
 
 /**
- * Context for the current pipeline-level unit of work.
- * This is common for all nodes within a single fragment.
- */
-export interface SharedHtmlCompilerContext {
-    /**
-     * Current usage context
-     */
-    readonly pipelineContext: StandardPipelineContext;
-
-    /**
-     * Set of all unique CSS styles that have been found during compilation.
-     * This set is inherited and shared by all nodes within the same compilation unit.
-     * TODO remove this from global state
-     */
-    readonly uniqueStyles: Set<string>;
-
-    /**
-     * Set of all unique HTML link node targets that have been found during compilation.
-     * This set is inherited and shared by all nodes within the same compilation unit.
-     * TODO remove this from global scope
-     */
-    readonly uniqueLinks: Set<string>;
-}
-
-/**
  * Context for the current node-level unit or work.
  * This is unique for each node being processed.
  */
 export class HtmlCompilerContext {
     /**
-     * Pipeline-level shared state
+     * Current usage context
      */
-    readonly sharedContext: SharedHtmlCompilerContext;
+    readonly pipelineContext: StandardPipelineContext;
 
     /**
      * HTML Compile data for the parent node, if this node has a parent.
@@ -264,12 +236,12 @@ export class HtmlCompilerContext {
 
     /**
      * Creates a new HTML compile data instance that optionally inherits from a parent
-     * @param sharedContext Shared context for this entire unit of work
+     * @param pipelineContext Pipeline-level shared context
      * @param node Node being compiled
      * @param parentContext Optional parent HtmlCompileData to inherit from
      */
-    constructor(sharedContext: SharedHtmlCompilerContext, node: Node, parentContext?: HtmlCompilerContext) {
-        this.sharedContext = sharedContext;
+    constructor(pipelineContext: StandardPipelineContext, node: Node, parentContext?: HtmlCompilerContext) {
+        this.pipelineContext = pipelineContext;
         this.node = node;
         this.parentContext = parentContext;
     }
@@ -318,7 +290,7 @@ export class HtmlCompilerContext {
      */
     createEvalContext(): EvalContext {
         return {
-            pipelineContext: this.sharedContext.pipelineContext,
+            pipelineContext: this.pipelineContext,
             scope: this.node.nodeData,
             sourceNode: this.node,
             expressionTagger: interpolateEvalTemplateString
@@ -337,7 +309,7 @@ export class HtmlCompilerContext {
         if (this.parentContext !== undefined) {
             // custom eval context with parent scope but everything else local
             return {
-                pipelineContext: this.sharedContext.pipelineContext,
+                pipelineContext: this.pipelineContext,
                 scope: this.parentContext.node.nodeData,
                 sourceNode: this.node,
                 expressionTagger: interpolateEvalTemplateString
@@ -354,7 +326,7 @@ export class HtmlCompilerContext {
      * @returns new HtmlCompileData instance
      */
     createChildData(node: Node): HtmlCompilerContext {
-        return new HtmlCompilerContext(this.sharedContext, node, this);
+        return new HtmlCompilerContext(this.pipelineContext, node, this);
     }
 
     /**
