@@ -31,13 +31,13 @@ jobs:
       - name: Generate documentation
         run: npm run docs
       - name: "Archive documentation: code coverage"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: mooltipage-coverage
           path: docs/dist/gen/coverage
           if-no-files-found: error
       - name: "Archive documentation: type docs"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: mooltipage-typedoc
           path: docs/dist/gen/typedoc
